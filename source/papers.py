@@ -1,22 +1,15 @@
 #! /usr/bin/env python
 
+##########################################################
+#Get all the paper metadata from pubmed and do stuff with it
+##########################################################
+
 #12/9/14
-
-#Seems that there are a few that don't have authors, so the lastname call fails. eg 24770850
-#Current batch has a non ASCII character.
-
-#todo
-#wordcloud of abstracts
-#Average position in list of authors
-#institutions - start to put rules in place - will take a while!
-#will need to deal with missing data somehow.
-#seems to be lots of missing mesh headings
-#Google docs has an API, so could pull all the pmids from that. Would be a simple interface.
-#https://developers.google.com/google-apps/spreadsheets/#working_with_list-based_feeds
 
 import csv
 import json
 import os.path
+import gdata.docs.service
 
 import tools
 
@@ -25,18 +18,21 @@ Entrez.email = "olly.butters@bristol.ac.uk"     # Always tell NCBI who you are
 
 
 ###########################################################
-#list of PMIDs - this would be fed from somewhere
-#three of pauls
-#pmids=['25085103','15831561','16154023']
+#Make sure the directory structure is set up first
+if (os.path.exists('../cache') == False):
+    os.mkdir('../cache')
 
-#last ten alspac
-#pmids=['24963150','24924479','24930394','24952709','24945404','23841856','24848214','23895510','24158349']
-#'24927274' This one doesnt work
+if (os.path.exists('../data') == False):
+    os.mkdir('../data')
 
+
+
+
+###########################################################
 #Read in the list of PMIDs from an external csv file in this directory.
 #The file must be just pmids - one per line, and no extra lines at the end.
 pmids = []
-with open('../pmids.csv', 'rb') as csvfile:
+with open('../inputs/pmids.csv', 'rb') as csvfile:
     f = csv.reader(csvfile)
     for row in f:
         #print row[0]
@@ -55,9 +51,6 @@ papers = {}
 for this_pmid in pmids:
 
     print 'Working on '+this_pmid
-
-
-    #Using efetch
 
     #Build a cache of all the pmid data so we don't keep downloading it.
     #Check that cache first when looking for a PMID, if it's not there then
