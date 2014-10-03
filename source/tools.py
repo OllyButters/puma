@@ -36,7 +36,7 @@ def clean_institution_course2(inst):
                 inst[x] = temp[0]
                 break
             
-            if(y==len(pattern)):
+            if(y==len(pattern)-1):
                 print 'No match for '+inst[x]
             
 
