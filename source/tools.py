@@ -2,6 +2,46 @@
 
 #Have a go at tidying up the mess that is first author institution.
 
+def clean_institution_course2(inst):
+    import csv
+    import re
+
+    #Read in config file
+    pattern = []
+    replacements = []
+    with open('../config/institute_cleaning.csv', 'rb') as csvfile:
+        f = csv.reader(csvfile)
+        for row in f:
+            try:
+                #Check it is not a comment string first.
+                if(re.match('#',row[0])):
+                    continue
+
+                #If there is a second element in this row then carry on
+                pattern.append(row[0])
+                replacements.append(row[1])
+            except:
+                pass
+
+    #print replacements
+
+    #Cycle through institute checking the whole substitution list.
+    #Stop when the first one matches.
+    for x in range(0, len(inst)):
+        for y in range(0,len(pattern)):
+            print pattern[y]
+            temp = re.subn(pattern[y], replacements[y], inst[x])
+            print str(temp[1])+temp[0]
+            if(temp[1]>0):
+                inst[x] = temp[0]
+                break
+            
+            if(y==len(pattern)):
+                print 'No match for '+inst[x]
+            
+
+
+
 def clean_institution_course(inst):
     import re
 

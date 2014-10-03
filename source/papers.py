@@ -134,9 +134,9 @@ print str(len(papers))+' papers processed'
 
 
 #Do some actual analysis on the data
-#analysis.journals(pmids, papers)
+analysis.journals(pmids, papers)
 #analysis.abstracts(pmids, papers)
-#analysis.authors(pmids, papers)
-#analysis.first_authors(pmids, papers)
+analysis.authors(pmids, papers)
+analysis.first_authors(pmids, papers)
 analysis.inst(pmids, papers)
-#analysis.mesh(pmids, papers)
+analysis.mesh(pmids, papers)

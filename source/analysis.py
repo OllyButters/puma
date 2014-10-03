@@ -150,7 +150,7 @@ def inst(pmids, papers):
         except:
             pass
 
-    tools.clean_institution_course(first_authors_inst)
+    tools.clean_institution_course2(first_authors_inst)
         
     #print authors
     freq = dict((x,first_authors_inst.count(x)) for x in set(first_authors_inst))
