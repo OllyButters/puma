@@ -17,6 +17,7 @@ logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.WAR
 
 import tools
 import analysis
+import build_html
 
 from Bio import Entrez
 Entrez.email = "olly.butters@bristol.ac.uk"     # Always tell NCBI who you are
@@ -80,21 +81,6 @@ for this_pmid in pmids:
     record = json.loads(fo.read())
     fo.close()
 
-
-    #print all
-    #print '#####ALL'
-    #print record
-
-
-    #print '#####Authors'
-    #print all authors
-    #print record[0]['MedlineCitation']['Article']['AuthorList']
-    
-    
-    #print out lastname and affiliation for each author
-    #for this_one in record[0]['MedlineCitation']['Article']['AuthorList']:
-     #   print this_one['LastName']
-      #  print this_one['Affiliation']
                
     #all the info for this paper
     this_paper = {}
@@ -125,7 +111,24 @@ for this_pmid in pmids:
         print 'No Authors listed!'
         logging.info('No Authors listed')
         logging.warn('No abstract text')
-    
+
+    #Publication date Year
+    try:
+        this_paper['ArticleDateYear'] = record['MedlineCitation']['Article']['ArticleDate'][0]['Year']
+    except:
+        print 'No ArticleDateYear listed!'
+        logging.info('No ArticleDateYear listed')
+        logging.warn('No ArticleDateYear text')
+
+    #Publication date Month
+    try:
+        this_paper['ArticleDateMonth'] = record['MedlineCitation']['Article']['ArticleDate'][0]['Month']
+    except:
+        print 'No ArticleDateMonth listed!'
+        logging.info('No ArticleDateMonth listed')
+        logging.warn('No ArticleDateMonth text')
+
+
     #Add this_paper info to the main dict
     papers[this_pmid]=this_paper
 
@@ -150,3 +153,5 @@ analysis.authors(pmids, papers)
 analysis.first_authors(pmids, papers)
 analysis.inst(pmids, papers)
 analysis.mesh(pmids, papers)
+
+build_html.build_html(pmids, papers)
