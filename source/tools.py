@@ -5,6 +5,7 @@
 def clean_institution_course2(inst):
     import csv
     import re
+    import logging
 
     #Read in config file
     pattern = []
@@ -29,17 +30,18 @@ def clean_institution_course2(inst):
     #Stop when the first one matches.
     for x in range(0, len(inst)):
         for y in range(0,len(pattern)):
-            print pattern[y]
-            temp = re.subn(pattern[y], replacements[y], inst[x])
-            print str(temp[1])+temp[0]
-            if(temp[1]>0):
-                inst[x] = temp[0]
+            #print pattern[y]
+            temp = re.search(pattern[y], inst[x])
+            if(temp>0):
+                #print inst[x].encode('latin-1')+' ##matches## '+pattern[y]+' ##replaced by## '+replacements[y]
+                logging.info('%s MATCHES %s REPLACEDBY %s', inst[x], pattern[y], replacements[y])
+                inst[x] = replacements[y]
                 break
             
             if(y==len(pattern)-1):
-                print 'No match for '+inst[x]
-            
-
+                #print 'No match for '+inst[x].encode('latin-1')           
+                logging.info('No match for %s', inst[x])
+                logging.warn('No match for %s', inst[x])
 
 
 def clean_institution_course(inst):

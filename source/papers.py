@@ -11,6 +11,10 @@ import json
 import os.path
 #import gdata.docs.service
 
+import logging
+logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.WARN)
+
+
 import tools
 import analysis
 
@@ -52,6 +56,7 @@ papers = {}
 for this_pmid in pmids:
 
     print 'Working on '+this_pmid
+    logging.info('Working on %s',this_pmid)
 
     #Build a cache of all the pmid data so we don't keep downloading it.
     #Check that cache first when looking for a PMID, if it's not there then
@@ -101,6 +106,8 @@ for this_pmid in pmids:
         this_paper['AbstractText'] = record['MedlineCitation']['Article']['Abstract']['AbstractText']
     except:
         print 'No Abstract text'
+        logging.info('No abstract text')
+        logging.warn('No abstract text')
     
     #Mesh keywords
     try:
@@ -108,13 +115,16 @@ for this_pmid in pmids:
     except:
         #Should log this
         print 'No mesh headings'
+        logging.info('No mesh headings')
+        logging.warn('No abstract text')
 
     #Author list
     try:
         this_paper['AuthorList'] = record['MedlineCitation']['Article']['AuthorList']
     except:
         print 'No Authors listed!'
-
+        logging.info('No Authors listed')
+        logging.warn('No abstract text')
     
     #Add this_paper info to the main dict
     papers[this_pmid]=this_paper

@@ -1,111 +1,137 @@
 #Do email addresses first - my guess is that people are more likely to 
 #have only one email address than multiple institution addresses...
-bbk.ac.uk, Birbeck
-bristol.ac.uk, University of Bristol
-bris.ac.uk, University of Bristol
-cam.ac.uk, University of Cambridge
-city.ac.uk, City University
-ex.ac.uk, University of Essex
-einstein.yu.edu, Albert Einstein College of Medicine
-gla.ac.uk, University of Glasgow
-harvard.edu, Harvard University
-jhsph.edu, Johns Hopkins University
-jhmi.edu, Johns Hopkins University
-kcl.ac.uk, KCL
-liverpool.ac.uk, University of Liverpool
-lshtm.ac.uk, LSHTM
-nottingham.ac.uk, University of Nottingham
-ox.ac.uk, University of Oxford
-pds.ac.uk, Peninsula College of Medicine & Dentistry
-qmw.ac.uk, Queen Mary University London
-qmul, Queen Mary University London
-qub.ac.uk, Queens University
-sanger.ac.uk, Sanger Institute
-soton.ac.uk, University of Southampton
-ucl.ac.uk, UCL
-uwe.ac.uk, UWE
+bbk.ac.uk,Birkbeck
+bristol.ac.uk,University of Bristol
+bris.ac.uk,University of Bristol
+cam.ac.uk,University of Cambridge
+city.ac.uk,City University
+ex.ac.uk,University of Essex
+einstein.yu.edu,Albert Einstein College of Medicine
+speech-therapy.org.uk,Frenchay Speech & Language Therapy Research Unit
+gla.ac.uk,University of Glasgow
+harvard.edu,Harvard University
+jhsph.edu,Johns Hopkins University
+jhmi.edu,Johns Hopkins University
+kcl.ac.uk,KCL
+liverpool.ac.uk,University of Liverpool
+lshtm.ac.uk,LSHTM
+leedsmh.nhs.uk,NHS - East Leeds PCT 
+niehs.nih.gov,National Institute of Environmental Health Sciences (NIH)
+nottingham.ac.uk,University of Nottingham
+ox.ac.uk,University of Oxford
+pds.ac.uk,Peninsula College of Medicine & Dentistry
+qmw.ac.uk,Queen Mary University London
+qmul,Queen Mary University London
+qub.ac.uk,Queens University
+sanger.ac.uk,Sanger Institute
+soton.ac.uk,University of Southampton
+sghms.ac.uk,St Georges Hospital
+sgul.ac.uk,St Georges Hospital
+ucl.ac.uk,UCL
+uwe.ac.uk,UWE
 
 
 #Do the UK institution addresses.
-^.*University of Aberdeen.*$, University of Aberdeen
-^.*University of Bath.*$, University of Bath
-^.Birbeckn.*$, Birbeck
-^.*University of Birmingham.*$|^.*Birmingham University.*$, University of Birmingham
-^.*University of Brighton.*$, University of Brighton
-^.*University of Bristol.*$, University of Bristol
-^.*Brunel University.*$, Brunel University
-^.*University of Cambridge.*$, University of Cambridge
-^.*Cardiff University.*$, Cardiff University
-^.*City University.*$, City University
-^.*University of Coventry.*$|^.*Coventry University.*$, University of Coventry
-^.*DeMontfort University.*$, DeMontfort University
-^.*University of Dundee.*$, University of Dundee
-^.*University of Durham.*$, University of Durham
-^.*University of Edinburgh.*$, University of Edinburgh
-^.*University of Essex.*$, University of Essex
-^.*University of Exeter.*$, University of Exeter
-^.*University of Glasgow.*$, University of Glasgow
-^.*Imperial.*$, Imperial
-^.*Institute of Education.*$, IoE
-^.*King\'?s College,? London.*$, KCL
-^.*Lancaster University.*$, Lancaster University
-^.*University of Leeds.*$, University of Leeds
-^.*University of Leicester.*$, University of Leicester
-^.*University of Liverpool.*$, University of Liverpool
-^.*London Metropolitan University.*$, London Metropolitan University
-^.*University of Manchester.*$, University of Manchester
-^.*University of Munich.*$, Universtiy of Munich
-^.*Newcastle University.*$, Newcastle University
-^.*University of Newcastle.*$, Newcastle University
-^.*University of Nottingham.*$, University of Nottingham
-^.*University of Oxford.*$, University of Oxford
-^.*Peninsula.*$, Peninsula College of Medicine & Dentistry
-^.*Plymouth.*$, Plymouth University
-^.*Queen\'s University.*$, Queens University
-^.*University of Sheffield.*$, University of Sheffield
-^.*University of Southampton.*$, University of Southampton
-^.*University of Strathclyde.*$, University of Strathclyde
-^.*University of Stirling.*$, University of Stirling
-^.*University of Surrey.*$, University of Surrey
-^.*UCL.*$|^.*University College London.*$, UCL
-^.*University of East Anglia.*$, UEA
-^.*University of Warwick.*$, University of Warwick
-^.*University of the West of England.*$|uwe.ac.uk, UWE
-^.*University of York.*$, University of York
+University of Aberdeen,University of Aberdeen
+Addenbrooke's Hospital,Addenbrooke's Hospital 
+University of Bath,University of Bath
+Birkbeck,Birkbeck
+University of Birmingham,University of Birmingham
+Birmingham University,University of Birmingham
+Blackpool Royal Victoria Hospital,Blackpool Royal Victoria Hospital
+University of Brighton,University of Brighton
+University of Bristol,University of Bristol
+University of Bristol,University of Bristol
+Brunel University,Brunel University
+University of Cambridge,University of Cambridge
+Cardiff University,Cardiff University
+City University,City University
+University of Coventry,University of Coventry
+Coventry University,University of Coventry
+DeMontfort University,DeMontfort University
+University of Dundee,University of Dundee
+University of Durham,University of Durham
+University of Edinburgh,University of Edinburgh
+emory.edu,Emory University
+University of Essex,University of Essex
+University of Exeter,University of Exeter
+University of Glasgow,University of Glasgow
+Goldsmiths College,Goldsmiths College
+Imperial,Imperial
+Institute of Education,IoE
+King\'?s College,KCL
+Kingston University,Kingston University
+Lancaster University,Lancaster University
+University of Leeds,University of Leeds
+University of Leicester,University of Leicester
+University of Liverpool,University of Liverpool
+London Metropolitan University,London Metropolitan University
+University of Manchester,University of Manchester
+Medical Research Council Epidemiology Unit,MRC Cambridge
+University of Munich,Universtiy of Munich
+Newcastle University,Newcastle University
+University of Newcastle,Newcastle University
+University of Nottingham,University of Nottingham
+University of Oxford,University of Oxford
+Peninsula,Peninsula College of Medicine & Dentistry
+Plymouth,Plymouth University
+Queen\'s University,Queens University
+University of Sheffield,University of Sheffield
+University of Southampton,University of Southampton
+Southmead Hospital,Southmead Hospital
+University of Strathclyde,University of Strathclyde
+University of Stirling,University of Stirling
+University of Surrey,University of Surrey
+UCL,UCL
+University College London,UCL
+University of East Anglia,UEA
+University of Warwick,University of Warwick
+Wellcome Trust Sanger Institute,The Wellcome Trust Sanger Institute
+University of the West of England,UWE
+University of York,University of York
 
 #International
-^.*23andMe.*$, 23andMe
-^.*University of Adelaide.*$, University of Adelaide
-^.*University of Alabama.*$, University of Alabama
-^.*University of Amsterdam.*$, University of Amsterdam
-^.*Boston University.*$, Boston University
-^.*University of California.*$, University of California
-^.*University of Chicago.*$, University of Chicago
-^.*Emory University.*$, Emory University
-^.*University of Groningen.*$, University of Gronigen
-^.*University of Hong Kong.*$, University of Hong Kong
-^.*Hong Kong Polytechnic University.*$, Hong Kong Polytechnic University
-^.*Harokopio University.*$, Harokopio University
-^.*Harvard University.*$, Harvard University
-^.*Indiana University.*$, Indiana University
-^.*University of Iowa.*$, University of Iowa
-^.*McGill University.*$, McGill University
-^.*University of Melbourne.*$, University of Melbourne
-^.*University of North Carolina.*$, University of North Carolina
-^.*NYU.*$, NYU
-^.*University of Oregon.*$, University of Oregon
-^.*University of Queensland.*$, University of Queensland
-^.*University of Rochester.*$, University of Rochester
-^.*University of Saskatchewan.*$, University of Saskatchewan
-^.*University of South Australia.*$, University of South Australia
-^.*University of South Carolina.*$, University of South Carolina
-^.*University of Sydney.*$, University of Sydney
-^.*Syracuse University.*$, Syracuse University
-^.*University of Toronto.*$, University of Toronto
-^.*Virginia Commonwealth University.*$, Virginia Commonwealth University
-^.*Yale University.*$, Yale University
-^.*VU University.*$, VU University
+23andMe,23andMe
+University of Adelaide,University of Adelaide
+University of Alabama,University of Alabama
+University of Amsterdam,University of Amsterdam
+Boston University,Boston University
+University of California,University of California
+University of Chicago,University of Chicago
+Deakin University,Deakin University
+Emory University,Emory University
+Erasmus Medical Center,Erasmus Medical Center
+University of Groningen,University of Gronigen
+University of Hong Kong,University of Hong Kong
+Hong Kong Polytechnic University,Hong Kong Polytechnic University
+Harokopio University,Harokopio University
+Harvard University,Harvard University
+Indiana University,Indiana University
+University of Iowa,University of Iowa
+McGill University,McGill University
+University of Melbourne,University of Melbourne
+NIAA,National Institute on Alcohol Abuse and Alcoholism (NIH)
+National Institute on Alcohol Abuse and Alcoholism,National Institute on Alcohol Abuse and Alcoholism (NIH)
+National Institute of Environmental Health Sciences,National Institute of Environmental Health Sciences (NIH)
+University of North Carolina,University of North Carolina
+NYU,NYU
+University of Oregon,University of Oregon
+Federal University of Pelotas,Federal University of Pelotas
+University of Queensland,University of Queensland
+Regensburg University Medical Center,Regensburg University Medical Center
+University of Rochester,University of Rochester
+University of Saskatchewan,University of Saskatchewan
+University of South Australia,University of South Australia
+University of South Carolina,University of South Carolina
+University of Sydney,University of Sydney
+Syracuse University,Syracuse University
+University of Toronto,University of Toronto
+Virginia Commonwealth University,Virginia Commonwealth University
+Yale University,Yale University
+VU University,VU University
 
 #Some special ALSPAC munging
-^.*Oakfield Grove.*$, University of Bristol
-^.*Canynge Hall.*$, University of Bristol
+Oakfield Grove,University of Bristol
+Canynge Hall,University of Bristol
+Tyndall Avenue,University of Bristol
+
