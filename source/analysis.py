@@ -150,7 +150,7 @@ def inst(pmids, papers):
         except:
             pass
 
-    tools.clean_institution_course2(first_authors_inst)
+    not_matched=tools.clean_institution_course2(first_authors_inst)
         
     #print authors
     freq = dict((x,first_authors_inst.count(x)) for x in set(first_authors_inst))
@@ -158,6 +158,7 @@ def inst(pmids, papers):
     
     print str(len(first_authors_inst))+'/'+str(num_pmids)
     print str(len(set(first_authors_inst)))+' different first author institutes'
+    print str(not_matched)+' institutes not matched with lookup'
     #print freq
     
     i=0
