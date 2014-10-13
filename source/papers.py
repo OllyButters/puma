@@ -4,15 +4,13 @@
 #Get all the paper metadata from pubmed and do stuff with it
 ##########################################################
 
-#21/9/14
+#13/10/14
 
 import csv
 import json
 import os.path
 #import gdata.docs.service
-
 import logging
-logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.WARN)
 
 
 import tools
@@ -31,7 +29,12 @@ if (os.path.exists('../cache') == False):
 if (os.path.exists('../data') == False):
     os.mkdir('../data')
 
+if (os.path.exists('../html') == False):
+    os.mkdir('../html')
 
+
+#Set up the logging
+logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.WARN)
 
 
 ###########################################################
@@ -88,12 +91,29 @@ for this_pmid in pmids:
     this_paper['ArticleTitle'] = record['MedlineCitation']['Article']['ArticleTitle']
     this_paper['Journal'] = record['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
 
+    #Journal volume
+    try:
+        this_paper['JournalVolume'] = record['MedlineCitation']['Article']['Journal']['JournalIssue']['Volume']
+    except:
+        print 'No JournalVolume'
+        logging.info('No Journal volume')
+        logging.warn('No Journal volume')
+
+    #Abstract
     try:
         this_paper['AbstractText'] = record['MedlineCitation']['Article']['Abstract']['AbstractText']
     except:
         print 'No Abstract text'
         logging.info('No abstract text')
         logging.warn('No abstract text')
+
+    #DOI
+    try:
+        this_paper['doi'] = record['MedlineCitation']['Article']['ELocationID']
+    except:
+        print 'No doi'
+        logging.info('No DOI')
+        logging.warn('No DOI')
     
     #Mesh keywords
     try:
