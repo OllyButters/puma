@@ -23,7 +23,7 @@ def build_html(pmids, papers):
  #       html+='<br/>'
   #      print >>html_file,html.encode('utf-8')
 
-    sorted_authors = {'2015':[],'2014':[], '2013':[], '2012':[], '2011':[], '2010':[], '2009':[]}
+    sorted_authors = {'2015':[],'2014':[], '2013':[], '2012':[], '2011':[], '2010':[], '2009':[], '2008':[], '2007':[], '2006':[], '2005':[], '2004':[]}
     html_file = open('../html/list.html', 'w')
     for this_pmid in pmids:
         try:
@@ -66,7 +66,8 @@ def build_html(pmids, papers):
 #    print sorted_authors
 
     #For each year dict item
-    for this_year in sorted_authors:
+#    for this_year in sorted_authors:
+    for this_year in sorted(sorted_authors, key=sorted_authors.get, reverse=True):
         #print >>html_file,len(sorted_authors[this_year])
         if len(sorted_authors[this_year])==0:
             continue
@@ -74,7 +75,7 @@ def build_html(pmids, papers):
         print >>html_file,heading
         #This is a list
         for this_item in sorted_authors[this_year]:
-            #This is a key value pair
+ #This is a key value pair
             temp=this_item.values()
             #print temp[0]
             print >>html_file,temp[0].encode('utf-8')

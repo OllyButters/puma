@@ -34,7 +34,7 @@ def journals(pmids, papers):
             if i<5:
                 print w, freq[w]
                 i=i+1
-                journals_file.writerow([w.encode('utf-8'), freq[w]])
+            journals_file.writerow([w.encode('utf-8'), freq[w]])
                     
 
 
@@ -65,7 +65,7 @@ def abstracts(pmids, papers):
             if i<5:
                 print w, freq[w]
                 i=i+1
-                abstracts_file.writerow([w.encode('utf-8'), freq[w]])
+            abstracts_file.writerow([w.encode('utf-8'), freq[w]])
                 
                     
                 
@@ -102,7 +102,7 @@ def authors(pmids, papers):
                 print w, freq[w]
                 i=i+1
         #Need to utf-8 encode
-                authors_file.writerow([w.encode('utf-8'), freq[w]])
+            authors_file.writerow([w.encode('utf-8'), freq[w]])
                         
                         
 ############################################################
@@ -136,7 +136,7 @@ def first_authors(pmids, papers):
                 print w, freq[w]
                 i=i+1
                 #Need to utf-8 encode
-                authors_file.writerow([w.encode('utf-8'), freq[w]])
+            authors_file.writerow([w.encode('utf-8'), freq[w]])
                         
 ############################################################
 #Try with the FIRST authors INSTITUTE- these are in a nested dict
@@ -214,6 +214,6 @@ def mesh(pmids, papers):
                 print w, freq[w]
                 i=i+1
         #Need to utf-8 encode
-                mesh_file.writerow([w.encode('utf-8'), freq[w]])
+            mesh_file.writerow([w.encode('utf-8'), freq[w]])
                 
                 
