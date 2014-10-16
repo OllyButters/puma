@@ -11,7 +11,7 @@ http://biopython.org/DIST/docs/tutorial/Tutorial.html#sec%3Aefetch
 =Google docs
 sudo apt-get install python-gdata
 
-
+http://www.nlm.nih.gov/bsd/licensee/elements_descriptions.html
 
 maybe useful info on field descriptions
 http://www.nlm.nih.gov/bsd/mms/medlineelements.html
