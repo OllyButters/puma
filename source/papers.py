@@ -134,19 +134,20 @@ for this_pmid in pmids:
 
     #Publication date Year
     try:
-        this_paper['ArticleDateYear'] = record['MedlineCitation']['Article']['ArticleDate'][0]['Year']
+        #this_paper['ArticleDateYear'] = record['MedlineCitation']['Article']['ArticleDate'][0]['Year']
+        this_paper['Year'] = record['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Year']
     except:
-        print 'No ArticleDateYear listed!'
-        logging.info('No ArticleDateYear listed')
-        logging.warn('No ArticleDateYear text')
+        print 'No PubDate Year listed!'
+        logging.info('No PubDate Year listed')
+        logging.warn('No PubDate Year text')
 
     #Publication date Month
-    try:
-        this_paper['ArticleDateMonth'] = record['MedlineCitation']['Article']['ArticleDate'][0]['Month']
-    except:
-        print 'No ArticleDateMonth listed!'
-        logging.info('No ArticleDateMonth listed')
-        logging.warn('No ArticleDateMonth text')
+#    try:
+#        this_paper['ArticleDateMonth'] = record['MedlineCitation']['Article']['ArticleDate'][0]['Month']
+#    except:
+#        print 'No ArticleDateMonth listed!'
+#        logging.info('No ArticleDateMonth listed')
+#        logging.warn('No ArticleDateMonth text')
 
 
     #Add this_paper info to the main dict
@@ -176,3 +177,4 @@ analysis.mesh(pmids, papers)
 
 build_html.build_yearly(pmids, papers)
 build_html.build_mesh(pmids, papers)
+build_html.build_summary(pmids, papers)
