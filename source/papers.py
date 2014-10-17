@@ -4,7 +4,7 @@
 #Get all the paper metadata from pubmed and do stuff with it
 ##########################################################
 
-#13/10/14
+#17/10/14
 
 import csv
 import json
@@ -174,4 +174,5 @@ analysis.first_authors(pmids, papers)
 analysis.inst(pmids, papers)
 analysis.mesh(pmids, papers)
 
-build_html.build_html(pmids, papers)
+build_html.build_yearly(pmids, papers)
+build_html.build_mesh(pmids, papers)
