@@ -2,6 +2,7 @@
 
 import csv
 import json
+import sys
 
 ############################################################
 #Have all the data now, so do something with it
@@ -26,39 +27,58 @@ def build_yearly(pmids, papers):
             #Authors
             authors = []
             for this_author in papers[this_pmid]['AuthorList']:
-                authors.append(this_author['LastName']+', '+this_author['Initials'])
-                
+                #Some author lists have a collective name. Ignore this.
+                try: 
+                    this_author['CollectiveName']
+                    next
+                except:
+                    #Some people don't actually have initials. eg wraight in pmid:18454148
+                    try:
+                        authors.append(this_author['LastName']+', '+this_author['Initials'])
+                    except:
+                        pass
+
             html += '; '.join(authors)
             html += '<br/>'
 
             #Journal volume
-            html += papers[this_pmid]['Journal']+' Vol '+papers[this_pmid]['JournalVolume']+'<br/>'
+            try:
+                html += papers[this_pmid]['Journal']+' Vol '+papers[this_pmid]['JournalVolume']+'<br/>'
+            except:
+                pass
 
             #PMID
             html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/'+str(this_pmid)+'">'+str(this_pmid)+'</a>'
 
             #DOI
-            html += '&nbsp;DOI: <a href="http://doi.org/'+papers[this_pmid]['doi'][0]+'">'+papers[this_pmid]['doi'][0]+'</a><br/>'
+            try:
+                html += '&nbsp;DOI: <a href="http://doi.org/'+papers[this_pmid]['doi'][0]+'">'+papers[this_pmid]['doi'][0]+'</a><br/>'
+            except:
+                pass
 
             #Add an extra line break at the end
             html += '<br/>'
 
             #Append this paper to the list indexed by the year
-            this_year=papers[this_pmid]['ArticleDateYear']
+            this_year=papers[this_pmid]['Year']
 
             #Make sure there is a dict item for this year
             if this_year not in yearly_papers:
                 yearly_papers[this_year] = list()
 
+
             temp = yearly_papers[this_year]
             temp.append({this_pmid:html})
             yearly_papers[this_year]=temp
         except:
+            print 'Failing on '+this_pmid
+            print sys.exc_info()
             pass
 
     #Output the info into an HTML file
     #For each year dict item
-    for this_year in sorted(yearly_papers, key=yearly_papers.get, reverse=True):
+    #for this_year in sorted(yearly_papers, key=yearly_papers.get, reverse=True):
+    for this_year in sorted(yearly_papers, reverse=True):
         #Check there is some data for this year - not all do
         if len(yearly_papers[this_year])==0:
             continue
@@ -113,7 +133,7 @@ def build_mesh(pmids, papers):
 
 ############################################################
 #Build a summary page 
-def build_mesh(pmids, papers):
+def build_summary(pmids, papers):
 
     print "\n###HTML - summary###"
 
@@ -123,7 +143,7 @@ def build_mesh(pmids, papers):
     #Build the text needed for each paper
     for this_pmid in pmids:
         try: 
-            this_year=papers[this_pmid]['ArticleDateYear']
+            this_year=papers[this_pmid]['Year']
             #Make sure there is a dict item for this year
             if this_year not in summary:
                 summary[this_year] = {'num_papers':0, 'cumulative':0}
