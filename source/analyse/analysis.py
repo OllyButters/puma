@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 
 import csv
-import tools
 import logging
 
 ############################################################
@@ -151,11 +150,10 @@ def inst(pmids, papers):
     first_authors_inst = []
     for this_pmid in pmids:
         try:
-            first_authors_inst.append(papers[this_pmid]['AuthorList'][0]['Affiliation'])
+            #first_authors_inst.append(papers[this_pmid]['AuthorList'][0]['Affiliation'])
+            first_authors_inst.append(papers[this_pmid]['Extras']['CleanInst'])
         except:
             pass
-
-    not_matched=tools.clean_institution_course2(first_authors_inst)
         
     #print authors
     freq = dict((x,first_authors_inst.count(x)) for x in set(first_authors_inst))
@@ -163,7 +161,7 @@ def inst(pmids, papers):
     
     print str(len(first_authors_inst))+'/'+str(num_pmids)
     print str(len(set(first_authors_inst)))+' different first author institutes'
-    print str(not_matched)+' institutes not matched with lookup'
+    #print str(not_matched)+' institutes not matched with lookup'
     #print freq
     
     i=0
