@@ -34,7 +34,7 @@ if (os.path.exists('../html') == False):
 
 
 #Set up the logging
-logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.WARN)
+logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.INFO)
 
 
 ###########################################################

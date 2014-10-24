@@ -2,6 +2,7 @@
 
 import csv
 import tools
+import logging
 
 ############################################################
 #Have all the data now, so do something with it
@@ -75,13 +76,18 @@ def abstracts(pmids, papers):
 def authors(pmids, papers):
     authors = []
     for this_pmid in pmids:
-    #print this_pmid
-        for this_author in papers[this_pmid]['AuthorList']:
+        #print papers[this_pmid]
+        #Some pmid files dont actually have an authorlist! e.g. 2587412
+        #This probably needs to be resolved with pubmed!
+        try:
+            for this_author in papers[this_pmid]['AuthorList']:
         #There are some entries in the author list that are not actually authors e.g. 21379325 last author
-            try:
-                authors.append(this_author['LastName'])
-            except:
-                pass
+                try:
+                    authors.append(this_author['LastName'])
+                except:
+                    pass
+        except:
+            logging.warn('No AuthorList for '+this_pmid)
             
             
     #print authors
