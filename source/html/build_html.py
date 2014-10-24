@@ -13,7 +13,8 @@ def build_yearly(pmids, papers):
     print "\n###HTML yearly list###"
 
     yearly_papers = {}
-    html_file = open('../html/yearly.html', 'w')
+    html_file = open('../html/yearly.html', 'w') 
+
 
     #Build the text needed for each paper
     for this_pmid in pmids:
@@ -140,6 +141,14 @@ def build_summary(pmids, papers):
     summary={}
     html_file = open('../html/index.html', 'w')
 
+
+    #Put some links together for this page
+    temp = '<a href="yearly.html">All papers</a>&nbsp;'
+    temp += '<a href="mesh.html">Mesh keywords</a>&nbsp;'
+    temp += '<a href="map.html">Map</a>&nbsp;<br/>'
+    print >>html_file,temp
+
+
     #Build the text needed for each paper
     for this_pmid in pmids:
         try: 
@@ -170,3 +179,32 @@ def build_summary(pmids, papers):
         temp += '<td>'+str(summary[this_year]['cumulative'])+'</td></tr>'
         print >>html_file,temp
     print >>html_file,'</table>'
+
+
+
+#Build a google map based on the lat longs provided before.
+def build_google_map(pmids, papers):
+
+    import shutil
+
+    #Copy the main html page across
+    shutil.copyfile('html/templates/map.html','../html/map.html')
+
+    info = []
+    for this_pmid in pmids:
+        try:
+            this_place = {'lat': papers[this_pmid]['Extras']['LatLong']['lat'], 'long': papers[this_pmid]['Extras']['LatLong']['long'], 'name':papers[this_pmid]['Extras']['CleanInstitute']}
+            info.append(this_place)
+        except:
+            pass
+        
+        
+    #print info
+
+    kml = "var locations =["
+    for this_info in info:
+        kml+= '["'+this_info['name']+'",'+this_info['lat']+','+this_info['long']+'],'
+    kml += ']'
+    
+    kml_file = open('../html/map.kml', 'w')
+    print >>kml_file,kml

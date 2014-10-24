@@ -31,6 +31,9 @@ if (os.path.exists('../data') == False):
 if (os.path.exists('../html') == False):
     os.mkdir('../html')
 
+if (os.path.exists('../html/mesh') == False):
+    os.mkdir('../html/mesh')
+
 
 #Set up the logging
 logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.INFO)
@@ -79,3 +82,4 @@ analyse.analysis.mesh(pmids, papers)
 html.build_html.build_yearly(pmids, papers)
 html.build_html.build_mesh(pmids, papers)
 html.build_html.build_summary(pmids, papers)
+html.build_html.build_google_map(pmids, papers)
