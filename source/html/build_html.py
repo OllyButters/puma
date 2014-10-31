@@ -149,17 +149,32 @@ def build_summary(pmids, papers):
     print >>html_file,temp
 
 
-    #Build the text needed for each paper
+    #Calculate the number of papers for each year
     for this_pmid in pmids:
         try: 
             this_year=papers[this_pmid]['Year']
             #Make sure there is a dict item for this year
             if this_year not in summary:
-                summary[this_year] = {'num_papers':0, 'cumulative':0}
+                summary[this_year] = {'num_papers':0, 'cumulative':0, 'uob':0}
 
             summary[this_year]['num_papers'] = summary[this_year]['num_papers']+1
+
+            #Get number of UoB papers published this year
+            if papers[this_pmid]['Extras']['CleanInstitute'] == 'University of Bristol':
+                summary[this_year]['uob'] = summary[this_year]['uob']+1
         except:
             pass
+
+    #Add in some zeros when there is no papers for this year
+    years = summary.keys()
+    first_year = min(years)
+    last_year = max(years)
+    for this_year in range(int(first_year), int(last_year)):
+        try:
+            summary[str(this_year)]['num_papers']
+        except:
+            summary[str(this_year)] = {'num_papers':0, 'cumulative':0, 'uob':0}
+
 
     #Calculate the cumulative number of papers published
     for this_year in sorted(summary, reverse=False):
@@ -168,15 +183,25 @@ def build_summary(pmids, papers):
         except:
             summary[this_year]['cumulative']=summary[this_year]['num_papers']
 
+
+
+
     #print summary
 
     #Make a page with the headings on it
     print >>html_file,'<table border="1">'
-    print >>html_file,'<tr><th>Year</th><th>Number published</th><th>Cumulative</th></tr>'
+    print >>html_file,'<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>UoB #</th><th>UoB %</th></tr>'
     for this_year in sorted(summary, reverse=True):
-        temp = '<tr><td><a href="yearly.html#'+this_year+'">'+this_year+'</a></td>'
+        #Skip the years where nothing was published
+        if summary[this_year]['num_papers'] == 0:
+            continue
+        
+        #Build the table
+        temp = '<tr><td><a href="yearly.html#'+str(this_year)+'">'+str(this_year)+'</a></td>'
         temp += '<td>'+str(summary[this_year]['num_papers'])+'</td>'
-        temp += '<td>'+str(summary[this_year]['cumulative'])+'</td></tr>'
+        temp += '<td>'+str(summary[this_year]['cumulative'])+'</td>'
+        temp += '<td>'+str(summary[this_year]['uob'])+'</td>'
+        temp += '<td>'+str(int(100*summary[this_year]['uob']/summary[this_year]['num_papers']))+'</td></tr>'
         print >>html_file,temp
     print >>html_file,'</table>'
 
