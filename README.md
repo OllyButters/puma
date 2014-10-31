@@ -62,4 +62,6 @@ http://www.ncbi.nlm.nih.gov/pubmed/20860432
 The e-pub was in 2010, but the paper version was in 2011. The publishers (and hence PubMed) go for the later date in this case. 
 The pubdate value used in this pipeline is the most appropriate one based on what PubMed think it should be. This will likely be different to what is in the ALSPAC list of papers since stuff goes there as soon as it is available online.
 
+It all depends on the <Article PubModel="Print-Electronic"> tag. This way round takes the print year, maybe we should use the e-pub year?
+
 
