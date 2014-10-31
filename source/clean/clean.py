@@ -4,7 +4,6 @@
 #Essentially go through each institution and see if it matches a patten
 #in the institut_cleaning.csv file. If it does then replace it with a 
 #standard name.
-#def clean_institution_course2(inst):
 def clean_institution(pmids,papers):
     import csv
     import re
@@ -39,21 +38,45 @@ def clean_institution(pmids,papers):
         
         for y in range(0,len(pattern)):
             #print pattern[y]
-
             temp = re.search(pattern[y], institute)
             if(temp>0):
-                #print inst[x].encode('latin-1')+' ##matches## '+pattern[y]+' ##replaced by## '+replacements[y]
                 logging.info('%s MATCHES %s REPLACEDBY %s', institute, pattern[y], replacements[y])
                 papers[this_pmid]['Extras']['CleanInstitute'] = replacements[y]
                 break
             
             if(y==len(pattern)-1):
-                #print 'No match for '+inst[x].encode('latin-1')           
                 logging.info('No match for %s', institute)
                 logging.warn('No match for %s', institute)
                 number_not_matched+=1
 
     return number_not_matched
-#    print str(number_not_matched)+' not matched with one in institution lookup file'
 
 
+
+#Go through the deltas directory and apply any changes that are needed
+def do_deltas(papers):
+    import csv
+    import json
+    import logging
+    import os
+
+    delta_dir = '../config/deltas/'
+
+
+    deltas = os.listdir(delta_dir)
+
+    print deltas
+
+    for this_delta in deltas:
+        #delta_file = '8680184'
+        
+        delta_path = delta_dir+this_delta
+
+        fo = open(delta_path, 'r')
+        record = json.loads(fo.read())
+        fo.close()
+        
+        try:
+            papers[this_delta]['Year'] = record['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Year']
+        except:
+            print 'FAIL'

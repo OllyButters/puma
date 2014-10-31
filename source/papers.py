@@ -51,6 +51,8 @@ print str(len(papers))+' papers processed'
 ###########################################################
 #Clean the data - e.g. tidy institute names
 clean.clean.clean_institution(pmids,papers)
+clean.clean.do_deltas(papers)
+
 #Save it for later
 file_name='../data/summary_cleaned'
 fo = open(file_name, 'wb')
