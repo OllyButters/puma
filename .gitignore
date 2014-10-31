@@ -1,6 +1,6 @@
-cache
-data
-html
+/cache
+/data
+/html
 
 source/tools.pyc
 *.pyc
