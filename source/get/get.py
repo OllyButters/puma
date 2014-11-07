@@ -4,7 +4,7 @@
 #Get all the paper metadata from pubmed and do stuff with it
 ##########################################################
 
-#24/10/14
+#7/11/14
 
 import csv
 import json
@@ -15,6 +15,10 @@ import logging
 
 from Bio import Entrez
 Entrez.email = "olly.butters@bristol.ac.uk"     # Always tell NCBI who you are
+
+#Look at the PubModel. See http://www.nlm.nih.gov/bsd/licensee/elements_article_source.html
+override_pubmodel=False
+
 
 def get(pmids, papers):
     
@@ -33,46 +37,47 @@ def get(pmids, papers):
             
 ###########################################################
 #Try to build a papers dictionary with PMID as the index
-        #papers = {}
-            
+        
     for this_pmid in pmids:
                 
         print 'Working on '+this_pmid
         logging.info('Working on %s',this_pmid)
                 
-    #Build a cache of all the pmid data so we don't keep downloading it.
-    #Check that cache first when looking for a PMID, if it's not there then
-    #go and get the data.
+        #Build a cache of all the pmid data so we don't keep downloading it.
+        #Check that cache first when looking for a PMID, if it's not there then
+        #go and get the data.
         file_name='../cache/'+this_pmid 
         if not os.path.isfile(file_name):
         #This PMID data not in cache, so download it.
             handle = Entrez.efetch(db="pubmed", id=this_pmid, retmode="xml")
-            record = Entrez.read(handle)
-                    
-        #Should check to see if anything sensible was returned - eg check size
-            print record[0]
+            #record = Entrez.read(handle)
+           
+            #Should check to see if anything sensible was returned - eg check size
 
-        
-        #Save it for later
             file_name='../cache/'+this_pmid
-            fo = open(file_name, 'wb')
-            fo.write(json.dumps(record[0], indent=4))
+            fo = open(file_name, 'w')
+            fo.write(handle.read())
             #fo.write(record[0])
             fo.close()
             
-    #Open and parse cached file
+        #Open and parse cached file
         fo = open(file_name, 'r')
-        record = json.loads(fo.read())
+        #record = json.loads(fo.read())
+        record_a = Entrez.read(fo)
         fo.close()
-                
+        
+        #Should only be one record in each, so just grab that.
+        record = record_a[0]
+        #print record
+
                     
-    #all the info for this paper
+        #Define the info we want for this paper
         this_paper = {}
         this_paper['pmid']=this_pmid
         this_paper['ArticleTitle'] = record['MedlineCitation']['Article']['ArticleTitle']
         this_paper['Journal'] = record['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
                 
-    #Journal volume
+       #Journal volume
         try:
             this_paper['JournalVolume'] = record['MedlineCitation']['Article']['Journal']['JournalIssue']['Volume']
         except:
@@ -80,7 +85,7 @@ def get(pmids, papers):
             logging.info('No Journal volume')
             logging.warn('No Journal volume')
             
-    #Abstract
+        #Abstract
         try:
             this_paper['AbstractText'] = record['MedlineCitation']['Article']['Abstract']['AbstractText']
         except:
@@ -88,7 +93,7 @@ def get(pmids, papers):
             logging.info('No abstract text')
             logging.warn('No abstract text')
 
-    #DOI
+        #DOI
         try:
             this_paper['doi'] = record['MedlineCitation']['Article']['ELocationID']
         except:
@@ -96,16 +101,18 @@ def get(pmids, papers):
             logging.info('No DOI')
             logging.warn('No DOI')
     
-    #Mesh keywords
+        #Mesh keywords
         try:
-            this_paper['MeshHeadingList'] = record['MedlineCitation']['MeshHeadingList']
+            this_paper['MeshHeadingList'] = []
+            for this_mesh_heading in record['MedlineCitation']['MeshHeadingList']:
+                temp = {'DescriptorName':this_mesh_heading['DescriptorName'], 'MajorTopicYN':this_mesh_heading['DescriptorName'].attributes['MajorTopicYN']}
+                this_paper['MeshHeadingList'].append(temp)
         except:
-        #Should log this
             print 'No mesh headings'
             logging.info('No mesh headings')
             logging.warn('No abstract text')
 
-    #Author list
+        #Author list
         try:
             this_paper['AuthorList'] = record['MedlineCitation']['Article']['AuthorList']
         except:
@@ -113,14 +120,32 @@ def get(pmids, papers):
             logging.info('No Authors listed')
             logging.warn('No abstract text')
 
-    #Publication date Year
+        #Look at the PubModel. See http://www.nlm.nih.gov/bsd/licensee/elements_article_source.html
         try:
-        #this_paper['ArticleDateYear'] = record['MedlineCitation']['Article']['ArticleDate'][0]['Year']
-            this_paper['Year'] = record['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Year']
+            this_paper['PubModel'] = record['MedlineCitation']['Article'].attributes['PubModel']
         except:
-            print 'No PubDate Year listed!'
-            logging.info('No PubDate Year listed')
-            logging.warn('No PubDate Year text')
+            print 'No PubModel listed!'
+            logging.info('No Pubmodel listed')
+            logging.warn('No Pubmodel text')
+
+        #Get the year based on the pubmodel
+        #Look at the PubModel. See http://www.nlm.nih.gov/bsd/licensee/elements_article_source.html
+        #Can decide if this is respected with override_pubmodel
+        if this_paper['PubModel'] == 'Print-Electronic' and override_pubmodel:
+            try:
+                this_paper['Year'] = record['MedlineCitation']['Article']['ArticleDate'][0]['Year']
+            except:
+                print 'No ArticleDate Year listed!'
+                logging.info('No ArticleDate Year listed')
+                logging.warn('No ArticleDate Year text')
+        else:
+            #Publication date Year
+            try:
+                this_paper['Year'] = record['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Year']
+            except:
+                print 'No PubDate Year listed!'
+                logging.info('No PubDate Year listed')
+                logging.warn('No PubDate Year text')
 
     #Publication date Month
 #    try:
@@ -130,15 +155,15 @@ def get(pmids, papers):
 #        logging.info('No ArticleDateMonth listed')
 #        logging.warn('No ArticleDateMonth text')
 
-    #Add an extra field that we will fill up with other data
+        #Add an extra field that we will fill up with other data
         this_paper['Extras'] = {}
 
 
-    #Add this_paper info to the main dict
+        #Add this_paper info to the main dict
         papers[this_pmid]=this_paper
 
 
-#Save it for later
+    #Save it for later
     file_name='../data/summary'
     fo = open(file_name, 'wb')
     fo.write(json.dumps(papers, indent=4))
