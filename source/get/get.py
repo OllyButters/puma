@@ -25,10 +25,7 @@ def get(pmids, papers):
     with open('../inputs/pmids.csv', 'rb') as csvfile:
         f = csv.reader(csvfile)
         for row in f:
-        #print row[0]
             pmids.append(row[0])
-
-#print pmids
 
         num_pmids=len(pmids)
         print str(num_pmids)+' PMIDs to process'
@@ -53,11 +50,14 @@ def get(pmids, papers):
             record = Entrez.read(handle)
                     
         #Should check to see if anything sensible was returned - eg check size
-                    
+            print record[0]
+
+        
         #Save it for later
             file_name='../cache/'+this_pmid
             fo = open(file_name, 'wb')
             fo.write(json.dumps(record[0], indent=4))
+            #fo.write(record[0])
             fo.close()
             
     #Open and parse cached file
