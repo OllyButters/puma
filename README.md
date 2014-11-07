@@ -51,3 +51,17 @@ Run the program from /source/papers.py
 ##Analyse##
 
 ##HTML##
+
+
+#Notes#
+##Dates##
+How do you define when a paper was published? Is it the day it is accepted for publication, the day an e-print is published online, or the day the physical paper copy is released? PubMed have thought about this and defined some rules - 
+http://www.nlm.nih.gov/bsd/licensee/elements_article_source.html
+Essentially they are saying it is up to the publisher to decide when the date should be. An example is e.g. 
+http://www.ncbi.nlm.nih.gov/pubmed/20860432
+The e-pub was in 2010, but the paper version was in 2011. The publishers (and hence PubMed) go for the later date in this case. 
+The pubdate value used in this pipeline is the most appropriate one based on what PubMed think it should be. This will likely be different to what is in the ALSPAC list of papers since stuff goes there as soon as it is available online.
+
+It all depends on the <Article PubModel="Print-Electronic"> tag. This way round takes the print year, maybe we should use the e-pub year?
+
+
