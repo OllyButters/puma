@@ -222,12 +222,21 @@ def build_summary(pmids, papers):
         except:
             summary[this_year]['cumulative']=summary[this_year]['num_papers']
 
-
+    ###################################
     #Make a data file that we can plot
-    print >>data_file,'var raw =([[\'Year\', \'Number of papers\'],'
+    
+    #Cumulative first
+    print >>data_file,'var cumulative =([[\'Year\', \'Number of papers\'],'
     for this_year in sorted(summary, reverse=False):
         print >>data_file,'[\''+this_year+'\','+str(summary[this_year]['cumulative'])+'],'
     print >>data_file,']);'
+
+    #Number per year now
+    print >>data_file,'var papers_per_year=([[\'Year\', \'Number of papers\'],'
+    for this_year in sorted(summary, reverse=False):
+        print >>data_file,'[\''+this_year+'\','+str(summary[this_year]['num_papers'])+'],'
+    print >>data_file,']);'
+
 
     #Copy the main html page across
     shutil.copyfile('html/templates/plot.html','../html/plot.html')

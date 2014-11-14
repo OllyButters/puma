@@ -7,20 +7,28 @@
       google.setOnLoadCallback(drawChart);
       function drawChart() {
 
-      var data = google.visualization.arrayToDataTable(raw);
-
-
+        //cumulative
+        var data = google.visualization.arrayToDataTable(cumulative);
         var options = {
           title: 'Cumulative number of papers published'
         };
-
-        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-     
+        var chart = new google.visualization.LineChart(document.getElementById('cumulative_div'));    
         chart.draw(data, options);
+
+        //number per year
+        var data = google.visualization.arrayToDataTable(papers_per_year);
+        var options = {
+          title: 'Number of papers published'
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('papers_per_year_div'));    
+        chart.draw(data, options);
+
+
       }
     </script>
   </head>
   <body>
-    <div id="chart_div" style="width: 900px; height: 500px;"></div>
+    <div id="cumulative_div" style="width: 900px; height: 500px;"></div>
+    <div id="papers_per_year_div" style="width: 900px; height: 500px;"></div>
   </body>
 </html>
