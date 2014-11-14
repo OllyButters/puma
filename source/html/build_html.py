@@ -327,7 +327,6 @@ def build_google_heat_map():
     with open('../data/first_authors_inst.csv', 'rb') as csvfile:
         f = csv.reader(csvfile)
         for row in f:
-            print row
             try:
                 inst = row[0]
                 count = row[1]

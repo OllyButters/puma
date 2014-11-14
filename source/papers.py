@@ -36,7 +36,7 @@ if (os.path.exists('../html/mesh') == False):
 
 
 #Set up the logging
-logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.INFO)
+logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.WARN)
 
 
 ###########################################################

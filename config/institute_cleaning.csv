@@ -1,18 +1,24 @@
-#Do email addresses first - my guess is that people are more likely to 
-#have only one email address than multiple institution addresses...
+#Do email addresses first - my guess is that people are more likely to ,
+#have only one email address than multiple institution addresses...,
 bbk.ac.uk,Birkbeck
 bristol.ac.uk,University of Bristol
 bris.ac.uk,University of Bristol
+bpmf.ac.uk,?????????
 cam.ac.uk,University of Cambridge
 city.ac.uk,City University
 ex.ac.uk,University of Essex
+ehesp.fr,"EHESP School of Public Health, Rennes"
 einstein.yu.edu,Albert Einstein College of Medicine
+emory.edu,Emory University
 speech-therapy.org.uk,Frenchay Speech & Language Therapy Research Unit
 gla.ac.uk,University of Glasgow
 harvard.edu,Harvard University
+helmholtz-muenchen.de,Helmholtz Zentrum Munchen
+inserm.fr,Centre for Research in Epidemiology and Population Health - Villejuif
 jhsph.edu,Johns Hopkins University
 jhmi.edu,Johns Hopkins University
 kcl.ac.uk,KCL
+ki.es,Karolinska Institute
 liverpool.ac.uk,University of Liverpool
 lshtm.ac.uk,LSHTM
 leedsmh.nhs.uk,NHS - East Leeds PCT 
@@ -29,11 +35,12 @@ sghms.ac.uk,St Georges Hospital
 sgul.ac.uk,St Georges Hospital
 ucl.ac.uk,UCL
 uwe.ac.uk,UWE
-
-
-#Do the UK institution addresses.
+vumc.nl,VUMC
+utwente.nl,University of Twente
+,
+,
+#Do the UK institution addresses.,
 University of Aberdeen,University of Aberdeen
-Addenbrooke's Hospital,Addenbrooke's Hospital 
 University of Bath,University of Bath
 Birkbeck,Birkbeck
 University of Birmingham,University of Birmingham
@@ -52,7 +59,6 @@ DeMontfort University,DeMontfort University
 University of Dundee,University of Dundee
 University of Durham,University of Durham
 University of Edinburgh,University of Edinburgh
-emory.edu,Emory University
 University of Essex,University of Essex
 University of Exeter,University of Exeter
 University of Glasgow,University of Glasgow
@@ -78,7 +84,6 @@ Plymouth,Plymouth University
 Queen\'s University,Queens University
 University of Sheffield,University of Sheffield
 University of Southampton,University of Southampton
-Southmead Hospital,Southmead Hospital
 University of Strathclyde,University of Strathclyde
 University of Stirling,University of Stirling
 University of Surrey,University of Surrey
@@ -89,37 +94,62 @@ University of Warwick,University of Warwick
 Wellcome Trust Sanger Institute,The Wellcome Trust Sanger Institute
 University of the West of England,UWE
 University of York,University of York
-
-#International
+,
+#UK hospitals,
+Addenbrooke's Hospital,Addenbrooke's Hospital
+Bristol Royal Hospital for Children,Bristol Children's Hospital
+Bristol Children's Hospital,Bristol Children's Hospital
+Bristol Homeopathic Hospital,Bristol Homeopathic Hospital
+Bristol Royal Infirmary,BRI
+Great Ormond Street Hospital,Great Ormond Street Hospital
+John Radcliffe Hospital,John Radcliffe Hospital
+University Hospital of Nottingham,University Hospital of Nottingham
+Royal United Hospital,Royal United Hospital - Bath
+Southmead Hospital,Southmead Hospital
+,
+#International,
 23andMe,23andMe
 University of Adelaide,University of Adelaide
 University of Alabama,University of Alabama
 University of Amsterdam,University of Amsterdam
+University of Belgrade,University of Belgrade
 Boston University,Boston University
 University of California,University of California
 University of Chicago,University of Chicago
+Christchurch School of Medicine,Christchurch School of Medicine (Univesity of Otago)
+University of Copenhagen,University of Copenhagen
+TX 75231,"Retina Foundation of the Southwest, Dallas"
 Deakin University,Deakin University
+Deodoro,Deodoro
 Emory University,Emory University
 Erasmus Medical Center,Erasmus Medical Center
+GlaxoSmithKline R&D,GlaxoSmithKline R&D
 University of Groningen,University of Gronigen
 University of Hong Kong,University of Hong Kong
 Hong Kong Polytechnic University,Hong Kong Polytechnic University
 Harokopio University,Harokopio University
 Harvard University,Harvard University
+FIMM,University of Helsinki
 Indiana University,Indiana University
 University of Iowa,University of Iowa
+Johns Hopkins University,Johns Hopkins University
 McGill University,McGill University
 University of Melbourne,University of Melbourne
+murdoch,"Murdoch Childrens Research Institute, Royal Children's Hospital, Melbourne"
 NIAA,National Institute on Alcohol Abuse and Alcoholism (NIH)
 National Institute on Alcohol Abuse and Alcoholism,National Institute on Alcohol Abuse and Alcoholism (NIH)
+LMBB,National Institutes Alcohol Abuse and Alcoholism
 National Institute of Environmental Health Sciences,National Institute of Environmental Health Sciences (NIH)
 University of North Carolina,University of North Carolina
 NYU,NYU
 University of Oregon,University of Oregon
+Gairdner,"Sir Charles Gairdner Hospital, Perth, Australia"
 Federal University of Pelotas,Federal University of Pelotas
 University of Queensland,University of Queensland
+Queensland Institute of Medical Research,"Queensland Institute of Medical Research, Australia"
 Regensburg University Medical Center,Regensburg University Medical Center
 University of Rochester,University of Rochester
+Erasmus University Medical Center,Erasmus Medical Centre Rotterdam
 University of Saskatchewan,University of Saskatchewan
 University of South Australia,University of South Australia
 University of South Carolina,University of South Carolina
@@ -129,9 +159,8 @@ University of Toronto,University of Toronto
 Virginia Commonwealth University,Virginia Commonwealth University
 Yale University,Yale University
 VU University,VU University
-
-#Some special ALSPAC munging
+,
+#Some special ALSPAC munging,
 Oakfield Grove,University of Bristol
 Canynge Hall,University of Bristol
 Tyndall Avenue,University of Bristol
-

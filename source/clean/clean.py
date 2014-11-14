@@ -20,11 +20,18 @@ def clean_institution(pmids,papers):
                 if(re.match('#',row[0])):
                     continue
 
+                #Check for blank lines
+                if row[0] == '':
+                    continue
+
                 #If there is a second element in this row then carry on
                 pattern.append(row[0])
                 replacements.append(row[1])
             except:
                 pass
+
+    #print pattern
+    #print replacements
 
     #Cycle through institute checking the whole substitution list.
     #Stop when the first one matches.
@@ -37,8 +44,7 @@ def clean_institution(pmids,papers):
             continue
         
         for y in range(0,len(pattern)):
-            #print pattern[y]
-            temp = re.search(pattern[y], institute)
+            temp = re.search(pattern[y], institute, re.IGNORECASE)
             if(temp>0):
                 logging.info('%s MATCHES %s REPLACEDBY %s', institute, pattern[y], replacements[y])
                 papers[this_pmid]['Extras']['CleanInstitute'] = replacements[y]

@@ -2,12 +2,13 @@
 
 
 #Have a go at geocoding the cleaned institute names
+#I would expect there to be a lat long for all of them
 def geocode(pmids, papers):
     import csv
     import re
     import logging
 
-    #Read in config file
+    #Read in lat_long lookup file. Should have an inst name and lat long in each row
     geocode = {}
     lat_long = []
     with open('../config/lat_longs.csv', 'rb') as csvfile:
@@ -22,12 +23,12 @@ def geocode(pmids, papers):
                 lat_long = {'lat':row[1], 'long':row[2]}
                 geocode[row[0]] = lat_long
             except:
-                pass
-    #print geocode
+                logging.warn('Something went wrong with looking up the lat/long for '+row[0])
 
+    #Actually do the geocoding
     for this_pmid in pmids:
-        #print geocode[papers[this_pmid]['Extras']['CleanInstitute']]
         try:
             papers[this_pmid]['Extras']['LatLong'] = geocode[papers[this_pmid]['Extras']['CleanInstitute']]
         except:
-            pass
+            print 'Did not find a lat-long for '+this_pmid
+            logging.warn('Did not find a lat-long for '+this_pmid)
