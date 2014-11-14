@@ -101,51 +101,90 @@ def build_mesh(pmids, papers):
     
     print "\n###HTML - mesh###"
 
-    mesh_papers={}
-    html_file = open('../html/mesh.html', 'w')
+    mesh_papers_all={}
+    mesh_papers_major={}
+    html_file_all = open('../html/mesh_all.html', 'w')
+    html_file_major = open('../html/mesh_major.html', 'w')
 
-    #Build the text needed for each paper
+    #Build a dict of ALL mesh headings with a list of each pmid in each
     for this_pmid in pmids:
         try: 
+            #Look at all the mesh headings for this paper
             for this_mesh in papers[this_pmid]['MeshHeadingList']:          
-                if this_mesh['DescriptorName'] not in mesh_papers:
-                    mesh_papers[this_mesh['DescriptorName']] = list()
-                mesh_papers[this_mesh['DescriptorName']].append(this_pmid)
+                #If this mesh term is not already in the dict then add it
+                if this_mesh['DescriptorName'] not in mesh_papers_all:
+                    mesh_papers_all[this_mesh['DescriptorName']] = list()
+                mesh_papers_all[this_mesh['DescriptorName']].append(this_pmid)
         except:
             pass
+
+    #Build a dict of ONLY MAJOR mesh headings with a list of each pmid in each
+    for this_pmid in pmids:
+        try: 
+            #Look at all the mesh headings for this paper
+            for this_mesh in papers[this_pmid]['MeshHeadingList']:          
+                #Only interested in majoy topics
+                if this_mesh['MajorTopicYN'] == 'Y':
+                    #If this mesh term is not in the dict then add it
+                    if this_mesh['DescriptorName'] not in mesh_papers_major:
+                        mesh_papers_major[this_mesh['DescriptorName']] = list()
+                    mesh_papers_major[this_mesh['DescriptorName']].append(this_pmid)
+        except:
+            pass
+
 
     #print mesh_papers
 
     #Make a JSON file for each mesh term, in it put all the PMIDs for this term
-    for this_mesh in mesh_papers:
-        file_name='../html/mesh/'+this_mesh
+    for this_mesh in mesh_papers_all:
+        file_name='../html/mesh/all_'+this_mesh
         fo = open(file_name, 'wb')
-        fo.write(json.dumps(mesh_papers[this_mesh], indent=4))
+        fo.write(json.dumps(mesh_papers_all[this_mesh], indent=4))
+        fo.close()
+
+    #Make a JSON file for each major mesh term, in it put all the PMIDs for this term
+    for this_mesh in mesh_papers_major:
+        file_name='../html/mesh/major_'+this_mesh
+        fo = open(file_name, 'wb')
+        fo.write(json.dumps(mesh_papers_major[this_mesh], indent=4))
         fo.close()
     
 
-    #Make a page with the headings on it
-    print >>html_file,'<ul>'
-    for this_mesh in sorted(mesh_papers):
+    #Make a page with ALL the headings on it
+    print >>html_file_all,'<ul>'
+    for this_mesh in sorted(mesh_papers_all):
         temp = '<li><a href="../html/mesh/'+this_mesh+'">'+this_mesh+'</a></li>'
-        print >>html_file,temp
-    print >>html_file,'</ul>'
+        print >>html_file_all,temp
+    print >>html_file_all,'</ul>'
+
+
+    #Make a page with the MAJOR headings on it
+    print >>html_file_major,'<ul>'
+    for this_mesh in sorted(mesh_papers_major):
+        temp = '<li><a href="../html/mesh/'+this_mesh+'">'+this_mesh+'</a></li>'
+        print >>html_file_major,temp
+    print >>html_file_major,'</ul>'
 
 
 ############################################################
 #Build a summary page 
 def build_summary(pmids, papers):
 
+    import shutil
+
     print "\n###HTML - summary###"
 
     summary={}
     html_file = open('../html/index.html', 'w')
+    data_file = open('../html/data.js', 'w')
 
 
     #Put some links together for this page
     temp = '<a href="yearly.html">All papers</a>&nbsp;'
-    temp += '<a href="mesh.html">Mesh keywords</a>&nbsp;'
+    temp += '<a href="mesh_all.html">ALL mesh keywords</a>&nbsp;'
+    temp += '<a href="mesh_major.html">MAJOR mesh keywords</a>&nbsp;'
     temp += '<a href="map.html">Map</a>&nbsp;<br/>'
+    temp += '<a href="plot.html">Plot</a>&nbsp;<br/>'
     print >>html_file,temp
 
 
@@ -184,7 +223,14 @@ def build_summary(pmids, papers):
             summary[this_year]['cumulative']=summary[this_year]['num_papers']
 
 
+    #Make a data file that we can plot
+    print >>data_file,'var raw =([[\'Year\', \'Number of papers\'],'
+    for this_year in sorted(summary, reverse=False):
+        print >>data_file,'[\''+this_year+'\','+str(summary[this_year]['cumulative'])+'],'
+    print >>data_file,']);'
 
+    #Copy the main html page across
+    shutil.copyfile('html/templates/plot.html','../html/plot.html')
 
     #print summary
 
@@ -233,3 +279,5 @@ def build_google_map(pmids, papers):
     
     kml_file = open('../html/map.kml', 'w')
     print >>kml_file,kml
+
+
