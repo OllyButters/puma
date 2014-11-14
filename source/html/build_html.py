@@ -2,6 +2,7 @@
 
 import csv
 import json
+import re
 import sys
 
 ############################################################
@@ -9,6 +10,7 @@ import sys
 
 ############################################################
 #Build a list of all papers by year
+############################################################
 def build_yearly(pmids, papers):
     print "\n###HTML yearly list###"
 
@@ -96,6 +98,7 @@ def build_yearly(pmids, papers):
 
 ############################################################
 #Build a list of all mesh keywords 
+############################################################
 def build_mesh(pmids, papers):
 
     
@@ -168,6 +171,7 @@ def build_mesh(pmids, papers):
 
 ############################################################
 #Build a summary page 
+############################################################
 def build_summary(pmids, papers):
 
     import shutil
@@ -261,8 +265,9 @@ def build_summary(pmids, papers):
     print >>html_file,'</table>'
 
 
-
+###########################################################
 #Build a google map based on the lat longs provided before.
+###########################################################
 def build_google_map(pmids, papers):
 
     import shutil
@@ -289,4 +294,48 @@ def build_google_map(pmids, papers):
     kml_file = open('../html/map.kml', 'w')
     print >>kml_file,kml
 
+#########################################
+#Build a google heat map based
+#########################################
+def build_google_heat_map():
 
+    print 'Doing heat map'
+
+    data_file = open('../html/map.js', 'w')
+
+    #Open the institute lookup file we have
+    geocode = {}
+    lat_long = []
+    with open('../config/lat_longs.csv', 'rb') as csvfile:
+        f = csv.reader(csvfile)
+        for row in f:
+            try:
+                #Check it is not a comment string first.
+                if(re.match('#',row[0])):
+                    continue
+                
+                #If there is a second element in this row then carry on
+                lat_long = {'lat':row[1], 'long':row[2]}
+                geocode[row[0]] = lat_long
+            except:
+                pass
+
+    print >>data_file,'var map =([[\'Latitude\',\'Longitude\',\'Number of papers\',\'Institute\'],'
+
+
+    #Open the first author institute csv file we made earlier
+    with open('../data/first_authors_inst.csv', 'rb') as csvfile:
+        f = csv.reader(csvfile)
+        for row in f:
+            print row
+            try:
+                inst = row[0]
+                count = row[1]
+                
+                output = '['+geocode[inst]['lat']+','+geocode[inst]['long']+',\''+inst+'\','+count+'],'
+                print >>data_file,output
+            except:
+                pass
+
+    #Make the data file
+    print >>data_file,']);'

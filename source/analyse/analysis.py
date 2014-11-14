@@ -151,7 +151,7 @@ def inst(pmids, papers):
     for this_pmid in pmids:
         try:
             #first_authors_inst.append(papers[this_pmid]['AuthorList'][0]['Affiliation'])
-            first_authors_inst.append(papers[this_pmid]['Extras']['CleanInst'])
+            first_authors_inst.append(papers[this_pmid]['Extras']['CleanInstitute'])
         except:
             pass
         

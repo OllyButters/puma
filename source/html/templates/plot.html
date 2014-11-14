@@ -2,6 +2,7 @@
   <head>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="data.js"></script>
+    <script type="text/javascript" src="map.js"></script>
     <script type="text/javascript">
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
@@ -23,6 +24,16 @@
         var chart = new google.visualization.ColumnChart(document.getElementById('papers_per_year_div'));    
         chart.draw(data, options);
 
+        //map
+        var data = google.visualization.arrayToDataTable(map);
+        var options = {
+          title: 'Number of papers published',
+          displayMode: 'markers',
+          colorAxis: {colors: ['#e7711c', '#4374e0']} // orange to blue
+        };
+        var chart = new google.visualization.GeoChart(document.getElementById('map_div'));    
+        chart.draw(data, options);
+
 
       }
     </script>
@@ -30,5 +41,6 @@
   <body>
     <div id="cumulative_div" style="width: 900px; height: 500px;"></div>
     <div id="papers_per_year_div" style="width: 900px; height: 500px;"></div>
+    <div id="map_div" style="width: 900px; height: 500px;"></div>
   </body>
 </html>
