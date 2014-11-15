@@ -9,6 +9,8 @@ def clean_institution(pmids,papers):
     import re
     import logging
 
+    logging.info('Starting institute cleaning')
+
     #Read in config file
     pattern = []
     replacements = []
@@ -33,6 +35,8 @@ def clean_institution(pmids,papers):
     #print pattern
     #print replacements
 
+    logging.info('Config read in, starting processing')
+
     #Cycle through institute checking the whole substitution list.
     #Stop when the first one matches.
     number_not_matched=0
@@ -44,16 +48,21 @@ def clean_institution(pmids,papers):
             continue
         
         for y in range(0,len(pattern)):
+            logging.info('%s %s %s', institute, pattern[y], replacements[y])
             temp = re.search(pattern[y], institute, re.IGNORECASE)
             if(temp>0):
-                logging.info('%s MATCHES %s REPLACEDBY %s', institute, pattern[y], replacements[y])
+                logging.info('ID:%s. %s MATCHES %s REPLACEDBY %s', this_pmid, institute, pattern[y], replacements[y])
                 papers[this_pmid]['Extras']['CleanInstitute'] = replacements[y]
                 break
             
             if(y==len(pattern)-1):
-                logging.info('No match for %s', institute)
-                logging.warn('No match for %s', institute)
+                logging.info('No match for %s. ID:%s', institute, this_pmid)
+                logging.warn('No match for %s. ID:%s', institute, this_pmid)
                 number_not_matched+=1
+
+    print 'Cleaning institutions'
+    print str(len(pmids)-number_not_matched)+'/'+str(len(pmids))+' cleaned'
+
 
     return number_not_matched
 
