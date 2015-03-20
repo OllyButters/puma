@@ -15,6 +15,7 @@ import logging
 import get.get
 import clean.clean
 import add.geocode
+import add.citations
 import analyse.analysis 
 import html.build_html
 
@@ -68,6 +69,9 @@ file_name='../data/summary_added_to'
 fo = open(file_name, 'wb')
 fo.write(json.dumps(papers, indent=4))
 fo.close()
+
+add.citations.citations(pmids,papers)
+
 
 
 ###########################################################
