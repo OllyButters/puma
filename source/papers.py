@@ -4,7 +4,7 @@
 #Get all the paper metadata from pubmed and do stuff with it
 ##########################################################
 
-#21/3/15
+#22/3/15
 
 import csv
 import json
@@ -47,6 +47,10 @@ logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.INF
 papers = {}
 pmids = []
 get.get.get(pmids, papers)
+
+#file_name='../data/summary'
+#with open(file_name) as fo:
+#    papers=json.load(fo)
 
 print str(len(pmids))+' PMIDs to process'
 print str(len(papers))+' papers processed'

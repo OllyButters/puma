@@ -55,12 +55,18 @@ def build_yearly(pmids, papers):
 
             #DOI
             try:
-                html += '&nbsp;DOI: <a href="http://doi.org/'+papers[this_pmid]['doi'][0]+'">'+papers[this_pmid]['doi'][0]+'</a><br/>'
+                html += '&nbsp;DOI: <a href="http://doi.org/'+papers[this_pmid]['doi'][0]+'">'+papers[this_pmid]['doi'][0]+'</a>'
+            except:
+                pass
+
+            #citation count
+            try:
+                html += '&nbsp; Citations: '+papers[this_pmid]['Extras']['Citations']
             except:
                 pass
 
             #Add an extra line break at the end
-            html += '<br/>'
+            html += '<br/><br/>'
 
             #Append this paper to the list indexed by the year
             this_year=papers[this_pmid]['Year']

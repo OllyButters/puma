@@ -25,7 +25,7 @@ def citations(pmids, papers):
             for row in f:
                 cached_citations[row[0]]=row[1]
         csvfile.close()
-        print cached_citations
+        #print cached_citations
     except:
         print 'make file'
 
@@ -35,7 +35,7 @@ def citations(pmids, papers):
 
         #read the cache
         try:
-            print cached_citations[this_pmid]
+            #print cached_citations[this_pmid]
             papers[this_pmid]['Extras']['Citations'] = cached_citations[this_pmid]
         #not in the cache
         except:
@@ -50,16 +50,17 @@ def citations(pmids, papers):
             
             try:
                 citations = t['search-results']['entry'][0]['citedby-count']
-                print citations
+                #print citations
                 papers[this_pmid]['Extras']['Citations']=citations
                 cached_citations[this_pmid]= citations
             except:
+                print t
                 print 'catch this'
 
     csvfile = open('../cache/citations.csv', 'wb')
     citation_file =csv.writer(csvfile)
     for this_citation in cached_citations:
-        print str(cached_citations[this_citation])
+        #print str(cached_citations[this_citation])
         temp = cached_citations[this_citation]
         citation_file.writerow([this_citation, str(temp)])
 
