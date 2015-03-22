@@ -35,8 +35,8 @@ def get(pmids, papers):
         print str(num_pmids)+' PMIDs to process'
             
             
-###########################################################
-#Try to build a papers dictionary with PMID as the index
+    ###########################################################
+    #Try to build a papers dictionary with PMID as the index
         
     for this_pmid in pmids:
                 
@@ -49,6 +49,7 @@ def get(pmids, papers):
         file_name='../cache/'+this_pmid 
         if not os.path.isfile(file_name):
         #This PMID data not in cache, so download it.
+            logging.info('Downloading %s', this_pmid)
             handle = Entrez.efetch(db="pubmed", id=this_pmid, retmode="xml")
             #record = Entrez.read(handle)
            
