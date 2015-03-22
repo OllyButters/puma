@@ -4,7 +4,7 @@
 #Get all the paper metadata from pubmed and do stuff with it
 ##########################################################
 
-#24/10/14
+#21/3/15
 
 import csv
 import json
@@ -19,6 +19,8 @@ import add.citations
 import analyse.analysis 
 import html.build_html
 
+#Stick a flag into see if we want to update the citations
+update_citations = True
 
 
 ###########################################################
@@ -37,7 +39,7 @@ if (os.path.exists('../html/mesh') == False):
 
 
 #Set up the logging
-logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.WARN)
+logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.INFO)
 
 
 ###########################################################
@@ -60,22 +62,23 @@ fo = open(file_name, 'wb')
 fo.write(json.dumps(papers, indent=4))
 fo.close()
 
-
-
 ###########################################################
-#Add some extra data in - e.g. geocodes 
+#Add some extra data in - i.e. geocodes and citations 
 add.geocode.geocode(pmids,papers)
+
+if update_citations:
+    add.citations.citations(pmids,papers)
+
+
 file_name='../data/summary_added_to'
 fo = open(file_name, 'wb')
 fo.write(json.dumps(papers, indent=4))
 fo.close()
 
-add.citations.citations(pmids,papers)
-
-
 
 ###########################################################
-#Do some actual analysis on the data
+#Do some actual analysis on the data. This will result in 
+#some CSV type files that can be analysed.
 analyse.analysis.journals(pmids, papers)
 #analyse.analysis.abstracts(pmids, papers)
 analyse.analysis.authors(pmids, papers)
