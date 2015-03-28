@@ -220,4 +220,44 @@ def mesh(pmids, papers):
             mesh_file.writerow([w.encode('utf-8'), freq[w]])
                 
                 
-
+#output a csv file with some info in
+def output_csv(pmids,papers):
+    
+    print '\n###Outputting CSV file###\n'
+    with open('../data/all.csv', 'wb') as csvfile:
+        all_file = csv.writer(csvfile)
+        for this_pmid in pmids:
+            try:
+                title        = papers[this_pmid]['ArticleTitle']
+            except:
+                title = '???'
+            
+            try:
+                first_author = papers[this_pmid]['AuthorList'][0]['LastName']
+            except:
+                first_author = '???'
+            
+            try:                
+                journal      = papers[this_pmid]['Journal']
+            except:
+                journal = '???'
+                
+            try:
+                year         = papers[this_pmid]['Year']
+            except:
+                year = '???'
+ 
+            try:
+                month        = papers[this_pmid]['Month']
+            except:
+                month = '???'
+            
+            try:
+                citations    = papers[this_pmid]['Extras']['Citations']
+            except:
+                citations = '???'
+            
+            try:
+                all_file.writerow([title, first_author, journal, year, month, citations, this_pmid])
+            except:
+                print 'Failing on '+str(this_pmid)

@@ -148,6 +148,23 @@ def get(pmids, papers):
                 logging.info('No PubDate Year listed')
                 logging.warn('No PubDate Year text')
 
+        #Try the same as above for the month
+        if this_paper['PubModel'] == 'Print-Electronic' and override_pubmodel:
+            try:
+                this_paper['Month'] = record['MedlineCitation']['Article']['ArticleDate'][0]['Month']
+            except:
+                print 'No ArticleDate Month listed!'
+                logging.info('No ArticleDate Month listed')
+                logging.warn('No ArticleDate Month text')
+        else:
+            #Publication date Year
+            try:
+                this_paper['Month'] = record['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Month']
+            except:
+                print 'No PubDate Month listed!'
+                logging.info('No PubDate Month listed')
+                logging.warn('No PubDate Month text')
+
     #Publication date Month
 #    try:
 #        this_paper['ArticleDateMonth'] = record['MedlineCitation']['Article']['ArticleDate'][0]['Month']

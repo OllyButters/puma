@@ -90,6 +90,8 @@ analyse.analysis.first_authors(pmids, papers)
 analyse.analysis.inst(pmids, papers)
 analyse.analysis.mesh(pmids, papers)
 
+analyse.analysis.output_csv(pmids, papers)
+
 ###########################################################
 #Make some web pages
 html.build_html.build_yearly(pmids, papers)
