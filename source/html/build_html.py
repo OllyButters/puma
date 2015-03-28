@@ -204,9 +204,16 @@ def build_summary(pmids, papers):
             this_year=papers[this_pmid]['Year']
             #Make sure there is a dict item for this year
             if this_year not in summary:
-                summary[this_year] = {'num_papers':0, 'cumulative':0, 'uob':0}
+                summary[this_year] = {'num_papers':0, 'cumulative':0, 'uob':0, 'citations':0, 'cumulative_citations':0}
 
+            #increment the number of citaitons by one
             summary[this_year]['num_papers'] = summary[this_year]['num_papers']+1
+
+            #add the citations for this paper to the year running total
+            try:
+                summary[this_year]['citations'] = summary[this_year]['citations']+int(papers[this_pmid]['Extras']['Citations'])
+            except:
+                pass
 
             #Get number of UoB papers published this year
             if papers[this_pmid]['Extras']['CleanInstitute'] == 'University of Bristol':
@@ -222,15 +229,17 @@ def build_summary(pmids, papers):
         try:
             summary[str(this_year)]['num_papers']
         except:
-            summary[str(this_year)] = {'num_papers':0, 'cumulative':0, 'uob':0}
+            summary[str(this_year)] = {'num_papers':0, 'cumulative':0, 'uob':0, 'citations':0, 'cumulative_citations':0}
 
 
     #Calculate the cumulative number of papers published
     for this_year in sorted(summary, reverse=False):
         try:
             summary[this_year]['cumulative']=summary[this_year]['num_papers']+summary[str(int(this_year)-1)]['cumulative']
+            summary[this_year]['cumulative_citations']=summary[this_year]['citations']+summary[str(int(this_year)-1)]['cumulative_citations']
         except:
             summary[this_year]['cumulative']=summary[this_year]['num_papers']
+            summary[this_year]['cumulative_citations']=summary[this_year]['citations']
 
     ###################################
     #Make a data file that we can plot
@@ -255,7 +264,7 @@ def build_summary(pmids, papers):
 
     #Make a page with the headings on it
     print >>html_file,'<table border="1">'
-    print >>html_file,'<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>UoB #</th><th>UoB %</th></tr>'
+    print >>html_file,'<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>UoB #</th><th>UoB %</th><th>Citations</th><th>Cumulative citations</th></tr>'
     for this_year in sorted(summary, reverse=True):
         #Skip the years where nothing was published
         if summary[this_year]['num_papers'] == 0:
@@ -266,7 +275,9 @@ def build_summary(pmids, papers):
         temp += '<td>'+str(summary[this_year]['num_papers'])+'</td>'
         temp += '<td>'+str(summary[this_year]['cumulative'])+'</td>'
         temp += '<td>'+str(summary[this_year]['uob'])+'</td>'
-        temp += '<td>'+str(int(100*summary[this_year]['uob']/summary[this_year]['num_papers']))+'</td></tr>'
+        temp += '<td>'+str(int(100*summary[this_year]['uob']/summary[this_year]['num_papers']))+'</td>'
+        temp += '<td>'+str(summary[this_year]['citations'])+'</td>'
+        temp += '<td>'+str(summary[this_year]['cumulative_citations'])+'</td></tr>'
         print >>html_file,temp
     print >>html_file,'</table>'
 

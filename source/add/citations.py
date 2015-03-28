@@ -66,7 +66,7 @@ def citations(pmids, papers):
                     #log this
                     logging.warn('An unexpected error happened getting the citations!')
                     logging.warn(t)
-                    print 'An unexpected error happened getting the citations!')
+                    print 'An unexpected error happened getting the citations!'
                     print t
 
     csvfile = open('../cache/citations.csv', 'wb')

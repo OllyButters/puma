@@ -43,12 +43,13 @@ def clean_institution(pmids,papers):
     for this_pmid in pmids:
         
         try:
-            institute = papers[this_pmid]['AuthorList'][0]['Affiliation']
+            #institute = papers[this_pmid]['AuthorList'][0]['Affiliation']
+            institute = papers[this_pmid]['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
         except:
             continue
         
         for y in range(0,len(pattern)):
-            logging.info('%s %s %s', institute, pattern[y], replacements[y])
+            logging.debug('%s %s %s', institute, pattern[y], replacements[y])
             temp = re.search(pattern[y], institute, re.IGNORECASE)
             if(temp>0):
                 logging.info('ID:%s. %s MATCHES %s REPLACEDBY %s', this_pmid, institute, pattern[y], replacements[y])
