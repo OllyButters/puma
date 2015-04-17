@@ -64,4 +64,5 @@ The pubdate value used in this pipeline is the most appropriate one based on wha
 
 It all depends on the <Article PubModel="Print-Electronic"> tag. This way round takes the print year, maybe we should use the e-pub year?
 
+Some dates are even more complex and include a date range, see e.g. http://www.ncbi.nlm.nih.gov/pubmed/20648575 and http://www.nlm.nih.gov/bsd/licensee/elements_descriptions.html#articledate The only way I can see to automate processing of these is to pick the first four characters and hope it is a year!
 
