@@ -144,9 +144,15 @@ def get(pmids, papers):
             try:
                 this_paper['Year'] = record['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Year']
             except:
-                print 'No PubDate Year listed!'
-                logging.info('No PubDate Year listed')
-                logging.warn('No PubDate Year text')
+                try:
+                    #Could be that it is a date range see http://www.nlm.nih.gov/bsd/licensee/elements_descriptions.html#articledate
+                    temp = record['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['MedlineDate']
+                    #lets assume that the first 4 characters are the year....
+                    this_paper['Year']=temp[0:4]
+                except:
+                    print 'No PubDate Year listed!'
+                    logging.info('No PubDate Year listed')
+                    logging.warn('No PubDate Year text')
 
         #Try the same as above for the month
         if this_paper['PubModel'] == 'Print-Electronic' and override_pubmodel:
