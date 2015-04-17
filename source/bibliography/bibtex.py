@@ -45,7 +45,7 @@ def bibtex(pmids, papers):
 
             #logging.info(str(this_pmid)+' not in citation cache')
 
-            print this_article
+            #print this_article
 
         except:
             pass

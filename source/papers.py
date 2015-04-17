@@ -18,6 +18,7 @@ import add.geocode
 import add.citations
 import analyse.analysis 
 import html.build_html
+import bibliography.bibtex
 
 #Stick a flag into see if we want to update the citations
 update_citations = True
@@ -58,7 +59,7 @@ print str(len(papers))+' papers processed'
 ###########################################################
 #Clean the data - e.g. tidy institute names
 clean.clean.clean_institution(pmids,papers)
-clean.clean.do_deltas(papers)
+#clean.clean.do_deltas(papers)
 
 #Save it for later
 file_name='../data/summary_cleaned'
@@ -79,6 +80,8 @@ fo = open(file_name, 'wb')
 fo.write(json.dumps(papers, indent=4))
 fo.close()
 
+
+bibliography.bibtex.bibtex(pmids,papers)
 
 ###########################################################
 #Do some actual analysis on the data. This will result in 

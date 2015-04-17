@@ -43,9 +43,10 @@ def clean_institution(pmids,papers):
     for this_pmid in pmids:
         
         try:
-            #institute = papers[this_pmid]['AuthorList'][0]['Affiliation']
-            institute = papers[this_pmid]['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
+            institute = papers[this_pmid]['AuthorList'][0]['Affiliation']
+            #institute = papers[this_pmid]['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
         except:
+            logging.warn('Could not find an affiliation for %s', this_pmid)
             continue
         
         for y in range(0,len(pattern)):
