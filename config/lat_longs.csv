@@ -1,16 +1,12 @@
-name,latitude,longitude
+canonical name,latitude,longitude
 23andMe INc,37.418977,-122.077228
 "Abramson Research Center, The Children's Hospital of Philadelphia",39.94834,-75.194181
 Addenbrooke's Hospital ,52.174791,0.140394
-Albert Einstein College of Medicine,40.850826,-73.845623
 Albert Einstein College of Medicine,40.850826,-73.845623
 Birkbeck College London,51.521951,-0.130204
 Blackpool Royal Victoria Hospital,53.817505,-3.035675
 Boston University,42.3505,-71.105399
 Bristol Homeopathic Hospital,51.454513,-2.58791
-Bristol Royal Hospital for Children,51.457974,-2.596796
-Bristol Royal Hospital for Children,51.457974,-2.596796
-Bristol Royal Hospital for Children,51.457974,-2.596796
 Bristol Royal Hospital for Children,51.457974,-2.596796
 Bristol Royal Infirmary,51.458356,-2.596634
 Bristol Speech & Language Therapy Research Unit,51.454513,-2.58791
@@ -38,8 +34,6 @@ Eunice Kennedy Shriver National Institute of Child Health and Human Development,
 EURAC Research,46.494312,11.347001
 Federal University of Pelotas,-31.781431,-52.323364
 "German Research Centre for Environmental Health, Neuherberg",48.20117,11.6086405
-"German Research Centre for Environmental Health, Neuherberg",48.20117,11.6086405
-"German Research Centre for Environmental Health, Neuherberg",48.20117,11.6086405
 Gillings School of Global Public Health,35.906015,-79.05392
 "GlaxoSmithKline, Verona, Italy",45.438384,10.991622
 "Goldsmiths College, London",51.474982,-0.037137
@@ -64,8 +58,6 @@ Johns Hopkins University,39.329901,-76.620518
 Johns Hopkins University,39.324928,-76.623354
 Karolinska Institutet,59.348148,18.023658
 "Karolinska Institutet, Stockholm",59.348148,18.023658
-King's College London,51.503335,-0.08974
-King's College London,51.503335,-0.08974
 King's College London,51.503335,-0.08974
 Kingston University,51.403516,-0.303725
 "KP Agricultural University, Peshawar",34.019833,71.468525
@@ -102,7 +94,6 @@ Queensland University of Technology,-27.455068,153.0131
 Regensburg University Medical Center,49.01343,12.101624
 "Retina Foundation of the Southwest, Dallas",32.78014,-96.800451
 "Royal Free and University College Medical School, London",51.553419,-0.164645
-"Royal Free and University College Medical School, London",51.553419,-0.164645
 "Royal United Hospital, Bath",51.391922,-2.38914
 "Rua Marechal Deodoro, 1160-3rd floor, CEP 96020-220, Pelotas, RS, Brazil",-31.763053,-52.342493
 "Saarland University Hospital, Homburg",49.329583,7.339843
@@ -115,16 +106,13 @@ St George's Hospital London,51.426694,-0.174015
 Syracuse University,43.039153,-76.135116
 Technical University Munich,48.266149,11.671103
 The Wellcome Trust Sanger Institute,52.078972,0.187583
-The Wellcome Trust Sanger Institute,52.078972,0.187583
 "Turning Point Alcohol and Drug Centre, Melbourne",-37.814107,144.96328
 United Bristol Healthcare Trust,51.464527,-2.570859
-University College London,51.524559,-0.13404
 University College London,51.524559,-0.13404
 "University Dental Hospital, Heath Park, Cardiff",51.506638,-3.192046
 University Medical Center Groningen,53.219383,6.566502
 University Medical Centre Utrecht,52.085677,5.179356
 University of Aberdeen,57.16476,-2.101526
-University of Adelaide,-34.920603,138.606228
 University of Adelaide,-34.920603,138.606228
 University of Alabama,33.214023,-87.539142
 University of Amsterdam,52.355818,4.955726
@@ -132,9 +120,6 @@ University of Bath,51.377743,-2.326378
 University of Belgrade,44.805895,20.475833
 University of Birmingham,52.450817,-1.930513
 University of Brighton,50.859087,-0.086689
-University of Bristol,51.458417,-2.602979
-University of Bristol,51.458417,-2.602979
-University of Bristol,51.458417,-2.602979
 University of Bristol,51.458417,-2.602979
 University of California,34.413963,-119.848947
 University of Cambridge,52.204267,0.114908
