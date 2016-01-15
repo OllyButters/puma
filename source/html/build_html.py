@@ -15,7 +15,7 @@ def build_yearly(pmids, papers):
     print "\n###HTML yearly list###"
 
     yearly_papers = {}
-    html_file = open('../html/yearly.html', 'w') 
+    html_file = open('../html/yearly.html', 'w')
 
 
     #Build the text needed for each paper
@@ -23,15 +23,15 @@ def build_yearly(pmids, papers):
         try:
             #Paper title as a link
             html='<span style="text-decoration: underline; font-weight:bold;">'+papers[this_pmid]['ArticleTitle']+'</span><br/>'
-            
+
             #Abstract text - probably too long to go on this page
             #html += papers[this_pmid]['AbstractText'][0]+'<br/>'
-            
+
             #Authors
             authors = []
             for this_author in papers[this_pmid]['AuthorList']:
                 #Some author lists have a collective name. Ignore this.
-                try: 
+                try:
                     this_author['CollectiveName']
                     next
                 except:
@@ -98,16 +98,16 @@ def build_yearly(pmids, papers):
         for this_item in yearly_papers[this_year]:
             temp=this_item.values()
             print >>html_file,temp[0].encode('utf-8')
-            
 
-                    
+
+
 
 ############################################################
-#Build a list of all mesh keywords 
+#Build a list of all mesh keywords
 ############################################################
 def build_mesh(pmids, papers):
 
-    
+
     print "\n###HTML - mesh###"
 
     mesh_papers_all={}
@@ -117,9 +117,9 @@ def build_mesh(pmids, papers):
 
     #Build a dict of ALL mesh headings with a list of each pmid in each
     for this_pmid in pmids:
-        try: 
+        try:
             #Look at all the mesh headings for this paper
-            for this_mesh in papers[this_pmid]['MeshHeadingList']:          
+            for this_mesh in papers[this_pmid]['MeshHeadingList']:
                 #If this mesh term is not already in the dict then add it
                 if this_mesh['DescriptorName'] not in mesh_papers_all:
                     mesh_papers_all[this_mesh['DescriptorName']] = list()
@@ -129,9 +129,9 @@ def build_mesh(pmids, papers):
 
     #Build a dict of ONLY MAJOR mesh headings with a list of each pmid in each
     for this_pmid in pmids:
-        try: 
+        try:
             #Look at all the mesh headings for this paper
-            for this_mesh in papers[this_pmid]['MeshHeadingList']:          
+            for this_mesh in papers[this_pmid]['MeshHeadingList']:
                 #Only interested in majoy topics
                 if this_mesh['MajorTopicYN'] == 'Y':
                     #If this mesh term is not in the dict then add it
@@ -157,7 +157,7 @@ def build_mesh(pmids, papers):
         fo = open(file_name, 'wb')
         fo.write(json.dumps(mesh_papers_major[this_mesh], indent=4))
         fo.close()
-    
+
 
     #Make a page with ALL the headings on it
     print >>html_file_all,'<ul>'
@@ -176,7 +176,7 @@ def build_mesh(pmids, papers):
 
 
 ############################################################
-#Build a summary page 
+#Build a summary page
 ############################################################
 def build_summary(pmids, papers):
 
@@ -200,7 +200,7 @@ def build_summary(pmids, papers):
 
     #Calculate the number of papers for each year
     for this_pmid in pmids:
-        try: 
+        try:
             this_year=papers[this_pmid]['Year']
             #Make sure there is a dict item for this year
             if this_year not in summary:
@@ -243,7 +243,7 @@ def build_summary(pmids, papers):
 
     ###################################
     #Make a data file that we can plot
-    
+
     #Cumulative first
     print >>data_file,'var cumulative =([[\'Year\', \'Number of papers\'],'
     for this_year in sorted(summary, reverse=False):
@@ -264,12 +264,12 @@ def build_summary(pmids, papers):
 
     #Make a page with the headings on it
     print >>html_file,'<table border="1">'
-    print >>html_file,'<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>UoB #</th><th>UoB %</th><th>Citations</th><th>Cumulative citations</th></tr>'
+    print >>html_file,'<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>UoB #</th><th>UoB %</th><th>Citations for papers published in this year</th><th>Cumulative citations for papers published in this year</th></tr>'
     for this_year in sorted(summary, reverse=True):
         #Skip the years where nothing was published
         if summary[this_year]['num_papers'] == 0:
             continue
-        
+
         #Build the table
         temp = '<tr><td><a href="yearly.html#'+str(this_year)+'">'+str(this_year)+'</a></td>'
         temp += '<td>'+str(summary[this_year]['num_papers'])+'</td>'
@@ -299,15 +299,15 @@ def build_google_map(pmids, papers):
             info.append(this_place)
         except:
             pass
-        
-        
+
+
     #print info
 
     kml = "var locations =["
     for this_info in info:
         kml+= '["'+this_info['name']+'",'+this_info['lat']+','+this_info['long']+'],'
     kml += ']'
-    
+
     kml_file = open('../html/map.kml', 'w')
     print >>kml_file,kml
 
@@ -330,7 +330,7 @@ def build_google_heat_map():
                 #Check it is not a comment string first.
                 if(re.match('#',row[0])):
                     continue
-                
+
                 #If there is a second element in this row then carry on
                 lat_long = {'lat':row[1], 'long':row[2]}
                 geocode[row[0]] = lat_long
@@ -347,7 +347,7 @@ def build_google_heat_map():
             try:
                 inst = row[0]
                 count = row[1]
-                
+
                 output = '['+geocode[inst]['lat']+','+geocode[inst]['long']+',\''+inst+'\','+count+'],'
                 print >>data_file,output
             except:

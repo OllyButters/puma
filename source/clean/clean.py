@@ -2,7 +2,7 @@
 
 #Have a go at tidying up the mess that is first author institution.
 #Essentially go through each institution and see if it matches a patten
-#in the institut_cleaning.csv file. If it does then replace it with a 
+#in the institut_cleaning.csv file. If it does then replace it with a
 #standard name.
 def clean_institution(pmids,papers):
     import csv
@@ -41,14 +41,14 @@ def clean_institution(pmids,papers):
     #Stop when the first one matches.
     number_not_matched=0
     for this_pmid in pmids:
-        
+
         try:
-            institute = papers[this_pmid]['AuthorList'][0]['Affiliation']
-            #institute = papers[this_pmid]['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
+            #institute = papers[this_pmid]['AuthorList'][0]['Affiliation']
+            institute = papers[this_pmid]['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
         except:
             logging.warn('Could not find an affiliation for %s', this_pmid)
             continue
-        
+
         for y in range(0,len(pattern)):
             logging.debug('%s %s %s', institute, pattern[y], replacements[y])
             temp = re.search(pattern[y], institute, re.IGNORECASE)
@@ -56,7 +56,7 @@ def clean_institution(pmids,papers):
                 logging.info('ID:%s. %s MATCHES %s REPLACEDBY %s', this_pmid, institute, pattern[y], replacements[y])
                 papers[this_pmid]['Extras']['CleanInstitute'] = replacements[y]
                 break
-            
+
             if(y==len(pattern)-1):
                 logging.info('No match for %s. ID:%s', institute, this_pmid)
                 logging.warn('No match for %s. ID:%s', institute, this_pmid)
@@ -86,13 +86,13 @@ def do_deltas(papers):
 
     for this_delta in deltas:
         #delta_file = '8680184'
-        
+
         delta_path = delta_dir+this_delta
 
         fo = open(delta_path, 'r')
         record = json.loads(fo.read())
         fo.close()
-        
+
         try:
             papers[this_delta]['Year'] = record['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Year']
         except:

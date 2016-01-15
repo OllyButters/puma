@@ -71,8 +71,8 @@ University of Glasgow,University of Glasgow
 Goldsmiths College,Goldsmiths College
 Imperial,Imperial
 Institute of Education,IoE
-King\'?s College,KCL
-Institute of Psychiary,KCL
+King\'?s College,King's College London
+Institute of Psychiary,King's College London
 Kingston University,Kingston University
 Lancaster University,Lancaster University
 University of Leeds,University of Leeds
@@ -81,6 +81,8 @@ University of Liverpool,University of Liverpool
 London Metropolitan University,London Metropolitan University
 University of Manchester,University of Manchester
 Medical Research Council Epidemiology Unit,MRC Cambridge
+MRC Epidemiology Unit,MRC Cambridge
+Medical Research Council Human Nutrition Research ,MRC Cambridge
 University of Munich,Universtiy of Munich
 Newcastle University,Newcastle University
 University of Newcastle,Newcastle University
@@ -95,8 +97,8 @@ University of Southampton,University of Southampton
 University of Strathclyde,University of Strathclyde
 University of Stirling,University of Stirling
 University of Surrey,University of Surrey
-UCL,UCL
-University College London,UCL
+UCL,University College London
+University College London,University College London
 University of East Anglia,UEA
 University of Warwick,University of Warwick
 Wellcome Trust Sanger Institute,The Wellcome Trust Sanger Institute
@@ -111,7 +113,10 @@ Bristol Children's Hospital,Bristol Children's Hospital
 Bristol Oncology Centre,Bristol Children's Hospital
 Bristol Homeopathic Hospital,Bristol Homeopathic Hospital
 Bristol Royal Infirmary,BRI
+"University Dental Hospotal, Heath Park",Cardiff Hospital
 Great Ormond Street Hospital,Great Ormond Street Hospital
+Guy's and St Thomas',Guy's and St Thomas'
+Guy's Hospital,Guy's and St Thomas'
 John Radcliffe Hospital,John Radcliffe Hospital
 Ty Bryn Unit,"St Cadocs Hospital, Newport"
 North Bristol NHS Trust,North Bristol NHS Trust
@@ -120,12 +125,14 @@ University Hospital of Nottingham,University Hospital of Nottingham
 "Park Hospital, Headington, Oxford, UK.","Park Hospital, Oxford"
 Royal United Hospital,Royal United Hospital - Bath
 Southmead Hospital,Southmead Hospital
+St George's Hospital,St George's Hospital
 ,
 #International,
 23andMe,23andMe
 University of Adelaide,University of Adelaide
 University of Alabama,University of Alabama
 University of Amsterdam,University of Amsterdam
+Academic Medical Center,Academic Medical Center
 "Centre for Research in Environmental Epidemiology, Barcelona","Centre for Research in Environmental Epidemiology, Barcelona"
 University of Belgrade,University of Belgrade
 Boston University,Boston University
@@ -158,6 +165,7 @@ Indiana University,Indiana University
 University of Iowa,University of Iowa
 Johns Hopkins University,Johns Hopkins University
 "Hunter Genetics, Hunter New England Health Service, NSW, Australia.","John Hunter hospital, Australia"
+Hospital for Sick Children,Hospital for Sick Children
 Karolinska Institutet,Karolinska Institutet
 Mayo clinic,"Mayo Clinic College of Medicine, Rochester"
 McGill University,McGill University

@@ -21,7 +21,7 @@ override_pubmodel=False
 
 
 def get(pmids, papers):
-    
+
     ###########################################################
     #Read in the list of PMIDs from an external csv file in this directory.
     #The file must be just pmids - one per line, and no extra lines at the end.
@@ -33,26 +33,26 @@ def get(pmids, papers):
 
         num_pmids=len(pmids)
         print str(num_pmids)+' PMIDs to process'
-            
-            
+
+
     ###########################################################
     #Try to build a papers dictionary with PMID as the index
-        
+
     for this_pmid in pmids:
-                
+
         print 'Working on '+this_pmid
         logging.info('Working on %s',this_pmid)
-                
+
         #Build a cache of all the pmid data so we don't keep downloading it.
         #Check that cache first when looking for a PMID, if it's not there then
         #go and get the data.
-        file_name='../cache/'+this_pmid 
+        file_name='../cache/'+this_pmid
         if not os.path.isfile(file_name):
         #This PMID data not in cache, so download it.
             logging.info('Downloading %s', this_pmid)
             handle = Entrez.efetch(db="pubmed", id=this_pmid, retmode="xml")
             #record = Entrez.read(handle)
-           
+
             #Should check to see if anything sensible was returned - eg check size
 
             file_name='../cache/'+this_pmid
@@ -60,24 +60,25 @@ def get(pmids, papers):
             fo.write(handle.read())
             #fo.write(record[0])
             fo.close()
-            
+        
+        logging.info('Using cached file: %s', file_name)
         #Open and parse cached file
         fo = open(file_name, 'r')
         #record = json.loads(fo.read())
         record_a = Entrez.read(fo)
         fo.close()
-        
+
         #Should only be one record in each, so just grab that.
         record = record_a[0]
         #print record
 
-                    
+
         #Define the info we want for this paper
         this_paper = {}
         this_paper['pmid']=this_pmid
         this_paper['ArticleTitle'] = record['MedlineCitation']['Article']['ArticleTitle']
         this_paper['Journal'] = record['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
-                
+
        #Journal volume
         try:
             this_paper['JournalVolume'] = record['MedlineCitation']['Article']['Journal']['JournalIssue']['Volume']
@@ -85,7 +86,7 @@ def get(pmids, papers):
             print 'No JournalVolume'
             logging.info('No Journal volume')
             logging.warn('No Journal volume')
-            
+
         #Abstract
         try:
             this_paper['AbstractText'] = record['MedlineCitation']['Article']['Abstract']['AbstractText']
@@ -101,7 +102,7 @@ def get(pmids, papers):
             print 'No doi'
             logging.info('No DOI')
             logging.warn('No DOI')
-    
+
         #Mesh keywords
         try:
             this_paper['MeshHeadingList'] = []

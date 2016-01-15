@@ -30,5 +30,9 @@ def geocode(pmids, papers):
         try:
             papers[this_pmid]['Extras']['LatLong'] = geocode[papers[this_pmid]['Extras']['CleanInstitute']]
         except:
-            print 'Did not find a lat-long for '+this_pmid
-            logging.warn('Did not find a lat-long for '+this_pmid)
+            try:
+                print 'Did not find a lat-long for '+this_pmid+' '+papers[this_pmid]['Extras']['CleanInstitute']
+                logging.warn('Did not find a lat-long for '+this_pmid+' '+papers[this_pmid]['Extras']['CleanInstitute'])
+            except:
+                print 'Did not find a lat-long for '+this_pmid
+                logging.warn('Did not find a lat-long for '+this_pmid)
