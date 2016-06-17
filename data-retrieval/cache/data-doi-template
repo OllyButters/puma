@@ -1,0 +1,113 @@
+{
+  "DOI": "", 
+  "subtitle": [], 
+  "issued": {
+    "date-parts": []
+  }, 
+  "update-policy": "", 
+  "prefix": "", 
+  "update-to": [
+    {
+      "updated": {
+        "timestamp": "", 
+        "date-time": "", 
+        "date-parts": []
+      }, 
+      "DOI": "", 
+      "type": "", 
+      "label": ""
+    }
+  ], 
+  "ISBN": [], 
+  "archive": [], 
+  "subject": [], 
+  "author": [
+    {
+      "affiliation": [
+        {
+          "name": "",
+          "identifier": ""
+        }       
+      ], 
+      "given": "", 
+      "family": ""
+    }
+  ], 
+  "reference-count": "", 
+  "ISSN": [], 
+  "assertion": [
+    {
+      "name": "", 
+      "value": "", 
+      "label": ""
+    }
+  ], 
+  "member": "", 
+  "source": "", 
+  "score": "", 
+  "deposited": {
+    "timestamp": "", 
+    "date-time": "", 
+    "date-parts": []
+  }, 
+  "editor": [
+    {
+      "affiliation": [], 
+      "given": "", 
+      "family": ""
+    }
+  ], 
+  "indexed": {
+    "timestamp": "", 
+    "date-time": "", 
+    "date-parts": []
+  }, 
+  "type": "", 
+  "published-online": {
+    "date-parts": []
+  }, 
+  "URL": "", 
+  "volume": "", 
+  "link": [
+    {
+      "intended-application": "", 
+      "URL": "", 
+      "content-version": "", 
+      "content-type": ""
+    }
+  ], 
+  "published-print": {
+    "date-parts": []
+  }, 
+  "publisher": "", 
+  "license": [
+    {
+      "delay-in-days": "", 
+      "start": {
+        "timestamp": "", 
+        "date-time": "", 
+        "date-parts": []
+      }, 
+      "content-version": "", 
+      "URL": ""
+    }
+  ], 
+  "created": {
+    "timestamp": "", 
+    "date-time": "", 
+    "date-parts": []
+  }, 
+  "issue": "", 
+  "title": "", 
+  "alternative-id": [], 
+  "container-title": "", 
+  "funder": [
+    {
+      "name": "", 
+      "award": [],
+      "country": ""
+    }
+  ], 
+  "page": "", 
+  "article-number": ""
+}

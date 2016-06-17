@@ -1,0 +1,183 @@
+{
+  "DOI": "", 
+  "subtitle": [], 
+  "issued": {
+    "date-parts": []
+  }, 
+  "update-policy": "", 
+  "prefix": "", 
+  "update-to": [
+    {
+      "updated": {
+        "timestamp": "", 
+        "date-time": "", 
+        "date-parts": []
+      }, 
+      "DOI": "", 
+      "type": "", 
+      "label": ""
+    }
+  ], 
+  "ISBN": [], 
+  "archive": [], 
+  "subject": [], 
+  "author": [
+    {
+      "affiliation": [
+        {
+          "name": "",
+          "identifier": ""
+        }       
+      ], 
+      "given": "", 
+      "family": ""
+    }
+  ], 
+  "reference-count": "", 
+  "ISSN": [], 
+  "assertion": [
+    {
+      "name": "", 
+      "value": "", 
+      "label": ""
+    }
+  ], 
+  "member": "", 
+  "source": "", 
+  "score": "", 
+  "deposited": {
+    "timestamp": "", 
+    "date-time": "", 
+    "date-parts": []
+  }, 
+  "editor": [
+    {
+      "affiliation": [], 
+      "given": "", 
+      "family": ""
+    }
+  ], 
+  "indexed": {
+    "timestamp": "", 
+    "date-time": "", 
+    "date-parts": []
+  }, 
+  "type": "", 
+  "published-online": {
+    "date-parts": []
+  }, 
+  "URL": "", 
+  "volume": "", 
+  "link": [
+    {
+      "intended-application": "", 
+      "URL": "", 
+      "content-version": "", 
+      "content-type": ""
+    }
+  ], 
+  "published-print": {
+    "date-parts": []
+  }, 
+  "publisher": "", 
+  "license": [
+    {
+      "delay-in-days": "", 
+      "start": {
+        "timestamp": "", 
+        "date-time": "", 
+        "date-parts": []
+      }, 
+      "content-version": "", 
+      "URL": ""
+    }
+  ], 
+  "created": {
+    "timestamp": "", 
+    "date-time": "", 
+    "date-parts": []
+  }, 
+  "issue": "", 
+  "title": "", 
+  "alternative-id": [], 
+  "container-title": "", 
+  "funder": [
+    {
+      "name": "", 
+      "award": [],
+      "country": ""
+    }
+  ], 
+  "page": "", 
+  "article-number": "",
+  "MedlineCitation": {
+    "DateCompleted": {
+      "Month": "", 
+      "Day": "", 
+      "Year": ""
+    }, 
+    "DateRevised": {
+      "Month": "", 
+      "Day": "", 
+      "Year": ""
+    }, 
+    "MeshHeadingList": [
+      {
+        "QualifierName": [], 
+        "DescriptorName": ""
+      }
+    ], 
+    "OtherAbstract": [], 
+    "CitationSubset": [], 
+    "DateCreated": {
+      "Month": "", 
+      "Day": "", 
+      "Year": ""
+    }, 
+    "KeywordList": [], 
+    "SpaceFlightMission": [], 
+    "GeneralNote": [], 
+    "Article": {
+      "ArticleDate": [], 
+      "Pagination": {
+        "MedlinePgn": ""
+      }, 
+      "Language": [], 
+      "PublicationTypeList": [], 
+      "Journal": { 
+        "ISOAbbreviation": ""
+      },  
+      "ELocationID": [], 
+      "Abstract": {
+        "AbstractText": []
+      }, 
+      "GrantList": [
+        {
+          "Acronym": "", 
+          "Country": "", 
+          "Agency": "", 
+          "GrantID": ""
+        }
+      ]
+    },
+    "MedlineJournalInfo": {
+      "MedlineTA": "", 
+      "Country": "", 
+      "NlmUniqueID": "", 
+      "ISSNLinking": ""
+    }
+  }, 
+  "PubmedData": {
+    "ArticleIdList": [], 
+    "PublicationStatus": "", 
+    "History": [
+      {
+        "Month": "", 
+        "Minute": "", 
+        "Day": "", 
+        "Hour": "", 
+        "Year": ""
+      }
+    ]
+  }
+}
