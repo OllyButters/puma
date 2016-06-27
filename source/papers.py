@@ -61,25 +61,46 @@ logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.INF
 #pmids is the list of papers
 papers = {}
 pmids = []
+
+#commenting out the get stuff as my assumption is that hughs work will join this up
 #get.get.get(pmids, papers)
 
 #use a md5 hash of article title for the id. here are two taken from hughs eg
+#might want to think about how we generate these hashes - should we process the
+#titles a bit, e.g. get rid of punctuation that might make them a little
+#ambiguous?
 paper_list = ['e2cdfaede7d8e4207820a6ea36e6e01b', '47d268cdce86aa9248ea534ea6b5b5eb']
 print paper_list
-exit()
+#exit()
 
+#sort the list - have a better idea of the order things will run
+#paper_lis = paper_list.sort()
+print paper_list
+
+#file_name='../cache/raw/'+paper_list[1]
+#print file_name
+
+#with open(file_name) as fo:
+#    papers=json.load(fo)
+
+#print papers
+#print '============='
+#print papers[0]['author'][0]['affiliation'][0]['name']
+#exit()
 
 #file_name='../data/summary'
 #with open(file_name) as fo:
 #    papers=json.load(fo)
 
-print str(len(pmids))+' PMIDs to process'
-print str(len(papers))+' papers processed'
+print str(len(paper_list))+' papers to process'
+#print str(len(papers))+' papers processed'
 
 ###########################################################
 #Clean the data - e.g. tidy institute names
-clean.clean.clean_institution(pmids,papers)
+clean.clean.clean_institution(paper_list)
 #clean.clean.do_deltas(papers)
+
+exit()
 
 #Save it for later
 file_name='../data/summary_cleaned'

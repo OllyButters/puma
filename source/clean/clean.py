@@ -2,12 +2,13 @@
 
 #Have a go at tidying up the mess that is first author institution.
 #Essentially go through each institution and see if it matches a patten
-#in the institut_cleaning.csv file. If it does then replace it with a
+#in the institute_cleaning.csv file. If it does then replace it with a
 #standard name.
-def clean_institution(pmids,papers):
+def clean_institution(paper_list):
     import csv
     import re
     import logging
+    import json
 
     logging.info('Starting institute cleaning')
 
@@ -40,30 +41,53 @@ def clean_institution(pmids,papers):
     #Cycle through institute checking the whole substitution list.
     #Stop when the first one matches.
     number_not_matched=0
-    for this_pmid in pmids:
+    for this_paper in paper_list:
+
+        #open the file and parse it
+        file_name='../cache/raw/'+this_paper
+        print file_name
+
+        with open(file_name) as fo:
+            papers=json.load(fo)
 
         try:
             #institute = papers[this_pmid]['AuthorList'][0]['Affiliation']
-            institute = papers[this_pmid]['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
+            #institute = papers[this_pmid]['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
+            #institute = papers[this_pmid]['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
+            #print papers
+            print '============='
+            print papers[0]['author'][0]['affiliation'][0]['name']
+            institute = papers[0]['author'][0]['affiliation'][0]['name']
+            #exit()
+
         except:
-            logging.warn('Could not find an affiliation for %s', this_pmid)
+            logging.warn('Could not find an affiliation for %s', this_paper)
             continue
 
         for y in range(0,len(pattern)):
             logging.debug('%s %s %s', institute, pattern[y], replacements[y])
             temp = re.search(pattern[y], institute, re.IGNORECASE)
             if(temp>0):
-                logging.info('ID:%s. %s MATCHES %s REPLACEDBY %s', this_pmid, institute, pattern[y], replacements[y])
-                papers[this_pmid]['Extras']['CleanInstitute'] = replacements[y]
+                logging.info('ID:%s. %s MATCHES %s REPLACEDBY %s', this_paper, institute, pattern[y], replacements[y])
+                #papers[this_paper]['Extras']['CleanInstitute'] = replacements[y]
+                papers[0]['Extras'] = {}
+                papers[0]['Extras']['CleanInstitute'] = replacements[y]
                 break
 
             if(y==len(pattern)-1):
-                logging.info('No match for %s. ID:%s', institute, this_pmid)
-                logging.warn('No match for %s. ID:%s', institute, this_pmid)
+                logging.info('No match for %s. ID:%s', institute, this_paper)
+                logging.warn('No match for %s. ID:%s', institute, this_paper)
                 number_not_matched+=1
 
+        #Save it for later
+        file_name='../cache/processed/'+this_paper
+        fo = open(file_name, 'wb')
+        fo.write(json.dumps(papers, indent=4))
+        fo.close()
+
+
     print 'Cleaning institutions'
-    print str(len(pmids)-number_not_matched)+'/'+str(len(pmids))+' cleaned'
+    print str(len(paper_list)-number_not_matched)+'/'+str(len(paper_list))+' cleaned'
 
 
     return number_not_matched
