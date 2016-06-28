@@ -3,10 +3,13 @@
 ##########################################################
 #Get all the paper metadata from pubmed and do stuff with it
 ##########################################################
-
 #Starting to hack around with using generic template and not using pubmed
 
-#27/6/16
+#need to have a well defined template of the data model to refer to.
+
+__author__ = "Olly Butters, Hugh Garner"
+__date__ = 28/6/16
+__version__ = '0.2.1'
 
 import csv
 import json
@@ -27,10 +30,13 @@ update_citations = True
 
 
 ###########################################################
-#Make sure the directory structure is set up first
+#Make sure the directory structure is set up first.
+#Everything in the cache is grabbed from elsewhere, or built on the fly,
+#so it should all be considerd ready to be deleted at any point!
 if (os.path.exists('../cache') == False):
     os.mkdir('../cache')
 
+#The raw, unprocessed data.
 if (os.path.exists('../cache/raw') == False):
     os.mkdir('../cache/raw')
 
@@ -51,7 +57,7 @@ if (os.path.exists('../html/mesh') == False):
 
 
 #Set up the logging
-logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.INFO)
+logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.DEBUG)
 
 
 ###########################################################
@@ -97,20 +103,23 @@ print str(len(paper_list))+' papers to process'
 
 ###########################################################
 #Clean the data - e.g. tidy institute names
+clean.clean.pre_clean(paper_list)
 clean.clean.clean_institution(paper_list)
 #clean.clean.do_deltas(papers)
 
-exit()
+#exit()
 
 #Save it for later
-file_name='../data/summary_cleaned'
-fo = open(file_name, 'wb')
-fo.write(json.dumps(papers, indent=4))
-fo.close()
+#file_name='../data/summary_cleaned'
+#fo = open(file_name, 'wb')
+#fo.write(json.dumps(papers, indent=4))
+#fo.close()
 
 ###########################################################
 #Add some extra data in - i.e. geocodes and citations
-add.geocode.geocode(pmids,papers)
+add.geocode.geocode(paper_list)
+
+exit()
 
 if update_citations:
     add.citations.citations(pmids,papers)

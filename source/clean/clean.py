@@ -1,5 +1,25 @@
 #! /usr/bin/env python
 
+#Copy all the raw data to the processed directory, this means we are only
+#ever working on the processed stuff and we never touch the raw data. This
+#makes it easier to rerun as we don't have to rebuild the cache each time.
+def pre_clean(paper_list):
+    import json
+    for this_paper in paper_list:
+
+        #open the raw file and parse it
+        file_name='../cache/raw/'+this_paper
+        print file_name
+        with open(file_name) as fo:
+            papers=json.load(fo)
+
+        #Save it for later
+        file_name='../cache/processed/'+this_paper
+        fo = open(file_name, 'wb')
+        fo.write(json.dumps(papers, indent=4))
+        fo.close()
+
+
 #Have a go at tidying up the mess that is first author institution.
 #Essentially go through each institution and see if it matches a patten
 #in the institute_cleaning.csv file. If it does then replace it with a
@@ -44,9 +64,8 @@ def clean_institution(paper_list):
     for this_paper in paper_list:
 
         #open the file and parse it
-        file_name='../cache/raw/'+this_paper
+        file_name='../cache/processed/'+this_paper
         print file_name
-
         with open(file_name) as fo:
             papers=json.load(fo)
 
