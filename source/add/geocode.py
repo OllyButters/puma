@@ -42,6 +42,12 @@ def geocode(paper_list):
             #papers[this_pmid]['Extras']['LatLong'] = geocode[papers[this_pmid]['Extras']['CleanInstitute']]
             #papers[this_pmid]['Extras']['LatLong'] = geocode[papers[this_pmid]['Extras']['CleanInstitute']]
             papers[0]['Extras']['LatLong'] = geocode[papers[0]['Extras']['CleanInstitute']]
+
+            #Save it for later
+            file_name='../cache/processed/'+this_paper
+            fo = open(file_name, 'wb')
+            fo.write(json.dumps(papers, indent=4))
+            fo.close()
         except:
             try:
                 print 'Did not find a lat-long for '+this_paper+' '+papers[0]['Extras']['CleanInstitute']

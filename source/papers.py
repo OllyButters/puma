@@ -119,11 +119,12 @@ clean.clean.clean_institution(paper_list)
 #Add some extra data in - i.e. geocodes and citations
 add.geocode.geocode(paper_list)
 
-exit()
+#exit()
 
 if update_citations:
-    add.citations.citations(pmids,papers)
+    add.citations.citations(paper_list)
 
+exit()
 
 file_name='../data/summary_added_to'
 fo = open(file_name, 'wb')

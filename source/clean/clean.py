@@ -13,6 +13,10 @@ def pre_clean(paper_list):
         with open(file_name) as fo:
             papers=json.load(fo)
 
+        #Add an extras item that we add stuff to - clean_institution, citations etc
+        papers[0]['Extras'] = {}
+
+
         #Save it for later
         file_name='../cache/processed/'+this_paper
         fo = open(file_name, 'wb')
@@ -89,7 +93,7 @@ def clean_institution(paper_list):
             if(temp>0):
                 logging.info('ID:%s. %s MATCHES %s REPLACEDBY %s', this_paper, institute, pattern[y], replacements[y])
                 #papers[this_paper]['Extras']['CleanInstitute'] = replacements[y]
-                papers[0]['Extras'] = {}
+                #papers[0]['Extras'] = {}
                 papers[0]['Extras']['CleanInstitute'] = replacements[y]
                 break
 
