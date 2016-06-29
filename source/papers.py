@@ -5,11 +5,14 @@
 ##########################################################
 #Starting to hack around with using generic template and not using pubmed
 
-#need to have a well defined template of the data model to refer to.
+#- need to have a well defined template of the data model to refer to.
+#- Being inconsistent with where I'm importing libs - should we do it in each
+#sub routine, or at the top of each file, or can we do it globally?
+#- opening the json files in each subroutine, not that efficient.
 
 __author__ = "Olly Butters, Hugh Garner"
-__date__ = 28/6/16
-__version__ = '0.2.1'
+__date__ = 29/6/16
+__version__ = '0.2.2'
 
 import csv
 import json
@@ -66,7 +69,7 @@ logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.DEB
 #papers will be the giant object that has all the papers in it
 #pmids is the list of papers
 papers = {}
-pmids = []
+#pmids = []
 
 #commenting out the get stuff as my assumption is that hughs work will join this up
 #get.get.get(pmids, papers)
@@ -77,29 +80,12 @@ pmids = []
 #ambiguous?
 paper_list = ['e2cdfaede7d8e4207820a6ea36e6e01b', '47d268cdce86aa9248ea534ea6b5b5eb']
 print paper_list
-#exit()
 
 #sort the list - have a better idea of the order things will run
-#paper_lis = paper_list.sort()
+paper_list.sort()
 print paper_list
 
-#file_name='../cache/raw/'+paper_list[1]
-#print file_name
-
-#with open(file_name) as fo:
-#    papers=json.load(fo)
-
-#print papers
-#print '============='
-#print papers[0]['author'][0]['affiliation'][0]['name']
-#exit()
-
-#file_name='../data/summary'
-#with open(file_name) as fo:
-#    papers=json.load(fo)
-
 print str(len(paper_list))+' papers to process'
-#print str(len(papers))+' papers processed'
 
 ###########################################################
 #Clean the data - e.g. tidy institute names
@@ -107,24 +93,14 @@ clean.clean.pre_clean(paper_list)
 clean.clean.clean_institution(paper_list)
 #clean.clean.do_deltas(papers)
 
-#exit()
-
-#Save it for later
-#file_name='../data/summary_cleaned'
-#fo = open(file_name, 'wb')
-#fo.write(json.dumps(papers, indent=4))
-#fo.close()
-
 ###########################################################
 #Add some extra data in - i.e. geocodes and citations
 add.geocode.geocode(paper_list)
 
-#exit()
-
 if update_citations:
     add.citations.citations(paper_list)
 
-exit()
+#exit()
 
 file_name='../data/summary_added_to'
 fo = open(file_name, 'wb')
@@ -132,19 +108,20 @@ fo.write(json.dumps(papers, indent=4))
 fo.close()
 
 
-bibliography.bibtex.bibtex(pmids,papers)
+#bibliography.bibtex.bibtex(pmids,papers)
 
 ###########################################################
 #Do some actual analysis on the data. This will result in
 #some CSV type files that can be analysed.
-analyse.analysis.journals(pmids, papers)
-#analyse.analysis.abstracts(pmids, papers)
-analyse.analysis.authors(pmids, papers)
-analyse.analysis.first_authors(pmids, papers)
-analyse.analysis.inst(pmids, papers)
-analyse.analysis.mesh(pmids, papers)
+analyse.analysis.journals(paper_list)
 
-analyse.analysis.output_csv(pmids, papers)
+#analyse.analysis.abstracts(pmids, papers)
+analyse.analysis.authors(paper_list)
+analyse.analysis.first_authors(paper_list)
+analyse.analysis.inst(paper_list)
+analyse.analysis.mesh(paper_list)
+analyse.analysis.output_csv(paper_list)
+exit()
 
 ###########################################################
 #Make some web pages
