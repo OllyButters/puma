@@ -121,11 +121,11 @@ analyse.analysis.first_authors(paper_list)
 analyse.analysis.inst(paper_list)
 analyse.analysis.mesh(paper_list)
 analyse.analysis.output_csv(paper_list)
-exit()
 
 ###########################################################
 #Make some web pages
-html.build_html.build_yearly(pmids, papers)
+html.build_html.build_yearly(paper_list)
+exit()
 html.build_html.build_mesh(pmids, papers)
 html.build_html.build_summary(pmids, papers)
 html.build_html.build_google_map(pmids, papers)

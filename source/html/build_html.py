@@ -11,7 +11,7 @@ import sys
 ############################################################
 #Build a list of all papers by year
 ############################################################
-def build_yearly(pmids, papers):
+def build_yearly(paper_list):
     print "\n###HTML yearly list###"
 
     yearly_papers = {}
@@ -19,68 +19,74 @@ def build_yearly(pmids, papers):
 
 
     #Build the text needed for each paper
-    for this_pmid in pmids:
+    for this_paper in paper_list:
         try:
-            #Paper title as a link
-            html='<span style="text-decoration: underline; font-weight:bold;">'+papers[this_pmid]['ArticleTitle']+'</span><br/>'
+            file_name='../cache/processed/'+this_paper
+            with open(file_name) as fo:
+                papers=json.load(fo)
 
-            #Abstract text - probably too long to go on this page
-            #html += papers[this_pmid]['AbstractText'][0]+'<br/>'
+                #Paper title as a link
+                html='<span style="text-decoration: underline; font-weight:bold;">'+papers[0]['title']+'</span><br/>'
 
-            #Authors
-            authors = []
-            for this_author in papers[this_pmid]['AuthorList']:
-                #Some author lists have a collective name. Ignore this.
-                try:
-                    this_author['CollectiveName']
-                    next
-                except:
+                #Abstract text - probably too long to go on this page
+                #html += papers[this_pmid]['AbstractText'][0]+'<br/>'
+
+                #Authors
+                authors = []
+                for this_author in papers[0]['author']:
+                    #Some author lists have a collective name. Ignore this.
                     #Some people don't actually have initials. eg wraight in pmid:18454148
                     try:
-                        authors.append(this_author['LastName']+', '+this_author['Initials'])
+                        authors.append(this_author['family']+', '+this_author['Initials'])
                     except:
                         pass
 
-            html += '; '.join(authors)
-            html += '<br/>'
+                html += '; '.join(authors)
+                html += '<br/>'
 
-            #Journal volume
-            try:
-                html += papers[this_pmid]['Journal']+' Vol '+papers[this_pmid]['JournalVolume']+'<br/>'
-            except:
-                pass
+                #Journal volume
+                #try:
+                    #html += papers[0]['Journal']+' Vol '+papers[0]['MedlineCitation']['Article']['Journal']+'<br/>'
+                #except:
+                #    pass
 
-            #PMID
-            html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/'+str(this_pmid)+'">'+str(this_pmid)+'</a>'
+                #PMID
+                #try:
+                    #html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/'+str(this_pmid)+'">'+str(this_pmid)+'</a>'
+                #except:
+                #    pass
 
-            #DOI
-            try:
-                html += '&nbsp;DOI: <a href="http://doi.org/'+papers[this_pmid]['doi'][0]+'">'+papers[this_pmid]['doi'][0]+'</a>'
-            except:
-                pass
+                #DOI
+                try:
+                    html += '&nbsp;DOI: <a href="http://doi.org/'+papers[0]['DOI']+'">'+papers[0]['DOI']+'</a>'
+                except:
+                    pass
 
-            #citation count
-            try:
-                html += '&nbsp; Citations: '+papers[this_pmid]['Extras']['Citations']
-            except:
-                pass
+                #citation count
+                try:
+                    html += '&nbsp; Citations: '+papers[0]['Extras']['Citations']
+                except:
+                    pass
 
-            #Add an extra line break at the end
-            html += '<br/><br/>'
+                #Add an extra line break at the end
+                html += '<br/><br/>'
 
-            #Append this paper to the list indexed by the year
-            this_year=papers[this_pmid]['Year']
+                print html
 
-            #Make sure there is a dict item for this year
-            if this_year not in yearly_papers:
-                yearly_papers[this_year] = list()
+                #Append this paper to the list indexed by the year
+                this_year=papers[0]['published-print']['date-parts'][0][0]
+                
+                #Make sure there is a dict item for this year
+                if this_year not in yearly_papers:
+                    yearly_papers[this_year] = list()
 
 
-            temp = yearly_papers[this_year]
-            temp.append({this_pmid:html})
-            yearly_papers[this_year]=temp
+
+                temp = yearly_papers[this_year]
+                temp.append({this_paper:html})
+                yearly_papers[this_year]=temp
         except:
-            print 'Failing on '+this_pmid
+            print 'Failing on '+this_paper
             print sys.exc_info()
             pass
 
@@ -91,8 +97,8 @@ def build_yearly(pmids, papers):
         #Check there is some data for this year - not all do
         if len(yearly_papers[this_year])==0:
             continue
-        heading='<a name="'+this_year+'"></a>'
-        heading+='<h1>'+this_year+'</h1>'
+        heading='<a name="'+str(this_year)+'"></a>'
+        heading+='<h1>'+str(this_year)+'</h1>'
         print >>html_file,heading
         #This is a list
         for this_item in yearly_papers[this_year]:
