@@ -1,30 +1,3 @@
-#Overview#
-
-The general point of this 'pipeline' is to get meta-data about published papers and do some analysis/plotting of it. The general worflow is:
-
-* Start with a list of papers (e.g. with a PubMed ID), and get the metadata for each.
-* Build a cache of each bit of metadata.
-* Pull out the required metadata from the cache into a cut down version.
-* Clean it.
-* Add some extra data to it (citations etc).
-* Analyse it.
-* Make some web pages showing it.
-* Build a bibliographic reference of all of them for redistribution.
-
-
-#Pre-requisites#
-
-
-##Source data##
-
-Currently the whole process kicks off with a list of PubMed IDs. This is generated from a google docs spreadsheet and downloaded to the inputs directory.
-
-
-#Program flow#
-
-Run the program from /source/papers.py
-
-##Get##
 
 
 ##Clean##
