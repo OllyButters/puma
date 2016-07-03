@@ -62,7 +62,9 @@ if (os.path.exists('../html/mesh') is False):
 
 
 # Set up the logging
-logging.basicConfig(filename='../data/papers.log', filemode='w', level=logging.DEBUG)
+logging.basicConfig(filename='../data/papers.log',
+                    filemode='w',
+                    level=logging.DEBUG)
 
 
 ###########################################################
@@ -73,14 +75,17 @@ logging.basicConfig(filename='../data/papers.log', filemode='w', level=logging.D
 papers = {}
 # pmids = []
 
-# commenting out the get stuff as my assumption is that hughs work will join this up
+# commenting out the get stuff as my assumption is that hughs work
+# will join this up
 # get.get.get(pmids, papers)
 
 # use a md5 hash of article title for the id. here are two taken from hughs eg
 # might want to think about how we generate these hashes - should we process
 # the titles a bit, e.g. get rid of punctuation that might make them a little
 # ambiguous?
-paper_list = ['e2cdfaede7d8e4207820a6ea36e6e01b', '47d268cdce86aa9248ea534ea6b5b5eb']
+paper_list = [
+    'e2cdfaede7d8e4207820a6ea36e6e01b',
+    '47d268cdce86aa9248ea534ea6b5b5eb']
 print paper_list
 
 # sort the list - have a better idea of the order things will run
@@ -128,7 +133,7 @@ analyse.analysis.output_csv(paper_list)
 # Make some web pages
 html.build_html.build_yearly(paper_list)
 exit()
-html.build_html.build_mesh(pmids, papers)
-html.build_html.build_summary(pmids, papers)
-html.build_html.build_google_map(pmids, papers)
+html.build_html.build_mesh(paper_list)
+html.build_html.build_summary(paper_list)
+html.build_html.build_google_map(paper_list)
 html.build_html.build_google_heat_map()

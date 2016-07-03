@@ -13,9 +13,9 @@ def pre_clean(paper_list):
         with open(file_name) as fo:
             papers = json.load(fo)
 
-        # Add an extras item that we add stuff to - clean_institution, citations etc
+        # Add an extras item that we add stuff to - clean_institution,
+        # citations etc
         papers[0]['Extras'] = {}
-
 
         # Save it for later
         file_name = '../cache/processed/'+this_paper
@@ -74,10 +74,6 @@ def clean_institution(paper_list):
             papers = json.load(fo)
 
         try:
-            # institute = papers[this_pmid]['AuthorList'][0]['Affiliation']
-            # institute = papers[this_pmid]['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
-            # institute = papers[this_pmid]['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
-            # print papers
             print '============='
             print papers[0]['author'][0]['affiliation'][0]['name']
             institute = papers[0]['author'][0]['affiliation'][0]['name']
@@ -91,7 +87,9 @@ def clean_institution(paper_list):
             logging.debug('%s %s %s', institute, pattern[y], replacements[y])
             temp = re.search(pattern[y], institute, re.IGNORECASE)
             if(temp > 0):
-                logging.info('ID:%s. %s MATCHES %s REPLACEDBY %s', this_paper, institute, pattern[y], replacements[y])
+                logging.info(
+                    'ID:%s. %s MATCHES %s REPLACEDBY %s',
+                    this_paper, institute, pattern[y], replacements[y])
                 # papers[this_paper]['Extras']['CleanInstitute'] = replacements[y]
                 # papers[0]['Extras'] = {}
                 papers[0]['Extras']['CleanInstitute'] = replacements[y]
@@ -111,16 +109,13 @@ def clean_institution(paper_list):
     print 'Cleaning institutions'
     print str(len(paper_list)-number_not_matched)+'/'+str(len(paper_list))+' cleaned'
 
-
     return number_not_matched
-
-
 
 # Go through the deltas directory and apply any changes that are needed
 def do_deltas(papers):
-    import csv
+    # import csv
     import json
-    import logging
+    # import logging
     import os
 
     delta_dir = '../config/deltas/'
