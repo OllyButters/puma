@@ -23,9 +23,12 @@ __date__ = 8/7/16
 __version__ = '0.2.4'
 
 
-# Options
+# Options - these should get moved out into a config file
 # Stick a flag into see if we want to update the citations
 update_citations = True
+scopus_api_key = '8024d746590aade6be6856a22a734783'
+scopus_citation_max_life = 30  # days
+
 
 # pp = pprint.PrettyPrinter(indent=4)
 
@@ -89,7 +92,7 @@ clean.clean.clean_institution(papers)
 add.geocode.geocode(papers)
 
 if update_citations:
-    add.citations.citations(papers)
+    add.citations.citations(papers, scopus_api_key, scopus_citation_max_life)
 
 file_name = '../data/summary_added_to'
 fo = open(file_name, 'wb')

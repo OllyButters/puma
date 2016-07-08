@@ -11,9 +11,8 @@ import logging
 # Use the elsevier API to get the number of citations a paper has bsed on its PMID.
 # Ultimately need to build a GET string like
 # http://api.elsevier.com/content/search/scopus?query=PMID(18562177)&apiKey=8024d746590aade6be6856a22a734783&field=citedby-count
-def citations(papers):
+def citations(papers, api_key, citation_max_life):
 
-    api_key = '8024d746590aade6be6856a22a734783'
     url = 'http://api.elsevier.com/content/search/scopus'
 
     print 'Doing citations'
@@ -24,9 +23,15 @@ def citations(papers):
         with open('../cache/citations.csv', 'rb') as csvfile:
             f = csv.reader(csvfile)
             for row in f:
-                cached_citations[row[0]] = {}
-                cached_citations[row[0]]['citation_count'] = row[1]
-                cached_citations[row[0]]['date_downloaded'] = row[2]
+                # Parse the date the citation was cached
+                date_downloaded = datetime.datetime.strptime(row[2], "%Y-%m-%d %H:%M:%S.%f")
+
+                # If the citation is younger than (today - citation_max_life)
+                # then use it. Not using it means we will download it again.
+                if abs(datetime.datetime.now() - date_downloaded) < datetime.timedelta(days=citation_max_life):
+                    cached_citations[row[0]] = {}
+                    cached_citations[row[0]]['citation_count'] = row[1]
+                    cached_citations[row[0]]['date_downloaded'] = row[2]
         csvfile.close()
         logging.info('Citation cache file read in')
     except:
