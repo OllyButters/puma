@@ -1,11 +1,9 @@
 #! /usr/bin/env python
 
-# import csv
 import json
 import os.path
-# import gdata.docs.service
 import logging
-import pprint
+# import pprint
 
 # import get.get
 import clean.clean
@@ -21,15 +19,15 @@ import bibliography.bibtex
 # Starting to hack around with using generic template and not using pubmed
 
 __author__ = "Olly Butters, Hugh Garner"
-__date__ = 7/7/16
-__version__ = '0.2.3'
+__date__ = 8/7/16
+__version__ = '0.2.4'
 
 
 # Options
 # Stick a flag into see if we want to update the citations
 update_citations = True
 
-pp = pprint.PrettyPrinter(indent=4)
+# pp = pprint.PrettyPrinter(indent=4)
 
 ###########################################################
 # Make sure the directory structure is set up first.
@@ -77,8 +75,6 @@ papers = {}
 with open('../cache/raw/sample_data_object') as fo:
     papers = json.load(fo)
 
-# print papers
-
 print str(len(papers))+' papers to process'
 
 
@@ -86,7 +82,6 @@ print str(len(papers))+' papers to process'
 # Clean the data - e.g. tidy institute names
 clean.clean.pre_clean(papers)
 clean.clean.clean_institution(papers)
-
 # clean.clean.do_deltas(papers)
 
 ###########################################################

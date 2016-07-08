@@ -44,7 +44,7 @@ def citations(papers):
 
             # try querying with the DOI first - there might not be a DOI
             try:
-                request_string = url+'?apiKey='+api_key+'&field=citedby-count&query=DOI('+this_paper['DOI']+')'
+                request_string = url+'?apiKey='+api_key+'&field=citedby-count&query=DOI('+this_paper['IDs']['DOI']+')'
                 logging.info(request_string)
                 try:
                     response = urllib2.urlopen(request_string).read()
@@ -56,17 +56,17 @@ def citations(papers):
 
                 try:
                     citations = t['search-results']['entry'][0]['citedby-count']
-                    papers[0]['Extras']['Citations'] = citations
-                    cached_citations[this_paper] = {}
-                    cached_citations[this_paper]['citation_count'] = citations
-                    cached_citations[this_paper]['date_downloaded'] = datetime.datetime.now()
+                    this_paper['Extras']['Citations'] = citations
+                    cached_citations[this_paper['IDs']['hash']] = {}
+                    cached_citations[this_paper['IDs']['hash']]['citation_count'] = citations
+                    cached_citations[this_paper['IDs']['hash']]['date_downloaded'] = datetime.datetime.now()
                     logging.info('Citation added via DOI')
                 except:
                     # there wasnt a number of citations returned, so see if we can catch this.
                     try:
                         error = t['search-results']['entry'][0]['error']
                         if error == 'Result set was empty':
-                            logging.info('No citation results from scopus using DOI %s %s', str(papers[this_paper]['doi']), str(this_paper))
+                            logging.info('No citation results from scopus using DOI %s %s', str(this_paper['IDs']['DOI']), str(this_paper))
                     except:
                         # a different error happened!
                         # log this
