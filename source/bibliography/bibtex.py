@@ -1,53 +1,44 @@
 #! /usr/bin/env python
 
-def bibtex(pmids, papers):
-    
-    import json
-    import logging
-        
 
-    for this_pmid in pmids:
+def bibtex(papers):
 
-        #read the cache
+    for this_paper in papers:
+
+        # read the cache
         try:
-            #Entry type and name
+            # Entry type and name
             this_article = '@article{'
-            this_article += this_pmid
+            this_article += this_paper['IDs']['hash']
             this_article += ',\n'
 
-            #Author
+            # Author
             this_article += 'author = "'
-            this_article += papers[this_pmid]['AuthorList'][0]['LastName']
+            this_article += this_paper['author'][0]['family']
             this_article += '",\n'
 
-            #Title
+            # Title
             this_article += 'title = "'
-            this_article += papers[this_pmid]['ArticleTitle']
+            this_article += this_paper['title']
             this_article += '",\n'
 
-            #Journal
+            # Journal
             this_article += 'journal = "'
-            this_article += papers[this_pmid]['Journal']
+            this_article += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
             this_article += '",\n'
 
-            #Journal volume
-            this_article += 'volume = "'
-            this_article += papers[this_pmid]['JournalVolume']
-            this_article += '",\n'
+            # Journal volume
+            # this_article += 'volume = "'
+            # this_article += papers[this_pmid]['JournalVolume']
+            # this_article += '",\n'
 
-            #Year
+            # Year
             this_article += 'year = "'
-            this_article += papers[this_pmid]['Year']
+            this_article += this_paper['PubmedData']['History'][0]['Year']
             this_article += '",\n'
 
-            #Close this one.
+            # Close this one.
             this_article += '}\n'
-
-            #logging.info(str(this_pmid)+' not in citation cache')
-
-            #print this_article
 
         except:
             pass
-
-

@@ -3,12 +3,12 @@
 import csv
 import re
 import logging
-import json
+# import json
 
 
 # Have a go at geocoding the cleaned institute names
 # I would expect there to be a lat long for all of them
-def geocode(paper_list):
+def geocode(papers):
 
     print 'Geocoding'
 
@@ -30,27 +30,15 @@ def geocode(paper_list):
                 logging.warn('Something went wrong with looking up the lat/long for '+row[0])
 
     # Actually do the geocoding
-    for this_paper in paper_list:
-
-        # open the file and parse it
-        file_name = '../cache/processed/'+this_paper
-        print file_name
-
-        with open(file_name) as fo:
-            papers = json.load(fo)
+    for this_paper in papers:
 
         try:
-            papers[0]['Extras']['LatLong'] = geocode[papers[0]['Extras']['CleanInstitute']]
+            this_paper['Extras']['LatLong'] = geocode[this_paper['Extras']['CleanInstitute']]
 
-            # Save it for later
-            file_name = '../cache/processed/'+this_paper
-            fo = open(file_name, 'wb')
-            fo.write(json.dumps(papers, indent=4))
-            fo.close()
         except:
             try:
-                print 'Did not find a lat-long for '+this_paper+' '+papers[0]['Extras']['CleanInstitute']
-                logging.warn('Did not find a lat-long for '+this_paper+' '+papers[0]['Extras']['CleanInstitute'])
+                print 'Did not find a lat-long for '+this_paper['IDs']['hash']+' '+this_paper['Extras']['CleanInstitute']
+                logging.warn('Did not find a lat-long for '+this_paper['IDs']['hash']+' '+this_paper['Extras']['CleanInstitute'])
             except:
-                print 'Did not find a lat-long for '+this_paper
-                logging.warn('Did not find a lat-long for '+this_paper)
+                print 'Did not find a lat-long for '+this_paper['IDs']['hash']
+                logging.warn('Did not find a lat-long for '+this_paper['IDs']['hash'])

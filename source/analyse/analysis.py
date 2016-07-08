@@ -2,7 +2,6 @@
 
 import csv
 import logging
-import json
 
 ############################################################
 # Have all the data now, so do something with it
@@ -10,19 +9,14 @@ import json
 
 ############################################################
 # Build a list of all journals and count frequencies of each
-def journals(paper_list):
+def journals(papers):
     print "\n###Journals###"
 
-    num_papers = len(paper_list)
+    num_papers = len(papers)
 
     journals = []
-    for this_paper in paper_list:
-        # open the raw file and parse it
-        file_name = '../cache/processed/'+this_paper
-        print file_name
-        with open(file_name) as fo:
-            papers = json.load(fo)
-            journals.append(papers[0]['MedlineCitation']['Article']['Journal']['ISOAbbreviation'])
+    for this_paper in papers:
+        journals.append(this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'])
 
     print str(len(journals))+'/'+str(num_papers)
     print str(len(set(journals)))+' different journals'
@@ -75,26 +69,21 @@ def abstracts(pmids, papers):
 
 ############################################################
 # Try with the authors - these are in a nested dict
-def authors(paper_list):
+def authors(papers):
     authors = []
-    for this_paper in paper_list:
+    for this_paper in papers:
         # print papers[this_pmid]
         # Some pmid files dont actually have an authorlist! e.g. 2587412
         # This probably needs to be resolved with pubmed!
         try:
-            # open the raw file and parse it
-            file_name = '../cache/processed/'+this_paper
-            print file_name
-            with open(file_name) as fo:
-                papers = json.load(fo)
-            for this_author in papers[0]['author']:
+            for this_author in this_paper['author']:
                 # There are some entries in the author list that are not actually authors e.g. 21379325 last author
                 try:
                     authors.append(this_author['family'])
                 except:
                     pass
         except:
-            logging.warn('No AuthorList for '+this_paper)
+            logging.warn('No AuthorList for '+this_paper['IDs']['hash'])
 
     # print authors
     freq = dict((x, authors.count(x)) for x in set(authors))
@@ -118,18 +107,13 @@ def authors(paper_list):
 
 ############################################################
 # Try with the FIRST authors - these are in a nested dict
-def first_authors(paper_list):
+def first_authors(papers):
 
-    num_papers = len(paper_list)
+    num_papers = len(papers)
     first_authors = []
-    for this_paper in paper_list:
+    for this_paper in papers:
         try:
-            # open the raw file and parse it
-            file_name = '../cache/processed/'+this_paper
-            print file_name
-            with open(file_name) as fo:
-                papers = json.load(fo)
-                first_authors.append(papers[0]['author'][0]['family'])
+            first_authors.append(this_paper['author'][0]['family'])
         except:
             next
 
@@ -154,19 +138,13 @@ def first_authors(paper_list):
 
 ############################################################
 # Try with the FIRST authors INSTITUTE- these are in a nested dict
-def inst(paper_list):
-    num_papers = len(paper_list)
+def inst(papers):
+    num_papers = len(papers)
 
     first_authors_inst = []
-    for this_paper in paper_list:
+    for this_paper in papers:
         try:
-            # open the raw file and parse it
-            file_name = '../cache/processed/'+this_paper
-            print file_name
-            with open(file_name) as fo:
-                papers = json.load(fo)
-                # first_authors_inst.append(papers[this_pmid]['AuthorList'][0]['Affiliation'])
-                first_authors_inst.append(papers[0]['Extras']['CleanInstitute'])
+            first_authors_inst.append(this_paper['Extras']['CleanInstitute'])
         except:
             pass
 
@@ -194,24 +172,18 @@ def inst(paper_list):
 
 ############################################################
 # Try with the mesh headings - these are in a nested dict
-def mesh(paper_list):
-    num_papers = len(paper_list)
+def mesh(papers):
+    num_papers = len(papers)
 
     mesh = []
     coverage = 0
-    for this_paper in paper_list:
+    for this_paper in papers:
 
-        # open the raw file and parse it
-        file_name = '../cache/processed/'+this_paper
-        print file_name
-        with open(file_name) as fo:
-            papers = json.load(fo)
-
-        if 'MeshHeadingList' in papers[0]['MedlineCitation']:
+        if 'MeshHeadingList' in this_paper['MedlineCitation']:
             coverage = coverage + 1
 
             try:
-                for this_mesh in papers[0]['MedlineCitation']['MeshHeadingList']:
+                for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
                     mesh.append(this_mesh['DescriptorName'])
             except:
                 pass
@@ -236,30 +208,24 @@ def mesh(paper_list):
 
 
 # output a csv file with some info in
-def output_csv(paper_list):
+def output_csv(papers):
 
     print '\n###Outputting CSV file###\n'
     with open('../data/all.csv', 'wb') as csvfile:
         all_file = csv.writer(csvfile)
-        for this_paper in paper_list:
-            # open the raw file and parse it
-            file_name = '../cache/processed/'+this_paper
-            print file_name
-            with open(file_name) as fo:
-                papers = json.load(fo)
-
+        for this_paper in papers:
             try:
-                title = papers[0]['title']
+                title = this_paper['title']
             except:
                 title = '???'
 
             try:
-                first_author = papers[0]['author'][0]['family']
+                first_author = this_paper['author'][0]['family']
             except:
                 first_author = '???'
 
             try:
-                journal = papers[0]['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
+                journal = this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
             except:
                 journal = '???'
 
@@ -274,11 +240,11 @@ def output_csv(paper_list):
             #    month = '???'
 
             try:
-                citations = papers[0]['Extras']['Citations']
+                citations = this_paper['Extras']['Citations']
             except:
                 citations = '???'
 
             try:
                 all_file.writerow([title, first_author, journal, citations, this_paper])
             except:
-                print 'Failing on '+str(this_paper)
+                print 'Failing on '+str(this_paper['IDs']['mesh'])

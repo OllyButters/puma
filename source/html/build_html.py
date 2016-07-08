@@ -10,81 +10,76 @@ import sys
 
 
 ############################################################
-# Build a list of all papers by year
+# Build a list of all papers grouped together by year
 ############################################################
-def build_yearly(paper_list):
+def build_yearly(papers):
     print "\n###HTML yearly list###"
 
     yearly_papers = {}
     html_file = open('../html/yearly.html', 'w')
 
     # Build the text needed for each paper
-    for this_paper in paper_list:
+    for this_paper in papers:
         try:
-            file_name = '../cache/processed/'+this_paper
-            with open(file_name) as fo:
-                papers = json.load(fo)
+            # Paper title as a link
+            html = '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['title'] + '</span><br/>'
 
-                # Paper title as a link
-                html='<span style="text-decoration: underline; font-weight:bold;">'+papers[0]['title']+'</span><br/>'
+            # Abstract text - probably too long to go on this page
+            # html += papers[this_pmid]['AbstractText'][0]+'<br/>'
 
-                # Abstract text - probably too long to go on this page
-                # html += papers[this_pmid]['AbstractText'][0]+'<br/>'
-
-                # Authors
-                authors = []
-                for this_author in papers[0]['author']:
-                    # Some author lists have a collective name. Ignore this.
-                    # Some people don't actually have initials. eg wraight in pmid:18454148
-                    try:
-                        authors.append(this_author['family']+', '+this_author['Initials'])
-                    except:
-                        pass
-
-                html += '; '.join(authors)
-                html += '<br/>'
-
-                # Journal volume
-                # try:
-                    #html += papers[0]['Journal']+' Vol '+papers[0]['MedlineCitation']['Article']['Journal']+'<br/>'
-                # except:
-                #    pass
-
-                # PMID
-                # try:
-                    # html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/'+str(this_pmid)+'">'+str(this_pmid)+'</a>'
-                # except:
-                #    pass
-
-                # DOI
+            # Authors
+            authors = []
+            for this_author in this_paper['author']:
+                # Some author lists have a collective name. Ignore this.
+                # Some people don't actually have initials. eg wraight in pmid:18454148
                 try:
-                    html += '&nbsp;DOI: <a href="http://doi.org/'+papers[0]['DOI']+'">'+papers[0]['DOI']+'</a>'
+                    authors.append(this_author['family']+', '+this_author['Initials'])
                 except:
                     pass
 
-                # citation count
-                try:
-                    html += '&nbsp; Citations: '+papers[0]['Extras']['Citations']
-                except:
-                    pass
+            html += '; '.join(authors)
+            html += '<br/>'
 
-                # Add an extra line break at the end
-                html += '<br/><br/>'
+            # Journal volume
+            # try:
+            # html += papers[0]['Journal']+' Vol '+papers[0]['MedlineCitation']['Article']['Journal']+'<br/>'
+            # except:
+            #    pass
 
-                print html
+            # PMID
+            try:
+                html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/'+str(this_paper['IDs']['PMID'])+'">'+str(this_paper['IDs']['PMID'])+'</a>'
+            except:
+                pass
 
-                # Append this paper to the list indexed by the year
-                this_year = papers[0]['published-print']['date-parts'][0][0]
+            # DOI
+            try:
+                html += '&nbsp;DOI: <a href="http://doi.org/'+this_paper['IDs']['DOI']+'">'+this_paper['IDs']['DOI']+'</a>'
+            except:
+                pass
 
-                # Make sure there is a dict item for this year
-                if this_year not in yearly_papers:
-                    yearly_papers[this_year] = list()
+            # citation count
+            try:
+                html += '&nbsp; Citations: '+this_paper['Extras']['Citations']
+            except:
+                pass
 
-                temp = yearly_papers[this_year]
-                temp.append({this_paper:html})
-                yearly_papers[this_year] = temp
+            # Add an extra line break at the end
+            html += '<br/><br/>'
+
+            # Append this paper to the list indexed by the year
+            this_year = this_paper['PubmedData']['History'][0]['Year']
+            # this_year = this_paper['published-print']['date-parts'][0][0]
+
+            # Make sure there is a dict item for this year
+            if this_year not in yearly_papers:
+                yearly_papers[this_year] = list()
+
+            temp = yearly_papers[this_year]
+            temp.append({this_paper['IDs']['hash']: html})
+            yearly_papers[this_year] = temp
         except:
-            print 'Failing on '+this_paper
+            print 'Failing on '+this_paper['IDs']['hash']
             print sys.exc_info()
             pass
 
@@ -107,7 +102,7 @@ def build_yearly(paper_list):
 ############################################################
 # Build a list of all mesh keywords
 ############################################################
-def build_mesh(pmids, papers):
+def build_mesh(papers):
 
     print "\n###HTML - mesh###"
 
@@ -117,28 +112,28 @@ def build_mesh(pmids, papers):
     html_file_major = open('../html/mesh_major.html', 'w')
 
     # Build a dict of ALL mesh headings with a list of each pmid in each
-    for this_pmid in pmids:
+    for this_paper in papers:
         try:
             # Look at all the mesh headings for this paper
-            for this_mesh in papers[this_pmid]['MeshHeadingList']:
+            for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
                 # If this mesh term is not already in the dict then add it
                 if this_mesh['DescriptorName'] not in mesh_papers_all:
                     mesh_papers_all[this_mesh['DescriptorName']] = list()
-                mesh_papers_all[this_mesh['DescriptorName']].append(this_pmid)
+                mesh_papers_all[this_mesh['DescriptorName']].append(this_paper['IDs']['hash'])
         except:
             pass
 
     # Build a dict of ONLY MAJOR mesh headings with a list of each pmid in each
-    for this_pmid in pmids:
+    for this_paper in papers:
         try:
             # Look at all the mesh headings for this paper
-            for this_mesh in papers[this_pmid]['MeshHeadingList']:
+            for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
                 # Only interested in majoy topics
                 if this_mesh['MajorTopicYN'] == 'Y':
                     # If this mesh term is not in the dict then add it
                     if this_mesh['DescriptorName'] not in mesh_papers_major:
                         mesh_papers_major[this_mesh['DescriptorName']] = list()
-                    mesh_papers_major[this_mesh['DescriptorName']].append(this_pmid)
+                    mesh_papers_major[this_mesh['DescriptorName']].append(this_paper['IDs']['hash'])
         except:
             pass
 
@@ -176,7 +171,7 @@ def build_mesh(pmids, papers):
 ############################################################
 # Build a summary page
 ############################################################
-def build_summary(pmids, papers):
+def build_summary(papers):
 
     import shutil
 
@@ -195,24 +190,24 @@ def build_summary(pmids, papers):
     print >>html_file, temp
 
     # Calculate the number of papers for each year
-    for this_pmid in pmids:
+    for this_paper in papers:
         try:
-            this_year = papers[this_pmid]['Year']
+            this_year = this_paper['PubmedData']['History'][0]['Year']
             # Make sure there is a dict item for this year
             if this_year not in summary:
-                summary[this_year] = {'num_papers':0, 'cumulative':0, 'uob':0, 'citations':0, 'cumulative_citations':0}
+                summary[this_year] = {'num_papers': 0, 'cumulative': 0, 'uob': 0, 'citations': 0, 'cumulative_citations': 0}
 
             # increment the number of citaitons by one
             summary[this_year]['num_papers'] = summary[this_year]['num_papers']+1
 
             # add the citations for this paper to the year running total
             try:
-                summary[this_year]['citations'] = summary[this_year]['citations']+int(papers[this_pmid]['Extras']['Citations'])
+                summary[this_year]['citations'] = summary[this_year]['citations'] + int(this_paper['Extras']['Citations'])
             except:
                 pass
 
             # Get number of UoB papers published this year
-            if papers[this_pmid]['Extras']['CleanInstitute'] == 'University of Bristol':
+            if this_paper['Extras']['CleanInstitute'] == 'University of Bristol':
                 summary[this_year]['uob'] = summary[this_year]['uob']+1
         except:
             pass
@@ -225,30 +220,30 @@ def build_summary(pmids, papers):
         try:
             summary[str(this_year)]['num_papers']
         except:
-            summary[str(this_year)] = {'num_papers':0, 'cumulative':0, 'uob':0, 'citations':0, 'cumulative_citations':0}
+            summary[str(this_year)] = {'num_papers': 0, 'cumulative': 0, 'uob': 0, 'citations': 0, 'cumulative_citations': 0}
 
     # Calculate the cumulative number of papers published
     for this_year in sorted(summary, reverse=False):
         try:
-            summary[this_year]['cumulative']=summary[this_year]['num_papers']+summary[str(int(this_year)-1)]['cumulative']
-            summary[this_year]['cumulative_citations']=summary[this_year]['citations']+summary[str(int(this_year)-1)]['cumulative_citations']
+            summary[this_year]['cumulative'] = summary[this_year]['num_papers']+summary[str(int(this_year)-1)]['cumulative']
+            summary[this_year]['cumulative_citations'] = summary[this_year]['citations']+summary[str(int(this_year)-1)]['cumulative_citations']
         except:
-            summary[this_year]['cumulative']=summary[this_year]['num_papers']
-            summary[this_year]['cumulative_citations']=summary[this_year]['citations']
+            summary[this_year]['cumulative'] = summary[this_year]['num_papers']
+            summary[this_year]['cumulative_citations'] = summary[this_year]['citations']
 
     ###################################
     # Make a data file that we can plot
 
     # Cumulative first
-    print >>data_file,'var cumulative =([[\'Year\', \'Number of papers\'],'
+    print >>data_file, 'var cumulative =([[\'Year\', \'Number of papers\'],'
     for this_year in sorted(summary, reverse=False):
-        print >>data_file,'[\''+this_year+'\','+str(summary[this_year]['cumulative'])+'],'
+        print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['cumulative'])+'],'
     print >>data_file, ']);'
 
     # Number per year now
-    print >>data_file,'var papers_per_year=([[\'Year\', \'Number of papers\'],'
+    print >>data_file, 'var papers_per_year=([[\'Year\', \'Number of papers\'],'
     for this_year in sorted(summary, reverse=False):
-        print >>data_file,'[\''+this_year+'\','+str(summary[this_year]['num_papers'])+'],'
+        print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['num_papers'])+'],'
     print >>data_file, ']);'
 
     # Copy the main html page across
@@ -258,7 +253,7 @@ def build_summary(pmids, papers):
 
     # Make a page with the headings on it
     print >>html_file, '<table border="1">'
-    print >>html_file,'<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>UoB #</th><th>UoB %</th><th>Citations for papers published in this year</th><th>Cumulative citations for papers published in this year</th></tr>'
+    print >>html_file, '<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>UoB #</th><th>UoB %</th><th>Citations for papers published in this year</th><th>Cumulative citations for papers published in this year</th></tr>'
     for this_year in sorted(summary, reverse=True):
         # Skip the years where nothing was published
         if summary[this_year]['num_papers'] == 0:
@@ -279,7 +274,7 @@ def build_summary(pmids, papers):
 ###########################################################
 # Build a google map based on the lat longs provided before.
 ###########################################################
-def build_google_map(pmids, papers):
+def build_google_map(papers):
 
     import shutil
 
@@ -287,9 +282,9 @@ def build_google_map(pmids, papers):
     shutil.copyfile('html/templates/map.html', '../html/map.html')
 
     info = []
-    for this_pmid in pmids:
+    for this_paper in papers:
         try:
-            this_place = {'lat': papers[this_pmid]['Extras']['LatLong']['lat'], 'long': papers[this_pmid]['Extras']['LatLong']['long'], 'name':papers[this_pmid]['Extras']['CleanInstitute']}
+            this_place = {'lat': this_paper['Extras']['LatLong']['lat'], 'long': this_paper['Extras']['LatLong']['long'], 'name': this_paper['Extras']['CleanInstitute']}
             info.append(this_place)
         except:
             pass
@@ -298,7 +293,7 @@ def build_google_map(pmids, papers):
 
     kml = "var locations =["
     for this_info in info:
-        kml+= '["'+this_info['name']+'",'+this_info['lat']+','+this_info['long']+'],'
+        kml += '["'+this_info['name']+'",'+this_info['lat']+','+this_info['long']+'],'
     kml += ']'
 
     kml_file = open('../html/map.kml', 'w')
@@ -326,12 +321,12 @@ def build_google_heat_map():
                     continue
 
                 # If there is a second element in this row then carry on
-                lat_long = {'lat':row[1], 'long':row[2]}
+                lat_long = {'lat': row[1], 'long': row[2]}
                 geocode[row[0]] = lat_long
             except:
                 pass
 
-    print >>data_file,'var map =([[\'Latitude\',\'Longitude\',\'Number of papers\',\'Institute\'],'
+    print >>data_file, 'var map =([[\'Latitude\',\'Longitude\',\'Number of papers\',\'Institute\'],'
 
     # Open the first author institute csv file we made earlier
     with open('../data/first_authors_inst.csv', 'rb') as csvfile:

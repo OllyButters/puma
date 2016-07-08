@@ -11,7 +11,7 @@ import logging
 # Use the elsevier API to get the number of citations a paper has bsed on its PMID.
 # Ultimately need to build a GET string like
 # http://api.elsevier.com/content/search/scopus?query=PMID(18562177)&apiKey=8024d746590aade6be6856a22a734783&field=citedby-count
-def citations(paper_list):
+def citations(papers):
 
     api_key = '8024d746590aade6be6856a22a734783'
     url = 'http://api.elsevier.com/content/search/scopus'
@@ -32,24 +32,19 @@ def citations(paper_list):
     except:
         print 'make file'
 
-    for this_paper in paper_list:
-
-        # open the raw file and parse it
-        file_name = '../cache/processed/'+this_paper
-        with open(file_name) as fo:
-            papers = json.load(fo)
+    for this_paper in papers:
 
         # read the cache
         try:
-            papers[0]['Extras']['Citations'] = cached_citations[this_paper]['citation_count']
-            logging.info(str(this_paper)+' in citation cache')
+            this_paper['Extras']['Citations'] = cached_citations[this_paper['IDs']['hash']]['citation_count']
+            logging.info(str(this_paper['IDs']['hash'])+' in citation cache')
         except:
             # Stick in a small nap so we arent hammering the api too much
             time.sleep(1)
 
             # try querying with the DOI first - there might not be a DOI
             try:
-                request_string = url+'?apiKey='+api_key+'&field=citedby-count&query=DOI('+papers[0]['DOI']+')'
+                request_string = url+'?apiKey='+api_key+'&field=citedby-count&query=DOI('+this_paper['DOI']+')'
                 logging.info(request_string)
                 try:
                     response = urllib2.urlopen(request_string).read()
@@ -82,7 +77,7 @@ def citations(paper_list):
                         print t
                         print t['search-results']['entry'][0]['error']
             except:
-                logging.info('No DOI for = '+this_paper)
+                logging.info('No DOI for = '+this_paper['IDs']['hash'])
 
 # shoud wrap the above up as a fn and run it with doi and pmid separately
 
@@ -129,15 +124,10 @@ def citations(paper_list):
 #                    pass
 #
             try:
-                papers[0]['Extras']['Citations']
-                # Save it for later
-                file_name = '../cache/processed/'+this_paper
-                fo = open(file_name, 'wb')
-                fo.write(json.dumps(papers, indent=4))
-                fo.close()
+                this_paper['Extras']['Citations']
             except:
                 # If we get here then there is no citation.
-                logging.warn('No citations found for %s.', str(this_paper))
+                logging.warn('No citations found for %s.', str(this_paper['IDs']['hash']))
 
     csvfile = open('../cache/citations.csv', 'wb')
     citation_file = csv.writer(csvfile)
