@@ -20,13 +20,11 @@ import bibliography.bibtex
 # Starting to hack around with using generic template and not using pubmed
 
 # - need to have a well defined template of the data model to refer to.
-# - Being inconsistent with where I'm importing libs - should we do it in each
-# sub routine, or at the top of each file, or can we do it globally?
 # - opening the json files in each subroutine, not that efficient.
 
 __author__ = "Olly Butters, Hugh Garner"
-__date__ = 29/6/16
-__version__ = '0.2.2'
+__date__ = 7/7/16
+__version__ = '0.2.3'
 
 
 # Options
@@ -71,9 +69,7 @@ logging.basicConfig(filename='../data/papers.log',
 # Get the papers. This will get all the metadata and store
 # it in a cache directory.
 # papers will be the giant object that has all the papers in it
-# pmids is the list of papers
 papers = {}
-# pmids = []
 
 # commenting out the get stuff as my assumption is that hughs work
 # will join this up
@@ -86,7 +82,6 @@ papers = {}
 paper_list = [
     'e2cdfaede7d8e4207820a6ea36e6e01b',
     '47d268cdce86aa9248ea534ea6b5b5eb']
-print paper_list
 
 # sort the list - have a better idea of the order things will run
 paper_list.sort()
@@ -106,8 +101,6 @@ add.geocode.geocode(paper_list)
 
 if update_citations:
     add.citations.citations(paper_list)
-
-# exit()
 
 file_name = '../data/summary_added_to'
 fo = open(file_name, 'wb')

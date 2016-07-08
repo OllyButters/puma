@@ -1,21 +1,19 @@
 #! /usr/bin/env python
 
+import urllib2
+import json
+import datetime
+import time
+import csv
+import logging
+
+
 # Use the elsevier API to get the number of citations a paper has bsed on its PMID.
 # Ultimately need to build a GET string like
 # http://api.elsevier.com/content/search/scopus?query=PMID(18562177)&apiKey=8024d746590aade6be6856a22a734783&field=citedby-count
-
 def citations(paper_list):
 
-    import urllib2
-    import json
-    import datetime
-    import time
-    import csv
-    import logging
-    import sys
-
     api_key = '8024d746590aade6be6856a22a734783'
-    field = 'citedby-count'
     url = 'http://api.elsevier.com/content/search/scopus'
 
     print 'Doing citations'
@@ -43,7 +41,6 @@ def citations(paper_list):
 
         # read the cache
         try:
-            # papers[this_pmid]['Extras']['Citations'] = cached_citations[this_pmid]['citation_count']
             papers[0]['Extras']['Citations'] = cached_citations[this_paper]['citation_count']
             logging.info(str(this_paper)+' in citation cache')
         except:
@@ -56,15 +53,14 @@ def citations(paper_list):
                 logging.info(request_string)
                 try:
                     response = urllib2.urlopen(request_string).read()
+                    t = json.loads(response)
                 except:
                     logging.error('The citation query failed - maybe it timed out?')
                     print 'The citation query failed - maybe it timed out?'
                     exit()
-                t = json.loads(response)
 
                 try:
                     citations = t['search-results']['entry'][0]['citedby-count']
-                    # print 'Citations=' + citations
                     papers[0]['Extras']['Citations'] = citations
                     cached_citations[this_paper] = {}
                     cached_citations[this_paper]['citation_count'] = citations
@@ -75,7 +71,7 @@ def citations(paper_list):
                     try:
                         error = t['search-results']['entry'][0]['error']
                         if error == 'Result set was empty':
-                            logging.info('No citation results from scopus using DOI %s %s',str(papers[this_paper]['doi']),str(this_paper))
+                            logging.info('No citation results from scopus using DOI %s %s', str(papers[this_paper]['doi']), str(this_paper))
                     except:
                         # a different error happened!
                         # log this
@@ -87,6 +83,8 @@ def citations(paper_list):
                         print t['search-results']['entry'][0]['error']
             except:
                 logging.info('No DOI for = '+this_paper)
+
+# shoud wrap the above up as a fn and run it with doi and pmid separately
 
             # The above could have failed a couple of points - no DOI or nothing returned from a DOI query
 #            try:
@@ -144,7 +142,6 @@ def citations(paper_list):
     csvfile = open('../cache/citations.csv', 'wb')
     citation_file = csv.writer(csvfile)
     for this_citation in cached_citations:
-        # print str(cached_citations[this_citation])
         temp_citation_count = cached_citations[this_citation]['citation_count']
         temp_date_downloaded = cached_citations[this_citation]['date_downloaded']
         citation_file.writerow([this_citation, str(temp_citation_count), temp_date_downloaded])

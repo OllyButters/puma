@@ -1,13 +1,14 @@
 #! /usr/bin/env python
 
+import csv
+import re
+import logging
+import json
+
 
 # Have a go at geocoding the cleaned institute names
 # I would expect there to be a lat long for all of them
 def geocode(paper_list):
-    import csv
-    import re
-    import logging
-    import json
 
     print 'Geocoding'
 
@@ -23,7 +24,7 @@ def geocode(paper_list):
                     continue
 
                 # If there is a second element in this row then carry on
-                lat_long = {'lat':row[1], 'long':row[2]}
+                lat_long = {'lat': row[1], 'long': row[2]}
                 geocode[row[0]] = lat_long
             except:
                 logging.warn('Something went wrong with looking up the lat/long for '+row[0])
@@ -39,8 +40,6 @@ def geocode(paper_list):
             papers = json.load(fo)
 
         try:
-            #papers[this_pmid]['Extras']['LatLong'] = geocode[papers[this_pmid]['Extras']['CleanInstitute']]
-            #papers[this_pmid]['Extras']['LatLong'] = geocode[papers[this_pmid]['Extras']['CleanInstitute']]
             papers[0]['Extras']['LatLong'] = geocode[papers[0]['Extras']['CleanInstitute']]
 
             # Save it for later

@@ -7,6 +7,7 @@ import json
 ############################################################
 # Have all the data now, so do something with it
 
+
 ############################################################
 # Build a list of all journals and count frequencies of each
 def journals(paper_list):
@@ -42,7 +43,6 @@ def journals(paper_list):
             journals_file.writerow([w.encode('utf-8'), freq[w]])
 
 
-
 ############################################################
 # Build a list of Abstracts
 def abstracts(pmids, papers):
@@ -73,9 +73,6 @@ def abstracts(pmids, papers):
             abstracts_file.writerow([w.encode('utf-8'), freq[w]])
 
 
-
-
-
 ############################################################
 # Try with the authors - these are in a nested dict
 def authors(paper_list):
@@ -91,14 +88,13 @@ def authors(paper_list):
             with open(file_name) as fo:
                 papers = json.load(fo)
             for this_author in papers[0]['author']:
-        # There are some entries in the author list that are not actually authors e.g. 21379325 last author
+                # There are some entries in the author list that are not actually authors e.g. 21379325 last author
                 try:
                     authors.append(this_author['family'])
                 except:
                     pass
         except:
-            logging.warn('No AuthorList for '+this_pmid)
-
+            logging.warn('No AuthorList for '+this_paper)
 
     # print authors
     freq = dict((x, authors.count(x)) for x in set(authors))
@@ -137,14 +133,11 @@ def first_authors(paper_list):
         except:
             next
 
-# print authors
     freq = dict((x, first_authors.count(x)) for x in set(first_authors))
     print "\n###First authors###"
 
     print str(len(first_authors))+'/'+str(num_papers)
     print str(len(set(first_authors)))+' different first authors'
-
-# print freq
 
     i = 0
     print 'Top 5'
@@ -157,6 +150,7 @@ def first_authors(paper_list):
                 i = i+1
                 # Need to utf-8 encode
             authors_file.writerow([w.encode('utf-8'), freq[w]])
+
 
 ############################################################
 # Try with the FIRST authors INSTITUTE- these are in a nested dict
@@ -198,7 +192,6 @@ def inst(paper_list):
             authors_file.writerow([w.encode('utf-8'), freq[w]])
 
 
-
 ############################################################
 # Try with the mesh headings - these are in a nested dict
 def mesh(paper_list):
@@ -207,7 +200,6 @@ def mesh(paper_list):
     mesh = []
     coverage = 0
     for this_paper in paper_list:
-    # print this_pmid
 
         # open the raw file and parse it
         file_name = '../cache/processed/'+this_paper
@@ -222,14 +214,10 @@ def mesh(paper_list):
                 for this_mesh in papers[0]['MedlineCitation']['MeshHeadingList']:
                     mesh.append(this_mesh['DescriptorName'])
             except:
-        # Do nothing
                 pass
 
-# print mesh
     freq = dict((x, mesh.count(x)) for x in set(mesh))
     print "\n###Mesh###"
-
-# print freq
 
     print str(coverage)+'/'+str(num_papers)
     print str(len(set(mesh)))+' different mesh headings'
@@ -243,7 +231,7 @@ def mesh(paper_list):
             if i < 5:
                 print w, freq[w]
                 i = i+1
-        # Need to utf-8 encode
+            # Need to utf-8 encode
             mesh_file.writerow([w.encode('utf-8'), freq[w]])
 
 
@@ -259,7 +247,6 @@ def output_csv(paper_list):
             print file_name
             with open(file_name) as fo:
                 papers = json.load(fo)
-
 
             try:
                 title = papers[0]['title']

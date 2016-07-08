@@ -8,6 +8,7 @@ import sys
 ############################################################
 # Have all the data now, so do something with it
 
+
 ############################################################
 # Build a list of all papers by year
 ############################################################
@@ -16,7 +17,6 @@ def build_yearly(paper_list):
 
     yearly_papers = {}
     html_file = open('../html/yearly.html', 'w')
-
 
     # Build the text needed for each paper
     for this_paper in paper_list:
@@ -80,8 +80,6 @@ def build_yearly(paper_list):
                 if this_year not in yearly_papers:
                     yearly_papers[this_year] = list()
 
-
-
                 temp = yearly_papers[this_year]
                 temp.append({this_paper:html})
                 yearly_papers[this_year] = temp
@@ -106,13 +104,10 @@ def build_yearly(paper_list):
             print >> html_file, temp[0].encode('utf-8')
 
 
-
-
 ############################################################
 # Build a list of all mesh keywords
 ############################################################
 def build_mesh(pmids, papers):
-
 
     print "\n###HTML - mesh###"
 
@@ -147,7 +142,6 @@ def build_mesh(pmids, papers):
         except:
             pass
 
-
     # print mesh_papers
 
     # Make a JSON file for each mesh term, in it put all the PMIDs for this term
@@ -164,14 +158,12 @@ def build_mesh(pmids, papers):
         fo.write(json.dumps(mesh_papers_major[this_mesh], indent=4))
         fo.close()
 
-
     # Make a page with ALL the headings on it
     print >>html_file_all, '<ul>'
     for this_mesh in sorted(mesh_papers_all):
         temp = '<li><a href="../html/mesh/'+this_mesh+'">'+this_mesh+'</a></li>'
         print >> html_file_all, temp
     print >> html_file_all, '</ul>'
-
 
     # Make a page with the MAJOR headings on it
     print >> html_file_major, '<ul>'
@@ -194,7 +186,6 @@ def build_summary(pmids, papers):
     html_file = open('../html/index.html', 'w')
     data_file = open('../html/data.js', 'w')
 
-
     # Put some links together for this page
     temp = '<a href="yearly.html">All papers</a>&nbsp;'
     temp += '<a href="mesh_all.html">ALL mesh keywords</a>&nbsp;'
@@ -202,7 +193,6 @@ def build_summary(pmids, papers):
     temp += '<a href="map.html">Map</a>&nbsp;<br/>'
     temp += '<a href="plot.html">Plot</a>&nbsp;<br/>'
     print >>html_file, temp
-
 
     # Calculate the number of papers for each year
     for this_pmid in pmids:
@@ -237,7 +227,6 @@ def build_summary(pmids, papers):
         except:
             summary[str(this_year)] = {'num_papers':0, 'cumulative':0, 'uob':0, 'citations':0, 'cumulative_citations':0}
 
-
     # Calculate the cumulative number of papers published
     for this_year in sorted(summary, reverse=False):
         try:
@@ -261,7 +250,6 @@ def build_summary(pmids, papers):
     for this_year in sorted(summary, reverse=False):
         print >>data_file,'[\''+this_year+'\','+str(summary[this_year]['num_papers'])+'],'
     print >>data_file, ']);'
-
 
     # Copy the main html page across
     shutil.copyfile('html/templates/plot.html', '../html/plot.html')
@@ -306,7 +294,6 @@ def build_google_map(pmids, papers):
         except:
             pass
 
-
     # print info
 
     kml = "var locations =["
@@ -316,6 +303,7 @@ def build_google_map(pmids, papers):
 
     kml_file = open('../html/map.kml', 'w')
     print >>kml_file, kml
+
 
 #########################################
 # Build a google heat map based
@@ -344,7 +332,6 @@ def build_google_heat_map():
                 pass
 
     print >>data_file,'var map =([[\'Latitude\',\'Longitude\',\'Number of papers\',\'Institute\'],'
-
 
     # Open the first author institute csv file we made earlier
     with open('../data/first_authors_inst.csv', 'rb') as csvfile:

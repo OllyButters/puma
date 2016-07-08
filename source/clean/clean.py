@@ -1,10 +1,16 @@
 #! /usr/bin/env python
 
+import json
+import csv
+import re
+import logging
+import os
+
+
 # Copy all the raw data to the processed directory, this means we are only
 # ever working on the processed stuff and we never touch the raw data. This
-# makes it easier to rerun as we don't have to rebuild the cache each time.
+# makes it easier to rerun as we don't have to rebuild the raw cache each time.
 def pre_clean(paper_list):
-    import json
     for this_paper in paper_list:
 
         # open the raw file and parse it
@@ -29,10 +35,6 @@ def pre_clean(paper_list):
 # in the institute_cleaning.csv file. If it does then replace it with a
 # standard name.
 def clean_institution(paper_list):
-    import csv
-    import re
-    import logging
-    import json
 
     logging.info('Starting institute cleaning')
 
@@ -57,9 +59,6 @@ def clean_institution(paper_list):
             except:
                 pass
 
-    # print pattern
-    # print replacements
-
     logging.info('Config read in, starting processing')
 
     # Cycle through institute checking the whole substitution list.
@@ -77,7 +76,6 @@ def clean_institution(paper_list):
             print '============='
             print papers[0]['author'][0]['affiliation'][0]['name']
             institute = papers[0]['author'][0]['affiliation'][0]['name']
-            # exit()
 
         except:
             logging.warn('Could not find an affiliation for %s', this_paper)
@@ -90,8 +88,6 @@ def clean_institution(paper_list):
                 logging.info(
                     'ID:%s. %s MATCHES %s REPLACEDBY %s',
                     this_paper, institute, pattern[y], replacements[y])
-                # papers[this_paper]['Extras']['CleanInstitute'] = replacements[y]
-                # papers[0]['Extras'] = {}
                 papers[0]['Extras']['CleanInstitute'] = replacements[y]
                 break
 
@@ -111,12 +107,9 @@ def clean_institution(paper_list):
 
     return number_not_matched
 
+
 # Go through the deltas directory and apply any changes that are needed
 def do_deltas(papers):
-    # import csv
-    import json
-    # import logging
-    import os
 
     delta_dir = '../config/deltas/'
 
