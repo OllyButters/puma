@@ -75,7 +75,9 @@ papers = {}
 # will join this up
 # get.get.get(pmids, papers)
 
-with open('../cache/raw/sample_data_object') as fo:
+# input_file = 'sample_data_object'
+input_file = 'data-alspac-all-pubmed-merged-format'
+with open('../cache/raw/'+input_file) as fo:
     papers = json.load(fo)
 
 print str(len(papers))+' papers to process'

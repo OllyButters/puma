@@ -5,13 +5,27 @@ import csv
 import re
 import logging
 import os
+import hashlib
 
 
 # Copy all the raw data to the processed directory, this means we are only
 # ever working on the processed stuff and we never touch the raw data. This
 # makes it easier to rerun as we don't have to rebuild the raw cache each time.
 def pre_clean(papers):
+    print 'precleaning'
     for this_paper in papers:
+
+        print this_paper['title']
+        # Add IDs section
+        this_paper['IDs'] = {}
+
+        # Make hash from title
+        hash = hashlib.md5(this_paper['title']).hexdigest()
+        this_paper['IDs']['hash'] = hash
+
+        this_paper['IDs']['DOI'] = ''
+        this_paper['IDs']['PMID'] = ''
+        this_paper['IDs']['zotero'] = ''
 
         # Add an extras item that we add stuff to - clean_institution,
         # citations etc
