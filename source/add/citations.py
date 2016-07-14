@@ -48,7 +48,7 @@ def citations(papers, api_key, citation_max_life):
             time.sleep(1)
 
             # try querying with the DOI first - there might not be a DOI
-            try:
+            if this_paper['IDs']['DOI'] != "":
                 request_string = url+'?apiKey='+api_key+'&field=citedby-count&query=DOI('+this_paper['IDs']['DOI']+')'
                 logging.info(request_string)
                 try:
@@ -81,53 +81,45 @@ def citations(papers, api_key, citation_max_life):
                         print request_string
                         print t
                         print t['search-results']['entry'][0]['error']
-            except:
+            else:
                 logging.info('No DOI for = '+this_paper['IDs']['hash'])
 
-# shoud wrap the above up as a fn and run it with doi and pmid separately
-
+            # shoud wrap the above up as a fn and run it with doi and pmid separately
             # The above could have failed a couple of points - no DOI or nothing returned from a DOI query
-#            try:
-#                papers[this_paper]['Extras']['Citations']
-#            except:
-#                pass
-#                try:
-#                    #Now try with a PMID
-#                    request_string=url+'?apiKey='+api_key+'&field=citedby-count&query=PMID('+this_pmid+')'
-#                    logging.info(request_string)
-#                    response = urllib2.urlopen(request_string).read()
-#                    t=json.loads(response)
-#
-#                    #sometimes this returns multiple entries e.g. 22935244
-#
-#                    try:
-#                        citations = t['search-results']['entry'][0]['citedby-count']
-#                        #print citations
-#                        papers[this_paper]['Extras']['Citations']=citations
-#                        cached_citations[this_paper] = {}
-#                        cached_citations[this_paper]['citation_count'] = citations
-#                        cached_citations[this_paper]['date_downloaded'] = datetime.datetime.now()
-#                        logging.info('Citation added via PMID')
-#                    except:
-#                        #there wasnt a number of citations returned, so see if we can catch this.
-#                        try:
-#                            error = t['search-results']['entry'][0]['error']
-#                            if error == 'Result set was empty':
-#                                #log this
-#                                logging.info('No citation results from scopus for '+str(this_pmid))
-#                                #print 'No citations'
-#                        except:
-#                            #a different error happened!
-#                            #log this
-#                            logging.warn('An unexpected error happened getting the citations!')
-#                            logging.warn(t)
-#                            print 'An unexpected error happened getting the citations!'
-#                            print request_string
-#                            print t
-#
-#                except:
-#                    pass
-#
+            if 'Citations' not in this_paper['Extras'] and this_paper['IDs']['PMID'] != "":
+                # Now try with a PMID
+                request_string = url + '?apiKey=' + api_key + '&field=citedby-count&query=PMID(' + this_paper['IDs']['PMID'] + ')'
+                logging.info(request_string)
+                response = urllib2.urlopen(request_string).read()
+                t = json.loads(response)
+
+                # sometimes this returns multiple entries e.g. 22935244
+
+                try:
+                    citations = t['search-results']['entry'][0]['citedby-count']
+                    # print citations
+                    this_paper['Extras']['Citations'] = citations
+                    cached_citations[this_paper['IDs']['hash']] = {}
+                    cached_citations[this_paper['IDs']['hash']]['citation_count'] = citations
+                    cached_citations[this_paper['IDs']['hash']]['date_downloaded'] = datetime.datetime.now()
+                    logging.info('Citation added via PMID')
+                except:
+                    # there wasnt a number of citations returned, so see if we can catch this.
+                    try:
+                        error = t['search-results']['entry'][0]['error']
+                        if error == 'Result set was empty':
+                            # log this
+                            logging.info('No citation results from scopus for ' + str(this_paper['IDs']['PMID']))
+                            # print 'No citations'
+                    except:
+                        # a different error happened!
+                        # log this
+                        logging.warn('An unexpected error happened getting the citations!')
+                        logging.warn(t)
+                        print 'An unexpected error happened getting the citations!'
+                        print request_string
+                        print t
+
             try:
                 this_paper['Extras']['Citations']
             except:

@@ -31,6 +31,24 @@ def pre_clean(papers):
         # citations etc
         this_paper['Extras'] = {}
 
+        # Delete the empty authors.
+        # There must be a more elegant way than this.
+        authors_to_keep = []
+        for i in range(0, len(this_paper['author'])-1):
+            # print this_paper['author'][i]['family']
+            if this_paper['author'][i]['family'] != "":
+                authors_to_keep.append(this_paper['author'][i])
+        this_paper['author'] = authors_to_keep
+
+        # Try sticking in the pmid from elsewhere
+        try:
+            this_paper['IDs']['PMID'] = this_paper['alternative-id'][0]
+        except:
+            try:
+                this_paper['IDs']['PMID'] = this_paper['alternative-id'][1]
+            except:
+                pass
+
 
 # Have a go at tidying up the mess that is first author institution.
 # Essentially go through each institution and see if it matches a patten
@@ -70,8 +88,8 @@ def clean_institution(papers):
 
         try:
             print '============='
-            print this_paper['author'][0]['affiliation'][0]['name']
-            institute = this_paper['author'][0]['affiliation'][0]['name']
+            print this_paper['author'][0]['affiliation'][1]['name']
+            institute = this_paper['author'][0]['affiliation'][1]['name']
 
         except:
             logging.warn('Could not find an affiliation for %s', this_paper)

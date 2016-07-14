@@ -247,4 +247,4 @@ def output_csv(papers):
             try:
                 all_file.writerow([title, first_author, journal, citations, this_paper])
             except:
-                print 'Failing on '+str(this_paper['IDs']['mesh'])
+                print 'Failing on '+str(this_paper['IDs']['hash'])
