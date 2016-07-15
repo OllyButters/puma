@@ -242,6 +242,10 @@ def build_papers(papers):
 
     # Build the text needed for each paper
     for this_paper in papers:
+
+        for x in this_paper:
+            print (x, ':', this_paper[x])
+
         try:
             html = ''
 
@@ -280,6 +284,12 @@ def build_papers(papers):
             # PMID
             try:
                 html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">'+str(this_paper['IDs']['PMID']) + '</a>'
+            except:
+                pass
+
+            # Zotero
+            try:
+                html += '&nbsp;Zotero: <a href="' + this_paper['IDs']['zotero'] + '">' + this_paper['IDs']['zotero'] + '</a>'
             except:
                 pass
 
@@ -470,50 +480,58 @@ def build_mesh(papers):
             print >>fo, temp
 
             # Build the text needed for each paper
-            for this_pmid in mesh_papers_all[this_mesh]:
+            for this_paper in mesh_papers_all[this_mesh]:
 
                 try:
+                    html = ''
+
+                    # altmetric data
+                    try:
+                        html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
+                        # html += '<br/><img class="altmetric" src="' + papers[this_pmid]['altmetric_badge'] + '" alt="Badge"><a href="'+papers[this_pmid]['details_url']+'">Altmetric</a>'
+                    except:
+                        pass
+
                     # Paper title as a link
-                    html = '<span style="text-decoration: underline; font-weight:bold;">'+papers[this_pmid]['ArticleTitle'] + '</span><br/>'
+                    html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['title'] + '</span><br/>'
 
                     # Abstract text - probably too long to go on this page
                     # html += papers[this_pmid]['AbstractText'][0]+'<br/>'
 
                     # Authors
                     authors = []
-                    for this_author in papers[this_pmid]['AuthorList']:
+                    for this_author in this_paper['author']:
                         # Some author lists have a collective name. Ignore this.
+                        # Some people don't actually have initials. eg wraight in pmid:18454148
                         try:
-                            this_author['CollectiveName']
-                            next
+                            authors.append(this_author['family'] + ', ' + this_author['Initials'])
                         except:
-                            # Some people don't actually have initials. eg wraight in pmid:18454148
-                            try:
-                                authors.append(this_author['LastName']+', '+this_author['Initials'])
-                            except:
-                                pass
+                            pass
 
                     html += '; '.join(authors)
                     html += '<br/>'
 
                     # Journal volume
                     try:
-                        html += papers[this_pmid]['Journal']+' Vol '+papers[this_pmid]['JournalVolume']+'<br/>'
+                        html += this_paper['Journal'] + ' Vol ' + this_paper['JournalVolume'] + '<br/>'
                     except:
                         pass
 
                     # PMID
-                    html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/'+str(this_pmid)+'">'+str(this_pmid)+'</a>'
+                    try:
+                        html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">'+str(this_paper['IDs']['PMID']) + '</a>'
+                    except:
+                        pass
 
                     # DOI
                     try:
-                        html += '&nbsp;DOI: <a href="http://doi.org/'+papers[this_pmid]['doi'][0]+'">'+papers[this_pmid]['doi'][0]+'</a>'
+                        html += '&nbsp;DOI: <a href="http://doi.org/' + this_paper['IDs']['DOI'] + '">' + this_paper['IDs']['DOI'] + '</a>'
                     except:
                         pass
 
                     # citation count
                     try:
-                        html += '&nbsp; Citations: '+papers[this_pmid]['Extras']['Citations']
+                        html += '&nbsp; Citations: ' + this_paper['Extras']['Citations']
                     except:
                         pass
 
@@ -521,9 +539,9 @@ def build_mesh(papers):
                     html += '<br/><br/>'
 
                     fo.write(html)
-
+                    print "NOT FAIL"
                 except:
-                    print 'Failing on '+this_pmid
+                    print 'Failing on ' + this_paper['IDs']['hash']
                     print sys.exc_info()
                     pass
 
