@@ -243,9 +243,6 @@ def build_papers(papers):
     # Build the text needed for each paper
     for this_paper in papers:
 
-        for x in this_paper:
-            print (x, ':', this_paper[x])
-
         try:
             html = ''
 
