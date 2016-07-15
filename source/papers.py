@@ -1,104 +1,128 @@
 #! /usr/bin/env python
 
-##########################################################
-#Get all the paper metadata from pubmed and do stuff with it
-##########################################################
-
-#22/3/15
-
-import csv
 import json
 import os.path
-#import gdata.docs.service
 import logging
+# import pprint
 
-import get.get
+# import get.get
 import clean.clean
 import add.geocode
 import add.citations
-import analyse.analysis 
+import analyse.analysis
 import html.build_html
 import bibliography.bibtex
 
-#Stick a flag into see if we want to update the citations
-update_citations = True
+##########################################################
+# Get all the paper metadata from pubmed and do stuff with it
+##########################################################
+# Starting to hack around with using generic template and not using pubmed
 
+__author__ = "Olly Butters, Hugh Garner"
+__date__ = 8/7/16
+__version__ = '0.2.4'
+
+
+# Options - these should get moved out into a config file
+# Stick a flag into see if we want to update the citations
+update_citations = True
+scopus_api_key = '8024d746590aade6be6856a22a734783'
+scopus_citation_max_life = 30  # days
+
+
+# pp = pprint.PrettyPrinter(indent=4)
 
 ###########################################################
-#Make sure the directory structure is set up first
-if (os.path.exists('../cache') == False):
+# Make sure the directory structure is set up first.
+# Everything in the cache is grabbed from elsewhere, or built on the fly,
+# so it should all be considerd ready to be deleted at any point!
+if (os.path.exists('../cache') is False):
     os.mkdir('../cache')
 
-if (os.path.exists('../data') == False):
+# The raw, unprocessed data.
+if (os.path.exists('../cache/raw') is False):
+    os.mkdir('../cache/raw')
+
+if (os.path.exists('../cache/raw/pubmed') is False):
+    os.mkdir('../cache/raw/pubmed')
+
+if (os.path.exists('../cache/processed') is False):
+    os.mkdir('../cache/processed')
+
+if (os.path.exists('../data') is False):
     os.mkdir('../data')
 
-if (os.path.exists('../html') == False):
+if (os.path.exists('../html') is False):
     os.mkdir('../html')
 
-if (os.path.exists('../html/mesh') == False):
+if (os.path.exists('../html/mesh') is False):
     os.mkdir('../html/mesh')
 
 
-#Set up the logging
-logging.basicConfig(filename='../data/papers.log',filemode='w',level=logging.INFO)
+# Set up the logging
+logging.basicConfig(filename='../data/papers.log',
+                    filemode='w',
+                    level=logging.DEBUG)
 
 
 ###########################################################
-#Get the papers
+# Get the papers. This will get all the metadata and store
+# it in a cache directory.
+# papers will be the giant object that has all the papers in it
 papers = {}
-pmids = []
-get.get.get(pmids, papers)
 
-#file_name='../data/summary'
-#with open(file_name) as fo:
-#    papers=json.load(fo)
+# commenting out the get stuff as my assumption is that hughs work
+# will join this up
+# get.get.get(pmids, papers)
 
-print str(len(pmids))+' PMIDs to process'
-print str(len(papers))+' papers processed'
+# input_file = 'sample_data_object'
+input_file = 'data-alspac-all-pubmed-merged-format'
+with open('../cache/raw/'+input_file) as fo:
+    papers = json.load(fo)
 
-###########################################################
-#Clean the data - e.g. tidy institute names
-clean.clean.clean_institution(pmids,papers)
-#clean.clean.do_deltas(papers)
+print str(len(papers))+' papers to process'
 
-#Save it for later
-file_name='../data/summary_cleaned'
-fo = open(file_name, 'wb')
-fo.write(json.dumps(papers, indent=4))
-fo.close()
 
 ###########################################################
-#Add some extra data in - i.e. geocodes and citations 
-add.geocode.geocode(pmids,papers)
+# Clean the data - e.g. tidy institute names
+clean.clean.pre_clean(papers)
+clean.clean.clean_institution(papers)
+# clean.clean.do_deltas(papers)
+
+###########################################################
+# Add some extra data in - i.e. geocodes and citations
+add.geocode.geocode(papers)
 
 if update_citations:
-    add.citations.citations(pmids,papers)
+    add.citations.citations(papers, scopus_api_key, scopus_citation_max_life)
 
-
-file_name='../data/summary_added_to'
+file_name = '../data/summary_added_to'
 fo = open(file_name, 'wb')
 fo.write(json.dumps(papers, indent=4))
 fo.close()
 
 
-bibliography.bibtex.bibtex(pmids,papers)
+bibliography.bibtex.bibtex(papers)
 
 ###########################################################
-#Do some actual analysis on the data. This will result in 
-#some CSV type files that can be analysed.
-analyse.analysis.journals(pmids, papers)
-#analyse.analysis.abstracts(pmids, papers)
-analyse.analysis.authors(pmids, papers)
-analyse.analysis.first_authors(pmids, papers)
-analyse.analysis.inst(pmids, papers)
-analyse.analysis.mesh(pmids, papers)
+# Do some actual analysis on the data. This will result in
+# some CSV type files that can be analysed.
+analyse.analysis.journals(papers)
 
-analyse.analysis.output_csv(pmids, papers)
+# pp.pprint(papers)
+
+# analyse.analysis.abstracts(pmids, papers)
+analyse.analysis.authors(papers)
+analyse.analysis.first_authors(papers)
+analyse.analysis.inst(papers)
+analyse.analysis.mesh(papers)
+analyse.analysis.output_csv(papers)
+
 
 ###########################################################
-#Make some web pages
-html.build_html.build_yearly(pmids, papers)
-html.build_html.build_mesh(pmids, papers)
-html.build_html.build_summary(pmids, papers)
-html.build_html.build_google_map(pmids, papers)
+# Make some web pages
+html.build_html.build_yearly(papers)
+html.build_html.build_mesh(papers)
+html.build_html.build_summary(papers)
+html.build_html.build_google_map(papers)
 html.build_html.build_google_heat_map()
