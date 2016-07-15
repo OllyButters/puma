@@ -11,6 +11,7 @@ import add.geocode
 import add.citations
 import analyse.analysis
 import html.build_html
+import html.build_htmlv2
 import bibliography.bibtex
 
 ##########################################################
@@ -140,14 +141,14 @@ analyse.analysis.output_csv(papers)
 ###########################################################
 # Make some web pages
 
-cohort_rating = html.build_htmlv2.build_home(pmids, papers)
-html.build_htmlv2.build_papers(pmids, papers)
-html.build_htmlv2.build_mesh(pmids, papers)
-html.build_htmlv2.build_google_map(pmids, papers)
-html.build_htmlv2.build_metrics(pmids, papers, cohort_rating)
+cohort_rating = html.build_htmlv2.build_home(papers)
+html.build_htmlv2.build_papers(papers)
+html.build_htmlv2.build_mesh(papers)
+html.build_htmlv2.build_google_map(papers)
+html.build_htmlv2.build_metrics(papers, cohort_rating)
 
 # html.build_html.build_yearly(papers)
 # html.build_html.build_mesh(papers)
 # html.build_html.build_summary(papers)
 # html.build_html.build_google_map(papers)
-# html.build_html.build_google_heat_map()
+html.build_html.build_google_heat_map()

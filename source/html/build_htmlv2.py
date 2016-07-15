@@ -85,7 +85,7 @@ def build_common_foot():
 ############################################################
 
 
-def build_home(pmids, papers):
+def build_home(papers):
 
     import shutil
 
@@ -117,9 +117,9 @@ def build_home(pmids, papers):
     print >>html_file, temp
 
     # Calculate the number of papers for each year
-    for this_pmid in pmids:
+    for this_paper in papers:
         try:
-            this_year = papers[this_pmid]['Year']
+            this_year = this_paper['PubmedData']['History'][0]['Year']
             # Make sure there is a dict item for this year
             if this_year not in summary:
                 summary[this_year] = {'num_papers': 0, 'cumulative': 0, 'uob': 0, 'citations': 0, 'cumulative_citations': 0}
@@ -129,12 +129,12 @@ def build_home(pmids, papers):
 
             # add the citations for this paper to the year running total
             try:
-                summary[this_year]['citations'] = summary[this_year]['citations']+int(papers[this_pmid]['Extras']['Citations'])
+                summary[this_year]['citations'] = summary[this_year]['citations'] + int(this_paper['Extras']['Citations'])
             except:
                 pass
 
             # Get number of UoB papers published this year
-            if papers[this_pmid]['Extras']['CleanInstitute'] == 'University of Bristol':
+            if this_paper['Extras']['CleanInstitute'] == 'University of Bristol':
                 summary[this_year]['uob'] = summary[this_year]['uob']+1
         except:
             pass
@@ -205,14 +205,14 @@ def build_home(pmids, papers):
     temp = build_common_foot()
     print >>html_file, temp
 
-    cr_sum = cr_sum / len(pmids)
+    cr_sum = cr_sum / len(papers)
     return cr_sum
 ############################################################
 # Home page with summary of years
 ############################################################
 
 
-def build_papers(pmids, papers):
+def build_papers(papers):
 
     import shutil
     print "\n###HTML papers list###"
@@ -241,58 +241,57 @@ def build_papers(pmids, papers):
     print >>html_file, temp
 
     # Build the text needed for each paper
-    for this_pmid in pmids:
+    for this_paper in papers:
         try:
             html = ''
 
             # altmetric data
             try:
-                html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + papers[this_pmid]['doi'][0] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
+                html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
                 # html += '<br/><img class="altmetric" src="' + papers[this_pmid]['altmetric_badge'] + '" alt="Badge"><a href="'+papers[this_pmid]['details_url']+'">Altmetric</a>'
             except:
                 pass
 
             # Paper title as a link
-            html += '<span style="text-decoration: underline; font-weight:bold;">' + papers[this_pmid]['ArticleTitle'] + '</span><br/>'
+            html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['title'] + '</span><br/>'
 
             # Abstract text - probably too long to go on this page
             # html += papers[this_pmid]['AbstractText'][0]+'<br/>'
 
             # Authors
             authors = []
-            for this_author in papers[this_pmid]['AuthorList']:
+            for this_author in this_paper['author']:
                 # Some author lists have a collective name. Ignore this.
+                # Some people don't actually have initials. eg wraight in pmid:18454148
                 try:
-                    this_author['CollectiveName']
-                    next
+                    authors.append(this_author['family'] + ', ' + this_author['Initials'])
                 except:
-                    # Some people don't actually have initials. eg wraight in pmid:18454148
-                    try:
-                        authors.append(this_author['LastName']+', '+this_author['Initials'])
-                    except:
-                        pass
+                    pass
 
             html += '; '.join(authors)
             html += '<br/>'
 
             # Journal volume
             try:
-                html += papers[this_pmid]['Journal']+' Vol '+papers[this_pmid]['JournalVolume']+'<br/>'
+                html += this_paper['Journal'] + ' Vol ' + this_paper['JournalVolume'] + '<br/>'
             except:
                 pass
 
             # PMID
-            html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/'+str(this_pmid)+'">'+str(this_pmid)+'</a>'
+            try:
+                html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">'+str(this_paper['IDs']['PMID']) + '</a>'
+            except:
+                pass
 
             # DOI
             try:
-                html += '&nbsp;DOI: <a href="http://doi.org/'+papers[this_pmid]['doi'][0]+'">'+papers[this_pmid]['doi'][0]+'</a>'
+                html += '&nbsp;DOI: <a href="http://doi.org/' + this_paper['IDs']['DOI'] + '">' + this_paper['IDs']['DOI'] + '</a>'
             except:
                 pass
 
             # citation count
             try:
-                html += '&nbsp; Citations: '+papers[this_pmid]['Extras']['Citations']
+                html += '&nbsp; Citations: '+this_paper['Extras']['Citations']
             except:
                 pass
 
@@ -300,17 +299,17 @@ def build_papers(pmids, papers):
             html += '<br/><br/>'
 
             # Append this paper to the list indexed by the year
-            this_year = papers[this_pmid]['Year']
+            this_year = this_paper['PubmedData']['History'][0]['Year']
 
             # Make sure there is a dict item for this year
             if this_year not in yearly_papers:
                 yearly_papers[this_year] = list()
 
             temp = yearly_papers[this_year]
-            temp.append({this_pmid: html})
+            temp.append({this_paper['IDs']['hash']: html})
             yearly_papers[this_year] = temp
         except:
-            print 'Failing on '+this_pmid
+            print 'Failing on ' + this_paper['IDs']['hash']
             print sys.exc_info()
             pass
 
@@ -336,7 +335,7 @@ def build_papers(pmids, papers):
 ############################################################
 # Build a list of all mesh keywords
 ############################################################
-def build_mesh(pmids, papers):
+def build_mesh(papers):
     import os.path
 
     print "\n###HTML - mesh###"
@@ -347,28 +346,28 @@ def build_mesh(pmids, papers):
     html_file_major = open('../html/major_keywords/index.html', 'w')
 
     # Build a dict of ALL mesh headings with a list of each pmid in each
-    for this_pmid in pmids:
+    for this_paper in papers:
         try:
             # Look at all the mesh headings for this paper
-            for this_mesh in papers[this_pmid]['MeshHeadingList']:
+            for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
                 # If this mesh term is not already in the dict then add it
                 if this_mesh['DescriptorName'] not in mesh_papers_all:
                     mesh_papers_all[this_mesh['DescriptorName']] = list()
-                mesh_papers_all[this_mesh['DescriptorName']].append(this_pmid)
+                mesh_papers_all[this_mesh['DescriptorName']].append(this_paper['IDs']['hash'])
         except:
             pass
 
     # Build a dict of ONLY MAJOR mesh headings with a list of each pmid in each
-    for this_pmid in pmids:
+    for this_paper in papers:
         try:
             # Look at all the mesh headings for this paper
-            for this_mesh in papers[this_pmid]['MeshHeadingList']:
+            for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
                 # Only interested in majoy topics
                 if this_mesh['MajorTopicYN'] == 'Y':
                     # If this mesh term is not in the dict then add it
                     if this_mesh['DescriptorName'] not in mesh_papers_major:
                         mesh_papers_major[this_mesh['DescriptorName']] = list()
-                    mesh_papers_major[this_mesh['DescriptorName']].append(this_pmid)
+                    mesh_papers_major[this_mesh['DescriptorName']].append(this_paper['IDs']['hash'])
         except:
             pass
 
@@ -538,14 +537,14 @@ def build_mesh(pmids, papers):
 ###########################################################
 
 
-def build_google_map(pmids, papers):
+def build_google_map(papers):
 
     import shutil
 
     info = []
-    for this_pmid in pmids:
+    for this_paper in papers:
         try:
-            this_place = {'lat': papers[this_pmid]['Extras']['LatLong']['lat'], 'long': papers[this_pmid]['Extras']['LatLong']['long'], 'name': papers[this_pmid]['Extras']['CleanInstitute']}
+            this_place = {'lat': this_paper['Extras']['LatLong']['lat'], 'long': this_paper['Extras']['LatLong']['long'], 'name': this_paper['Extras']['CleanInstitute']}
             info.append(this_place)
         except:
             pass
@@ -612,10 +611,9 @@ def intWithCommas(x):
     return "%d%s" % (x, result)
 
 
-def build_metrics(pmids, papers, cohort_rating):
+def build_metrics(papers, cohort_rating):
 
     import shutil
-    import math
 
     html_file = open('../html/metrics/index.html', 'w')
 
@@ -646,7 +644,7 @@ def build_metrics(pmids, papers, cohort_rating):
     temp += "<p>{Explanation of study metrics}</p>"
 
     # Metric calculations
-    total_publications = len(pmids)
+    total_publications = len(papers)
     total_citations = 0
     paper_citations = []
     c20_index = 0
@@ -657,11 +655,11 @@ def build_metrics(pmids, papers, cohort_rating):
 
     c_index_bound = 100
 
-    for this_pmid in pmids:
+    for this_paper in papers:
         # add the citations for paper to total
         try:
 
-            cit = int(papers[this_pmid]['Extras']['Citations'])
+            cit = int(this_paper['Extras']['Citations'])
             total_citations += cit
             paper_citations.append(cit)
 
