@@ -17,7 +17,7 @@ def main():
   doi_cache = pc.getCacheList(filetype='doi')
   pm_cache = pc.getCacheList(filetype='pubmed')
 
-  zot.collection = 'ALSPAC'
+  zot.collection = 'ALSPAC_PAPERS_ALL'
 
   zot.getPapersList()
 
@@ -32,13 +32,15 @@ def main():
     else:
       #just for testing ONLY otherwise we'll end up getting new data all the time
       new_paper = pc.getCacheData(filetype='zotero', filenames=[paper['key']])[paper['key']]
-      new_papers.append(new_paper['data'])
+      #check itemType - if it's 'note', we can ignore
+      if new_paper['data']['itemType'] != 'note':
+        new_papers.append(new_paper['data'])
 
   #now check new_papers for doi or pubmed id and retrieve if required
   for paper in new_papers:
     paper['doi_data'] = {}
     paper['pmid_data'] = {}
-    if 'DOI' in paper:
+    if 'DOI' in paper and paper['DOI'] != "":
       #check if this is the full url, and if so, strip the parent
       #note that this is done again in getDoi.getDoi, but will not find the filename in the cache if we don't process this
       check_doi = re.match(r'^http://dx\.doi\.org/', paper['DOI'])
@@ -68,6 +70,7 @@ def main():
   #merged_papers = []
   template = pc.getCacheData(filenames=['data-doi-template'])['data-doi-template']
   for paper in new_papers:
+    print paper
     merged_paper = {}
     doi_data = copy.deepcopy(paper['doi_data'])
     pmid_data = copy.deepcopy(paper['pmid_data'])
