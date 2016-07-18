@@ -262,3 +262,10 @@ div.foot {
 .clear:after {
   clear:both;
 }
+
+
+
+/* ==== Word Cloud ==== */
+.canvas {
+ /* width:100%;*/
+}

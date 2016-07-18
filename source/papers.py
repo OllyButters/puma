@@ -77,6 +77,9 @@ if not os.path.exists('../html/map'):
 if not os.path.exists('../html/metrics'):
     os.mkdir('../html/metrics')
 
+if not os.path.exists('../html/wordcloud'):
+    os.mkdir('../html/wordcloud')
+
 
 # Set up the logging
 logging.basicConfig(filename='../data/papers.log',
@@ -146,6 +149,7 @@ html.build_htmlv2.build_papers(papers)
 html.build_htmlv2.build_mesh(papers)
 html.build_htmlv2.build_google_map(papers)
 html.build_htmlv2.build_metrics(papers, cohort_rating)
+#html.build_htmlv2.build_word_cloud(papers)
 
 # html.build_html.build_yearly(papers)
 # html.build_html.build_mesh(papers)

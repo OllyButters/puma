@@ -49,6 +49,7 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords</a></li>'
     html += '<li><a href="' + nav_path + 'map/index.html">Publication Map</a></li>'
     html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
+    html += '<li><a href="' + nav_path + 'wordcloud/index.html">Word Cloud</a></li>'
     html += '</ul>'
 
     html += '<div class="after-navgroup">'
@@ -248,8 +249,8 @@ def build_papers(papers):
 
             # altmetric data
             try:
-                html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
-                # html += '<br/><img class="altmetric" src="' + papers[this_pmid]['altmetric_badge'] + '" alt="Badge"><a href="'+papers[this_pmid]['details_url']+'">Altmetric</a>'
+		if this_paper['IDs']['DOI']:
+                    html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
             except:
                 pass
 
@@ -280,19 +281,22 @@ def build_papers(papers):
 
             # PMID
             try:
-                html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">'+str(this_paper['IDs']['PMID']) + '</a>'
+		if this_paper['IDs']['PMID']:
+                    html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">'+str(this_paper['IDs']['PMID']) + '</a>'
             except:
                 pass
 
             # Zotero
             try:
-                html += '&nbsp;Zotero: <a href="' + this_paper['IDs']['zotero'] + '">' + this_paper['IDs']['zotero'] + '</a>'
+		if this_paper['IDs']['zotero']:
+                    html += '&nbsp;Zotero: <a href="' + this_paper['IDs']['zotero'] + '">' + this_paper['IDs']['zotero'] + '</a>'
             except:
                 pass
 
             # DOI
             try:
-                html += '&nbsp;DOI: <a href="http://doi.org/' + this_paper['IDs']['DOI'] + '">' + this_paper['IDs']['DOI'] + '</a>'
+		if this_paper['IDs']['DOI']:
+                    html += '&nbsp;DOI: <a href="http://doi.org/' + this_paper['IDs']['DOI'] + '">' + this_paper['IDs']['DOI'] + '</a>'
             except:
                 pass
 
@@ -445,13 +449,34 @@ def build_mesh(papers):
         print >>html_file_major, temp
     print >>html_file_major, '</ul>'
 
+
     temp = build_common_foot()
     print >>html_file_major, temp
 
     import codecs
 
+    word_cloud_list = "["
+    word_cloud_n = 0
+    word_cloud_max = 0
+    word_cloud_max_name = ""
+
     # Make papers list for headings pages
     for this_mesh in mesh_papers_all:
+
+
+	# Word cloud 
+        if word_cloud_n < 20000:
+  	    if word_cloud_n > 0:
+                word_cloud_list += ','
+            word_cloud_n += 1
+
+ 	    number = len(mesh_papers_all[this_mesh])
+
+	    if number > word_cloud_max:
+                word_cloud_max = number
+                word_cloud_max_name = this_mesh
+
+	    word_cloud_list += '["' + this_mesh  + '", ' + str(number) + ']'
 
         if (not os.path.exists('../html/mesh/'+this_mesh)):
             os.mkdir('../html/mesh/'+this_mesh)
@@ -536,9 +561,9 @@ def build_mesh(papers):
                     html += '<br/><br/>'
 
                     fo.write(html)
-                    print "NOT FAIL"
+
                 except:
-                    print 'Failing on ' + this_paper['IDs']['hash']
+                    # print 'Failing on ' + this_paper['IDs']['hash']
                     print sys.exc_info()
                     pass
 
@@ -546,6 +571,15 @@ def build_mesh(papers):
             print >>fo, temp
 
         fo.close()
+
+    word_cloud_list += "]"
+    build_word_cloud(papers,word_cloud_list)
+    print word_cloud_max
+    print word_cloud_max_name
+    print word_cloud_n
+    import time
+    time.sleep(5)
+
 
 ###########################################################
 # Build a google map based on the lat longs provided before.
@@ -766,6 +800,57 @@ def build_metrics(papers, cohort_rating):
 
     temp += '<div id="cumulative_div"></div>'
     temp += '<div id="papers_per_year_div"></div>'
+
+    print >>html_file, temp
+
+    temp = build_common_foot()
+    print >>html_file, temp
+
+
+###########################################################
+# Build word cloud
+###########################################################
+
+
+def build_word_cloud(papers,list):
+
+    import shutil
+
+    html_file = open('../html/wordcloud/index.html', 'w')
+
+    # Put html together for this page
+    temp = '<html>'
+
+    # html head
+    temp += '<head>'
+    temp += '<title>' + site_title + '</title>'
+    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
+    temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/map.css">'
+
+    shutil.copyfile('html/templates/wordcloud2.js', '../html/wordcloud/wordcloud2.js')
+
+    temp += '<script type="text/javascript" src="wordcloud2.js"></script>'
+    temp += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>'
+
+    temp += '</head>'
+
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Word Cloud</p>', "../", "")
+
+    temp += '<h1 id="pagetitle">Word Cloud</h1>'
+
+    temp += '<div id="sourrounding_div" style="width:100%;height:500px">'
+    temp += '    <canvas id="canvas" class="canvas"></canvas>'
+    temp += '    <div id="html-canvas" class="canvas hide"></div>'
+    temp += '</div>'
+
+    temp += '<script>var div = document.getElementById("sourrounding_div");var canvas = document.getElementById("canvas");canvas.height = div.offsetHeight;canvas.width  = div.offsetWidth;</script>'
+
+    temp += '<script>WordCloud(document.getElementById("canvas"),{ "list": ' + list + ', minSize: 10, gridSize: Math.round(16 * $("#canvas").width() / 1024), weightFactor: function (size) {    return Math.pow(size, 1.1) * $("#canvas").width() / 1024;  },  fontFamily: "Times, serif",  color: function (word, weight) {    return (weight === 12) ? "#c9002f" : "#c9002f";  },  rotateRatio: 0.5,  backgroundColor: "#efede9"} );</script>'
+#    temp += '<script>WordCloud(document.getElementById("canvas"),{ "list": ' + list + ', minSize: 8, gridSize: Math.round(16 * $("#canvas").width() / 1024), weightFactor: function (size) {    return Math.pow(size, 2.3) * $("#canvas").width() / 1024;  },  fontFamily: "Times, serif",  color: function (word, weight) {    return (weight === 12) ? "#c9002f" : "#c9002f";  },  rotateRatio: 0.5,  backgroundColor: "#efede9"} );</script>'
+
+    temp += '<p>' + list + '</p>'
 
     print >>html_file, temp
 
