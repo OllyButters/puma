@@ -56,21 +56,25 @@ def main():
         #data is automatically cached by getDoi
       else:
         paper['doi_data'] = pc.getCacheData(filetype='doi', filenames=[doi_filename])[doi_filename]
-    if 'pmid' in paper:
-      #check if paper data in pm cache
-      if paper['pmid'] not in pm_cache:
-        pm_paper = pm.getPubmed(paper['pmid'])
-        paper['pmid_data'] = pm_paper
-        #data is automatically cached by getPubmed
-      else:
-        paper['pmid_data'] = pc.getCacheData(filetype='pubmed', filenames=[paper['pmid']])[paper['pmid']]
+
+    #get pubmed data
+    if 'extra' in paper:
+      pmid_matches = re.search(r'PMID: ([0-9]{7})', paper['extra'])
+      if pmid_matches is not None:
+        paper['pmid'] = pmid_matches.group(1)
+        #check if paper data in pm cache
+        if paper['pmid'] not in pm_cache:
+          pm_paper = pm.getPubmed(paper['pmid'])
+          paper['pmid_data'] = pm_paper
+          #data is automatically cached by getPubmed
+        else:
+          paper['pmid_data'] = pc.getCacheData(filetype='pubmed', filenames=[paper['pmid']])[paper['pmid']]
       
   #now do merge data
   merged_papers = {}
   #merged_papers = []
   template = pc.getCacheData(filenames=['data-doi-template'])['data-doi-template']
   for paper in new_papers:
-    print paper
     merged_paper = {}
     doi_data = copy.deepcopy(paper['doi_data'])
     pmid_data = copy.deepcopy(paper['pmid_data'])
@@ -78,7 +82,7 @@ def main():
     del paper['doi_data']
     del paper['pmid_data']
     #create new filename
-    filename = hashlib.md5(paper['title']).hexdigest() #md5 of title
+    filename = hashlib.md5(paper['title'].encode('ascii', 'ignore')).hexdigest() #md5 of title
 
     mgr = pMerge.Merge()
     mgr.mapping = pc.getCacheData(filenames=['data-pubmed-doi-jsonpath'])['data-pubmed-doi-jsonpath']
