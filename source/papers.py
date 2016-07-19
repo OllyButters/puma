@@ -149,7 +149,6 @@ html.build_htmlv2.build_papers(papers)
 html.build_htmlv2.build_mesh(papers)
 html.build_htmlv2.build_google_map(papers)
 html.build_htmlv2.build_metrics(papers, cohort_rating)
-#html.build_htmlv2.build_word_cloud(papers)
 
 # html.build_html.build_yearly(papers)
 # html.build_html.build_mesh(papers)

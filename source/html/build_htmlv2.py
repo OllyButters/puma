@@ -74,7 +74,6 @@ def build_common_foot():
     html += '</div>'
 
     html += '<div class="feedback-container width-master clear"><div class="page-feedback small"></div></div>'
-    # html += '<div class="uob-mega-footer-container clearfix"><div class="uob-mega-footer width-master"><div class="uob-mega-footer-col uob-mega-footer-col-1"></div></div></div>'
     html += '<div class="foot clearfix"></div>'
     html += '</body>'
     html += '</html>'
@@ -393,7 +392,7 @@ def build_mesh(papers):
 
     # Make a JSON file for each major mesh term, in it put all the PMIDs for this term
     for this_mesh in mesh_papers_major:
-        file_name = '../html/mesh/major_'+this_mesh
+        file_name = '../html/mesh/major_' + this_mesh
         fo = open(file_name, 'wb')
         fo.write(json.dumps(mesh_papers_major[this_mesh], indent=4))
         fo.close()
@@ -418,7 +417,7 @@ def build_mesh(papers):
     # Make a page with ALL the headings on it
     print >>html_file_all, '<ul>'
     for this_mesh in sorted(mesh_papers_all):
-        temp = '<li><a href="../mesh/'+this_mesh+'/index.html">'+this_mesh+'</a></li>'
+        temp = '<li><a href="../mesh/'+this_mesh+'/index.html">' + this_mesh + '</a></li>'
         print >>html_file_all, temp
     print >>html_file_all, '</ul>'
 
@@ -448,7 +447,6 @@ def build_mesh(papers):
         temp = '<li><a href="../mesh/'+this_mesh+'/index.html">'+this_mesh+'</a></li>'
         print >>html_file_major, temp
     print >>html_file_major, '</ul>'
-
 
     temp = build_common_foot()
     print >>html_file_major, temp
@@ -505,66 +503,78 @@ def build_mesh(papers):
             for this_paper in mesh_papers_all[this_mesh]:
 
                 try:
-                    html = ''
+                    # Get paper object
+		    paper_obj = None
+                    for p in papers:
+                        if this_paper == p['IDs']['hash']:
+	                    paper_obj = p
 
-                    # altmetric data
-                    try:
-                        html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
-                        # html += '<br/><img class="altmetric" src="' + papers[this_pmid]['altmetric_badge'] + '" alt="Badge"><a href="'+papers[this_pmid]['details_url']+'">Altmetric</a>'
-                    except:
-                        pass
+                    if paper_obj is not None:
 
-                    # Paper title as a link
-                    html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['title'] + '</span><br/>'
+                        html = ''
 
-                    # Abstract text - probably too long to go on this page
-                    # html += papers[this_pmid]['AbstractText'][0]+'<br/>'
-
-                    # Authors
-                    authors = []
-                    for this_author in this_paper['author']:
-                        # Some author lists have a collective name. Ignore this.
-                        # Some people don't actually have initials. eg wraight in pmid:18454148
+                        # altmetric data
                         try:
-                            authors.append(this_author['family'] + ', ' + this_author['Initials'])
+	    	            if paper_obj['IDs']['DOI']:
+                                html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + paper_obj['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
                         except:
                             pass
 
-                    html += '; '.join(authors)
-                    html += '<br/>'
+                        # Paper title as a link
+                        html += '<span style="text-decoration: underline; font-weight:bold;">' + paper_obj['title'] + '</span><br/>'
 
-                    # Journal volume
-                    try:
-                        html += this_paper['Journal'] + ' Vol ' + this_paper['JournalVolume'] + '<br/>'
-                    except:
-                        pass
+                        # Abstract text - probably too long to go on this page
+                        # html += papers[this_pmid]['AbstractText'][0]+'<br/>'
 
-                    # PMID
-                    try:
-                        html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">'+str(this_paper['IDs']['PMID']) + '</a>'
-                    except:
-                        pass
+                        # Authors
+                        authors = []
+                        for this_author in paper_obj['author']:
+                            # Some author lists have a collective name. Ignore this.
+                            # Some people don't actually have initials. eg wraight in pmid:18454148
+                            try:
+                                authors.append(this_author['family'] + ', ' + this_author['Initials'])
+                            except:
+                                pass
 
-                    # DOI
-                    try:
-                        html += '&nbsp;DOI: <a href="http://doi.org/' + this_paper['IDs']['DOI'] + '">' + this_paper['IDs']['DOI'] + '</a>'
-                    except:
-                        pass
+                            html += '; '.join(authors)
+                        html += '<br/>'
 
-                    # citation count
-                    try:
-                        html += '&nbsp; Citations: ' + this_paper['Extras']['Citations']
-                    except:
-                        pass
+                        # Journal volume
+                        try:
+  		            if paper_obj['Journal']:
+                                html += this_paper['Journal'] + ' Vol ' + paper_obj['JournalVolume'] + '<br/>'
+                        except:
+                            pass
 
-                    # Add an extra line break at the end
-                    html += '<br/><br/>'
+                        # PMID
+                        try:
+  		            if paper_obj['IDs']['PMID']:
+                                html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(paper_obj['IDs']['PMID'])+'">' + str(paper_obj['IDs']['PMID']) + '</a>'
+                        except:
+                            pass
 
-                    fo.write(html)
+                        # DOI
+                        try:
+		            if paper_obj['IDs']['DOI']:
+                                html += '&nbsp;DOI: <a href="http://doi.org/' + paper_obj['IDs']['DOI'] + '">' + paper_obj['IDs']['DOI'] + '</a>'
+                        except:
+                            pass
+
+                        # citation count
+                        try:
+                            html += '&nbsp; Citations: ' + paper_obj['Extras']['Citations']
+                        except:
+                            pass
+
+                        # Add an extra line break at the end
+                        html += '<br/><br/>'
+
+                        fo.write(html)
 
                 except:
-                    # print 'Failing on ' + this_paper['IDs']['hash']
-                    print sys.exc_info()
+                    #print 'Failing on ' + this_paper['IDs']['hash']
+
+                    #print sys.exc_info()
                     pass
 
             temp = build_common_foot()
@@ -574,11 +584,6 @@ def build_mesh(papers):
 
     word_cloud_list += "]"
     build_word_cloud(papers,word_cloud_list)
-    print word_cloud_max
-    print word_cloud_max_name
-    print word_cloud_n
-    import time
-    time.sleep(5)
 
 
 ###########################################################
@@ -848,9 +853,8 @@ def build_word_cloud(papers,list):
     temp += '<script>var div = document.getElementById("sourrounding_div");var canvas = document.getElementById("canvas");canvas.height = div.offsetHeight;canvas.width  = div.offsetWidth;</script>'
 
     temp += '<script>WordCloud(document.getElementById("canvas"),{ "list": ' + list + ', minSize: 10, gridSize: Math.round(16 * $("#canvas").width() / 1024), weightFactor: function (size) {    return Math.pow(size, 1.1) * $("#canvas").width() / 1024;  },  fontFamily: "Times, serif",  color: function (word, weight) {    return (weight === 12) ? "#c9002f" : "#c9002f";  },  rotateRatio: 0.5,  backgroundColor: "#efede9"} );</script>'
-#    temp += '<script>WordCloud(document.getElementById("canvas"),{ "list": ' + list + ', minSize: 8, gridSize: Math.round(16 * $("#canvas").width() / 1024), weightFactor: function (size) {    return Math.pow(size, 2.3) * $("#canvas").width() / 1024;  },  fontFamily: "Times, serif",  color: function (word, weight) {    return (weight === 12) ? "#c9002f" : "#c9002f";  },  rotateRatio: 0.5,  backgroundColor: "#efede9"} );</script>'
 
-    temp += '<p>' + list + '</p>'
+    #temp += '<p>' + list + '</p>'
 
     print >>html_file, temp
 
