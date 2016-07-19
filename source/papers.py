@@ -11,6 +11,7 @@ import add.geocode
 import add.citations
 import analyse.analysis
 import html.build_html
+import html.build_htmlv2
 import bibliography.bibtex
 
 ##########################################################
@@ -52,11 +53,32 @@ if (os.path.exists('../cache/processed') is False):
 if (os.path.exists('../data') is False):
     os.mkdir('../data')
 
-if (os.path.exists('../html') is False):
+if not os.path.exists('../html'):
     os.mkdir('../html')
 
-if (os.path.exists('../html/mesh') is False):
+if not os.path.exists('../html/mesh'):
     os.mkdir('../html/mesh')
+
+if not os.path.exists('../html/css'):
+    os.mkdir('../html/css')
+
+if not os.path.exists('../html/papers'):
+    os.mkdir('../html/papers')
+
+if not os.path.exists('../html/all_keywords'):
+    os.mkdir('../html/all_keywords')
+
+if not os.path.exists('../html/major_keywords'):
+    os.mkdir('../html/major_keywords')
+
+if not os.path.exists('../html/map'):
+    os.mkdir('../html/map')
+
+if not os.path.exists('../html/metrics'):
+    os.mkdir('../html/metrics')
+
+if not os.path.exists('../html/wordcloud'):
+    os.mkdir('../html/wordcloud')
 
 
 # Set up the logging
@@ -121,8 +143,15 @@ analyse.analysis.output_csv(papers)
 
 ###########################################################
 # Make some web pages
-html.build_html.build_yearly(papers)
-html.build_html.build_mesh(papers)
-html.build_html.build_summary(papers)
-html.build_html.build_google_map(papers)
+
+cohort_rating = html.build_htmlv2.build_home(papers)
+html.build_htmlv2.build_papers(papers)
+html.build_htmlv2.build_mesh(papers)
+html.build_htmlv2.build_google_map(papers)
+html.build_htmlv2.build_metrics(papers, cohort_rating)
+
+# html.build_html.build_yearly(papers)
+# html.build_html.build_mesh(papers)
+# html.build_html.build_summary(papers)
+# html.build_html.build_google_map(papers)
 html.build_html.build_google_heat_map()

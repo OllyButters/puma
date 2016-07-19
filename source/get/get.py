@@ -26,7 +26,7 @@ def get(pmids, papers):
     #Read in the list of PMIDs from an external csv file in this directory.
     #The file must be just pmids - one per line, and no extra lines at the end.
     #pmids = []
-    with open('../inputs/pmids.csv', 'rb') as csvfile:
+    with open('../inputs/pmids.csv_10', 'rb') as csvfile:
         f = csv.reader(csvfile)
         for row in f:
             pmids.append(row[0])
@@ -60,7 +60,7 @@ def get(pmids, papers):
             fo.write(handle.read())
             #fo.write(record[0])
             fo.close()
-        
+
         logging.info('Using cached file: %s', file_name)
         #Open and parse cached file
         fo = open(file_name, 'r')
