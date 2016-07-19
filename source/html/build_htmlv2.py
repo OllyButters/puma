@@ -242,7 +242,7 @@ def build_papers(papers):
 
     # Build the text needed for each paper
     for this_paper in papers:
-
+	
         try:
             html = ''
 
@@ -274,7 +274,9 @@ def build_papers(papers):
 
             # Journal volume
             try:
-                html += this_paper['Journal'] + ' Vol ' + this_paper['JournalVolume'] + '<br/>'
+		print this_paper['MedlineCitation']['Article']['Journal']
+		print "\n"
+                html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'] + ' Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue'] + '<br/>'
             except:
                 pass
 
@@ -607,7 +609,7 @@ def build_google_map(papers):
 
     kml = "var locations =["
     for this_info in info:
-        kml += '["' + this_info['name'] + '",' + this_info['lat'] + ',' + this_info['long'] + '],'
+        kml += '["' + this_info['name'] + '",' + str(this_info['lat']) + ',' + str(this_info['long']) + '],'
     kml += ']'
 
     kml_file = open('../html/map/map.kml', 'w')

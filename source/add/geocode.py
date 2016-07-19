@@ -19,7 +19,6 @@ def geocode(papers):
             # === Look up clean institute geo location ===
             # Form query and get data
             query = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?item WHERE { ?item rdfs:label "' + this_paper['Extras']['CleanInstitute'] + '"@en }'
-            print query
             url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql'
 
             try:
@@ -32,7 +31,7 @@ def geocode(papers):
                     item_uri_components = item_uri.split("/")
                     item_id = item_uri_components[len(item_uri_components)-1]
                     # print( "WD Item id: " + item_id )
-                    papers[this_pmid]['wikidata_item_id'] = item_id
+                    this_paper['wikidata_item_id'] = item_id
 
                     # -- USE WIKIDATA ID TO GET GEO-COORDS
                     try:
@@ -48,7 +47,7 @@ def geocode(papers):
                         # print(papers[this_pmid]['longitude'])
 
                         locations_found += 1
-                        this_paper['Extras']['LatLong'] = {'lat': p_lat, 'long': p_lon }
+                        this_paper['Extras']['LatLong'] = {'lat': str(p_lat), 'long': str(p_lon) }
                     except:
 
                         try:
