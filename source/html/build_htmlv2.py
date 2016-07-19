@@ -242,7 +242,7 @@ def build_papers(papers):
 
     # Build the text needed for each paper
     for this_paper in papers:
-	
+
         try:
             html = ''
 
@@ -265,7 +265,7 @@ def build_papers(papers):
                 # Some author lists have a collective name. Ignore this.
                 # Some people don't actually have initials. eg wraight in pmid:18454148
                 try:
-                    authors.append(this_author['family'] + ', ' + this_author['Initials'])
+                    authors.append(this_author['family'] + ', ' + this_author['given'])
                 except:
                     pass
 
@@ -274,8 +274,6 @@ def build_papers(papers):
 
             # Journal volume
             try:
-		print this_paper['MedlineCitation']['Article']['Journal']
-		print "\n"
                 html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'] + ' Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue'] + '<br/>'
             except:
                 pass
@@ -512,59 +510,67 @@ def build_mesh(papers):
 	                    paper_obj = p
 
                     if paper_obj is not None:
+                        this_paper = paper_obj
 
                         html = ''
 
                         # altmetric data
                         try:
-	    	            if paper_obj['IDs']['DOI']:
-                                html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + paper_obj['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
+		            if this_paper['IDs']['DOI']:
+                                html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
                         except:
                             pass
 
                         # Paper title as a link
-                        html += '<span style="text-decoration: underline; font-weight:bold;">' + paper_obj['title'] + '</span><br/>'
+                        html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['title'] + '</span><br/>'
 
                         # Abstract text - probably too long to go on this page
                         # html += papers[this_pmid]['AbstractText'][0]+'<br/>'
 
                         # Authors
                         authors = []
-                        for this_author in paper_obj['author']:
+
+                        for this_author in this_paper['author']:
                             # Some author lists have a collective name. Ignore this.
                             # Some people don't actually have initials. eg wraight in pmid:18454148
                             try:
-                                authors.append(this_author['family'] + ', ' + this_author['Initials'])
+                                authors.append(this_author['family'] + ', ' + this_author['given'])
                             except:
                                 pass
 
-                            html += '; '.join(authors)
+                        html += '; '.join(authors)
                         html += '<br/>'
 
                         # Journal volume
                         try:
-  		            if paper_obj['Journal']:
-                                html += this_paper['Journal'] + ' Vol ' + paper_obj['JournalVolume'] + '<br/>'
+                            html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'] + ' Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue'] + '<br/>'
                         except:
                             pass
 
                         # PMID
                         try:
-  		            if paper_obj['IDs']['PMID']:
-                                html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(paper_obj['IDs']['PMID'])+'">' + str(paper_obj['IDs']['PMID']) + '</a>'
+               		    if this_paper['IDs']['PMID']:
+                                html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">'+str(this_paper['IDs']['PMID']) + '</a>'
+                        except:
+                            pass
+
+                        # Zotero
+                        try:
+            		    if this_paper['IDs']['zotero']:
+                                html += '&nbsp;Zotero: <a href="' + this_paper['IDs']['zotero'] + '">' + this_paper['IDs']['zotero'] + '</a>'
                         except:
                             pass
 
                         # DOI
                         try:
-		            if paper_obj['IDs']['DOI']:
-                                html += '&nbsp;DOI: <a href="http://doi.org/' + paper_obj['IDs']['DOI'] + '">' + paper_obj['IDs']['DOI'] + '</a>'
+		            if this_paper['IDs']['DOI']:
+                                html += '&nbsp;DOI: <a href="http://doi.org/' + this_paper['IDs']['DOI'] + '">' + this_paper['IDs']['DOI'] + '</a>'
                         except:
                             pass
 
                         # citation count
                         try:
-                            html += '&nbsp; Citations: ' + paper_obj['Extras']['Citations']
+                            html += '&nbsp; Citations: '+this_paper['Extras']['Citations']
                         except:
                             pass
 
