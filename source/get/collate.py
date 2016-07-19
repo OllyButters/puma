@@ -28,13 +28,15 @@ def main():
       #cache zotero data
       pc.dumpJson(paper['key'], paper, 'zotero')
       #add to new_papers for later doi/pubmed data retrieval
-      new_papers.append(paper['data'])
-    else:
-      #just for testing ONLY otherwise we'll end up getting new data all the time
-      new_paper = pc.getCacheData(filetype='zotero', filenames=[paper['key']])[paper['key']]
       #check itemType - if it's 'note', we can ignore
-      if new_paper['data']['itemType'] != 'note':
-        new_papers.append(new_paper['data'])
+      if paper['data']['itemType'] != 'note':
+        new_papers.append(paper['data'])
+    #else:
+    #  #just for testing ONLY otherwise we'll end up getting new data all the time
+    #  new_paper = pc.getCacheData(filetype='zotero', filenames=[paper['key']])[paper['key']]
+      #check itemType - if it's 'note', we can ignore
+    #  if new_paper['data']['itemType'] != 'note':
+    #    new_papers.append(new_paper['data'])
 
   #now check new_papers for doi or pubmed id and retrieve if required
   for paper in new_papers:
