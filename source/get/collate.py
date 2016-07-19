@@ -7,6 +7,7 @@ import hashlib
 import re
 import copy
 import pprint
+import json
 
 def main():
   #first, check for new papers from zotero repo
@@ -75,7 +76,10 @@ def main():
   #now do merge data
   merged_papers = {}
   #merged_papers = []
-  template = pc.getCacheData(filenames=['data-doi-template'])['data-doi-template']
+  template_file = open('config/data-doi-template', 'r')
+  template = json.load(template_file)
+  template_file.close()
+  #template = pc.getCacheData(filenames=['data-doi-template'])['data-doi-template']
   for paper in new_papers:
     merged_paper = {}
     doi_data = copy.deepcopy(paper['doi_data'])
@@ -87,14 +91,21 @@ def main():
     filename = hashlib.md5(paper['title'].encode('ascii', 'ignore')).hexdigest() #md5 of title
 
     mgr = pMerge.Merge()
-    mgr.mapping = pc.getCacheData(filenames=['data-pubmed-doi-jsonpath'])['data-pubmed-doi-jsonpath']
+    map_file = open('config/data-pubmed-doi-jsonpath', 'r')
+    mgr.mapping = json.load(template_file)
+    map_file.close()
+
+    #mgr.mapping = pc.getCacheData(filenames=['data-pubmed-doi-jsonpath'])['data-pubmed-doi-jsonpath']
     mgr.src = pmid_data
     mgr.dest = copy.deepcopy(template)
     mgr.mapSrc()
     merged_paper['pmid_data'] = copy.deepcopy(mgr.dest)
 
     #now do zotero data
-    mgr.mapping = pc.getCacheData(filenames=['data-zotero-doi-jsonpath'])['data-zotero-doi-jsonpath']
+    map_file = open('config/data-zotero-doi-jsonpath', 'r')
+    mgr.mapping = json.load(template_file)
+    map_file.close()
+    #mgr.mapping = pc.getCacheData(filenames=['data-zotero-doi-jsonpath'])['data-zotero-doi-jsonpath']
     mgr.src = paper
     mgr.dest = copy.deepcopy(template)
     mgr.mapSrc()
