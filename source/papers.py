@@ -77,6 +77,9 @@ if not os.path.exists('../html/major_keywords'):
 if not os.path.exists('../html/map'):
     os.mkdir('../html/map')
 
+if not os.path.exists('../html/country'):
+    os.mkdir('../html/country')
+
 if not os.path.exists('../html/metrics'):
     os.mkdir('../html/metrics')
 
@@ -151,6 +154,7 @@ cohort_rating = html.build_htmlv2.build_home(papers)
 html.build_htmlv2.build_papers(papers)
 html.build_htmlv2.build_mesh(papers)
 html.build_htmlv2.build_google_map(papers)
+html.build_htmlv2.build_country_map(papers)
 html.build_htmlv2.build_metrics(papers, cohort_rating)
 
 # html.build_html.build_yearly(papers)

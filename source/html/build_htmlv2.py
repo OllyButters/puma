@@ -47,7 +47,8 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'papers/index.html">Papers List</a></li>'
     html += '<li><a href="' + nav_path + 'all_keywords/index.html">All Keywords</a></li>'
     html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords</a></li>'
-    html += '<li><a href="' + nav_path + 'map/index.html">Publication Map</a></li>'
+    html += '<li><a href="' + nav_path + 'map/index.html">Institutions Map</a></li>'
+    html += '<li><a href="' + nav_path + 'country/index.html">Publications by Country</a></li>'
     html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
     html += '<li><a href="' + nav_path + 'wordcloud/index.html">Word Cloud</a></li>'
     html += '</ul>'
@@ -635,11 +636,9 @@ def build_google_map(papers):
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
     temp += '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>'
+    #temp += '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4&libraries=visualization"></script>'
     temp += '<script type="text/javascript" src="map.kml"></script>'
     temp += '<script type="text/javascript" src="map.js"></script>'
-
-    temp += '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4&libraries=visualization"></script>'
-
 
     shutil.copyfile('html/templates/map.js', '../html/map/map.js')
     shutil.copyfile('html/templates/loading.gif', '../html/map/loading.gif')
@@ -647,14 +646,82 @@ def build_google_map(papers):
 
     temp += '</head>'
 
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications Map</p>', "../", "onload='initialize()'")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Institutions Map</p>', "../", "onload='initialize()'")
 
-    temp += '<h1 id="pagetitle">Publications Map</h1>'
+    temp += '<h1 id="pagetitle">Institutions Map</h1>'
 
     temp += "<div class='loading'><img src='loading.gif'></div>"
     temp += "<div id='map_canvas'></div>"
 
-    temp += "<div id='heat_map'></div>"
+    print >>html_file, temp
+
+    temp = build_common_foot()
+    print >>html_file, temp
+
+###########################################################
+# Publications by country
+###########################################################
+
+
+def build_country_map(papers):
+
+    import shutil
+
+    info = []
+
+    countries = {}
+    for this_paper in papers:
+        try:
+        #if not this_paper['Extras']['country_code'] is None:
+
+            if this_paper['Extras']['country_code'] in countries:
+                countries[ this_paper['Extras']['country_code'] ] += 1
+            else:
+                countries[ this_paper['Extras']['country_code'] ] = 1
+        except:
+            pass
+
+
+    country_string = ""
+    for country in countries.keys():
+       country_string += ",['" + country +"'," + str(countries[country]) + "]"
+
+#,['Germany', 200],['United States', 300],['Brazil', 400],['Canada', 500],['France', 600],['RU', 700] 
+
+    html_file = open('../html/country/index.html', 'w')
+
+    # Put html together for this page
+    temp = '<html>'
+
+    # html head
+    temp += '<head>'
+    temp += '<title>' + site_title + '</title>'
+    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
+    temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/map.css">'
+
+ 
+    temp += '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4&libraries=visualization"></script>'
+    temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
+    temp += '<script type="text/javascript" src="map.kml"></script>'
+    temp += '<script type="text/javascript" src="map.js"></script>'
+    temp += '<script type="text/javascript">' + "google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawRegionsMap);function drawRegionsMap() {var data = google.visualization.arrayToDataTable([ ['Country', 'Publications']" + country_string + "]); var options = { colorAxis: {colors: ['green', '#c9002f']} }; var chart = new google.visualization.GeoChart(document.getElementById('regions_div')); chart.draw(data, options); }</script>"
+
+
+    #shutil.copyfile('html/templates/map.js', '../html/map/map.js')
+    shutil.copyfile('html/templates/loading.gif', '../html/country/loading.gif')
+    shutil.copyfile('html/templates/map.css', '../html/country/map.css')
+
+    temp += '</head>'
+
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by Country</p>', "../", "onload='initialize()'")
+
+    temp += '<h1 id="pagetitle">Publications by Country</h1>'
+
+    temp += "<div class='loading'><img src='loading.gif'></div>"
+    temp += "<div id='regions_div' style='width: 900px; height: 500px;'></div>"
+
 
     print >>html_file, temp
 

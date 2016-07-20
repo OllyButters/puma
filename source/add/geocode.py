@@ -6,6 +6,7 @@ import logging
 import os.path
 import json
 import urllib2
+import requests
 
 
 # Have a go at geocoding the cleaned institute names
@@ -23,12 +24,15 @@ def geocode(papers):
             # Check Cache
             clean = this_paper['Extras']['CleanInstitute']
             if os.path.isfile("../cache/geodata/" + clean):
+                # Load cached data
 
                 cache_file = open("../cache/geodata/" + clean ,"r")
                 data = cache_file.read()
                 split = data.split("#")
 
                 this_paper['Extras']['LatLong'] = {'lat': split[0], 'long': split[1] }
+                this_paper['Extras']['country_code'] = split[2]
+
                 locations_found += 1
                 print this_paper['Extras']['LatLong']
 
@@ -40,7 +44,6 @@ def geocode(papers):
                 url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql'
 
                 try:
-                    import requests
                     data = requests.get(url, params={'query': query, 'format': 'json'}).json()
 
                     try:
@@ -52,7 +55,7 @@ def geocode(papers):
                         this_paper['wikidata_item_id'] = item_id
 
                         # -- USE WIKIDATA ID TO GET GEO-COORDS
-                        found_coords = false
+                        found_coords = False
                         try:
 
                             retur = json.load(urllib2.urlopen('https://www.wikidata.org/w/api.php?action=wbgetentities&ids=' + item_id + '&format=json'))
@@ -66,11 +69,7 @@ def geocode(papers):
                             locations_found += 1
                             this_paper['Extras']['LatLong'] = {'lat': str(p_lat), 'long': str(p_lon) }
 
-                            # Cache Data
-                            cache_file = open("../cache/geodata/" + clean,"w")
-                            cache_file.write( str(p_lat) + "#" + str(p_lon) + "#" + "COUNTRY" )
-                            cache_file.close()
-                            found_coords = true
+                            found_coords = True
 
                         except:
 
@@ -83,20 +82,26 @@ def geocode(papers):
                                 locations_found += 1
                                 this_paper['Extras']['LatLong'] = {'lat': p_lat, 'long': p_lon }
 
-                                # Cache Data
-                                cache_file = open("../cache/geodata/" + clean,"w")
-                                cache_file.write( str(p_lat) + "#" + str(p_lon) + "#" + "COUNTRY" )
-                                cache_file.close()
-                                found_coords = true
+                                found_coords = True
 
                             except:
                                 print 'Unable to get geo-data (No HQ P625 Or P625) ' + this_paper['Extras']['CleanInstitute'] + " " + item_id + " (" + str(number_done) + "/" + str(len(papers)) + ")"
 
                         if found_coords:
                             # Get country for heatmap
-                            #retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['Extras']['LatLong']['lat']  + ',' + this_paper['Extras']['LatLong']['long']  + '&key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4'))
-                            print('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['Extras']['LatLong']['lat']  + ',' + this_paper['Extras']['LatLong']['long']  + '&key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4')
+                            retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['Extras']['LatLong']['lat']  + ',' + this_paper['Extras']['LatLong']['long']  + '&key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4'))
+                            comps = retur['results'][0]['address_components']
+                            for comp in comps:
+                                if comp['types'][0] == "country":
+                                    country_short = comp['short_name']
+                                    this_paper['Extras']['country_code'] = country_short
 
+                                    # Cache Data
+                                    cache_file = open("../cache/geodata/" + clean,"w")
+                                    cache_file.write( this_paper['Extras']['LatLong']['lat'] + "#" + this_paper['Extras']['LatLong']['long'] + "#" + country_short )
+                                    cache_file.close()
+
+                                    break
 
                     except:
                         print 'Unable to get geo-data (Probably not on Wikidata) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
