@@ -36,7 +36,14 @@ class zotPaper (zotero.Zotero):
       self.papers = super(zotPaper, self).items(*args, **kwargs)
     else:
       if self.collection_key is not None:
-        self.papers = super(zotPaper, self).collection_items(self.collection_key, *args, **kwargs)
+        self.papers = []
+        #get num items in collection
+        num_items = self.num_collectionitems(self.collection_key)
+        #TEMP SOLUTION todo use collection_items(format="keys") to get list of keys from collection and then call item() on each new
+        #as collection_items returns a limit of 100 items we need make several requests to get all the items in the collection
+        for i in range(0, num_items, 100):
+          subset = super(zotPaper, self).collection_items(self.collection_key, start=i, *args, **kwargs)
+          self.papers = self.papers + subset
       else:
         self.papers = []
         raise ValueError('(zotPaper::getPapersList) The current collection does not have a valid collection_key')
