@@ -3,6 +3,9 @@
 import csv
 import re
 import logging
+import os.path
+import json
+import urllib2
 
 
 # Have a go at geocoding the cleaned institute names
@@ -16,61 +19,95 @@ def geocode(papers):
     for this_paper in papers:
 
         try:
-            # === Look up clean institute geo location ===
-            # Form query and get data
-            query = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?item WHERE { ?item rdfs:label "' + this_paper['Extras']['CleanInstitute'] + '"@en }'
-            url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql'
 
-            try:
-                import requests
-                data = requests.get(url, params={'query': query, 'format': 'json'}).json()
+            # Check Cache
+            clean = this_paper['Extras']['CleanInstitute']
+            if os.path.isfile("../cache/geodata/" + clean):
+
+                cache_file = open("../cache/geodata/" + clean ,"r")
+                data = cache_file.read()
+                split = data.split("#")
+
+                this_paper['Extras']['LatLong'] = {'lat': split[0], 'long': split[1] }
+                locations_found += 1
+                print this_paper['Extras']['LatLong']
+
+            else:
+
+                # === Look up clean institute geo location ===
+                # Form query and get data
+                query = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?item WHERE { ?item rdfs:label "' + this_paper['Extras']['CleanInstitute'] + '"@en }'
+                url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql'
 
                 try:
-                    # Process returned JSON to get entity id
-                    item_uri = data['results']['bindings'][0]['item']['value']
-                    item_uri_components = item_uri.split("/")
-                    item_id = item_uri_components[len(item_uri_components)-1]
-                    # print( "WD Item id: " + item_id )
-                    this_paper['wikidata_item_id'] = item_id
+                    import requests
+                    data = requests.get(url, params={'query': query, 'format': 'json'}).json()
 
-                    # -- USE WIKIDATA ID TO GET GEO-COORDS
                     try:
-                        import json
-                        import urllib2
+                        # Process returned JSON to get entity id
+                        item_uri = data['results']['bindings'][0]['item']['value']
+                        item_uri_components = item_uri.split("/")
+                        item_id = item_uri_components[len(item_uri_components)-1]
+                        # print( "WD Item id: " + item_id )
+                        this_paper['wikidata_item_id'] = item_id
 
-                        retur = json.load(urllib2.urlopen('https://www.wikidata.org/w/api.php?action=wbgetentities&ids=' + item_id + '&format=json'))
-                        p_lon = retur['entities'][item_id]['claims']['P625'][0]['mainsnak']['datavalue']['value']['longitude']
-                        p_lat = retur['entities'][item_id]['claims']['P625'][0]['mainsnak']['datavalue']['value']['latitude']
-
-                        # print(papers[this_pmid]['Extras']['CleanInstitute'])
-                        # print(papers[this_pmid]['latitude'])
-                        # print(papers[this_pmid]['longitude'])
-
-                        locations_found += 1
-                        this_paper['Extras']['LatLong'] = {'lat': str(p_lat), 'long': str(p_lon) }
-                    except:
-
+                        # -- USE WIKIDATA ID TO GET GEO-COORDS
+                        found_coords = false
                         try:
-                            # Check headquaters location
-                            p_lon = retur['entities'][item_id]['claims']['P159'][0]['qualifiers']['P625'][0]['datavalue']['value']['longitude']
-                            p_lat = retur['entities'][item_id]['claims']['P159'][0]['qualifiers']['P625'][0]['datavalue']['value']['latitude']
 
-                            # print "Location Found from HQ " + papers[this_pmid]['Extras']['CleanInstitute']
+                            retur = json.load(urllib2.urlopen('https://www.wikidata.org/w/api.php?action=wbgetentities&ids=' + item_id + '&format=json'))
+                            p_lon = retur['entities'][item_id]['claims']['P625'][0]['mainsnak']['datavalue']['value']['longitude']
+                            p_lat = retur['entities'][item_id]['claims']['P625'][0]['mainsnak']['datavalue']['value']['latitude']
+
+                            # print(papers[this_pmid]['Extras']['CleanInstitute'])
+                            # print(papers[this_pmid]['latitude'])
+                            # print(papers[this_pmid]['longitude'])
+
                             locations_found += 1
-                            this_paper['Extras']['LatLong'] = {'lat': p_lat, 'long': p_lon }
+                            this_paper['Extras']['LatLong'] = {'lat': str(p_lat), 'long': str(p_lon) }
+
+                            # Cache Data
+                            cache_file = open("../cache/geodata/" + clean,"w")
+                            cache_file.write( str(p_lat) + "#" + str(p_lon) + "#" + "COUNTRY" )
+                            cache_file.close()
+                            found_coords = true
+
                         except:
-                            print 'Unable to get geo-data (No HQ P625 Or P625) ' + this_paper['Extras']['CleanInstitute'] + " " + item_id + " (" + str(number_done) + "/" + str(len(papers)) + ")"
 
+                            try:
+                                # Check headquaters location
+                                p_lon = retur['entities'][item_id]['claims']['P159'][0]['qualifiers']['P625'][0]['datavalue']['value']['longitude']
+                                p_lat = retur['entities'][item_id]['claims']['P159'][0]['qualifiers']['P625'][0]['datavalue']['value']['latitude']
+
+                                # print "Location Found from HQ " + papers[this_pmid]['Extras']['CleanInstitute']
+                                locations_found += 1
+                                this_paper['Extras']['LatLong'] = {'lat': p_lat, 'long': p_lon }
+
+                                # Cache Data
+                                cache_file = open("../cache/geodata/" + clean,"w")
+                                cache_file.write( str(p_lat) + "#" + str(p_lon) + "#" + "COUNTRY" )
+                                cache_file.close()
+                                found_coords = true
+
+                            except:
+                                print 'Unable to get geo-data (No HQ P625 Or P625) ' + this_paper['Extras']['CleanInstitute'] + " " + item_id + " (" + str(number_done) + "/" + str(len(papers)) + ")"
+
+                        if found_coords:
+                            # Get country for heatmap
+                            #retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['Extras']['LatLong']['lat']  + ',' + this_paper['Extras']['LatLong']['long']  + '&key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4'))
+                            print('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['Extras']['LatLong']['lat']  + ',' + this_paper['Extras']['LatLong']['long']  + '&key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4')
+
+
+                    except:
+                        print 'Unable to get geo-data (Probably not on Wikidata) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
                 except:
-                    print 'Unable to get geo-data (Probably not on Wikidata) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
-            except:
-                print 'Unable to get geo-data (Wikidata Query Failed) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
+                    print 'Unable to get geo-data (Wikidata Query Failed) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
 
 
-            # === End Look up ===
+                # === End Look up ===
 
         except:
-		print 'No Clean Institute for ' + this_paper['IDs']['hash'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
+            print 'No Clean Institute for ' + this_paper['IDs']['hash'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
 
         number_done += 1
 

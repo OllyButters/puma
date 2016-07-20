@@ -50,6 +50,9 @@ if (os.path.exists('../cache/raw/pubmed') is False):
 if (os.path.exists('../cache/processed') is False):
     os.mkdir('../cache/processed')
 
+if (os.path.exists('../cache/geodata') is False):
+    os.mkdir('../cache/geodata')
+
 if (os.path.exists('../data') is False):
     os.mkdir('../data')
 

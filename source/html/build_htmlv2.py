@@ -638,6 +638,9 @@ def build_google_map(papers):
     temp += '<script type="text/javascript" src="map.kml"></script>'
     temp += '<script type="text/javascript" src="map.js"></script>'
 
+    temp += '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4&libraries=visualization"></script>'
+
+
     shutil.copyfile('html/templates/map.js', '../html/map/map.js')
     shutil.copyfile('html/templates/loading.gif', '../html/map/loading.gif')
     shutil.copyfile('html/templates/map.css', '../html/css/map.css')
@@ -650,6 +653,8 @@ def build_google_map(papers):
 
     temp += "<div class='loading'><img src='loading.gif'></div>"
     temp += "<div id='map_canvas'></div>"
+
+    temp += "<div id='heat_map'></div>"
 
     print >>html_file, temp
 

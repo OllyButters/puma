@@ -38,6 +38,7 @@ def citations(papers, api_key, citation_max_life):
         print 'make file'
 
     for this_paper in papers:
+        print this_paper['IDs']['hash'] # TEMP PRINT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
         # read the cache
         try:
