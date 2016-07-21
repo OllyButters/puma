@@ -8,6 +8,7 @@ import re
 import copy
 import pprint
 import json
+import os
 
 def main():
   if (os.path.exists('../cache/raw') is False):
