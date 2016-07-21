@@ -348,8 +348,11 @@ def build_papers(papers):
 ############################################################
 def build_mesh(papers):
     import os.path
+    import shutil
 
     print "\n###HTML - mesh###"
+
+    shutil.copyfile('html/templates/keyword_history.js', '../html/mesh/keyword_history.js')
 
     mesh_papers_all = {}
     mesh_papers_major = {}
@@ -492,11 +495,79 @@ def build_mesh(papers):
             temp += '<link rel="stylesheet" href="../../css/uobcms_corporate.css">'
             temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
             temp += '<link rel="stylesheet" href="../../css/style_main.css">'
+
+            temp += '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
+            temp += '<script type="text/javascript" src="../' + this_mesh + '.js"></script>'
+            temp += '<script type="text/javascript" src="../keyword_history.js"></script>'
+
             temp += '</head>'
 
             temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Keyword &gt; ' + this_mesh + '</p>', "../../", "")
 
             temp += '<h1 id="pagetitle">Keyword - ' + this_mesh + '</h1>'
+            temp += '<h2>Keyword History</h2>'
+
+            # ===== KEYWORD OVER TIME CALCULATIONS =====
+            # First some prep has to be done to set up the array for the number of year. This is copied from the citations graph prep and is probably very inefficent for this task
+
+            summary = {}
+            # Calculate the number of papers for each year
+            for this_paper in mesh_papers_all[this_mesh]:
+
+                # Get paper object from the hash
+	        paper_obj = None
+                for p in papers:
+                    if this_paper == p['IDs']['hash']:
+	                paper_obj = p
+
+                if paper_obj is not None:
+                    this_paper = paper_obj
+                    try:
+                        this_year = this_paper['PubmedData']['History'][0]['Year']
+                        # Make sure there is a dict item for this year
+                        if this_year not in summary:
+                            summary[this_year] = {'num_papers': 0, 'citations': 0}
+
+                        # increment the number of citaitons by one
+                        summary[this_year]['num_papers'] = summary[this_year]['num_papers']+1
+
+                        # add the citations for this paper to the year running total
+                        try:
+                            summary[this_year]['citations'] = summary[this_year]['citations'] + int(this_paper['Extras']['Citations'])
+                        except:
+                            pass
+
+                    except:
+                        pass
+
+                # Add in some zeros when there is no papers for this year
+                years = summary.keys()
+                first_year = min(years)
+                last_year = max(years)
+                for this_year in range(int(first_year), int(last_year)):
+                    try:
+                        summary[str(this_year)]['num_papers']
+                    except:
+                        summary[str(this_year)] = {'num_papers': 0, 'citations': 0}
+
+
+            # Print data to file
+            data_file = open('../html/mesh/' + this_mesh + '.js', 'w')
+            print >>data_file, 'var papers =([[\'Year\', \'Number of papers\'],'
+            for this_year in sorted(summary, reverse=False):
+                print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['num_papers'])+'],'
+            print >>data_file, ']);'
+
+            print >>data_file, 'var citations =([[\'Year\', \'Number of Citations\'],'
+            for this_year in sorted(summary, reverse=False):
+                print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['citations'])+'],'
+            print >>data_file, ']);'
+
+            temp += '<div id="papers_chart_div"></div>'
+            temp += '<div id="citations_chart_div"></div>'
+
+            # List publications
+            temp += '<h2>Publications</h2>'
 
             print >>fo, temp
 
@@ -706,7 +777,7 @@ def build_country_map(papers):
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     temp += '<script type="text/javascript" src="map.kml"></script>'
     temp += '<script type="text/javascript" src="map.js"></script>'
-    temp += '<script type="text/javascript">' + "google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawRegionsMap);function drawRegionsMap() {var data = google.visualization.arrayToDataTable([ ['Country', 'Publications']" + country_string + "]); var options = { colorAxis: {colors: ['green', '#c9002f']} }; var chart = new google.visualization.GeoChart(document.getElementById('regions_div')); chart.draw(data, options); }</script>"
+    temp += '<script type="text/javascript">' + "google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawRegionsMap);function drawRegionsMap() {var data = google.visualization.arrayToDataTable([ ['Country', 'Publications']" + country_string + "]); var options = { colorAxis: {colors: ['#47BF00', '#c9002f']} }; var chart = new google.visualization.GeoChart(document.getElementById('regions_div')); chart.draw(data, options); }</script>"
 
 
     #shutil.copyfile('html/templates/map.js', '../html/map/map.js')
