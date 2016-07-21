@@ -10,27 +10,27 @@ import pprint
 import json
 import os
 
-def main():
-  if (os.path.exists('../cache/raw') is False):
-      os.mkdir('../cache/raw')
+def collate():
+  if (os.path.exists('../../cache/raw') is False):
+      os.mkdir('../../cache/raw')
 
-  if (os.path.exists('../cache/raw/pubmed') is False):
-      os.mkdir('../cache/raw/pubmed')
+  if (os.path.exists('../../cache/raw/pubmed') is False):
+      os.mkdir('../../cache/raw/pubmed')
 
-  if (os.path.exists('../cache/raw/pubmed/xml') is False):
-      os.mkdir('../cache/raw/pubmed/xml')
+  if (os.path.exists('../../cache/raw/pubmed/xml') is False):
+      os.mkdir('../../cache/raw/pubmed/xml')
 
-  if (os.path.exists('../cache/raw/zotero') is False):
-      os.mkdir('../cache/raw/zotero')
+  if (os.path.exists('../../cache/raw/zotero') is False):
+      os.mkdir('../../cache/raw/zotero')
 
-  if (os.path.exists('../cache/raw/doi') is False):
-      os.mkdir('../cache/raw/doi')
+  if (os.path.exists('../../cache/raw/doi') is False):
+      os.mkdir('../../cache/raw/doi')
 
-  if (os.path.exists('../cache/processed') is False):
-      os.mkdir('../cache/processed')
+  if (os.path.exists('../../cache/processed') is False):
+      os.mkdir('../../cache/processed')
 
-  if (os.path.exists('../cache/processed/merged') is False):
-      os.mkdir('../cache/processed/merged')
+  if (os.path.exists('../../cache/processed/merged') is False):
+      os.mkdir('../../cache/processed/merged')
 
   #first, check for new papers from zotero repo
   zot = pz.zotPaper()
@@ -157,4 +157,7 @@ def main():
     pc.dumpJson(filename, merged_papers[filename], 'processed/merged')
 
   return merged_papers 
+
+if __name__ == "main":
+  collate()
 
