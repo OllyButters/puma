@@ -93,7 +93,8 @@ def geocode(papers):
                             comps = retur['results'][0]['address_components']
                             for comp in comps:
                                 if comp['types'][0] == "country":
-                                    country_short = comp['short_name']
+                                    #country_short = comp['short_name']
+                                    country_short = comp['long_name']
                                     this_paper['Extras']['country_code'] = country_short
 
                                     # Cache Data

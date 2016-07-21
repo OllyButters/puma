@@ -529,11 +529,11 @@ def build_mesh(papers):
                             summary[this_year] = {'num_papers': 0, 'citations': 0}
 
                         # increment the number of citaitons by one
-                        summary[this_year]['num_papers'] = summary[this_year]['num_papers']+1
+                        summary[this_year]['num_papers'] += 1
 
                         # add the citations for this paper to the year running total
                         try:
-                            summary[this_year]['citations'] = summary[this_year]['citations'] + int(this_paper['Extras']['Citations'])
+                            summary[this_year]['citations'] += int(this_paper['Extras']['Citations'])
                         except:
                             pass
 
@@ -757,8 +757,6 @@ def build_country_map(papers):
     for country in countries.keys():
        country_string += ",['" + country +"'," + str(countries[country]) + "]"
 
-#,['Germany', 200],['United States', 300],['Brazil', 400],['Canada', 500],['France', 600],['RU', 700] 
-
     html_file = open('../html/country/index.html', 'w')
 
     # Put html together for this page
@@ -777,7 +775,7 @@ def build_country_map(papers):
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     temp += '<script type="text/javascript" src="map.kml"></script>'
     temp += '<script type="text/javascript" src="map.js"></script>'
-    temp += '<script type="text/javascript">' + "google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawRegionsMap);function drawRegionsMap() {var data = google.visualization.arrayToDataTable([ ['Country', 'Publications']" + country_string + "]); var options = { colorAxis: {colors: ['#47BF00', '#c9002f']} }; var chart = new google.visualization.GeoChart(document.getElementById('regions_div')); chart.draw(data, options); }</script>"
+    temp += '<script type="text/javascript">' + "google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawRegionsMap);function drawRegionsMap() {var data = google.visualization.arrayToDataTable([ ['Country', 'Publications']" + country_string + "]); var options = { colorAxis: {colors: ['#FFB612', '#c9002f']} }; var chart = new google.visualization.GeoChart(document.getElementById('regions_div')); chart.draw(data, options); }</script>"
 
 
     #shutil.copyfile('html/templates/map.js', '../html/map/map.js')
