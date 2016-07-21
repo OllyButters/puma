@@ -20,12 +20,12 @@ def getPubmed(this_pmid):
 
   #pmid_xml_data = handle.read()
 
-  #pc.dumpFile(this_pmid+'.xml', pmid_xml_data, 'pubmed/raw')
+  #pc.dumpFile(this_pmid+'.xml', pmid_xml_data, 'raw/pubmed/xml')
 
   #pmid_data = Entrez.read(pmid_xml_data)[0]
   try:
     pmid_data = Entrez.read(handle)[0]
-    pc.dumpJson(this_pmid, pmid_data, 'pubmed')
+    pc.dumpJson(this_pmid, pmid_data, 'raw/pubmed')
     return pmid_data
   except:
     logging.warn('Unable to read pmid %s', this_pmid)

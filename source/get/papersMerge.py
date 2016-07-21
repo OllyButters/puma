@@ -15,11 +15,16 @@ class Merge():
     self.log = logging.getLogger('mergeLog')
     self.log.setLevel(logging.INFO)
     fh = logging.FileHandler(filename='../../log/mergeLog', mode="w")
+    self.log_fh = fh
     fh.setLevel(logging.INFO)
     fh_format = logging.Formatter('%(message)s')
     fh.setFormatter(fh_format)
     self.log.addHandler(fh)
     self.log.info("Merge INFO - class instantiated")
+
+  def __del__(self):
+    self.log.removeHandler(self.log_fh)
+    self.log_fh.close()
 
   #iterate over all fields in src_data (nested dict/list) and append to dest if it doesn't currently exist
   #recursively called for sub- lists/dicts
