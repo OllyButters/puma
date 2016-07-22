@@ -1090,7 +1090,32 @@ def build_author_network(papers,network):
 
     import shutil
 
+    # Create json file
+    net_file = open('../html/authornetwork/network.json', 'w')
+
+    net_json = '{'
+    net_json += '"nodes":['
+    n = 0
+    for author in network['authors']:
+        print network['authors'][author]
+        if n > 0:
+            net_json += ","
+        net_json = '{"id": "' + network['authors'][author]['family'] + ' ' +  network['authors'][author]['given'] + '", "group":1}'
+
+        n+=1
+
+    net_json += '],"links": ['
+
+    net_json += ']'
+    net_json += '}'
+
+    print net_file, net_json
+    net_file.close()
+
+
     html_file = open('../html/authornetwork/index.html', 'w')
+
+    shutil.copyfile('html/templates/network.js', '../html/authornetwork/network.js')
 
     # Put html together for this page
     temp = '<html>'
@@ -1101,8 +1126,8 @@ def build_author_network(papers,network):
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<style>.links line {  stroke: #999;  stroke-opacity: 0.6;} .nodes circle {  stroke: #fff;  stroke-width: 1.5px;} </style>'
 
-    #shutil.copyfile('html/templates/wordcloud2.js', '../html/abstractwordcloud/wordcloud2.js')
 
     temp += '<script type="text/javascript" src="wordcloud2.js"></script>'
     temp += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>'
@@ -1112,6 +1137,9 @@ def build_author_network(papers,network):
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Author Network</p>', "../", "")
 
     temp += '<h1 id="pagetitle">Author Network</h1>'
+
+    temp += '<svg width="960" height="600"></svg><script src="https://d3js.org/d3.v4.min.js"></script>'
+    temp += '<script type="text/javascript" src="network.js"></script>'
 
     temp += '<p>' + str(network) + '</p>'
 
