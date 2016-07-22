@@ -49,6 +49,7 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords</a></li>'
     html += '<li><a href="' + nav_path + 'map/index.html">Institutions Map</a></li>'
     html += '<li><a href="' + nav_path + 'country/index.html">Publications by Country</a></li>'
+    html += '<li><a href="' + nav_path + 'authornetwork/index.html">Author Network</a></li>'
     html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
     html += '<li><a href="' + nav_path + 'wordcloud/index.html">Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
@@ -1030,11 +1031,11 @@ def build_abstract_word_cloud(papers):
         for row in reader:
             if n > 0:
                 list += ","
-            
+
             if row[0] != "":
                 list += '["' + row[0].replace("'","\'").replace('"','\"') + '",' + str(row[1]) +  ']'
                 n += 1
-            
+
     finally:
         f.close()
 
@@ -1073,7 +1074,47 @@ def build_abstract_word_cloud(papers):
 
     temp += '<script>WordCloud(document.getElementById("canvas"),{ "list": ' + list + ', minSize: 10, gridSize: Math.round(16 * $("#canvas").width() / 1024), weightFactor: function (size) {    return Math.pow(size, 1.1) * $("#canvas").width() / 1024;  },  fontFamily: "Times, serif",  color: function (word, weight) {    return (weight === 12) ? "#c9002f" : "#c9002f";  },  rotateRatio: 0.5,  backgroundColor: "#efede9"} );</script>'
 
-    temp += '<p>' + list + '</p>'
+    # temp += '<p>' + list + '</p>'
+
+    print >>html_file, temp
+
+    temp = build_common_foot()
+    print >>html_file, temp
+
+###########################################################
+# Build Author Network
+###########################################################
+
+
+def build_author_network(papers,network):
+
+    import shutil
+
+    html_file = open('../html/authornetwork/index.html', 'w')
+
+    # Put html together for this page
+    temp = '<html>'
+
+    # html head
+    temp += '<head>'
+    temp += '<title>' + site_title + '</title>'
+    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
+    temp += '<link rel="stylesheet" href="../css/style_main.css">'
+
+    #shutil.copyfile('html/templates/wordcloud2.js', '../html/abstractwordcloud/wordcloud2.js')
+
+    temp += '<script type="text/javascript" src="wordcloud2.js"></script>'
+    temp += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>'
+
+    temp += '</head>'
+
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Author Network</p>', "../", "")
+
+    temp += '<h1 id="pagetitle">Author Network</h1>'
+
+    temp += '<p>' + str(network) + '</p>'
+
 
     print >>html_file, temp
 

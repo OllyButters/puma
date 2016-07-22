@@ -89,6 +89,9 @@ if not os.path.exists('../html/wordcloud'):
 if not os.path.exists('../html/abstractwordcloud'):
     os.mkdir('../html/abstractwordcloud')
 
+if not os.path.exists('../html/authornetwork'):
+    os.mkdir('../html/authornetwork')
+
 
 # Set up the logging
 logging.basicConfig(filename='../data/papers.log',
@@ -143,7 +146,7 @@ analyse.analysis.journals(papers)
 # pp.pprint(papers)
 
 analyse.analysis.abstracts(papers)
-analyse.analysis.authors(papers)
+network = analyse.analysis.authors(papers)
 analyse.analysis.first_authors(papers)
 analyse.analysis.inst(papers)
 analyse.analysis.mesh(papers)
@@ -160,6 +163,7 @@ html.build_htmlv2.build_google_map(papers)
 html.build_htmlv2.build_country_map(papers)
 html.build_htmlv2.build_metrics(papers, cohort_rating)
 html.build_htmlv2.build_abstract_word_cloud(papers)
+html.build_htmlv2.build_author_network(papers, network)
 
 # html.build_html.build_yearly(papers)
 # html.build_html.build_mesh(papers)

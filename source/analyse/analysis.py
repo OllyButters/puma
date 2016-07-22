@@ -198,6 +198,7 @@ def authors(papers):
     print "\n###Author network###"
     print str(len( author_network['authors'])) + " Authors"
     print str(len( author_network['connections'])) + " Connections"
+    return author_network
 
 ############################################################
 # Try with the FIRST authors - these are in a nested dict
