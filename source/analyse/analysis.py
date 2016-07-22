@@ -70,6 +70,9 @@ def abstracts(pmids, papers):
 ############################################################
 # Try with the authors - these are in a nested dict
 def authors(papers):
+
+    import hashlib
+
     authors = []
     for this_paper in papers:
         # print papers[this_pmid]
@@ -103,6 +106,67 @@ def authors(papers):
                 i = i+1
         # Need to utf-8 encode
             authors_file.writerow([w.encode('utf-8'), freq[w]])
+
+    # === Author Network Object ===
+    author_network = {}
+    author_network['authors'] = {}
+    author_network['connections'] = {}
+    for this_paper in papers:
+        try:
+            for this_author in this_paper['author']:
+                # Create author hash
+                hash_object = hashlib.sha256(this_author['family'] + this_author['given'])
+                author_hash = hash_object.hexdigest()
+
+                # Store author details
+                try:
+                    author_network['authors'][ author_hash ]
+                except:
+                    author_network['authors'][ author_hash ] = {}
+                    author_network['authors'][ author_hash ]['family'] = this_author['family']
+                    author_network['authors'][ author_hash ]['given'] = this_author['given']
+
+                try:
+                    author_network['authors'][ author_hash ]['num_papers'] += 1
+                except:
+                    author_network['authors'][ author_hash ]['num_papers'] = 1
+
+                # Create edges
+                for con_author in this_paper['author']:
+
+                    if not this_author == con_author:
+                        con_hash_object = hashlib.sha256(con_author['family'] + con_author['given'])
+                        con_author_hash = con_hash_object.hexdigest()
+
+                        con_id = ""
+                        if author_hash > con_author_hash:
+                            con_id = author_hash + "" + con_author_hash
+                        else:
+                            con_id = con_author_hash + "" + author_hash
+
+                        con_id_hash_object = hashlib.sha256(con_id)
+                        con_hash = con_id_hash_object.hexdigest()
+
+                        try:
+                            author_network['connections'][ con_hash ]
+                        except:
+                            author_network['connections'][ con_hash ] = {}
+                            author_network['connections'][ con_hash ]['authors'] = []
+                            author_network['connections'][ con_hash ]['authors'].append( { 'author_hash': author_hash } )
+                            author_network['connections'][ con_hash ]['authors'].append( { 'author_hash': con_author_hash } )
+
+                        try:
+                            author_network['connections'][ con_hash ]['num_connections'] += 1
+                        except:
+                            author_network['connections'][ con_hash ]['num_connections'] = 1
+
+        except:
+            pass
+
+    print author_network
+    print "\n###Author network###"
+    print str(len( author_network['authors'])) + " Authors"
+    print str(len( author_network['connections'])) + " Connections"
 
 
 ############################################################
