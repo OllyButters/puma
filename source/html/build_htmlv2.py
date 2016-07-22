@@ -51,6 +51,7 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'country/index.html">Publications by Country</a></li>'
     html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
     html += '<li><a href="' + nav_path + 'wordcloud/index.html">Keyword Cloud</a></li>'
+    html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
     html += '</ul>'
 
     html += '<div class="after-navgroup">'
@@ -1015,9 +1016,29 @@ def build_word_cloud(papers,list):
 ###########################################################
 
 
-def build_abstract_word_cloud(papers,list):
+def build_abstract_word_cloud(papers):
 
     import shutil
+    import csv
+
+    f = open("../data/abstracts.csv", 'rt')
+
+    list = "["
+    n = 0
+    try:
+        reader = csv.reader(f)
+        for row in reader:
+            if n > 0:
+                list += ","
+            
+            if row[0] != "":
+                list += '["' + row[0].replace("'","\'").replace('"','\"') + '",' + str(row[1]) +  ']'
+                n += 1
+            
+    finally:
+        f.close()
+
+    list += "]"
 
     html_file = open('../html/abstractwordcloud/index.html', 'w')
 
@@ -1052,7 +1073,7 @@ def build_abstract_word_cloud(papers,list):
 
     temp += '<script>WordCloud(document.getElementById("canvas"),{ "list": ' + list + ', minSize: 10, gridSize: Math.round(16 * $("#canvas").width() / 1024), weightFactor: function (size) {    return Math.pow(size, 1.1) * $("#canvas").width() / 1024;  },  fontFamily: "Times, serif",  color: function (word, weight) {    return (weight === 12) ? "#c9002f" : "#c9002f";  },  rotateRatio: 0.5,  backgroundColor: "#efede9"} );</script>'
 
-    #temp += '<p>' + list + '</p>'
+    temp += '<p>' + list + '</p>'
 
     print >>html_file, temp
 

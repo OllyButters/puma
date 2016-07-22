@@ -310,7 +310,7 @@ very
     | high
     | long
 
- | Custom added to make abstract word mining work better
+ | Custom added to make abstract word mining work/work better
 '
 0
 1
@@ -360,3 +360,4 @@ w
 x
 y
 z
+"

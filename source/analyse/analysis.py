@@ -55,6 +55,8 @@ def abstracts(papers):
     abstracts = abstracts.replace("."," ")
     abstracts = abstracts.replace(":"," ")
     abstracts = abstracts.replace(";"," ")
+    abstracts = abstracts.replace("'","\'")
+    abstracts = abstracts.replace('"','\"')
 
     words = abstracts.split()
 
@@ -73,6 +75,16 @@ def abstracts(papers):
     # Remove words
     for stp in stop_words:
         freq.pop(stp, None)
+
+    # Remove anything with " in it (Causes javascript problems)
+    toRemove = []
+    for f in freq:
+        if '"' in f:
+            toRemove.append(f)
+
+    for f in toRemove:
+        freq.pop(f, None)
+
 
     i = 0
     print 'Top 5'
