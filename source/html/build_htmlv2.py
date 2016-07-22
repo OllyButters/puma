@@ -50,7 +50,7 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'map/index.html">Institutions Map</a></li>'
     html += '<li><a href="' + nav_path + 'country/index.html">Publications by Country</a></li>'
     html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
-    html += '<li><a href="' + nav_path + 'wordcloud/index.html">Word Cloud</a></li>'
+    html += '<li><a href="' + nav_path + 'wordcloud/index.html">Keyword Cloud</a></li>'
     html += '</ul>'
 
     html += '<div class="after-navgroup">'
@@ -962,7 +962,7 @@ def build_metrics(papers, cohort_rating):
 
 
 ###########################################################
-# Build word cloud
+# Build keyword word cloud
 ###########################################################
 
 
@@ -993,6 +993,55 @@ def build_word_cloud(papers,list):
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Word Cloud</p>', "../", "")
 
     temp += '<h1 id="pagetitle">Word Cloud</h1>'
+
+    temp += '<div id="sourrounding_div" style="width:100%;height:500px">'
+    temp += '    <canvas id="canvas" class="canvas"></canvas>'
+    temp += '    <div id="html-canvas" class="canvas hide"></div>'
+    temp += '</div>'
+
+    temp += '<script>var div = document.getElementById("sourrounding_div");var canvas = document.getElementById("canvas");canvas.height = div.offsetHeight;canvas.width  = div.offsetWidth;</script>'
+
+    temp += '<script>WordCloud(document.getElementById("canvas"),{ "list": ' + list + ', minSize: 10, gridSize: Math.round(16 * $("#canvas").width() / 1024), weightFactor: function (size) {    return Math.pow(size, 1.1) * $("#canvas").width() / 1024;  },  fontFamily: "Times, serif",  color: function (word, weight) {    return (weight === 12) ? "#c9002f" : "#c9002f";  },  rotateRatio: 0.5,  backgroundColor: "#efede9"} );</script>'
+
+    #temp += '<p>' + list + '</p>'
+
+    print >>html_file, temp
+
+    temp = build_common_foot()
+    print >>html_file, temp
+
+###########################################################
+# Build abstract word cloud
+###########################################################
+
+
+def build_abstract_word_cloud(papers,list):
+
+    import shutil
+
+    html_file = open('../html/abstractwordcloud/index.html', 'w')
+
+    # Put html together for this page
+    temp = '<html>'
+
+    # html head
+    temp += '<head>'
+    temp += '<title>' + site_title + '</title>'
+    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
+    temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/map.css">'
+
+    shutil.copyfile('html/templates/wordcloud2.js', '../html/abstractwordcloud/wordcloud2.js')
+
+    temp += '<script type="text/javascript" src="wordcloud2.js"></script>'
+    temp += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>'
+
+    temp += '</head>'
+
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Abstract Word Cloud</p>', "../", "")
+
+    temp += '<h1 id="pagetitle">Abstract Word Cloud</h1>'
 
     temp += '<div id="sourrounding_div" style="width:100%;height:500px">'
     temp += '    <canvas id="canvas" class="canvas"></canvas>'

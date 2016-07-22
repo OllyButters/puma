@@ -34,7 +34,6 @@ def geocode(papers):
                 this_paper['Extras']['country_code'] = split[2]
 
                 locations_found += 1
-                print this_paper['Extras']['LatLong']
 
             else:
 

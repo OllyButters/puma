@@ -86,6 +86,9 @@ if not os.path.exists('../html/metrics'):
 if not os.path.exists('../html/wordcloud'):
     os.mkdir('../html/wordcloud')
 
+if not os.path.exists('../html/abstractwordcloud'):
+    os.mkdir('../html/abstractwordcloud')
+
 
 # Set up the logging
 logging.basicConfig(filename='../data/papers.log',
@@ -139,7 +142,7 @@ analyse.analysis.journals(papers)
 
 # pp.pprint(papers)
 
-# analyse.analysis.abstracts(pmids, papers)
+analyse.analysis.abstracts(papers)
 analyse.analysis.authors(papers)
 analyse.analysis.first_authors(papers)
 analyse.analysis.inst(papers)

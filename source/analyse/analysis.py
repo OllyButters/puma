@@ -39,20 +39,40 @@ def journals(papers):
 
 ############################################################
 # Build a list of Abstracts
-def abstracts(pmids, papers):
+def abstracts(papers):
     print "\n###Abstracts###"
 
     abstracts = ''
-    for this_pmid in pmids:
+    for this_paper in papers:
+        #print this_paper
         try:
-            abstracts = abstracts + str(papers[this_pmid]['AbstractText'])
+            abstracts = abstracts + str(this_paper['MedlineCitation']['Article']['Abstract']['AbstractText'])
         except:
             pass
+
+    abstracts = abstracts.lower()
+    abstracts = abstracts.replace(","," ")
+    abstracts = abstracts.replace("."," ")
+    abstracts = abstracts.replace(":"," ")
+    abstracts = abstracts.replace(";"," ")
 
     words = abstracts.split()
 
     # calculate the frequency of each word in abstracts
     freq = dict((x, words.count(x)) for x in set(words))
+
+    # Delete stop words
+    # Read stop words from file
+    stop_lines = tuple(open("../config/stopwords","r"))
+    stop_words = []
+    for line in stop_lines:
+        split = line.split()
+        if len(split) > 0 and split[0] != "|" and not "|" in split[0]:
+           stop_words.append(split[0])
+
+    # Remove words
+    for stp in stop_words:
+        freq.pop(stp, None)
 
     i = 0
     print 'Top 5'
@@ -163,11 +183,9 @@ def authors(papers):
         except:
             pass
 
-    print author_network
     print "\n###Author network###"
     print str(len( author_network['authors'])) + " Authors"
     print str(len( author_network['connections'])) + " Connections"
-
 
 ############################################################
 # Try with the FIRST authors - these are in a nested dict
