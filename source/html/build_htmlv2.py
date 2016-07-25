@@ -1129,7 +1129,9 @@ def build_author_network(papers,network):
 
             #net_json = '{"id": "' + network['authors'][author]['family'] + ' ' +  network['authors'][author]['given'] + '", "group":1}'
 
-            net_json += '{"source": "' + author_0 + '", "target": "' + author_1 + '", "value": ' + str(network['connections'][con]['num_connections']/2) + '}'
+            n_con = network['connections'][con]['num_connections']/2
+
+            net_json += '{"source": "' + author_0 + '", "target": "' + author_1 + '", "value": ' + str(n_con) + '}'
 
 	    print >>net_file, net_json
             n += 1
@@ -1165,9 +1167,10 @@ def build_author_network(papers,network):
     temp += '<h1 id="pagetitle">Author Network</h1>'
 
     temp += '<svg width="960" height="600"></svg><script src="https://d3js.org/d3.v4.min.js"></script>'
+    #temp += '<svg width="960" height="600"></svg><script src="https://d3js.org/d3.v3.min.js"></script>'
     temp += '<script type="text/javascript" src="network.js"></script>'
 
-    temp += '<p>' + str(network) + '</p>'
+    #temp += '<p>' + str(network) + '</p>'
 
 
     print >>html_file, temp
