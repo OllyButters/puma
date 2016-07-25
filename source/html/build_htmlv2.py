@@ -1085,6 +1085,11 @@ def build_abstract_word_cloud(papers):
 # Build Author Network
 ###########################################################
 
+def get_author_string_from_hash( hash_string, network ):
+
+    for author in network['authors']:
+        if author == hash_string:
+            return network['authors'][author]['family'] + ' ' +  network['authors'][author]['given']
 
 def build_author_network(papers,network):
 
@@ -1096,21 +1101,44 @@ def build_author_network(papers,network):
     net_json = '{'
     net_json += '"nodes":['
     n = 0
+    print >>net_file, net_json
+
     for author in network['authors']:
-        print network['authors'][author]
+        # print network['authors'][author]
+        net_json = ""
         if n > 0:
             net_json += ","
-        net_json = '{"id": "' + network['authors'][author]['family'] + ' ' +  network['authors'][author]['given'] + '", "group":1}'
+        net_json += '{"id": "' + network['authors'][author]['family'] + ' ' +  network['authors'][author]['given'] + '", "group":1}'
 
+        print >>net_file, net_json
         n+=1
 
-    net_json += '],"links": ['
+    net_json = '],"links": ['
+    print >>net_file, net_json
 
-    net_json += ']'
+
+    n = 0
+    for con in network['connections']:
+        try:
+            net_json = ""
+            if n > 0:
+                net_json += ","
+
+            author_0 = get_author_string_from_hash( network['connections'][con]['authors'][0]['author_hash'], network )
+            author_1 = get_author_string_from_hash( network['connections'][con]['authors'][1]['author_hash'], network )
+
+            #net_json = '{"id": "' + network['authors'][author]['family'] + ' ' +  network['authors'][author]['given'] + '", "group":1}'
+
+            net_json += '{"source": "' + author_0 + '", "target": "' + author_1 + '", "value": ' + str(network['connections'][con]['num_connections']/2) + '}'
+
+	    print >>net_file, net_json
+            n += 1
+        except:
+            pass
+
+    net_json = ']'
     net_json += '}'
-
-    print net_file, net_json
-    net_file.close()
+    print >>net_file, net_json
 
 
     html_file = open('../html/authornetwork/index.html', 'w')
@@ -1128,8 +1156,6 @@ def build_author_network(papers,network):
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<style>.links line {  stroke: #999;  stroke-opacity: 0.6;} .nodes circle {  stroke: #fff;  stroke-width: 1.5px;} </style>'
 
-
-    temp += '<script type="text/javascript" src="wordcloud2.js"></script>'
     temp += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>'
 
     temp += '</head>'
