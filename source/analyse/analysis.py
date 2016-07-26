@@ -85,7 +85,6 @@ def abstracts(papers):
     for f in toRemove:
         freq.pop(f, None)
 
-
     i = 0
     print 'Top 5'
 
@@ -97,7 +96,6 @@ def abstracts(papers):
                 print w, freq[w]
                 i = i+1
             abstracts_file.writerow([w.encode('utf-8'), freq[w]])
-
 
 ############################################################
 # Try with the authors - these are in a nested dict

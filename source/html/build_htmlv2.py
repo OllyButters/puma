@@ -464,6 +464,8 @@ def build_mesh(papers):
     word_cloud_max = 0
     word_cloud_max_name = ""
 
+    word_cloud_raw = ""
+
     # Make papers list for headings pages
     for this_mesh in mesh_papers_all:
 
@@ -481,6 +483,9 @@ def build_mesh(papers):
                 word_cloud_max_name = this_mesh
 
 	    word_cloud_list += '["' + this_mesh  + '", ' + str(number) + ']'
+
+            for x in range(0,number):
+                 word_cloud_raw += " " + this_mesh
 
         if (not os.path.exists('../html/mesh/'+this_mesh)):
             os.mkdir('../html/mesh/'+this_mesh)
@@ -665,6 +670,7 @@ def build_mesh(papers):
         fo.close()
 
     word_cloud_list += "]"
+    #print word_cloud_raw # <<<<< PRINTS ALL WORDS
     build_word_cloud(papers,word_cloud_list)
 
 
@@ -1021,6 +1027,9 @@ def build_abstract_word_cloud(papers):
 
     import shutil
     import csv
+    import math
+
+
 
     f = open("../data/abstracts.csv", 'rt')
 
@@ -1033,13 +1042,19 @@ def build_abstract_word_cloud(papers):
                 list += ","
 
             if row[0] != "":
-                list += '["' + row[0].replace("'","\'").replace('"','\"') + '",' + str(row[1]) +  ']'
+                #list += '["' + row[0].replace("'","\'").replace('"','\"') + '",' + str(row[1]) +  ']'
+                list += '{"text":"' + row[0].replace("'","\'").replace('"','\"') + '","size":' + str(math.sqrt(int(row[1]))*1.5) +  '}'
                 n += 1
+
+            if n > 200:
+                break
 
     finally:
         f.close()
 
-    list += "]"
+    list += "];"
+    list_file = open('../html/abstractwordcloud/list.js', 'w')
+    print >>list_file, " var word_list = " + list
 
     html_file = open('../html/abstractwordcloud/index.html', 'w')
 
@@ -1053,11 +1068,18 @@ def build_abstract_word_cloud(papers):
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
+    temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
-    shutil.copyfile('html/templates/wordcloud2.js', '../html/abstractwordcloud/wordcloud2.js')
+    #shutil.copyfile('html/templates/wordcloud2.js', '../html/abstractwordcloud/wordcloud2.js')
+    shutil.copyfile('html/templates/d3wordcloud.js', '../html/abstractwordcloud/d3wordcloud.js')
+    shutil.copyfile('html/templates/d3.layout.cloud.js', '../html/abstractwordcloud/d3.layout.cloud.js')
 
-    temp += '<script type="text/javascript" src="wordcloud2.js"></script>'
-    temp += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>'
+    #temp += '<script type="text/javascript" src="wordcloud2.js"></script>'
+    #temp += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>'
+
+    temp += '<script src="list.js"></script>'
+    temp += '<script src="http://d3js.org/d3.v3.min.js"></script>'
+    temp += '<script src="d3.layout.cloud.js"></script>'
 
     temp += '</head>'
 
@@ -1065,16 +1087,21 @@ def build_abstract_word_cloud(papers):
 
     temp += '<h1 id="pagetitle">Abstract Word Cloud</h1>'
 
-    temp += '<div id="sourrounding_div" style="width:100%;height:500px">'
-    temp += '    <canvas id="canvas" class="canvas"></canvas>'
-    temp += '    <div id="html-canvas" class="canvas hide"></div>'
-    temp += '</div>'
+    temp += '<cloud id="sourrounding_div" style="width:100%;height:500px">'
+    temp += '</cloud>'
 
-    temp += '<script>var div = document.getElementById("sourrounding_div");var canvas = document.getElementById("canvas");canvas.height = div.offsetHeight;canvas.width  = div.offsetWidth;</script>'
+    #temp += '<div id="sourrounding_div" style="width:100%;height:500px">'
+    #temp += '    <canvas id="canvas" class="canvas"></canvas>'
+    #temp += '    <div id="html-canvas" class="canvas hide"></div>'
+    #temp += '</div>'
 
-    temp += '<script>WordCloud(document.getElementById("canvas"),{ "list": ' + list + ', minSize: 10, gridSize: Math.round(16 * $("#canvas").width() / 1024), weightFactor: function (size) {    return Math.pow(size, 1.1) * $("#canvas").width() / 1024;  },  fontFamily: "Times, serif",  color: function (word, weight) {    return (weight === 12) ? "#c9002f" : "#c9002f";  },  rotateRatio: 0.5,  backgroundColor: "#efede9"} );</script>'
+    #temp += '<script>var div = document.getElementById("sourrounding_div");var canvas = document.getElementById("canvas");canvas.height = div.offsetHeight;canvas.width  = div.offsetWidth;</script>'
+
+    #temp += '<script>WordCloud(document.getElementById("canvas"),{ "list": ' + list + ', minSize: 10, gridSize: Math.round(16 * $("#canvas").width() / 1024), weightFactor: function (size) {    return Math.pow(size, 1.1) * $("#canvas").width() / 1024;  },  fontFamily: "Times, serif",  color: function (word, weight) {    return (weight === 12) ? "#c9002f" : "#c9002f";  },  rotateRatio: 0.5,  backgroundColor: "#efede9"} );</script>'
 
     # temp += '<p>' + list + '</p>'
+
+    temp += '<script src="d3wordcloud.js"></script>'
 
     print >>html_file, temp
 
@@ -1166,8 +1193,7 @@ def build_author_network(papers,network):
 
     temp += '<h1 id="pagetitle">Author Network</h1>'
 
-    temp += '<svg width="960" height="600"></svg><script src="https://d3js.org/d3.v4.min.js"></script>'
-    #temp += '<svg width="960" height="600"></svg><script src="https://d3js.org/d3.v3.min.js"></script>'
+    temp += '<svg width="960" height="600" id="chart"></svg><script src="https://d3js.org/d3.v4.min.js"></script>'
     temp += '<script type="text/javascript" src="network.js"></script>'
 
     #temp += '<p>' + str(network) + '</p>'
