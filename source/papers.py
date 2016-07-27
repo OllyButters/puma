@@ -112,7 +112,8 @@ papers = []
 
 # Get list of files in merged directory
 merged_files_list = listdir('../cache/processed/merged/')
-merged_files_list = merged_files_list[0:10]
+merged_files_list.sort()
+# merged_files_list = merged_files_list[0:10]
 print str(len(merged_files_list))+' merged papers to load'
 
 # Open each one and add to papers object
@@ -176,7 +177,7 @@ cohort_rating = html.build_htmlv2.build_home(papers)
 html.build_htmlv2.build_papers(papers)
 html.build_htmlv2.build_mesh(papers)
 html.build_htmlv2.build_google_map(papers)
-html.build_htmlv2.build_metrics(papers, cohort_rating)
+# html.build_htmlv2.build_metrics(papers, cohort_rating)
 
 # html.build_html.build_yearly(papers)
 # html.build_html.build_mesh(papers)

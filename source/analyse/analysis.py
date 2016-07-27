@@ -2,6 +2,7 @@
 
 import csv
 import logging
+import pprint
 
 ############################################################
 # Have all the data now, so do something with it
@@ -17,7 +18,10 @@ def journals(papers):
     journals = []
     for this_paper in papers:
         # journals.append(this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'])
-        journals.append(this_paper['journalAbbreviation'])
+        try:
+            journals.append(this_paper['journalAbbreviation'])
+        except:
+            logging.warn('No journalAbbreviation for '+this_paper['IDs']['hash'])
 
     print str(len(journals))+'/'+str(num_papers)
     print str(len(set(journals)))+' different journals'
@@ -180,14 +184,15 @@ def mesh(papers):
     coverage = 0
     for this_paper in papers:
 
-        if 'MeshHeadingList' in this_paper['MedlineCitation']:
-            coverage = coverage + 1
+        if 'MedlineCitation' in this_paper:
+            if 'MeshHeadingList' in this_paper['MedlineCitation']:
+                coverage = coverage + 1
 
-            try:
-                for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
-                    mesh.append(this_mesh['DescriptorName'])
-            except:
-                pass
+                try:
+                    for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
+                        mesh.append(this_mesh['DescriptorName'])
+                except:
+                    pass
 
     freq = dict((x, mesh.count(x)) for x in set(mesh))
     print "\n###Mesh###"
