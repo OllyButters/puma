@@ -1,6 +1,7 @@
 /cache
 /data
 /html
+/logs
 
 source/tools.pyc
 *.pyc

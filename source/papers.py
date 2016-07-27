@@ -18,8 +18,6 @@ import bibliography.bibtex
 ##########################################################
 # Get all the paper metadata from pubmed and do stuff with it
 ##########################################################
-# Starting to hack around with using generic template and not using pubmed
-
 __author__ = "Olly Butters, Hugh Garner, Tom Burton"
 __date__ = 27/7/16
 __version__ = '0.2.6'
@@ -44,6 +42,10 @@ if (os.path.exists('../cache') is False):
 # Output data sets
 if (os.path.exists('../data') is False):
     os.mkdir('../data')
+
+# Log directory
+if (os.path.exists('../logs') is False):
+    os.mkdir('../logs')
 
 # Output html
 if not os.path.exists('../html'):
@@ -74,8 +76,8 @@ if not os.path.exists('../html/wordcloud'):
     os.mkdir('../html/wordcloud')
 
 
-# Set up the logging
-logging.basicConfig(filename='../data/papers.log',
+# Set up the logging. Level can be DEBUG|.....
+logging.basicConfig(filename='../logs/papers.log',
                     filemode='w',
                     level=logging.DEBUG)
 
@@ -157,7 +159,7 @@ cohort_rating = html.build_htmlv2.build_home(papers)
 html.build_htmlv2.build_papers(papers)
 html.build_htmlv2.build_mesh(papers)
 html.build_htmlv2.build_google_map(papers)
-# html.build_htmlv2.build_metrics(papers, cohort_rating)
+html.build_htmlv2.build_metrics(papers, cohort_rating)
 
 # html.build_html.build_yearly(papers)
 # html.build_html.build_mesh(papers)

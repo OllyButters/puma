@@ -43,15 +43,21 @@ def pre_clean(papers):
                 authors_to_keep.append(this_paper['author'][i])
         this_paper['author'] = authors_to_keep
 
-        # Try sticking in the DOI from elsewhere
+        # Try sticking in the DOI
         try:
             this_paper['IDs']['DOI'] = this_paper['DOI']
         except:
             pass
 
-        # Try sticking in the pmid from elsewhere
+        # Try sticking in the pmid
         try:
-            this_paper['IDs']['PMID'] = this_paper['extra']['PMID']
+            this_paper['IDs']['PMID'] = this_paper['pmid']
+        except:
+            pass
+
+        # Try sticking in the zotero id
+        try:
+            this_paper['IDs']['zotero'] = this_paper['key']
         except:
             pass
 
@@ -94,8 +100,8 @@ def clean_institution(papers):
 
         try:
             print '============='
-            print this_paper['author'][0]['affiliation'][1]['name']
-            institute = this_paper['author'][0]['affiliation'][1]['name']
+            print this_paper['author'][0]['affiliation'][0]['name']
+            institute = this_paper['author'][0]['affiliation'][0]['name']
 
         except:
             logging.warn('Could not find an affiliation for %s', this_paper)
