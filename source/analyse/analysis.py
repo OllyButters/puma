@@ -16,7 +16,8 @@ def journals(papers):
 
     journals = []
     for this_paper in papers:
-        journals.append(this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'])
+        # journals.append(this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'])
+        journals.append(this_paper['journalAbbreviation'])
 
     print str(len(journals))+'/'+str(num_papers)
     print str(len(set(journals)))+' different journals'

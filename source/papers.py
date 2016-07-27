@@ -2,6 +2,7 @@
 
 import json
 import os.path
+from os import listdir
 import logging
 # import pprint
 
@@ -102,20 +103,35 @@ logging.basicConfig(filename='../data/papers.log',
 ###########################################################
 # Get the papers. This will get all the metadata and store
 # it in a cache directory.
-# papers will be the giant object that has all the papers in it
-papers = {}
+# papers will be the giant LIST that has all the papers in it, each as a dictionary
+papers = []
 
 # commenting out the get stuff as my assumption is that hughs work
 # will join this up
 # get.get.get(pmids, papers)
 
+# Get list of files in merged directory
+merged_files_list = listdir('../cache/processed/merged/')
+merged_files_list = merged_files_list[0:10]
+print str(len(merged_files_list))+' merged papers to load'
+
+# Open each one and add to papers object
+for this_merged_file in merged_files_list:
+    with open('../cache/processed/merged/'+this_merged_file) as fo:
+        # Will be a dictionary
+        this_paper = json.load(fo)
+        this_paper['filename'] = this_merged_file
+        papers.append(this_paper)
+
 # input_file = 'sample_data_object'
-input_file = 'data-alspac-all-pubmed-merged-format'
-with open('../cache/raw/'+input_file) as fo:
-    papers = json.load(fo)
+# input_file = 'data-alspac-all-pubmed-merged-format'
+# with open('../cache/raw/'+input_file) as fo:
+#     papers = json.load(fo)
+
 
 print str(len(papers))+' papers to process'
 
+# exit()
 
 ###########################################################
 # Clean the data - e.g. tidy institute names

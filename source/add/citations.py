@@ -37,7 +37,14 @@ def citations(papers, api_key, citation_max_life):
     except:
         print 'make file'
 
+    number_papers_to_process = len(papers)
+    counter = 0
     for this_paper in papers:
+        counter = counter + 1
+        logging.info('on # '+str(counter)+' of '+str(number_papers_to_process))
+
+        print this_paper['IDs']
+        # exit()
 
         # read the cache
         try:
@@ -57,7 +64,7 @@ def citations(papers, api_key, citation_max_life):
                 except:
                     logging.error('The citation query failed - maybe it timed out?')
                     print 'The citation query failed - maybe it timed out?'
-                    exit()
+                    #exit()
 
                 try:
                     citations = t['search-results']['entry'][0]['citedby-count']
