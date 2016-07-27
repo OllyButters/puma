@@ -64,7 +64,7 @@ def citations(papers, api_key, citation_max_life):
                 except:
                     logging.error('The citation query failed - maybe it timed out?')
                     print 'The citation query failed - maybe it timed out?'
-                    #exit()
+                    # exit()
 
                 try:
                     citations = t['search-results']['entry'][0]['citedby-count']

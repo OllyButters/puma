@@ -2,7 +2,6 @@
 
 import csv
 import logging
-import pprint
 
 ############################################################
 # Have all the data now, so do something with it

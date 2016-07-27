@@ -5,7 +5,7 @@ import csv
 import re
 import logging
 import os
-import hashlib
+# import hashlib
 
 
 # Copy all the raw data to the processed directory, this means we are only

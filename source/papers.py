@@ -21,8 +21,8 @@ import bibliography.bibtex
 # Starting to hack around with using generic template and not using pubmed
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton"
-__date__ = 22/7/16
-__version__ = '0.2.5'
+__date__ = 27/7/16
+__version__ = '0.2.6'
 
 
 # Options - these should get moved out into a config file
@@ -40,26 +40,6 @@ scopus_citation_max_life = 30  # days
 # so it should all be considerd ready to be deleted at any point!
 if (os.path.exists('../cache') is False):
     os.mkdir('../cache')
-
-# The raw, unprocessed data.
-if (os.path.exists('../cache/raw') is False):
-    os.mkdir('../cache/raw')
-
-if (os.path.exists('../cache/raw/doi') is False):
-    os.mkdir('../cache/raw/doi')
-
-if (os.path.exists('../cache/raw/pubmed') is False):
-    os.mkdir('../cache/raw/pubmed')
-
-if (os.path.exists('../cache/raw/zotero') is False):
-    os.mkdir('../cache/raw/zotero')
-
-# The merged data
-if (os.path.exists('../cache/processed') is False):
-    os.mkdir('../cache/processed')
-
-if (os.path.exists('../cache/merged') is False):
-    os.mkdir('../cache/merged')
 
 # Output data sets
 if (os.path.exists('../data') is False):
