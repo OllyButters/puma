@@ -84,7 +84,7 @@ def collate():
 
     #get pubmed data
     if 'extra' in paper:
-      pmid_matches = re.search(r'PMID: ([0-9]{7})', paper['extra'])
+      pmid_matches = re.search(r'PMID: ([0-9]{1,8})', paper['extra'])
       if pmid_matches is not None:
         paper['pmid'] = pmid_matches.group(1)
         #check if paper data in pm cache
