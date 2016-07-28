@@ -23,7 +23,7 @@ def dumpJson(filename, data, filetype='', process=False):
     else:
       json.dump(data, f, indent=2)
     f.close()
-    return f
+    return location
   except:
     print "(papersCache.dumpJson) Unexpected error:", sys.exc_info()[1]
     pass
@@ -35,7 +35,7 @@ def dumpFile(filename, data, filetype=''):
     f = open(location, 'wa')
     f.write(data)
     f.close()
-    return f
+    return location
   except:
     print "(papersCache.dumpJson) Unexpected error:", sys.exc_info()[1]
     pass
@@ -74,6 +74,7 @@ def getCacheData(output_type='json', filetype='', filenames=[]):
     #paper = json.loads(cache_file_str)
     if (output_type == 'json'):
       papers[cache_filename] = json.load(cache_file)
+      cache_file.close()
     else:
       raise ValueError('(papersCache.getCacheData) Error, unrecognised output_type')
 

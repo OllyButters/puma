@@ -19,7 +19,7 @@ def getDoi(doi):
     json_data = json.loads(html_raw)
     #as doi's use '/' chars, we do an md5 of the doi as the filename
     filename = hashlib.md5(doi).hexdigest()
-    pc.dumpJson(filename, json_data, filetype='doi')
+    pc.dumpJson(filename, json_data, filetype='raw/doi')
     return json_data
   except urllib2.HTTPError, e:
     print "DOI: "+doi+" error: "+str(e.code)

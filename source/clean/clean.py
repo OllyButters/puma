@@ -5,7 +5,7 @@ import csv
 import re
 import logging
 import os
-import hashlib
+# import hashlib
 
 
 # Copy all the raw data to the processed directory, this means we are only
@@ -20,8 +20,11 @@ def pre_clean(papers):
         this_paper['IDs'] = {}
 
         # Make hash from title
-        hash = hashlib.md5(this_paper['title']).hexdigest()
-        this_paper['IDs']['hash'] = hash
+        # hash = hashlib.md5(this_paper['title'].encode('ascii', 'ignore')).hexdigest()
+        # this_paper['IDs']['hash'] = hash
+
+        # Ugly hack. Needs to be done better
+        this_paper['IDs']['hash'] = this_paper['filename']
 
         this_paper['IDs']['DOI'] = ''
         this_paper['IDs']['PMID'] = ''
@@ -40,14 +43,23 @@ def pre_clean(papers):
                 authors_to_keep.append(this_paper['author'][i])
         this_paper['author'] = authors_to_keep
 
-        # Try sticking in the pmid from elsewhere
+        # Try sticking in the DOI
         try:
-            this_paper['IDs']['PMID'] = this_paper['alternative-id'][0]
+            this_paper['IDs']['DOI'] = this_paper['DOI']
         except:
-            try:
-                this_paper['IDs']['PMID'] = this_paper['alternative-id'][1]
-            except:
-                pass
+            pass
+
+        # Try sticking in the pmid
+        try:
+            this_paper['IDs']['PMID'] = this_paper['pmid']
+        except:
+            pass
+
+        # Try sticking in the zotero id
+        try:
+            this_paper['IDs']['zotero'] = this_paper['key']
+        except:
+            pass
 
 
 # Have a go at tidying up the mess that is first author institution.
@@ -88,8 +100,8 @@ def clean_institution(papers):
 
         try:
             print '============='
-            print this_paper['author'][0]['affiliation'][1]['name']
-            institute = this_paper['author'][0]['affiliation'][1]['name']
+            print this_paper['author'][0]['affiliation'][0]['name']
+            institute = this_paper['author'][0]['affiliation'][0]['name']
 
         except:
             logging.warn('Could not find an affiliation for %s', this_paper)

@@ -2,6 +2,7 @@
 
 import json
 import os.path
+from os import listdir
 import logging
 # import pprint
 
@@ -17,11 +18,9 @@ import bibliography.bibtex
 ##########################################################
 # Get all the paper metadata from pubmed and do stuff with it
 ##########################################################
-# Starting to hack around with using generic template and not using pubmed
-
-__author__ = "Olly Butters, Hugh Garner"
-__date__ = 8/7/16
-__version__ = '0.2.4'
+__author__ = "Olly Butters, Hugh Garner, Tom Burton"
+__date__ = 27/7/16
+__version__ = '0.2.6'
 
 
 # Options - these should get moved out into a config file
@@ -40,22 +39,14 @@ scopus_citation_max_life = 30  # days
 if (os.path.exists('../cache') is False):
     os.mkdir('../cache')
 
-# The raw, unprocessed data.
-if (os.path.exists('../cache/raw') is False):
-    os.mkdir('../cache/raw')
-
-if (os.path.exists('../cache/raw/pubmed') is False):
-    os.mkdir('../cache/raw/pubmed')
-
-if (os.path.exists('../cache/processed') is False):
-    os.mkdir('../cache/processed')
-
-if (os.path.exists('../cache/geodata') is False):
-    os.mkdir('../cache/geodata')
-
 if (os.path.exists('../data') is False):
     os.mkdir('../data')
 
+# Log directory
+if (os.path.exists('../logs') is False):
+    os.mkdir('../logs')
+
+# Output html
 if not os.path.exists('../html'):
     os.mkdir('../html')
 
@@ -93,8 +84,8 @@ if not os.path.exists('../html/authornetwork'):
     os.mkdir('../html/authornetwork')
 
 
-# Set up the logging
-logging.basicConfig(filename='../data/papers.log',
+# Set up the logging. Level can be DEBUG|.....
+logging.basicConfig(filename='../logs/papers.log',
                     filemode='w',
                     level=logging.DEBUG)
 
@@ -102,20 +93,36 @@ logging.basicConfig(filename='../data/papers.log',
 ###########################################################
 # Get the papers. This will get all the metadata and store
 # it in a cache directory.
-# papers will be the giant object that has all the papers in it
-papers = {}
+# papers will be the giant LIST that has all the papers in it, each as a dictionary
+papers = []
 
 # commenting out the get stuff as my assumption is that hughs work
 # will join this up
 # get.get.get(pmids, papers)
 
+# Get list of files in merged directory
+merged_files_list = listdir('../cache/processed/merged/')
+merged_files_list.sort()
+# merged_files_list = merged_files_list[0:10]
+print str(len(merged_files_list))+' merged papers to load'
+
+# Open each one and add to papers object
+for this_merged_file in merged_files_list:
+    with open('../cache/processed/merged/'+this_merged_file) as fo:
+        # Will be a dictionary
+        this_paper = json.load(fo)
+        this_paper['filename'] = this_merged_file
+        papers.append(this_paper)
+
 # input_file = 'sample_data_object'
-input_file = 'data-alspac-all-pubmed-merged-format'
-with open('../cache/raw/'+input_file) as fo:
-    papers = json.load(fo)
+# input_file = 'data-alspac-all-pubmed-merged-format'
+# with open('../cache/raw/'+input_file) as fo:
+#     papers = json.load(fo)
+
 
 print str(len(papers))+' papers to process'
 
+# exit()
 
 ###########################################################
 # Clean the data - e.g. tidy institute names
