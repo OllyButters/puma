@@ -39,7 +39,6 @@ scopus_citation_max_life = 30  # days
 if (os.path.exists('../cache') is False):
     os.mkdir('../cache')
 
-# Output data sets
 if (os.path.exists('../data') is False):
     os.mkdir('../data')
 
@@ -69,11 +68,20 @@ if not os.path.exists('../html/major_keywords'):
 if not os.path.exists('../html/map'):
     os.mkdir('../html/map')
 
+if not os.path.exists('../html/country'):
+    os.mkdir('../html/country')
+
 if not os.path.exists('../html/metrics'):
     os.mkdir('../html/metrics')
 
 if not os.path.exists('../html/wordcloud'):
     os.mkdir('../html/wordcloud')
+
+if not os.path.exists('../html/abstractwordcloud'):
+    os.mkdir('../html/abstractwordcloud')
+
+if not os.path.exists('../html/authornetwork'):
+    os.mkdir('../html/authornetwork')
 
 
 # Set up the logging. Level can be DEBUG|.....
@@ -144,8 +152,8 @@ analyse.analysis.journals(papers)
 
 # pp.pprint(papers)
 
-# analyse.analysis.abstracts(pmids, papers)
-analyse.analysis.authors(papers)
+analyse.analysis.abstracts(papers)
+network = analyse.analysis.authors(papers)
 analyse.analysis.first_authors(papers)
 analyse.analysis.inst(papers)
 analyse.analysis.mesh(papers)
@@ -159,7 +167,10 @@ cohort_rating = html.build_htmlv2.build_home(papers)
 html.build_htmlv2.build_papers(papers)
 html.build_htmlv2.build_mesh(papers)
 html.build_htmlv2.build_google_map(papers)
+html.build_htmlv2.build_country_map(papers)
 html.build_htmlv2.build_metrics(papers, cohort_rating)
+html.build_htmlv2.build_abstract_word_cloud(papers)
+html.build_htmlv2.build_author_network(papers, network)
 
 # html.build_html.build_yearly(papers)
 # html.build_html.build_mesh(papers)
