@@ -417,6 +417,7 @@ def build_mesh(papers):
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; All Keywords</p>', "../", "")
 
     temp += '<h1 id="pagetitle">All Keywords</h1>'
+    temp += '<p>' + str(len(mesh_papers_all)) + ' Keywords</p>'
 
     print >>html_file_all, temp
 
@@ -444,6 +445,7 @@ def build_mesh(papers):
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keywords</p>', "../", "")
 
     temp += '<h1 id="pagetitle">Major Keywords</h1>'
+    temp += '<p>' + str(len(mesh_papers_major)) + ' Keywords</p>'
 
     print >>html_file_major, temp
 
@@ -1198,6 +1200,43 @@ def build_author_network(papers,network):
 
     #temp += '<p>' + str(network) + '</p>'
 
+
+    print >>html_file, temp
+
+    temp = build_common_foot()
+    print >>html_file, temp
+
+
+###########################################################
+# ErrorLog
+###########################################################
+def build_error_log(papers, error_log ):
+
+    import shutil
+    import csv
+    import math
+    import html.htmlerrorlog.errorlog
+
+    html_file = open('../html/errorlog/index.html', 'w')
+
+    # Put html together for this page
+    temp = '<html>'
+
+    # html head
+    temp += '<head>'
+    temp += '<title>' + site_title + '</title>'
+    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
+    temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/map.css">'
+
+    temp += '</head>'
+
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Error Log</p>', "../", "")
+
+    temp += '<h1 id="pagetitle">Error Log</h1>'
+
+    temp += '<p>' + error_log.printLog() + '</p>'
 
     print >>html_file, temp
 

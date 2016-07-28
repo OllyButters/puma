@@ -11,7 +11,7 @@ import clean.clean
 import add.geocode
 import add.citations
 import analyse.analysis
-import html.build_html
+import html.htmlerrorlog.errorlog
 import html.build_htmlv2
 import bibliography.bibtex
 
@@ -31,6 +31,14 @@ scopus_citation_max_life = 30  # days
 
 
 # pp = pprint.PrettyPrinter(indent=4)
+
+
+# Error log for displaying data input problems to user
+error_log = html.htmlerrorlog.errorlog.ErrorLog()
+error_log.logError("Test Error")
+error_log.logWarning("Test Warning")
+# error_log.printLog()
+
 
 ###########################################################
 # Make sure the directory structure is set up first.
@@ -82,6 +90,9 @@ if not os.path.exists('../html/abstractwordcloud'):
 
 if not os.path.exists('../html/authornetwork'):
     os.mkdir('../html/authornetwork')
+
+if not os.path.exists('../html/errorlog'):
+    os.mkdir('../html/errorlog')
 
 
 # Set up the logging. Level can be DEBUG|.....
@@ -171,9 +182,10 @@ html.build_htmlv2.build_country_map(papers)
 html.build_htmlv2.build_metrics(papers, cohort_rating)
 html.build_htmlv2.build_abstract_word_cloud(papers)
 html.build_htmlv2.build_author_network(papers, network)
+html.build_htmlv2.build_error_log(papers, error_log)
 
 # html.build_html.build_yearly(papers)
 # html.build_html.build_mesh(papers)
 # html.build_html.build_summary(papers)
 # html.build_html.build_google_map(papers)
-html.build_html.build_google_heat_map()
+# html.build_html.build_google_heat_map()

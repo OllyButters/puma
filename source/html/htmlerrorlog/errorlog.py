@@ -1,0 +1,27 @@
+#! /usr/bin/env python
+
+class ErrorLog:
+    
+    errorArray = []
+    warningArray = []
+
+    def logError(self, txt ):
+        self.errorArray.append( "[ERROR] " + txt )
+
+    def logWarning(self, txt ):
+        self.warningArray.append( "[WARNING] " + txt )
+
+
+    def printLog(self):
+        log = ""
+        log += "<h2>" + str(len(self.errorArray)) + " Errors</h2>"
+        for error in self.errorArray:
+            log += "<p>" + error + "</p>"
+
+	log += "<h2>" + str(len(self.warningArray)) + " Warnings</h2>"
+        for warn in self.warningArray:
+            log += "<p>" + warn + "</p>"
+
+        return log
+
+
