@@ -14,7 +14,7 @@ class Merge():
     self.output = []
     self.log = logging.getLogger('mergeLog')
     self.log.setLevel(logging.INFO)
-    fh = logging.FileHandler(filename='../../log/mergeLog', mode="w")
+    fh = logging.FileHandler(filename='../../logs/mergeLog', mode="w")
     self.log_fh = fh
     fh.setLevel(logging.INFO)
     fh_format = logging.Formatter('%(message)s')
@@ -52,27 +52,33 @@ class Merge():
         dest_path = '$'+dest_path[len(dest_parent_path):]
 
       matches = self.getPath(dest, dest_path)
+
+      src_loc_type = re.match(r'\[([0-9]+)\]', src_path[-1])
+
+      dest_loc = -1
+      if src_loc_type is not None:
+        dest_loc = int(src_loc_type.group(1))
       
       if len(matches) > 0:
         #we've found some matches
         #self.log.info('Some matches found in dest: '+str(matches))
         #what type is the match?
-        if isinstance(matches[-1].value, dict):
+        if isinstance(matches[dest_loc].value, dict):
           #if it's a dict, we can just set it to value
-          dest = matches[-1].value
-          if isinstance(matches[-1].path, jsonp.Root):
+          dest = matches[dest_loc].value
+          if isinstance(matches[dest_loc].path, jsonp.Root):
             dest_field = None
           else:
-            dest_field = str(matches[-1].path)
-        elif isinstance(matches[-1].value, list):
-          dest = matches[-1].value
+            dest_field = str(matches[dest_loc].path)
+        elif isinstance(matches[dest_loc].value, list):
+          dest = matches[dest_loc].value
           if len(dest) == 0:
             dest.append('')
-          dest_field = len(matches[-1].value) - 1
+          dest_field = len(matches[dest_loc].value) - 1
         else:
           #it's a str or int (ignore tuples/sets/etc)
-          dest = matches[-1].context.value
-          dest_field = matches[-1].path
+          dest = matches[dest_loc].context.value
+          dest_field = matches[dest_loc].path
       else:
         #if no matches found, test to see if in self.dest as opposed to dest. if not there either, insert new location and set as dest
         #note that new_dest_parent_path is dest_path before trimming of dest_parent_path
@@ -117,6 +123,14 @@ class Merge():
     #if it's not the above (i.e. str or int (ignore sets/tuples)) then we need to find out where the PATH maps to and then set the DEST value to data
     if isinstance(src_data, list) or isinstance(src_data, dict):
       #ok, so it's a list or dict
+
+      if isinstance(dest, list):
+        if isinstance(src_data, list):
+          while len(dest) < len(src_data):
+            dest.append(copy.deepcopy(dest[0]))
+        #elif isinstance(src_data, dict):
+        #  while len(dest) < len(src_data.keys()):
+        #    dest.append(copy.deepcopy(dest[0]))
  
       if isinstance(src_data, list):
         for key, item in enumerate(src_data):
@@ -125,12 +139,21 @@ class Merge():
           src_path = ['$', '['+str(key)+']']
           #now we call iterfields again, setting dest as the found match, or created entry and the src_data, src_path and dest_path as required
           #if dest is a list, we need to copy the last sub-element if present and we're not on the last element of src_data
-          if isinstance(dest, list):
-            if len(dest) > 0 and key < len(src_data)-1:
-              dest_field = len(dest) - 1
-              dest.append(copy.deepcopy(dest[-1]))
-              #print "dest is list"
+          #if isinstance(dest, list):
+          #  if len(dest) > 0:
+          #    #if key < len(src_data) - 1:
+          #    dest_field = len(dest) - 1
+          #    dest.append(copy.deepcopy(dest[0]))
+          #      #print "dest is list"
+          #    #else:
+          #    if key == len(src_data) - 1:
+          #      dest.pop(0)
+          #    #  if len(dest) > 1:
+          #    #    dest.pop(0)
+          #    #  dest_field = len(dest) - 1
           self.iterFields(item, path_subfields, sub_src_path, dest, src_path, new_dest_parent_path)
+          #if isinstance(dest, list):
+          #  dest.pop(0)
       elif isinstance(src_data, dict):
         for fieldname, item in src_data.items():
           #again, the sub_src_path is effectively an id for this particular entry in data (source data)
@@ -143,14 +166,21 @@ class Merge():
     else:
       #data is str, int, etc (n.b. this ignores sets, tuples as they don't currently exist in data, but may be a future issue)
       #we therefore assign value to dest[key]
-      if isinstance(dest, list):
-        if isinstance(dest_field, jsonp.Index):
-          dest_field = re.sub('[\[\]]', '', str(dest_field))
-        dest[int(dest_field)] = src_data
-      elif isinstance(dest, dict):
-        dest[str(dest_field)] = src_data
-      else:
-        dest = src_data
+      if not(isinstance(src_data, str) and src_data == '') and src_data != None:
+        if isinstance(dest, list):
+          if isinstance(dest_field, jsonp.Index):
+            dest_field = re.sub('[\[\]]', '', str(dest_field))
+          dest[int(dest_field)] = src_data
+          #try:
+          #  dest[int(dest_field)] = src_data
+          #except IndexError:
+          #  for i in range(len(dest), int(dest_field) + 1):
+          #    dest.append({})
+          #  dest[int(dest_field)] = src_data
+        elif isinstance(dest, dict):
+          dest[str(dest_field)] = src_data
+        else:
+          dest = src_data
 
   #mapSrc calls iterfields intially, setting the correct values to begin the mapping
   def mapSrc(self):
@@ -287,7 +317,8 @@ class Merge():
         if check and (isinstance(result[k], dict) or isinstance(result[k], list)):
           result[k] = self.dict_merge(result[k], v)
         else:
-          result[k] = copy.deepcopy(v)
+          if v != "":
+            result[k] = copy.deepcopy(v)
     else:
       #b is a list
       for k, v in enumerate(b):
@@ -302,7 +333,8 @@ class Merge():
         if check and (isinstance(result[k], dict) or isinstance(result[k], list)):
           result[k] = self.dict_merge(result[k], v)
         else:
-          result[k] = copy.deepcopy(v)
+          if v != "":
+            result[k] = copy.deepcopy(v)
 
     return result
 

@@ -84,7 +84,7 @@ def collate():
 
     #get pubmed data
     if 'extra' in paper:
-      pmid_matches = re.search(r'PMID: ([0-9]{7})', paper['extra'])
+      pmid_matches = re.search(r'PMID: ([0-9]{1,8})', paper['extra'])
       if pmid_matches is not None:
         paper['pmid'] = pmid_matches.group(1)
         #check if paper data in pm cache
@@ -111,6 +111,7 @@ def collate():
     del paper['pmid_data']
     #create new filename
     filename = hashlib.md5(paper['title'].encode('ascii', 'ignore')).hexdigest() #md5 of title
+    print "Merging to filename: "+filename
 
     mgr = pMerge.Merge()
     map_file = open('config/data-pubmed-doi-jsonpath', 'r')
@@ -148,8 +149,8 @@ def collate():
     merged_paper['doi_data'] = copy.deepcopy(mgr.dest)
 
     #now set the src to be doi_data and merge to the dest (pmid/zotero data)
-    mgr.src = merged_paper['doi_data']
-    mgr.dest = merged_paper['pmid_zotero_data']
+    mgr.dest = merged_paper['doi_data']
+    mgr.src = merged_paper['pmid_zotero_data']
     mgr.mapSrc()
 
     merged_papers[filename] = copy.deepcopy(mgr.dest)
