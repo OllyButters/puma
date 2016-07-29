@@ -4,6 +4,7 @@ import json
 import os.path
 from os import listdir
 import logging
+import time
 # import pprint
 
 # import get.get
@@ -28,9 +29,11 @@ __version__ = '0.2.6'
 update_citations = True
 scopus_api_key = '8024d746590aade6be6856a22a734783'
 scopus_citation_max_life = 30  # days
-
-
 # pp = pprint.PrettyPrinter(indent=4)
+
+# Time Log
+start_time = time.time()
+print "Start Time: " + str(start_time)
 
 
 # Error log for displaying data input problems to user
@@ -188,3 +191,10 @@ html.build_htmlv2.build_error_log(papers, error_log)
 # html.build_html.build_summary(papers)
 # html.build_html.build_google_map(papers)
 # html.build_html.build_google_heat_map()
+
+
+# Time Log
+end_time = time.time()
+elapsed_time = end_time - start_time
+print "End Time: " +  str(end_time)
+print "Elapsed Time: " + str(elapsed_time)

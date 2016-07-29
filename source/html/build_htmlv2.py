@@ -514,7 +514,7 @@ def build_mesh(papers):
             temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Keyword &gt; ' + this_mesh + '</p>', "../../", "")
 
             temp += '<h1 id="pagetitle">Keyword - ' + this_mesh + '</h1>'
-            temp += '<h2>Keyword History</h2>'
+            temp += '<h2>All Keyword History</h2>'
 
             # ===== KEYWORD OVER TIME CALCULATIONS =====
             # First some prep has to be done to set up the array for the number of year. This is copied from the citations graph prep and is probably very inefficent for this task
@@ -575,11 +575,14 @@ def build_mesh(papers):
             temp += '<div id="papers_chart_div"></div>'
             temp += '<div id="citations_chart_div"></div>'
 
+            temp += '<h2>Major Keyword History</h2>'
+
             # List publications
             temp += '<h2>Publications</h2>'
 
             print >>fo, temp
 
+            temp += '<h3>' + str(len(mesh_papers_all[this_mesh])) + ' publications with this keyword</h3>'
             # Build the text needed for each paper
             for this_paper in mesh_papers_all[this_mesh]:
 
