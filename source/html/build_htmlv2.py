@@ -579,10 +579,10 @@ def build_mesh(papers):
 
             # List publications
             temp += '<h2>Publications</h2>'
+            temp += '<p>' + str(len(mesh_papers_all[this_mesh])) + ' publications with this keyword</p>'
 
             print >>fo, temp
 
-            temp += '<h3>' + str(len(mesh_papers_all[this_mesh])) + ' publications with this keyword</h3>'
             # Build the text needed for each paper
             for this_paper in mesh_papers_all[this_mesh]:
 
