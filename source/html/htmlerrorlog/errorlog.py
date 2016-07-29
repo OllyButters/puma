@@ -11,16 +11,20 @@ class ErrorLog:
     def logWarning(self, txt ):
         self.warningArray.append( "[WARNING] " + txt )
 
-
     def printLog(self):
         log = ""
-        log += "<h2>" + str(len(self.errorArray)) + " Errors</h2>"
-        for error in self.errorArray:
-            log += "<p>" + error + "</p>"
 
-	log += "<h2>" + str(len(self.warningArray)) + " Warnings</h2>"
+        log += "<h2>" + str(len(self.warningArray)) + " Warnings</h2>"
+        log += "<p>"
         for warn in self.warningArray:
-            log += "<p>" + warn + "</p>"
+            log += warn + "<br/>"
+        log += "</p>"
+
+        log += "<h2>" + str(len(self.errorArray)) + " Errors</h2>"
+        log += "<p>"
+        for error in self.errorArray:
+            log += error + "<br/>"
+        log += "</p>"
 
         return log
 

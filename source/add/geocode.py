@@ -11,7 +11,7 @@ import requests
 
 # Have a go at geocoding the cleaned institute names
 # I would expect there to be a lat long for all of them
-def geocode(papers):
+def geocode(papers, error_log):
 
     print 'Geocoding'
 
@@ -105,14 +105,16 @@ def geocode(papers):
 
                     except:
                         print 'Unable to get geo-data (Probably not on Wikidata) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
+			error_log.logWarning("Insititue " + this_paper['Extras']['CleanInstitute'] + " not on Wikidata")
                 except:
                     print 'Unable to get geo-data (Wikidata Query Failed) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
-
+                    error_log.logWarning("Wikidata query failed for " + this_paper['Extras']['CleanInstitute'] )
 
                 # === End Look up ===
 
         except:
             print 'No Clean Institute for ' + this_paper['IDs']['hash'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
+	    error_log.logError("Clean Institute Missing for " +  this_paper['IDs']['hash'] )
 
         number_done += 1
 

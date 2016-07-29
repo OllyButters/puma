@@ -35,9 +35,8 @@ scopus_citation_max_life = 30  # days
 
 # Error log for displaying data input problems to user
 error_log = html.htmlerrorlog.errorlog.ErrorLog()
-error_log.logError("Test Error")
-error_log.logWarning("Test Warning")
-# error_log.printLog()
+#error_log.logError("Test Error")
+#error_log.logWarning("Test Warning")
 
 
 ###########################################################
@@ -143,7 +142,7 @@ clean.clean.clean_institution(papers)
 
 ###########################################################
 # Add some extra data in - i.e. geocodes and citations
-add.geocode.geocode(papers)
+add.geocode.geocode(papers,error_log)
 
 if update_citations:
     add.citations.citations(papers, scopus_api_key, scopus_citation_max_life)

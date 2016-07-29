@@ -915,7 +915,7 @@ def build_metrics(papers, cohort_rating):
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>s-index</div>"
     temp += "<div class='metric_value'>" + str(h_index) + "</div>"
-    temp += "<div class='metric_description'>s-index is the largest number s such that s publications from a study have at least s citations.</div>"
+    temp += "<div class='metric_description'>h-index is the largest number h such that h publications from a study have at least h citations.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
@@ -1236,7 +1236,7 @@ def build_error_log(papers, error_log ):
 
     temp += '<h1 id="pagetitle">Error Log</h1>'
 
-    temp += '<p>' + error_log.printLog() + '</p>'
+    temp += error_log.printLog()
 
     print >>html_file, temp
 
