@@ -1211,7 +1211,42 @@ def build_author_network(papers,network):
     temp += '<svg width="960" height="600" id="chart"></svg><script src="https://d3js.org/d3.v4.min.js"></script>'
     temp += '<script type="text/javascript" src="network.js"></script>'
 
-    #temp += '<p>' + str(network) + '</p>'
+
+    ## Print nodes to csv
+    nodes_csv = open('../html/authornetwork/nodes.csv', 'w')
+
+    print >>nodes_csv,  'id,Label'
+    n = 0
+
+    for author in network['authors']:
+        print >>nodes_csv,  author + "," + network['authors'][author]['family'] + ' ' +  network['authors'][author]['given']
+        n += 1
+
+    ## Print conections to csv
+    connections_csv = open('../html/authornetwork/connections.csv', 'w')
+
+    print >>connections_csv,  'Source,Target'
+
+    n = 0
+    for con in network['connections']:
+        try:
+     
+            author_0 = network['connections'][con]['authors'][0]['author_hash']
+            author_1 = network['connections'][con]['authors'][1]['author_hash']
+
+            n_con = network['connections'][con]['num_connections']/2
+
+            print >>connections_csv,  '"' + author_0 + '","' + author_1 + '"'
+
+           
+        except:
+            pass
+        n += 1
+        
+        
+  
+
+    #temp += '<p>' + nodes + '</p>'
 
 
     print >>html_file, temp
