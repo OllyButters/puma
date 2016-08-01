@@ -224,6 +224,7 @@ def build_papers(papers):
     html_file = open('../html/papers/index.html', 'w')
 
     shutil.copyfile('html/templates/altmetric.png', '../html/papers/altmetric.png')
+    shutil.copyfile('html/templates/yellow-flag-th.png', '../html/papers/yellow-flag-th.png')
 
     # Put html together for this page
     temp = '<html>'
@@ -307,6 +308,8 @@ def build_papers(papers):
                 html += '&nbsp; Citations: '+this_paper['Extras']['Citations']
             except:
                 pass
+
+            html += '<img style="width:20px;padding-left:20px;" src="yellow-flag-th.png" title="At least one author is on the ALSPAC executive committee">'
 
             # Add an extra line break at the end
             html += '<br/><br/>'
@@ -658,6 +661,8 @@ def build_mesh(papers):
                         except:
                             pass
 
+                        html += '<img style="width:20px;padding-left:20px;" src="../../papers/yellow-flag-th.png" title="At least one author is on the ALSPAC executive committee">'
+
                         # Add an extra line break at the end
                         html += '<br/><br/>'
 
@@ -687,6 +692,7 @@ def build_mesh(papers):
 def build_google_map(papers):
 
     import shutil
+    print "\n###HTML - Insititutions Map###"
 
     info = []
     for this_paper in papers:
@@ -750,6 +756,7 @@ def build_google_map(papers):
 def build_country_map(papers):
 
     import shutil
+    print "\n###HTML - Country Map###"
 
     info = []
 
@@ -830,6 +837,7 @@ def intWithCommas(x):
 def build_metrics(papers, cohort_rating):
 
     import shutil
+    print "\n###HTML - Metrics###"
 
     html_file = open('../html/metrics/index.html', 'w')
 
@@ -916,7 +924,7 @@ def build_metrics(papers, cohort_rating):
     # Ouput Metrics
     temp += "<div class='metric_con'>"
     temp += "<div class='metric'>"
-    temp += "<div class='metric_name'>s-index</div>"
+    temp += "<div class='metric_name'>h-index</div>"
     temp += "<div class='metric_value'>" + str(h_index) + "</div>"
     temp += "<div class='metric_description'>h-index is the largest number h such that h publications from a study have at least h citations.</div>"
     temp += "</div>"
@@ -982,6 +990,7 @@ def build_metrics(papers, cohort_rating):
 def build_word_cloud(papers,list):
 
     import shutil
+    print "\n###HTML - Keyword Cloud###"
 
     html_file = open('../html/wordcloud/index.html', 'w')
 
@@ -1033,7 +1042,7 @@ def build_abstract_word_cloud(papers):
     import shutil
     import csv
     import math
-
+    print "\n###HTML - Abstract Word Cloud###"
 
 
     f = open("../data/abstracts.csv", 'rt')
@@ -1126,6 +1135,7 @@ def get_author_string_from_hash( hash_string, network ):
 def build_author_network(papers,network):
 
     import shutil
+    print "\n###HTML - Author Network###"
 
     # Create json file
     net_file = open('../html/authornetwork/network.json', 'w')
@@ -1219,6 +1229,7 @@ def build_error_log(papers, error_log ):
     import csv
     import math
     import html.htmlerrorlog.errorlog
+    print "\n###HTML - Error Log###"
 
     html_file = open('../html/errorlog/index.html', 'w')
 
