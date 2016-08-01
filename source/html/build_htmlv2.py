@@ -292,7 +292,7 @@ def build_papers(papers):
             # Zotero
             try:
 		if this_paper['IDs']['zotero']:
-                    html += '&nbsp;Zotero: <a href="' + this_paper['IDs']['zotero'] + '">' + this_paper['IDs']['zotero'] + '</a>'
+                    html += '&nbsp;Zotero: ' + this_paper['IDs']['zotero'] + ''
             except:
                 pass
 
@@ -644,7 +644,7 @@ def build_mesh(papers):
                         # Zotero
                         try:
             		    if this_paper['IDs']['zotero']:
-                                html += '&nbsp;Zotero: <a href="' + this_paper['IDs']['zotero'] + '">' + this_paper['IDs']['zotero'] + '</a>'
+                                html += '&nbsp;Zotero: ' + this_paper['IDs']['zotero'] + ''
                         except:
                             pass
 

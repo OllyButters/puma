@@ -138,7 +138,6 @@ div#uobcms-content {
      float:left;
      text-align: center;
      position: relative;
-     cursor:pointer;
 
      -webkit-transition: background 500ms;
      -moz-transition: background 500ms;
