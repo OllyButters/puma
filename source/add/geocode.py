@@ -13,6 +13,9 @@ import requests
 # I would expect there to be a lat long for all of them
 def geocode(papers, error_log):
 
+    if (not os.path.exists('../cache/geodata')):
+        os.mkdir('../cache/geodata')
+
     print 'Geocoding'
 
     locations_found = 0
