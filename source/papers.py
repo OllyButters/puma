@@ -81,6 +81,9 @@ if not os.path.exists('../html/map'):
 if not os.path.exists('../html/country'):
     os.mkdir('../html/country')
 
+if not os.path.exists('../html/city'):
+    os.mkdir('../html/city')
+
 if not os.path.exists('../html/metrics'):
     os.mkdir('../html/metrics')
 

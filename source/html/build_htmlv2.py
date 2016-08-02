@@ -47,8 +47,14 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'papers/index.html">Papers List</a></li>'
     html += '<li><a href="' + nav_path + 'all_keywords/index.html">All Keywords</a></li>'
     html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords</a></li>'
-    html += '<li><a href="' + nav_path + 'map/index.html">Institutions Map</a></li>'
-    html += '<li><a href="' + nav_path + 'country/index.html">Publications by Country</a></li>'
+
+    html += '<li><a>Maps</a>'
+    html += '<ul class="multilevel-linkul-0">'
+    html += '    <li><a href="' + nav_path + 'map/index.html">Institutions Map</a></li>'
+    html += '    <li><a href="' + nav_path + 'country/index.html">Publications by Country</a></li>'
+    html += '    <li><a href="' + nav_path + 'city/index.html">Publications by UK City</a></li>'
+    html += '</ul></li>'
+
     html += '<li><a href="' + nav_path + 'authornetwork/index.html">Author Network</a></li>'
     html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
     html += '<li><a href="' + nav_path + 'wordcloud/index.html">Keyword Cloud</a></li>'
@@ -804,7 +810,7 @@ def build_country_map(papers):
 
     temp += '</head>'
 
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by Country</p>', "../", "onload='initialize()'")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by Country</p>', "../", "")
 
     temp += '<h1 id="pagetitle">Publications by Country</h1>'
 
@@ -816,6 +822,73 @@ def build_country_map(papers):
 
     temp = build_common_foot()
     print >>html_file, temp
+
+    build_city_map(papers)
+
+###########################################################
+# Publications by UK city
+###########################################################
+
+
+def build_city_map(papers):
+
+    import shutil
+    print "\n###HTML - City Map###"
+
+    info = []
+
+    cities = {}
+    for this_paper in papers:
+
+        try:
+            if this_paper['Extras']['postal_town'] != "":
+                if this_paper['Extras']['postal_town'] in cities:
+                    cities[ this_paper['Extras']['postal_town'] ] += 1
+                else:
+                    cities[ this_paper['Extras']['postal_town'] ] = 1
+        except:
+            pass
+
+    city_string = ""
+    for city in cities.keys():
+       city_string += ",['" + city + "'," + str(cities[city]) + "]"
+
+    html_file = open('../html/city/index.html', 'w')
+
+    # Put html together for this page
+    temp = '<html>'
+
+    # html head
+    temp += '<head>'
+    temp += '<title>' + site_title + '</title>'
+    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
+    temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/map.css">'
+
+    #temp += '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4&libraries=visualization"></script>'
+    temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
+    temp += "<script>google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['City',   'Publications']" + city_string + " ]); var options = {region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#FFB612', '#c9002f']}}; var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));chart.draw(data, options); };</script>"
+
+    shutil.copyfile('html/templates/loading.gif', '../html/city/loading.gif')
+    shutil.copyfile('html/templates/map.css', '../html/city/map.css')
+
+    temp += '</head>'
+
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by UK City</p>', "../", "")
+
+    temp += '<h1 id="pagetitle">Publications by UK City</h1>'
+
+    temp += "<div class='loading'><img src='loading.gif'></div>"
+    temp += '<div id="regions_div" style="width: 900px; height: 500px;"></div>'
+
+
+
+    print >>html_file, temp
+
+    temp = build_common_foot()
+    print >>html_file, temp
+
 
 ###########################################################
 # Build metrics page
@@ -1188,6 +1261,7 @@ def build_author_network(papers,network):
     html_file = open('../html/authornetwork/index.html', 'w')
 
     shutil.copyfile('html/templates/network.js', '../html/authornetwork/network.js')
+    shutil.copyfile('html/templates/author_network2.png', '../html/authornetwork/author_network2.png')
 
     # Put html together for this page
     temp = '<html>'
@@ -1208,8 +1282,9 @@ def build_author_network(papers,network):
 
     temp += '<h1 id="pagetitle">Author Network</h1>'
 
-    temp += '<svg width="960" height="600" id="chart"></svg><script src="https://d3js.org/d3.v4.min.js"></script>'
-    temp += '<script type="text/javascript" src="network.js"></script>'
+    # Old force directed graph
+    #temp += '<svg width="960" height="600" id="chart"></svg><script src="https://d3js.org/d3.v4.min.js"></script>'
+    #temp += '<script type="text/javascript" src="network.js"></script>'
 
 
     ## Print nodes to csv
@@ -1247,6 +1322,7 @@ def build_author_network(papers,network):
   
 
     #temp += '<p>' + nodes + '</p>'
+    temp += '<img src="author_network2.png">'
 
 
     print >>html_file, temp

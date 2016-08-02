@@ -35,6 +35,7 @@ def geocode(papers, error_log):
 
                 this_paper['Extras']['LatLong'] = {'lat': split[0], 'long': split[1] }
                 this_paper['Extras']['country_code'] = split[2]
+                this_paper['Extras']['postal_town'] = split[3]
 
                 locations_found += 1
 
@@ -95,18 +96,21 @@ def geocode(papers, error_log):
 
                             try:
                                 comps = retur['results'][0]['address_components']
+                                country_short = ""
+                                postal_town = ""
                                 for comp in comps:
                                     if comp['types'][0] == "country":
-                                        #country_short = comp['short_name']
                                         country_short = comp['long_name']
                                         this_paper['Extras']['country_code'] = country_short
 
-                                        # Cache Data
-                                        cache_file = open("../cache/geodata/" + clean,"w")
-                                        cache_file.write( this_paper['Extras']['LatLong']['lat'] + "#" + this_paper['Extras']['LatLong']['long'] + "#" + country_short )
-                                        cache_file.close()
-
-                                        break
+                                    if comp['types'][0] == "postal_town":
+                                        postal_town = comp['long_name']
+                                        this_paper['Extras']['postal_town'] = postal_town
+  
+                                 # Cache Data
+                                cache_file = open("../cache/geodata/" + clean,"w")
+                                cache_file.write( this_paper['Extras']['LatLong']['lat'] + "#" + this_paper['Extras']['LatLong']['long'] + "#" + country_short + "#" + postal_town )
+                                cache_file.close()
                             except:
                                 print 'Unable to get geo-data (Google API Quota Reached) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
           			error_log.logError( this_paper['Extras']['CleanInstitute'] + " Google API Quota Reached!")
