@@ -478,29 +478,46 @@ def build_mesh(papers):
 
     word_cloud_raw = ""
 
-    # Make papers list for headings pages
+    # Get first x keywords in order
+    # Prepare variables
+    ordered_mesh_papers_all = {}
+    mesh_papers_all_temp = {}
     for this_mesh in mesh_papers_all:
+        mesh_papers_all_temp[this_mesh] = mesh_papers_all[this_mesh]
 
+    # Sort and get x words
+    for x in range(1,150):
+        max_val = -1
+        max_mesh = None
+        for this_mesh in mesh_papers_all_temp:
+            if len( mesh_papers_all_temp[this_mesh] ) > max_val:
+                max_val = len( mesh_papers_all_temp[this_mesh] )
+                max_mesh = this_mesh
+            
+        ordered_mesh_papers_all[max_mesh] = mesh_papers_all_temp[max_mesh]
+        mesh_papers_all_temp.pop(max_mesh,None)
+
+    # Make papers list for headings pages
+    for this_mesh in ordered_mesh_papers_all:
 
 	# Word cloud 
-        if word_cloud_n < 5000:
-  	    if word_cloud_n > 0:
-                word_cloud_list += ','
-            word_cloud_n += 1
+        if word_cloud_n > 0:
+            word_cloud_list += ','
+        word_cloud_n += 1
 
- 	    number = len(mesh_papers_all[this_mesh])
+ 	number = len(mesh_papers_all[this_mesh])
 
-	    if number > word_cloud_max:
-                word_cloud_max = number
-                word_cloud_max_name = this_mesh
+	if number > word_cloud_max:
+            word_cloud_max = number
+            word_cloud_max_name = this_mesh
 
-	    word_cloud_list += '{"text":"' + this_mesh  + '", "size":' + str(math.sqrt(number)*1.5) + '}'
+	word_cloud_list += '{"text":"' + this_mesh  + '", "size":' + str(math.sqrt(number)*2.1) + '}'
 
-            for x in range(0,number):
-                 word_cloud_raw += " " + this_mesh
+        for x in range(0,number):
+             word_cloud_raw += " " + this_mesh
 
-        if (not os.path.exists('../html/mesh/'+this_mesh)):
-            os.mkdir('../html/mesh/'+this_mesh)
+        if (not os.path.exists('../html/mesh/' + this_mesh)):
+            os.mkdir('../html/mesh/' + this_mesh)
 
         file_name = '../html/mesh/' + this_mesh + '/index.html'
         with codecs.open(file_name, 'wb', "utf-8") as fo:
