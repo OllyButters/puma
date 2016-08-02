@@ -4,6 +4,7 @@ import json
 import os.path
 from os import listdir
 import logging
+import time
 # import pprint
 
 # import get.get
@@ -11,7 +12,7 @@ import clean.clean
 import add.geocode
 import add.citations
 import analyse.analysis
-import html.build_html
+import html.htmlerrorlog.errorlog
 import html.build_htmlv2
 import bibliography.bibtex
 
@@ -28,9 +29,18 @@ __version__ = '0.2.6'
 update_citations = True
 scopus_api_key = '8024d746590aade6be6856a22a734783'
 scopus_citation_max_life = 30  # days
-
-
 # pp = pprint.PrettyPrinter(indent=4)
+
+# Time Log
+start_time = time.time()
+print "Start Time: " + str(start_time)
+
+
+# Error log for displaying data input problems to user
+error_log = html.htmlerrorlog.errorlog.ErrorLog()
+#error_log.logError("Test Error")
+#error_log.logWarning("Test Warning")
+
 
 ###########################################################
 # Make sure the directory structure is set up first.
@@ -71,6 +81,9 @@ if not os.path.exists('../html/map'):
 if not os.path.exists('../html/country'):
     os.mkdir('../html/country')
 
+if not os.path.exists('../html/city'):
+    os.mkdir('../html/city')
+
 if not os.path.exists('../html/metrics'):
     os.mkdir('../html/metrics')
 
@@ -82,6 +95,9 @@ if not os.path.exists('../html/abstractwordcloud'):
 
 if not os.path.exists('../html/authornetwork'):
     os.mkdir('../html/authornetwork')
+
+if not os.path.exists('../html/errorlog'):
+    os.mkdir('../html/errorlog')
 
 
 # Set up the logging. Level can be DEBUG|.....
@@ -132,7 +148,7 @@ clean.clean.clean_institution(papers)
 
 ###########################################################
 # Add some extra data in - i.e. geocodes and citations
-add.geocode.geocode(papers)
+add.geocode.geocode(papers,error_log)
 
 if update_citations:
     add.citations.citations(papers, scopus_api_key, scopus_citation_max_life)
@@ -171,9 +187,17 @@ html.build_htmlv2.build_country_map(papers)
 html.build_htmlv2.build_metrics(papers, cohort_rating)
 html.build_htmlv2.build_abstract_word_cloud(papers)
 html.build_htmlv2.build_author_network(papers, network)
+html.build_htmlv2.build_error_log(papers, error_log)
 
 # html.build_html.build_yearly(papers)
 # html.build_html.build_mesh(papers)
 # html.build_html.build_summary(papers)
 # html.build_html.build_google_map(papers)
-html.build_html.build_google_heat_map()
+# html.build_html.build_google_heat_map()
+
+
+# Time Log
+end_time = time.time()
+elapsed_time = end_time - start_time
+print "End Time: " +  str(end_time)
+print "Elapsed Time: " + str(elapsed_time)

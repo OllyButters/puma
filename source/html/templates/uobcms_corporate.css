@@ -1737,7 +1737,7 @@ border-top:1px solid #dedcd2;
 }
 
 .navgroup ul li a {
-background:#fff url(/media-library/protected/images/subnav-square.png) no-repeat 5% 1.15em;
+background:#fff url(http://www.bristol.ac.uk/media-library/protected/images/subnav-square.png) no-repeat 5% 1.15em;
 padding:.5em 5% .5em 10%;
 width: 85%;
 }
@@ -1750,7 +1750,7 @@ text-decoration:underline;
 
 .navgroup ul span.currentsection {
 color:#333;
-background:#fff url(/media-library/protected/images/subnav-square.png) no-repeat 5% 1.15em;
+background:#fff url(http://www.bristol.ac.uk/media-library/protected/images/subnav-square.png) no-repeat 5% 1.15em;
 padding:.5em 5% .5em 10%;
 font-weight:bold;
 }
@@ -1769,7 +1769,7 @@ border-top:1px solid #dedcd2;
 }
 
 .navgroup ul ul li a {
-background:#fff url(/media-library/protected/images/subnav-square.png) no-repeat 10% 1.15em;
+background:#fff url(http://www.bristol.ac.uk/media-library/protected/images/subnav-square.png) no-repeat 10% 1.15em;
 padding:.5em 5% .5em 16%;
 }
 
@@ -1781,7 +1781,7 @@ text-decoration:underline;
 
 .navgroup ul ul li span.currentsection {
 color:#333;
-background:#FFF url(/media-library/protected/images/subnav-square.png) no-repeat 10% 1.15em;
+background:#FFF url(http://www.bristol.ac.uk/media-library/protected/images/subnav-square.png) no-repeat 10% 1.15em;
 padding:.5em 5% .5em 16%;
 font-weight:bold;
 }

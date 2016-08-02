@@ -11,7 +11,10 @@ import requests
 
 # Have a go at geocoding the cleaned institute names
 # I would expect there to be a lat long for all of them
-def geocode(papers):
+def geocode(papers, error_log):
+
+    if (not os.path.exists('../cache/geodata')):
+        os.mkdir('../cache/geodata')
 
     print 'Geocoding'
 
@@ -32,6 +35,7 @@ def geocode(papers):
 
                 this_paper['Extras']['LatLong'] = {'lat': split[0], 'long': split[1] }
                 this_paper['Extras']['country_code'] = split[2]
+                this_paper['Extras']['postal_town'] = split[3]
 
                 locations_found += 1
 
@@ -89,30 +93,39 @@ def geocode(papers):
                         if found_coords:
                             # Get country for heatmap
                             retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['Extras']['LatLong']['lat']  + ',' + this_paper['Extras']['LatLong']['long']  + '&key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4'))
-                            comps = retur['results'][0]['address_components']
-                            for comp in comps:
-                                if comp['types'][0] == "country":
-                                    #country_short = comp['short_name']
-                                    country_short = comp['long_name']
-                                    this_paper['Extras']['country_code'] = country_short
 
-                                    # Cache Data
-                                    cache_file = open("../cache/geodata/" + clean,"w")
-                                    cache_file.write( this_paper['Extras']['LatLong']['lat'] + "#" + this_paper['Extras']['LatLong']['long'] + "#" + country_short )
-                                    cache_file.close()
+                            try:
+                                comps = retur['results'][0]['address_components']
+                                country_short = ""
+                                postal_town = ""
+                                for comp in comps:
+                                    if comp['types'][0] == "country":
+                                        country_short = comp['long_name']
+                                        this_paper['Extras']['country_code'] = country_short
 
-                                    break
-
+                                    if comp['types'][0] == "postal_town":
+                                        postal_town = comp['long_name']
+                                        this_paper['Extras']['postal_town'] = postal_town
+  
+                                 # Cache Data
+                                cache_file = open("../cache/geodata/" + clean,"w")
+                                cache_file.write( this_paper['Extras']['LatLong']['lat'] + "#" + this_paper['Extras']['LatLong']['long'] + "#" + country_short + "#" + postal_town )
+                                cache_file.close()
+                            except:
+                                print 'Unable to get geo-data (Google API Quota Reached) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
+          			error_log.logError( this_paper['Extras']['CleanInstitute'] + " Google API Quota Reached!")
                     except:
                         print 'Unable to get geo-data (Probably not on Wikidata) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
+			error_log.logWarning("Insititue " + this_paper['Extras']['CleanInstitute'] + " not on Wikidata")
                 except:
                     print 'Unable to get geo-data (Wikidata Query Failed) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
-
+                    error_log.logWarning("Wikidata query failed for " + this_paper['Extras']['CleanInstitute'] )
 
                 # === End Look up ===
 
         except:
             print 'No Clean Institute for ' + this_paper['IDs']['hash'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
+	    error_log.logError("Clean Institute Missing for " +  this_paper['IDs']['hash'] )
 
         number_done += 1
 
