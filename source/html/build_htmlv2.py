@@ -360,6 +360,7 @@ def build_papers(papers):
 def build_mesh(papers):
     import os.path
     import shutil
+    import math
 
     print "\n###HTML - mesh###"
 
@@ -482,7 +483,7 @@ def build_mesh(papers):
 
 
 	# Word cloud 
-        if word_cloud_n < 20000:
+        if word_cloud_n < 5000:
   	    if word_cloud_n > 0:
                 word_cloud_list += ','
             word_cloud_n += 1
@@ -493,7 +494,7 @@ def build_mesh(papers):
                 word_cloud_max = number
                 word_cloud_max_name = this_mesh
 
-	    word_cloud_list += '["' + this_mesh  + '", ' + str(number) + ']'
+	    word_cloud_list += '{"text":"' + this_mesh  + '", "size":' + str(math.sqrt(number)*1.5) + '}'
 
             for x in range(0,number):
                  word_cloud_raw += " " + this_mesh
@@ -1077,28 +1078,25 @@ def build_word_cloud(papers,list):
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
+    temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
-    shutil.copyfile('html/templates/wordcloud2.js', '../html/wordcloud/wordcloud2.js')
+    shutil.copyfile('html/templates/d3wordcloud.js', '../html/wordcloud/d3wordcloud.js')
+    shutil.copyfile('html/templates/d3.layout.cloud.js', '../html/wordcloud/d3.layout.cloud.js')
 
-    temp += '<script type="text/javascript" src="wordcloud2.js"></script>'
-    temp += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>'
+    temp += '<script>var word_list = ' + list + '</script>'
+    temp += '<script src="http://d3js.org/d3.v3.min.js"></script>'
+    temp += '<script src="d3.layout.cloud.js"></script>'
 
     temp += '</head>'
 
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Word Cloud</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Keyword Cloud</p>', "../", "")
 
-    temp += '<h1 id="pagetitle">Word Cloud</h1>'
+    temp += '<h1 id="pagetitle">Keyword Cloud</h1>'
 
-    temp += '<div id="sourrounding_div" style="width:100%;height:500px">'
-    temp += '    <canvas id="canvas" class="canvas"></canvas>'
-    temp += '    <div id="html-canvas" class="canvas hide"></div>'
-    temp += '</div>'
+    temp += '<cloud id="sourrounding_div" style="width:100%;height:500px">'
+    temp += '</cloud>'
 
-    temp += '<script>var div = document.getElementById("sourrounding_div");var canvas = document.getElementById("canvas");canvas.height = div.offsetHeight;canvas.width  = div.offsetWidth;</script>'
-
-    temp += '<script>WordCloud(document.getElementById("canvas"),{ "list": ' + list + ', minSize: 10, gridSize: Math.round(16 * $("#canvas").width() / 1024), weightFactor: function (size) {    return Math.pow(size, 1.1) * $("#canvas").width() / 1024;  },  fontFamily: "Times, serif",  color: function (word, weight) {    return (weight === 12) ? "#c9002f" : "#c9002f";  },  rotateRatio: 0.5,  backgroundColor: "#efede9"} );</script>'
-
-    #temp += '<p>' + list + '</p>'
+    temp += '<script src="d3wordcloud.js"></script>'
 
     print >>html_file, temp
 
@@ -1157,12 +1155,8 @@ def build_abstract_word_cloud(papers):
     temp += '<link rel="stylesheet" href="../css/map.css">'
     temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
-    #shutil.copyfile('html/templates/wordcloud2.js', '../html/abstractwordcloud/wordcloud2.js')
     shutil.copyfile('html/templates/d3wordcloud.js', '../html/abstractwordcloud/d3wordcloud.js')
     shutil.copyfile('html/templates/d3.layout.cloud.js', '../html/abstractwordcloud/d3.layout.cloud.js')
-
-    #temp += '<script type="text/javascript" src="wordcloud2.js"></script>'
-    #temp += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>'
 
     temp += '<script src="list.js"></script>'
     temp += '<script src="http://d3js.org/d3.v3.min.js"></script>'
@@ -1176,17 +1170,6 @@ def build_abstract_word_cloud(papers):
 
     temp += '<cloud id="sourrounding_div" style="width:100%;height:500px">'
     temp += '</cloud>'
-
-    #temp += '<div id="sourrounding_div" style="width:100%;height:500px">'
-    #temp += '    <canvas id="canvas" class="canvas"></canvas>'
-    #temp += '    <div id="html-canvas" class="canvas hide"></div>'
-    #temp += '</div>'
-
-    #temp += '<script>var div = document.getElementById("sourrounding_div");var canvas = document.getElementById("canvas");canvas.height = div.offsetHeight;canvas.width  = div.offsetWidth;</script>'
-
-    #temp += '<script>WordCloud(document.getElementById("canvas"),{ "list": ' + list + ', minSize: 10, gridSize: Math.round(16 * $("#canvas").width() / 1024), weightFactor: function (size) {    return Math.pow(size, 1.1) * $("#canvas").width() / 1024;  },  fontFamily: "Times, serif",  color: function (word, weight) {    return (weight === 12) ? "#c9002f" : "#c9002f";  },  rotateRatio: 0.5,  backgroundColor: "#efede9"} );</script>'
-
-    # temp += '<p>' + list + '</p>'
 
     temp += '<script src="d3wordcloud.js"></script>'
 
