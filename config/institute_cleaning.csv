@@ -3,16 +3,16 @@
 bbk.ac.uk,"Birkbeck, University of London"
 bristol.ac.uk,University of Bristol
 bris.ac.uk,University of Bristol
-bpmf.ac.uk,DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+bpmf.ac.uk,University College London
 bre.co.uk,Building Research Establishment
 cam.ac.uk,University of Cambridge
 northlandsrnd.org.uk,"Northlands Surgery, Calne"
 city.ac.uk,City University London
 ex.ac.uk,University of Essex
-ehesp.fr,"EHESP School of Public Health, Rennes"
+ehesp.fr,"EHESP"
 einstein.yu.edu,Albert Einstein College of Medicine
 emory.edu,Emory University
-speech-therapy.org.uk,Frenchay Speech & Language Therapy Research Unit
+speech-therapy.org.uk,Southmead Hospital
 gla.ac.uk,University of Glasgow
 harvard.edu,Harvard University
 helmholtz-muenchen.de,Helmholtz Zentrum Munchen
@@ -24,12 +24,12 @@ kcl.ac.uk,King's College London
 ki.es,Karolinska Institutet
 liverpool.ac.uk,University of Liverpool
 lshtm.ac.uk,London School of Hygiene & Tropical Medicine
-leedsmh.nhs.uk,NHS - East Leeds PCT 
+leedsmh.nhs.uk,NHS Leeds South and East
 niehs.nih.gov,National Institute of Environmental Health Sciences
 nottingham.ac.uk,University of Nottingham
 ox.ac.uk,University of Oxford
 pds.ac.uk,Peninsula College of Medicine and Dentistry
-qimrberghofer.edu.au,QIMR Berghofer Medical Research Institute
+qimrberghofer.edu.au,Queensland Institute of Medical Research
 qmw.ac.uk,"Queen Mary, University of London"
 qmul,"Queen Mary, University of London"
 qub.ac.uk,Queens University
@@ -80,9 +80,9 @@ University of Leicester,University of Leicester
 University of Liverpool,University of Liverpool
 London Metropolitan University,London Metropolitan University
 University of Manchester,University of Manchester
-Medical Research Council Epidemiology Unit,MRC Cambridge
-MRC Epidemiology Unit,MRC Cambridge
-Medical Research Council Human Nutrition Research ,MRC Cambridge
+Medical Research Council Epidemiology Unit,MRC Centre Cambridge
+MRC Epidemiology Unit,MRC Centre Cambridge
+Medical Research Council Human Nutrition Research ,MRC Centre Cambridge
 University of Munich,University of Munich
 Newcastle University,Newcastle University
 University of Newcastle,Newcastle University
@@ -90,7 +90,7 @@ University of Nottingham,University of Nottingham
 University of Oxford,University of Oxford
 Peninsula,Peninsula College of Medicine and Dentistry
 Plymouth,Plymouth University
-"Institute of Psychiatry, London","Institute of Psychiatry, London"
+"Institute of Psychiatry, London","Institute of Psychiatry"
 Queen\'s University,Queens University
 University of Sheffield,University of Sheffield
 University of Southampton,University of Southampton
@@ -101,7 +101,7 @@ UCL,University College London
 University College London,University College London
 University of East Anglia,University of East Anglia
 University of Warwick,University of Warwick
-Wellcome Trust Sanger Institute,The Wellcome Trust Sanger Institute
+Wellcome Trust Sanger Institute,Wellcome Trust Sanger Institute
 University of the West of England,UWE
 University of York,University of York
 ,
@@ -118,10 +118,10 @@ Great Ormond Street Hospital,Great Ormond Street Hospital
 Guy's and St Thomas',Guy's and St Thomas' NHS Foundation Trust
 Guy's Hospital,Guy's and St Thomas' NHS Foundation Trust
 John Radcliffe Hospital,John Radcliffe Hospital
-Ty Bryn Unit,"St Cadocs Hospital, Newport"
+Ty Bryn Unit,"St Cadoc's Hospital"
 North Bristol NHS Trust,North Bristol NHS Trust
 Northlands R & D Unit,Northlands R & D Unit
-University Hospital of Nottingham,University Hospital of Nottingham
+University Hospital of Nottingham,Queen's Medical Centre
 "Park Hospital, Headington, Oxford, UK.","Park Hospital, Oxford"
 Royal United Hospital,Royal United Hospital
 Southmead Hospital,Southmead Hospital
@@ -167,7 +167,7 @@ Johns Hopkins University,Johns Hopkins University
 "Hunter Genetics, Hunter New England Health Service, NSW, Australia.","John Hunter Hospital"
 Hospital for Sick Children,Hospital for Sick Children
 Karolinska Institutet,Karolinska Institutet
-Mayo clinic,"Mayo Clinic College of Medicine, Rochester"
+Mayo clinic,"Mayo Medical School"
 McGill University,McGill University
 University of Michigan,University of Michigan
 University of Melbourne,University of Melbourne
@@ -201,9 +201,9 @@ Syracuse University,Syracuse University
 University of Toronto,University of Toronto
 Virginia Commonwealth University,Virginia Commonwealth University
 Yale University,Yale University
-VU University,VU University
+VU University,Vrije Universiteit
 "Bethesda, Maryland",National Institute of Child Health and Human Development
-University Medical Centre Utrecht,University Medical Centre Utrecht
+University Medical Centre Utrecht,University Medical Center Utrecht
 ,
 #Some special ALSPAC munging,
 Oakfield Grove,University of Bristol
