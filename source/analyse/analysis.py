@@ -43,20 +43,51 @@ def journals(papers):
 
 ############################################################
 # Build a list of Abstracts
-def abstracts(pmids, papers):
+def abstracts(papers):
     print "\n###Abstracts###"
 
     abstracts = ''
-    for this_pmid in pmids:
+    for this_paper in papers:
+        #print this_paper
         try:
-            abstracts = abstracts + str(papers[this_pmid]['AbstractText'])
+            abstracts = abstracts + str(this_paper['MedlineCitation']['Article']['Abstract']['AbstractText'])
         except:
             pass
+
+    abstracts = abstracts.lower()
+    abstracts = abstracts.replace(","," ")
+    abstracts = abstracts.replace("."," ")
+    abstracts = abstracts.replace(":"," ")
+    abstracts = abstracts.replace(";"," ")
+    abstracts = abstracts.replace("'","\'")
+    abstracts = abstracts.replace('"','\"')
 
     words = abstracts.split()
 
     # calculate the frequency of each word in abstracts
     freq = dict((x, words.count(x)) for x in set(words))
+
+    # Delete stop words
+    # Read stop words from file
+    stop_lines = tuple(open("../config/stopwords","r"))
+    stop_words = []
+    for line in stop_lines:
+        split = line.split()
+        if len(split) > 0 and split[0] != "|" and not "|" in split[0]:
+           stop_words.append(split[0])
+
+    # Remove words
+    for stp in stop_words:
+        freq.pop(stp, None)
+
+    # Remove anything with " in it (Causes javascript problems)
+    toRemove = []
+    for f in freq:
+        if '"' in f:
+            toRemove.append(f)
+
+    for f in toRemove:
+        freq.pop(f, None)
 
     i = 0
     print 'Top 5'
@@ -70,10 +101,12 @@ def abstracts(pmids, papers):
                 i = i+1
             abstracts_file.writerow([w.encode('utf-8'), freq[w]])
 
-
 ############################################################
 # Try with the authors - these are in a nested dict
 def authors(papers):
+
+    import hashlib
+
     authors = []
     for this_paper in papers:
         # print papers[this_pmid]
@@ -108,6 +141,66 @@ def authors(papers):
         # Need to utf-8 encode
             authors_file.writerow([w.encode('utf-8'), freq[w]])
 
+    # === Author Network Object ===
+    author_network = {}
+    author_network['authors'] = {}
+    author_network['connections'] = {}
+    for this_paper in papers:
+        try:
+            for this_author in this_paper['author']:
+                # Create author hash
+                hash_object = hashlib.sha256(this_author['family'] + this_author['given'])
+                author_hash = hash_object.hexdigest()
+
+                # Store author details
+                try:
+                    author_network['authors'][ author_hash ]
+                except:
+                    author_network['authors'][ author_hash ] = {}
+                    author_network['authors'][ author_hash ]['family'] = this_author['family']
+                    author_network['authors'][ author_hash ]['given'] = this_author['given']
+
+                try:
+                    author_network['authors'][ author_hash ]['num_papers'] += 1
+                except:
+                    author_network['authors'][ author_hash ]['num_papers'] = 1
+
+                # Create edges
+                for con_author in this_paper['author']:
+
+                    if not this_author == con_author:
+                        con_hash_object = hashlib.sha256(con_author['family'] + con_author['given'])
+                        con_author_hash = con_hash_object.hexdigest()
+
+                        con_id = ""
+                        if author_hash > con_author_hash:
+                            con_id = author_hash + "" + con_author_hash
+                        else:
+                            con_id = con_author_hash + "" + author_hash
+
+                        con_id_hash_object = hashlib.sha256(con_id)
+                        con_hash = con_id_hash_object.hexdigest()
+
+                        try:
+                            author_network['connections'][ con_hash ]
+                        except:
+                            author_network['connections'][ con_hash ] = {}
+                            author_network['connections'][ con_hash ]['authors'] = []
+                            author_network['connections'][ con_hash ]['authors'].append( { 'author_hash': author_hash } )
+                            author_network['connections'][ con_hash ]['authors'].append( { 'author_hash': con_author_hash } )
+
+                        try:
+                            author_network['connections'][ con_hash ]['num_connections'] += 1
+                        except:
+                            author_network['connections'][ con_hash ]['num_connections'] = 1
+
+        except:
+            pass
+
+    print "\n###Author network###"
+    print str(len( author_network['authors'])) + " Authors"
+    print str(len( author_network['connections'])) + " Connections"
+    return author_network
 
 ############################################################
 # Try with the FIRST authors - these are in a nested dict
