@@ -201,7 +201,7 @@ def build_home(papers):
         cr_sum += float(summary[this_year]['citations']) / (cr_current_year - float(this_year))
 
         # Build the table
-        temp = '<tr><td><a href="papers/index.html#'+str(this_year)+'">'+str(this_year)+'</a></td>'
+        temp = '<tr><td><a href="papers/' + this_year + '/index.html">'+str(this_year)+'</a></td>'
         temp += '<td>'+intWithCommas(summary[this_year]['num_papers'])+'</td>'
         temp += '<td>'+str(summary[this_year]['cumulative'])+'</td>'
         temp += '<td>'+intWithCommas(summary[this_year]['uob'])+'</td>'
@@ -224,6 +224,7 @@ def build_home(papers):
 def build_papers(papers):
 
     import shutil
+    import os.path
     print "\n###HTML papers list###"
 
     yearly_papers = {}
@@ -249,6 +250,12 @@ def build_papers(papers):
     temp += "<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>"
 
     print >>html_file, temp
+    main = "<p>"
+    
+
+
+
+
 
     # Build the text needed for each paper
     for this_paper in papers:
@@ -265,9 +272,6 @@ def build_papers(papers):
 
             # Paper title as a link
             html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['title'] + '</span><br/>'
-
-            # Abstract text - probably too long to go on this page
-            # html += papers[this_pmid]['AbstractText'][0]+'<br/>'
 
             # Authors
             authors = []
@@ -342,17 +346,45 @@ def build_papers(papers):
         # Check there is some data for this year - not all do
         if len(yearly_papers[this_year]) == 0:
             continue
-        heading = '<a name="' + this_year + '"></a>'
-        heading += '<h1>' + this_year + '</h1>'
-        print >>html_file, heading
+
+        main += '<a href="' + this_year + '/index.html">' + this_year + '</a> '
+
+        if not os.path.exists('../html/papers/' + this_year ):
+            os.mkdir('../html/papers/' + this_year )
+        year_file = open('../html/papers/' + this_year + '/index.html', 'w')
+
+        shutil.copyfile('html/templates/altmetric.png', '../html/papers/' + this_year + '/altmetric.png')
+        shutil.copyfile('html/templates/yellow-flag-th.png', '../html/papers/' + this_year + '/yellow-flag-th.png')
+
+        # Put html together for this page
+        temp = '<html>'
+
+        # html head
+        temp += '<head>'
+        temp += '<title>' + site_title + '</title>'
+        temp += '<link rel="stylesheet" href="../../css/uobcms_corporate.css">'
+        temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
+        temp += '<link rel="stylesheet" href="../../css/style_main.css">'
+        temp += '</head>'
+
+        temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; <a href="../index.html">Papers List</a> &gt; ' + this_year + '</p>', "../../", "")
+
+        temp += '<h1 id="pagetitle">Papers List - ' + this_year + '</h1>'
+        temp += "<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>"
+
+        temp += '<h2>' + str(len(yearly_papers[this_year])) + ' Publications From ' + this_year + '</h2>'
+        print >>year_file, temp
         # This is a list
         for this_item in yearly_papers[this_year]:
             temp = this_item.values()
-            print >>html_file, temp[0].encode('utf-8')
+            print >>year_file, temp[0].encode('utf-8')
 
-    temp = build_common_foot()
-    print >>html_file, temp
+        temp = build_common_foot()
+        print >>year_file, temp
 
+
+    main += "</p>" + build_common_foot()
+    print >>html_file, main
 
 ############################################################
 # Build a list of all mesh keywords
