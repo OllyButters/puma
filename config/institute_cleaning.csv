@@ -6,7 +6,7 @@ bris.ac.uk,University of Bristol
 bpmf.ac.uk,University College London
 bre.co.uk,Building Research Establishment
 cam.ac.uk,University of Cambridge
-northlandsrnd.org.uk,"Northlands Surgery, Calne"
+northlandsrnd.org.uk,"Northlands Surgery"
 city.ac.uk,City University London
 ex.ac.uk,University of Essex
 ehesp.fr,"EHESP"
@@ -83,7 +83,7 @@ University of Manchester,University of Manchester
 Medical Research Council Epidemiology Unit,MRC Centre Cambridge
 MRC Epidemiology Unit,MRC Centre Cambridge
 Medical Research Council Human Nutrition Research ,MRC Centre Cambridge
-University of Munich,University of Munich
+University of Munich,Ludwig Maximilian University of Munich
 Newcastle University,Newcastle University
 University of Newcastle,Newcastle University
 University of Nottingham,University of Nottingham
@@ -122,7 +122,7 @@ Ty Bryn Unit,"St Cadoc's Hospital"
 North Bristol NHS Trust,North Bristol NHS Trust
 Northlands R & D Unit,Northlands R & D Unit
 University Hospital of Nottingham,Queen's Medical Centre
-"Park Hospital, Headington, Oxford, UK.","Park Hospital, Oxford"
+"Park Hospital, Headington, Oxford, UK.","Park Hospital for Children"
 Royal United Hospital,Royal United Hospital
 Southmead Hospital,Southmead Hospital
 St George's Hospital,St George's Hospital
@@ -142,7 +142,7 @@ Christchurch School of Medicine,University of Otago Christchurch School of Medic
 "Centres for Disease Control Prevention, Atlanta","Centers for Disease Control and Prevention"
 "Centers for Disease Control and Prevention, Atlanta","Centers for Disease Control and Prevention"
 University of Copenhagen,University of Copenhagen
-TX 75231,"Retina Foundation of the Southwest, Dallas"
+TX 75231,"Retina Foundation of the Southwest"
 Deakin University,Deakin University
 Deodoro,Deodoro
 Emory University,Emory University
@@ -171,7 +171,7 @@ Mayo clinic,"Mayo Medical School"
 McGill University,McGill University
 University of Michigan,University of Michigan
 University of Melbourne,University of Melbourne
-murdoch,"Murdoch Childrens Research Institute, Royal Children's Hospital, Melbourne"
+murdoch,"Murdoch Childrens Research Institute"
 turningpoint.org.au,"Turning Point Alcohol and Drug Centre"
 lrz.tum.de,Technical University of Munich
 NIAA,National Institute on Alcohol Abuse and Alcoholism
@@ -188,7 +188,7 @@ Federal University of Pelotas,Federal University of Pelotas
 University of Queensland,University of Queensland
 Queensland Institute of Medical Research,"Queensland Institute of Medical Research"
 Queensland University of Technology,Queensland University of Technology
-Regensburg University Medical Center,Regensburg University Medical Center
+Regensburg University Medical Center,University Hospital Regensburg
 University of Rochester,University of Rochester
 Erasmus University Medical Center,Erasmus MC
 Erasmus University Rotterdam,Erasmus University Rotterdam
@@ -202,7 +202,7 @@ University of Toronto,University of Toronto
 Virginia Commonwealth University,Virginia Commonwealth University
 Yale University,Yale University
 VU University,Vrije Universiteit
-"Bethesda, Maryland",National Institute of Child Health and Human Development
+"Bethesda, Maryland",Eunice Kennedy Shriver National Institute of Child Health and Human Development
 University Medical Centre Utrecht,University Medical Center Utrecht
 ,
 #Some special ALSPAC munging,
