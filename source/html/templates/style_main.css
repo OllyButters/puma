@@ -239,6 +239,11 @@ div#uobcms-content {
       height:500px;
     }
 
+    div#uobcms-content div#papers_per_citation_count_div {
+      width:100%;
+      height:500px;
+    }
+
 img.altmetric {
   height:50px;
   vertical-align:middle;

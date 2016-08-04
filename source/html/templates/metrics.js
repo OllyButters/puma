@@ -21,5 +21,15 @@ google.load("visualization", "1", {packages:["corechart"]});
         var chart = new google.visualization.ColumnChart(document.getElementById('papers_per_year_div'));
         chart.draw(data, options);
 
+	//Number of Papers for Citation Counts
+        var data = google.visualization.arrayToDataTable(papers_per_citation_count);
+        var options = {
+          title: 'Number of Papers for Citation Counts',
+          colors: ["#c9002f"]
+
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('papers_per_citation_count_div'));
+        chart.draw(data, options);
+
 
       }

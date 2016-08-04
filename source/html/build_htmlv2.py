@@ -57,7 +57,7 @@ def build_common_body(breadcrumb, nav_path, body):
 
     html += '<li><a href="' + nav_path + 'authornetwork/index.html">Author Network</a></li>'
     html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
-    html += '<li><a href="' + nav_path + 'wordcloud/index.html">Keyword Cloud</a></li>'
+    html += '<li><a href="' + nav_path + 'wordcloud/index.html">Major Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
     html += '</ul>'
 
@@ -425,6 +425,7 @@ def build_mesh(papers):
                     # If this mesh term is not in the dict then add it
                     if this_mesh['DescriptorName'] not in mesh_papers_major:
                         mesh_papers_major[this_mesh['DescriptorName']] = list()
+                        print this_mesh['DescriptorName']
                     mesh_papers_major[this_mesh['DescriptorName']].append(this_paper['IDs']['hash'])
         except:
             pass
@@ -510,11 +511,12 @@ def build_mesh(papers):
 
     word_cloud_raw = ""
 
-    # Get first x keywords in order
+    # MAJOR KEYWORD CLOUD
+    # Get first x MAJOR keywords in order
     # Prepare variables
     ordered_mesh_papers_all = {}
     mesh_papers_all_temp = {}
-    for this_mesh in mesh_papers_all:
+    for this_mesh in mesh_papers_major:
         mesh_papers_all_temp[this_mesh] = mesh_papers_all[this_mesh]
 
     # Sort and get x words
@@ -543,10 +545,12 @@ def build_mesh(papers):
             word_cloud_max = number
             word_cloud_max_name = this_mesh
 
-	word_cloud_list += '{"text":"' + this_mesh  + '", "size":' + str(math.sqrt(number)*2.1) + '}'
+	word_cloud_list += '{"text":"' + this_mesh  + '", "size":' + str(math.sqrt(number)*2.5) + '}'
 
         for x in range(0,number):
              word_cloud_raw += " " + this_mesh
+
+    for this_mesh in mesh_papers_all:
 
         if (not os.path.exists('../html/mesh/' + this_mesh)):
             os.mkdir('../html/mesh/' + this_mesh)
@@ -964,6 +968,44 @@ def build_metrics(papers, cohort_rating):
 
     html_file = open('../html/metrics/index.html', 'w')
 
+
+
+
+
+
+
+    # NUMBER OF PAPERS PER CITATION COUNT
+    num_papers_citations = []
+    max_citations = 0
+    for this_paper in papers:
+        try:
+            n_cits = int(this_paper['Extras']['Citations'])
+            if n_cits > max_citations and n_cits < 200:
+                max_citations = n_cits
+            try:
+                num_papers_citations[n_cits] += 1
+            except:
+                num_papers_citations.insert(n_cits,1)
+        except:
+            pass
+
+    # Create data string for plot
+    n_papers_with_x_citations = "var papers_per_citation_count = ([['Number of Citations','Number of Papers']"
+    # Add Zeros in missing indexes
+    for this_n_citations in range(1, max_citations+1):
+        try:
+            n_papers_with_x_citations += ",[" + str(this_n_citations) + "," + str(num_papers_citations[this_n_citations]) + "]"
+        except:
+            n_papers_with_x_citations += ",[" + str(this_n_citations) + ",0]"
+
+    n_papers_with_x_citations += "])"
+
+
+
+
+
+
+
     # Put html together for this page
     temp = '<html>'
 
@@ -979,6 +1021,7 @@ def build_metrics(papers, cohort_rating):
 
     temp += '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     temp += '<script type="text/javascript" src="../data.js"></script>'
+    temp += '<script>' + n_papers_with_x_citations + '</script>'
     temp += '<script type="text/javascript" src="../map/map.js"></script>'
     temp += '<script type="text/javascript" src="metrics.js"></script>'
 
@@ -1065,7 +1108,7 @@ def build_metrics(papers, cohort_rating):
     temp += "</div>"
 
     temp += "<div class='metric'>"
-    temp += "<div class='metric_name'>Average Citations Per Publication</div>"
+    temp += "<div class='metric_name'>Mean Citations Per Publication</div>"
     temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(average_citations, 2))) + "</div>"
     temp += "<div class='metric_description'>The total number of citations divided by the total number of publications.</div>"
     temp += "</div>"
@@ -1098,6 +1141,8 @@ def build_metrics(papers, cohort_rating):
 
     temp += '<div id="cumulative_div"></div>'
     temp += '<div id="papers_per_year_div"></div>'
+    temp += '<div id="papers_per_citation_count_div"></div>'
+
 
     print >>html_file, temp
 
@@ -1105,10 +1150,10 @@ def build_metrics(papers, cohort_rating):
     print >>html_file, temp
 
 
+
 ###########################################################
 # Build keyword word cloud
 ###########################################################
-
 
 def build_word_cloud(papers,list):
 
@@ -1138,9 +1183,9 @@ def build_word_cloud(papers,list):
 
     temp += '</head>'
 
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Keyword Cloud</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keyword Cloud</p>', "../", "")
 
-    temp += '<h1 id="pagetitle">Keyword Cloud</h1>'
+    temp += '<h1 id="pagetitle">Major Keyword Cloud</h1>'
 
     temp += '<cloud id="sourrounding_div" style="width:100%;height:500px">'
     temp += '</cloud>'
