@@ -393,6 +393,7 @@ def build_mesh(papers):
     import os.path
     import shutil
     import math
+    import csv
 
     print "\n###HTML - mesh###"
 
@@ -425,13 +426,44 @@ def build_mesh(papers):
                     # If this mesh term is not in the dict then add it
                     if this_mesh['DescriptorName'] not in mesh_papers_major:
                         mesh_papers_major[this_mesh['DescriptorName']] = list()
-                        print this_mesh['DescriptorName']
                     mesh_papers_major[this_mesh['DescriptorName']].append(this_paper['IDs']['hash'])
         except:
             pass
 
-    # Print mesh_papers
 
+    # Read in mesh tree hierarchy
+    f = open("../data/mesh_tree_hierarchy.csv", 'rt')
+    mesh_tree = {}
+    mesh_tree_reverse = {}
+    try:
+        reader = csv.reader(f)
+        for row in reader:
+            mesh_tree[row[2]] = row[0]
+            mesh_tree_reverse[row[0]] = row[2]
+
+    finally:
+        f.close()
+
+    # Make list of second level mesh headings
+    found = 0
+    total = 0
+    for this_mesh in mesh_papers_major:
+        # Get Second Level
+        try:
+            tree_number = mesh_tree[this_mesh]
+            tree_number_split = tree_number.split(".")
+            second_level = mesh_tree_reverse[tree_number_split[0]]
+            print second_level
+
+            found += 1
+        except:
+            pass
+
+        total += 1
+
+    print "MeSH Second Level Found: " + str(found) + "/" + str(total)
+
+    # Print mesh_papers
     # Make a JSON file for each mesh term, in it put all the PMIDs for this term
     for this_mesh in mesh_papers_all:
         file_name = '../html/mesh/all_' + this_mesh
@@ -574,7 +606,7 @@ def build_mesh(papers):
 
             temp += '</head>'
 
-            temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Keyword &gt; ' + this_mesh + '</p>', "../../", "")
+            temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; Keyword &gt; ' + this_mesh + '</p>', "../../", "")
 
             temp += '<h1 id="pagetitle">Keyword - ' + this_mesh + '</h1>'
             temp += '<h2>All Keyword History</h2>'
@@ -638,11 +670,9 @@ def build_mesh(papers):
             temp += '<div id="papers_chart_div"></div>'
             temp += '<div id="citations_chart_div"></div>'
 
-            temp += '<h2>Major Keyword History</h2>'
-
             # List publications
             temp += '<h2>Publications</h2>'
-            temp += '<p>' + str(len(mesh_papers_all[this_mesh])) + ' publications with this keyword</p>'
+            temp += '<p><em>' + str(len(mesh_papers_all[this_mesh])) + ' publications with this keyword</em></p>'
 
             print >>fo, temp
 
