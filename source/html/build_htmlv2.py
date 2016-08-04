@@ -47,8 +47,14 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'papers/index.html">Papers List</a></li>'
     html += '<li><a href="' + nav_path + 'all_keywords/index.html">All Keywords</a></li>'
     html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords</a></li>'
-    html += '<li><a href="' + nav_path + 'map/index.html">Institutions Map</a></li>'
-    html += '<li><a href="' + nav_path + 'country/index.html">Publications by Country</a></li>'
+
+    html += '<li><a>Maps</a>'
+    html += '<ul class="multilevel-linkul-0">'
+    html += '    <li><a href="' + nav_path + 'map/index.html">Institutions Map</a></li>'
+    html += '    <li><a href="' + nav_path + 'country/index.html">Publications by Country</a></li>'
+    html += '    <li><a href="' + nav_path + 'city/index.html">Publications by UK City</a></li>'
+    html += '</ul></li>'
+
     html += '<li><a href="' + nav_path + 'authornetwork/index.html">Author Network</a></li>'
     html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
     html += '<li><a href="' + nav_path + 'wordcloud/index.html">Keyword Cloud</a></li>'
@@ -224,6 +230,7 @@ def build_papers(papers):
     html_file = open('../html/papers/index.html', 'w')
 
     shutil.copyfile('html/templates/altmetric.png', '../html/papers/altmetric.png')
+    shutil.copyfile('html/templates/yellow-flag-th.png', '../html/papers/yellow-flag-th.png')
 
     # Put html together for this page
     temp = '<html>'
@@ -291,7 +298,7 @@ def build_papers(papers):
             # Zotero
             try:
 		if this_paper['IDs']['zotero']:
-                    html += '&nbsp;Zotero: <a href="' + this_paper['IDs']['zotero'] + '">' + this_paper['IDs']['zotero'] + '</a>'
+                    html += '&nbsp;Zotero: ' + this_paper['IDs']['zotero'] + ''
             except:
                 pass
 
@@ -307,6 +314,8 @@ def build_papers(papers):
                 html += '&nbsp; Citations: '+this_paper['Extras']['Citations']
             except:
                 pass
+
+            html += '<img style="width:20px;padding-left:20px;" src="yellow-flag-th.png" title="At least one author is on the ALSPAC executive committee">'
 
             # Add an extra line break at the end
             html += '<br/><br/>'
@@ -417,6 +426,7 @@ def build_mesh(papers):
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; All Keywords</p>', "../", "")
 
     temp += '<h1 id="pagetitle">All Keywords</h1>'
+    temp += '<p>' + str(len(mesh_papers_all)) + ' Keywords</p>'
 
     print >>html_file_all, temp
 
@@ -444,6 +454,7 @@ def build_mesh(papers):
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keywords</p>', "../", "")
 
     temp += '<h1 id="pagetitle">Major Keywords</h1>'
+    temp += '<p>' + str(len(mesh_papers_major)) + ' Keywords</p>'
 
     print >>html_file_major, temp
 
@@ -512,7 +523,7 @@ def build_mesh(papers):
             temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Keyword &gt; ' + this_mesh + '</p>', "../../", "")
 
             temp += '<h1 id="pagetitle">Keyword - ' + this_mesh + '</h1>'
-            temp += '<h2>Keyword History</h2>'
+            temp += '<h2>All Keyword History</h2>'
 
             # ===== KEYWORD OVER TIME CALCULATIONS =====
             # First some prep has to be done to set up the array for the number of year. This is copied from the citations graph prep and is probably very inefficent for this task
@@ -573,8 +584,11 @@ def build_mesh(papers):
             temp += '<div id="papers_chart_div"></div>'
             temp += '<div id="citations_chart_div"></div>'
 
+            temp += '<h2>Major Keyword History</h2>'
+
             # List publications
             temp += '<h2>Publications</h2>'
+            temp += '<p>' + str(len(mesh_papers_all[this_mesh])) + ' publications with this keyword</p>'
 
             print >>fo, temp
 
@@ -636,7 +650,7 @@ def build_mesh(papers):
                         # Zotero
                         try:
             		    if this_paper['IDs']['zotero']:
-                                html += '&nbsp;Zotero: <a href="' + this_paper['IDs']['zotero'] + '">' + this_paper['IDs']['zotero'] + '</a>'
+                                html += '&nbsp;Zotero: ' + this_paper['IDs']['zotero'] + ''
                         except:
                             pass
 
@@ -652,6 +666,8 @@ def build_mesh(papers):
                             html += '&nbsp; Citations: '+this_paper['Extras']['Citations']
                         except:
                             pass
+
+                        html += '<img style="width:20px;padding-left:20px;" src="../../papers/yellow-flag-th.png" title="At least one author is on the ALSPAC executive committee">'
 
                         # Add an extra line break at the end
                         html += '<br/><br/>'
@@ -682,6 +698,7 @@ def build_mesh(papers):
 def build_google_map(papers):
 
     import shutil
+    print "\n###HTML - Insititutions Map###"
 
     info = []
     for this_paper in papers:
@@ -745,6 +762,7 @@ def build_google_map(papers):
 def build_country_map(papers):
 
     import shutil
+    print "\n###HTML - Country Map###"
 
     info = []
 
@@ -792,7 +810,7 @@ def build_country_map(papers):
 
     temp += '</head>'
 
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by Country</p>', "../", "onload='initialize()'")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by Country</p>', "../", "")
 
     temp += '<h1 id="pagetitle">Publications by Country</h1>'
 
@@ -804,6 +822,73 @@ def build_country_map(papers):
 
     temp = build_common_foot()
     print >>html_file, temp
+
+    build_city_map(papers)
+
+###########################################################
+# Publications by UK city
+###########################################################
+
+
+def build_city_map(papers):
+
+    import shutil
+    print "\n###HTML - City Map###"
+
+    info = []
+
+    cities = {}
+    for this_paper in papers:
+
+        try:
+            if this_paper['Extras']['postal_town'] != "":
+                if this_paper['Extras']['postal_town'] in cities:
+                    cities[ this_paper['Extras']['postal_town'] ] += 1
+                else:
+                    cities[ this_paper['Extras']['postal_town'] ] = 1
+        except:
+            pass
+
+    city_string = ""
+    for city in cities.keys():
+       city_string += ",['" + city + "'," + str(cities[city]) + "]"
+
+    html_file = open('../html/city/index.html', 'w')
+
+    # Put html together for this page
+    temp = '<html>'
+
+    # html head
+    temp += '<head>'
+    temp += '<title>' + site_title + '</title>'
+    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
+    temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/map.css">'
+
+    #temp += '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4&libraries=visualization"></script>'
+    temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
+    temp += "<script>google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['City',   'Publications']" + city_string + " ]); var options = {region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#FFB612', '#c9002f']}}; var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));chart.draw(data, options); };</script>"
+
+    shutil.copyfile('html/templates/loading.gif', '../html/city/loading.gif')
+    shutil.copyfile('html/templates/map.css', '../html/city/map.css')
+
+    temp += '</head>'
+
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by UK City</p>', "../", "")
+
+    temp += '<h1 id="pagetitle">Publications by UK City</h1>'
+
+    temp += "<div class='loading'><img src='loading.gif'></div>"
+    temp += '<div id="regions_div" style="width: 900px; height: 500px;"></div>'
+
+
+
+    print >>html_file, temp
+
+    temp = build_common_foot()
+    print >>html_file, temp
+
 
 ###########################################################
 # Build metrics page
@@ -825,6 +910,7 @@ def intWithCommas(x):
 def build_metrics(papers, cohort_rating):
 
     import shutil
+    print "\n###HTML - Metrics###"
 
     html_file = open('../html/metrics/index.html', 'w')
 
@@ -911,9 +997,9 @@ def build_metrics(papers, cohort_rating):
     # Ouput Metrics
     temp += "<div class='metric_con'>"
     temp += "<div class='metric'>"
-    temp += "<div class='metric_name'>s-index</div>"
+    temp += "<div class='metric_name'>h-index</div>"
     temp += "<div class='metric_value'>" + str(h_index) + "</div>"
-    temp += "<div class='metric_description'>s-index is the largest number s such that s publications from a study have at least s citations.</div>"
+    temp += "<div class='metric_description'>h-index is the largest number h such that h publications from a study have at least h citations.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
@@ -977,6 +1063,7 @@ def build_metrics(papers, cohort_rating):
 def build_word_cloud(papers,list):
 
     import shutil
+    print "\n###HTML - Keyword Cloud###"
 
     html_file = open('../html/wordcloud/index.html', 'w')
 
@@ -1028,7 +1115,7 @@ def build_abstract_word_cloud(papers):
     import shutil
     import csv
     import math
-
+    print "\n###HTML - Abstract Word Cloud###"
 
 
     f = open("../data/abstracts.csv", 'rt')
@@ -1121,6 +1208,7 @@ def get_author_string_from_hash( hash_string, network ):
 def build_author_network(papers,network):
 
     import shutil
+    print "\n###HTML - Author Network###"
 
     # Create json file
     net_file = open('../html/authornetwork/network.json', 'w')
@@ -1173,6 +1261,7 @@ def build_author_network(papers,network):
     html_file = open('../html/authornetwork/index.html', 'w')
 
     shutil.copyfile('html/templates/network.js', '../html/authornetwork/network.js')
+    shutil.copyfile('html/templates/author_network2.png', '../html/authornetwork/author_network2.png')
 
     # Put html together for this page
     temp = '<html>'
@@ -1193,11 +1282,86 @@ def build_author_network(papers,network):
 
     temp += '<h1 id="pagetitle">Author Network</h1>'
 
-    temp += '<svg width="960" height="600" id="chart"></svg><script src="https://d3js.org/d3.v4.min.js"></script>'
-    temp += '<script type="text/javascript" src="network.js"></script>'
+    # Old force directed graph
+    #temp += '<svg width="960" height="600" id="chart"></svg><script src="https://d3js.org/d3.v4.min.js"></script>'
+    #temp += '<script type="text/javascript" src="network.js"></script>'
 
-    #temp += '<p>' + str(network) + '</p>'
 
+    ## Print nodes to csv
+    nodes_csv = open('../html/authornetwork/nodes.csv', 'w')
+
+    print >>nodes_csv,  'id,Label'
+    n = 0
+
+    for author in network['authors']:
+        print >>nodes_csv,  author + "," + network['authors'][author]['family'] + ' ' +  network['authors'][author]['given']
+        n += 1
+
+    ## Print conections to csv
+    connections_csv = open('../html/authornetwork/connections.csv', 'w')
+
+    print >>connections_csv,  'Source,Target'
+
+    n = 0
+    for con in network['connections']:
+        try:
+     
+            author_0 = network['connections'][con]['authors'][0]['author_hash']
+            author_1 = network['connections'][con]['authors'][1]['author_hash']
+
+            n_con = network['connections'][con]['num_connections']/2
+
+            print >>connections_csv,  '"' + author_0 + '","' + author_1 + '"'
+
+           
+        except:
+            pass
+        n += 1
+        
+        
+  
+
+    #temp += '<p>' + nodes + '</p>'
+    temp += '<img src="author_network2.png">'
+
+
+    print >>html_file, temp
+
+    temp = build_common_foot()
+    print >>html_file, temp
+
+
+###########################################################
+# ErrorLog
+###########################################################
+def build_error_log(papers, error_log ):
+
+    import shutil
+    import csv
+    import math
+    import html.htmlerrorlog.errorlog
+    print "\n###HTML - Error Log###"
+
+    html_file = open('../html/errorlog/index.html', 'w')
+
+    # Put html together for this page
+    temp = '<html>'
+
+    # html head
+    temp += '<head>'
+    temp += '<title>' + site_title + '</title>'
+    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
+    temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/map.css">'
+
+    temp += '</head>'
+
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Error Log</p>', "../", "")
+
+    temp += '<h1 id="pagetitle">Error Log</h1>'
+
+    temp += error_log.printLog()
 
     print >>html_file, temp
 
