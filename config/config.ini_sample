@@ -1,5 +1,5 @@
 [project_details]
-name:ALSPAC
+name: ALSPAC
 
 [zotero_api]
 url:
@@ -17,4 +17,4 @@ scopus_run_citation: True
 [google_chart_api]
 
 [logging]
-loglevel:DEBUG
+loglevel: DEBUG
