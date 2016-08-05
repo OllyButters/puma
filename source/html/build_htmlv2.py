@@ -432,7 +432,7 @@ def build_mesh(papers):
 
 
     # Read in mesh tree hierarchy
-    f = open("../data/mesh_tree_hierarchy.csv", 'rt')
+    f = open("../config/mesh_tree_hierarchy.csv", 'rt')
     mesh_tree = {}
     mesh_tree_reverse = {}
     try:
@@ -444,7 +444,7 @@ def build_mesh(papers):
     finally:
         f.close()
 
-    f = open("../data/mesh_categories.csv", 'rt')
+    f = open("../config/mesh_categories.csv", 'rt')
     mesh_categories = {}
     try:
         reader = csv.reader(f)
@@ -490,9 +490,18 @@ def build_mesh(papers):
     print "MeSH Top Level Found: " + str(top_found) + "/" + str(total)
     print "Unique MeSH Top Level: " + str(len(mesh_top_level_headings))
 
-    print mesh_top_level_headings
-    print "\n"
-    print mesh_second_level_headings
+    print "\n" + str(mesh_top_level_headings)
+    print "\n" + str(mesh_second_level_headings)
+
+    print "Second Level MeSH"
+    for mesh in mesh_second_level_headings:
+        print mesh + "\t" + str(mesh_second_level_headings[mesh])
+
+    print "\n\n"
+
+    print "Top Level MeSH"
+    for mesh in mesh_top_level_headings:
+        print mesh + "\t" + str(mesh_top_level_headings[mesh])
 
 
     # Print mesh_papers
