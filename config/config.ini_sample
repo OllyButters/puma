@@ -1,0 +1,10 @@
+[zotero]
+url:
+api_key:
+
+[pubmed]
+email_address:
+
+[scopus]
+max_citation_age:
+force_citation_update:
