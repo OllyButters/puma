@@ -490,9 +490,18 @@ def build_mesh(papers):
     print "MeSH Top Level Found: " + str(top_found) + "/" + str(total)
     print "Unique MeSH Top Level: " + str(len(mesh_top_level_headings))
 
-    print mesh_top_level_headings
-    print "\n"
-    print mesh_second_level_headings
+    print "\n" + str(mesh_top_level_headings)
+    print "\n" + str(mesh_second_level_headings)
+
+    print "Second Level MeSH"
+    for mesh in mesh_second_level_headings:
+        print mesh + "\t" + str(mesh_second_level_headings[mesh])
+
+    print "\n\n"
+
+    print "Top Level MeSH"
+    for mesh in mesh_top_level_headings:
+        print mesh + "\t" + str(mesh_top_level_headings[mesh])
 
 
     # Print mesh_papers
