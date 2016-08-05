@@ -1,10 +1,20 @@
-[zotero]
+[project_details]
+name:ALSPAC
+
+[zotero_api]
 url:
 api_key:
 
-[pubmed]
+[pubmed_api]
 email_address:
 
 [scopus]
-max_citation_age:
-force_citation_update:
+scopus_force_citation_update: False
+scopus_api_key: 8024d746590aade6be6856a22a734783
+scopus_citation_max_age_days: 30
+scopus_run_citation: True
+
+[google_chart_api]
+
+[logging]
+loglevel:DEBUG
