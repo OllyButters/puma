@@ -444,24 +444,56 @@ def build_mesh(papers):
     finally:
         f.close()
 
+    f = open("../data/mesh_categories.csv", 'rt')
+    mesh_categories = {}
+    try:
+        reader = csv.reader(f)
+        for row in reader:
+            mesh_categories[row[0]] = row[1]
+
+    finally:
+        f.close()
+
     # Make list of second level mesh headings
-    found = 0
+    second_found = 0
+    top_found = 0
     total = 0
+    mesh_second_level_headings = {}
+    mesh_top_level_headings = {}
     for this_mesh in mesh_papers_major:
-        # Get Second Level
         try:
             tree_number = mesh_tree[this_mesh]
+            # Get Second Level
             tree_number_split = tree_number.split(".")
             second_level = mesh_tree_reverse[tree_number_split[0]]
-            print second_level
+            
+            try:
+                mesh_second_level_headings[second_level] += len(mesh_papers_major[this_mesh])
+            except:
+                mesh_second_level_headings[second_level] = len(mesh_papers_major[this_mesh])
+            second_found += len(mesh_papers_major[this_mesh])
 
-            found += 1
+            # Get Top Level
+            top_level = tree_number[0]
+            try:
+                mesh_top_level_headings[mesh_categories[top_level]] += len(mesh_papers_major[this_mesh])
+            except:
+                mesh_top_level_headings[mesh_categories[top_level]] = len(mesh_papers_major[this_mesh])
+            top_found += len(mesh_papers_major[this_mesh])
         except:
             pass
 
-        total += 1
+        total += len(mesh_papers_major[this_mesh])
 
-    print "MeSH Second Level Found: " + str(found) + "/" + str(total)
+    print "MeSH Second Level Found: " + str(second_found) + "/" + str(total)
+    print "Unique MeSH Second Level: " + str(len(mesh_second_level_headings))
+    print "MeSH Top Level Found: " + str(top_found) + "/" + str(total)
+    print "Unique MeSH Top Level: " + str(len(mesh_top_level_headings))
+
+    print mesh_top_level_headings
+    print "\n"
+    print mesh_second_level_headings
+
 
     # Print mesh_papers
     # Make a JSON file for each mesh term, in it put all the PMIDs for this term
