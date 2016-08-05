@@ -38,8 +38,8 @@ print "Start Time: " + str(start_time)
 
 # Error log for displaying data input problems to user
 error_log = html.htmlerrorlog.errorlog.ErrorLog()
-#error_log.logError("Test Error")
-#error_log.logWarning("Test Warning")
+# error_log.logError("Test Error")
+# error_log.logWarning("Test Warning")
 
 
 ###########################################################
@@ -148,7 +148,7 @@ clean.clean.clean_institution(papers)
 
 ###########################################################
 # Add some extra data in - i.e. geocodes and citations
-add.geocode.geocode(papers,error_log)
+add.geocode.geocode(papers, error_log)
 
 if update_citations:
     add.citations.citations(papers, scopus_api_key, scopus_citation_max_life)
@@ -192,5 +192,5 @@ html.build_htmlv2.build_error_log(papers, error_log)
 # Time Log
 end_time = time.time()
 elapsed_time = end_time - start_time
-print "End Time: " +  str(end_time)
+print "End Time: " + str(end_time)
 print "Elapsed Time: " + str(elapsed_time)
