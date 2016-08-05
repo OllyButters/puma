@@ -73,7 +73,7 @@ papers = []
 # Get list of files in merged directory
 merged_files_list = listdir(root_dir + '/cache/processed/merged/')
 merged_files_list.sort()
-merged_files_list = merged_files_list[0:10]
+# merged_files_list = merged_files_list[0:10]
 print str(len(merged_files_list))+' merged papers to load'
 
 # Open each one and add to papers object
