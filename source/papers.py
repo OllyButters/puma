@@ -34,7 +34,7 @@ path_to_papers_py = os.path.abspath(sys.argv[0])
 root_dir = os.path.dirname(os.path.dirname(path_to_papers_py))
 print 'Root directory = ' + root_dir
 
-# Get all the config
+# Get all the config - these will be a global vars available like config.varname
 config.parse_config(root_dir)
 
 # Time Log
