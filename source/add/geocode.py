@@ -50,6 +50,7 @@ def geocode(papers, error_log):
                     data = requests.get(url, params={'query': query, 'format': 'json'}).json()
 
                     try:
+
                         # Process returned JSON to get entity id
                         item_uri = data['results']['bindings'][0]['item']['value']
                         item_uri_components = item_uri.split("/")
@@ -65,25 +66,21 @@ def geocode(papers, error_log):
                             p_lon = retur['entities'][item_id]['claims']['P625'][0]['mainsnak']['datavalue']['value']['longitude']
                             p_lat = retur['entities'][item_id]['claims']['P625'][0]['mainsnak']['datavalue']['value']['latitude']
 
-                            # print(papers[this_pmid]['Extras']['CleanInstitute'])
-                            # print(papers[this_pmid]['latitude'])
-                            # print(papers[this_pmid]['longitude'])
-
                             locations_found += 1
                             this_paper['Extras']['LatLong'] = {'lat': str(p_lat), 'long': str(p_lon) }
-
+                            
                             found_coords = True
 
                         except:
-
                             try:
+
                                 # Check headquaters location
                                 p_lon = retur['entities'][item_id]['claims']['P159'][0]['qualifiers']['P625'][0]['datavalue']['value']['longitude']
                                 p_lat = retur['entities'][item_id]['claims']['P159'][0]['qualifiers']['P625'][0]['datavalue']['value']['latitude']
 
                                 # print "Location Found from HQ " + papers[this_pmid]['Extras']['CleanInstitute']
                                 locations_found += 1
-                                this_paper['Extras']['LatLong'] = {'lat': p_lat, 'long': p_lon }
+                                this_paper['Extras']['LatLong'] = {'lat': str(p_lat), 'long': str(p_lon) }
 
                                 found_coords = True
 

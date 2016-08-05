@@ -189,13 +189,6 @@ html.build_htmlv2.build_abstract_word_cloud(papers)
 html.build_htmlv2.build_author_network(papers, network)
 html.build_htmlv2.build_error_log(papers, error_log)
 
-# html.build_html.build_yearly(papers)
-# html.build_html.build_mesh(papers)
-# html.build_html.build_summary(papers)
-# html.build_html.build_google_map(papers)
-# html.build_html.build_google_heat_map()
-
-
 # Time Log
 end_time = time.time()
 elapsed_time = end_time - start_time

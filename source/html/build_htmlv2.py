@@ -57,7 +57,7 @@ def build_common_body(breadcrumb, nav_path, body):
 
     html += '<li><a href="' + nav_path + 'authornetwork/index.html">Author Network</a></li>'
     html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
-    html += '<li><a href="' + nav_path + 'wordcloud/index.html">Keyword Cloud</a></li>'
+    html += '<li><a href="' + nav_path + 'wordcloud/index.html">Major Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
     html += '</ul>'
 
@@ -201,7 +201,7 @@ def build_home(papers):
         cr_sum += float(summary[this_year]['citations']) / (cr_current_year - float(this_year))
 
         # Build the table
-        temp = '<tr><td><a href="papers/index.html#'+str(this_year)+'">'+str(this_year)+'</a></td>'
+        temp = '<tr><td><a href="papers/' + this_year + '/index.html">'+str(this_year)+'</a></td>'
         temp += '<td>'+intWithCommas(summary[this_year]['num_papers'])+'</td>'
         temp += '<td>'+str(summary[this_year]['cumulative'])+'</td>'
         temp += '<td>'+intWithCommas(summary[this_year]['uob'])+'</td>'
@@ -224,6 +224,7 @@ def build_home(papers):
 def build_papers(papers):
 
     import shutil
+    import os.path
     print "\n###HTML papers list###"
 
     yearly_papers = {}
@@ -249,6 +250,12 @@ def build_papers(papers):
     temp += "<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>"
 
     print >>html_file, temp
+    main = "<p>"
+    
+
+
+
+
 
     # Build the text needed for each paper
     for this_paper in papers:
@@ -265,9 +272,6 @@ def build_papers(papers):
 
             # Paper title as a link
             html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['title'] + '</span><br/>'
-
-            # Abstract text - probably too long to go on this page
-            # html += papers[this_pmid]['AbstractText'][0]+'<br/>'
 
             # Authors
             authors = []
@@ -342,17 +346,45 @@ def build_papers(papers):
         # Check there is some data for this year - not all do
         if len(yearly_papers[this_year]) == 0:
             continue
-        heading = '<a name="' + this_year + '"></a>'
-        heading += '<h1>' + this_year + '</h1>'
-        print >>html_file, heading
+
+        main += '<a href="' + this_year + '/index.html">' + this_year + '</a> '
+
+        if not os.path.exists('../html/papers/' + this_year ):
+            os.mkdir('../html/papers/' + this_year )
+        year_file = open('../html/papers/' + this_year + '/index.html', 'w')
+
+        shutil.copyfile('html/templates/altmetric.png', '../html/papers/' + this_year + '/altmetric.png')
+        shutil.copyfile('html/templates/yellow-flag-th.png', '../html/papers/' + this_year + '/yellow-flag-th.png')
+
+        # Put html together for this page
+        temp = '<html>'
+
+        # html head
+        temp += '<head>'
+        temp += '<title>' + site_title + '</title>'
+        temp += '<link rel="stylesheet" href="../../css/uobcms_corporate.css">'
+        temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
+        temp += '<link rel="stylesheet" href="../../css/style_main.css">'
+        temp += '</head>'
+
+        temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; <a href="../index.html">Papers List</a> &gt; ' + this_year + '</p>', "../../", "")
+
+        temp += '<h1 id="pagetitle">Papers List - ' + this_year + '</h1>'
+        temp += "<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>"
+
+        temp += '<h2>' + str(len(yearly_papers[this_year])) + ' Publications From ' + this_year + '</h2>'
+        print >>year_file, temp
         # This is a list
         for this_item in yearly_papers[this_year]:
             temp = this_item.values()
-            print >>html_file, temp[0].encode('utf-8')
+            print >>year_file, temp[0].encode('utf-8')
 
-    temp = build_common_foot()
-    print >>html_file, temp
+        temp = build_common_foot()
+        print >>year_file, temp
 
+
+    main += "</p>" + build_common_foot()
+    print >>html_file, main
 
 ############################################################
 # Build a list of all mesh keywords
@@ -360,6 +392,8 @@ def build_papers(papers):
 def build_mesh(papers):
     import os.path
     import shutil
+    import math
+    import csv
 
     print "\n###HTML - mesh###"
 
@@ -396,8 +430,72 @@ def build_mesh(papers):
         except:
             pass
 
-    # Print mesh_papers
 
+    # Read in mesh tree hierarchy
+    f = open("../data/mesh_tree_hierarchy.csv", 'rt')
+    mesh_tree = {}
+    mesh_tree_reverse = {}
+    try:
+        reader = csv.reader(f)
+        for row in reader:
+            mesh_tree[row[2]] = row[0]
+            mesh_tree_reverse[row[0]] = row[2]
+
+    finally:
+        f.close()
+
+    f = open("../data/mesh_categories.csv", 'rt')
+    mesh_categories = {}
+    try:
+        reader = csv.reader(f)
+        for row in reader:
+            mesh_categories[row[0]] = row[1]
+
+    finally:
+        f.close()
+
+    # Make list of second level mesh headings
+    second_found = 0
+    top_found = 0
+    total = 0
+    mesh_second_level_headings = {}
+    mesh_top_level_headings = {}
+    for this_mesh in mesh_papers_major:
+        try:
+            tree_number = mesh_tree[this_mesh]
+            # Get Second Level
+            tree_number_split = tree_number.split(".")
+            second_level = mesh_tree_reverse[tree_number_split[0]]
+            
+            try:
+                mesh_second_level_headings[second_level] += len(mesh_papers_major[this_mesh])
+            except:
+                mesh_second_level_headings[second_level] = len(mesh_papers_major[this_mesh])
+            second_found += len(mesh_papers_major[this_mesh])
+
+            # Get Top Level
+            top_level = tree_number[0]
+            try:
+                mesh_top_level_headings[mesh_categories[top_level]] += len(mesh_papers_major[this_mesh])
+            except:
+                mesh_top_level_headings[mesh_categories[top_level]] = len(mesh_papers_major[this_mesh])
+            top_found += len(mesh_papers_major[this_mesh])
+        except:
+            pass
+
+        total += len(mesh_papers_major[this_mesh])
+
+    print "MeSH Second Level Found: " + str(second_found) + "/" + str(total)
+    print "Unique MeSH Second Level: " + str(len(mesh_second_level_headings))
+    print "MeSH Top Level Found: " + str(top_found) + "/" + str(total)
+    print "Unique MeSH Top Level: " + str(len(mesh_top_level_headings))
+
+    print mesh_top_level_headings
+    print "\n"
+    print mesh_second_level_headings
+
+
+    # Print mesh_papers
     # Make a JSON file for each mesh term, in it put all the PMIDs for this term
     for this_mesh in mesh_papers_all:
         file_name = '../html/mesh/all_' + this_mesh
@@ -477,29 +575,49 @@ def build_mesh(papers):
 
     word_cloud_raw = ""
 
-    # Make papers list for headings pages
-    for this_mesh in mesh_papers_all:
+    # MAJOR KEYWORD CLOUD
+    # Get first x MAJOR keywords in order
+    # Prepare variables
+    ordered_mesh_papers_all = {}
+    mesh_papers_all_temp = {}
+    for this_mesh in mesh_papers_major:
+        mesh_papers_all_temp[this_mesh] = mesh_papers_all[this_mesh]
 
+    # Sort and get x words
+    for x in range(1,150):
+        max_val = -1
+        max_mesh = None
+        for this_mesh in mesh_papers_all_temp:
+            if len( mesh_papers_all_temp[this_mesh] ) > max_val:
+                max_val = len( mesh_papers_all_temp[this_mesh] )
+                max_mesh = this_mesh
+            
+        ordered_mesh_papers_all[max_mesh] = mesh_papers_all_temp[max_mesh]
+        mesh_papers_all_temp.pop(max_mesh,None)
+
+    # Make papers list for headings pages
+    for this_mesh in ordered_mesh_papers_all:
 
 	# Word cloud 
-        if word_cloud_n < 20000:
-  	    if word_cloud_n > 0:
-                word_cloud_list += ','
-            word_cloud_n += 1
+        if word_cloud_n > 0:
+            word_cloud_list += ','
+        word_cloud_n += 1
 
- 	    number = len(mesh_papers_all[this_mesh])
+ 	number = len(mesh_papers_all[this_mesh])
 
-	    if number > word_cloud_max:
-                word_cloud_max = number
-                word_cloud_max_name = this_mesh
+	if number > word_cloud_max:
+            word_cloud_max = number
+            word_cloud_max_name = this_mesh
 
-	    word_cloud_list += '["' + this_mesh  + '", ' + str(number) + ']'
+	word_cloud_list += '{"text":"' + this_mesh  + '", "size":' + str(math.sqrt(number)*2.5) + '}'
 
-            for x in range(0,number):
-                 word_cloud_raw += " " + this_mesh
+        for x in range(0,number):
+             word_cloud_raw += " " + this_mesh
 
-        if (not os.path.exists('../html/mesh/'+this_mesh)):
-            os.mkdir('../html/mesh/'+this_mesh)
+    for this_mesh in mesh_papers_all:
+
+        if (not os.path.exists('../html/mesh/' + this_mesh)):
+            os.mkdir('../html/mesh/' + this_mesh)
 
         file_name = '../html/mesh/' + this_mesh + '/index.html'
         with codecs.open(file_name, 'wb', "utf-8") as fo:
@@ -520,7 +638,7 @@ def build_mesh(papers):
 
             temp += '</head>'
 
-            temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Keyword &gt; ' + this_mesh + '</p>', "../../", "")
+            temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; Keyword &gt; ' + this_mesh + '</p>', "../../", "")
 
             temp += '<h1 id="pagetitle">Keyword - ' + this_mesh + '</h1>'
             temp += '<h2>All Keyword History</h2>'
@@ -584,11 +702,9 @@ def build_mesh(papers):
             temp += '<div id="papers_chart_div"></div>'
             temp += '<div id="citations_chart_div"></div>'
 
-            temp += '<h2>Major Keyword History</h2>'
-
             # List publications
             temp += '<h2>Publications</h2>'
-            temp += '<p>' + str(len(mesh_papers_all[this_mesh])) + ' publications with this keyword</p>'
+            temp += '<p><em>' + str(len(mesh_papers_all[this_mesh])) + ' publications with this keyword</em></p>'
 
             print >>fo, temp
 
@@ -914,6 +1030,44 @@ def build_metrics(papers, cohort_rating):
 
     html_file = open('../html/metrics/index.html', 'w')
 
+
+
+
+
+
+
+    # NUMBER OF PAPERS PER CITATION COUNT
+    num_papers_citations = []
+    max_citations = 0
+    for this_paper in papers:
+        try:
+            n_cits = int(this_paper['Extras']['Citations'])
+            if n_cits > max_citations and n_cits < 200:
+                max_citations = n_cits
+            try:
+                num_papers_citations[n_cits] += 1
+            except:
+                num_papers_citations.insert(n_cits,1)
+        except:
+            pass
+
+    # Create data string for plot
+    n_papers_with_x_citations = "var papers_per_citation_count = ([['Number of Citations','Number of Papers']"
+    # Add Zeros in missing indexes
+    for this_n_citations in range(1, max_citations+1):
+        try:
+            n_papers_with_x_citations += ",[" + str(this_n_citations) + "," + str(num_papers_citations[this_n_citations]) + "]"
+        except:
+            n_papers_with_x_citations += ",[" + str(this_n_citations) + ",0]"
+
+    n_papers_with_x_citations += "])"
+
+
+
+
+
+
+
     # Put html together for this page
     temp = '<html>'
 
@@ -929,6 +1083,7 @@ def build_metrics(papers, cohort_rating):
 
     temp += '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     temp += '<script type="text/javascript" src="../data.js"></script>'
+    temp += '<script>' + n_papers_with_x_citations + '</script>'
     temp += '<script type="text/javascript" src="../map/map.js"></script>'
     temp += '<script type="text/javascript" src="metrics.js"></script>'
 
@@ -1015,7 +1170,7 @@ def build_metrics(papers, cohort_rating):
     temp += "</div>"
 
     temp += "<div class='metric'>"
-    temp += "<div class='metric_name'>Average Citations Per Publication</div>"
+    temp += "<div class='metric_name'>Mean Citations Per Publication</div>"
     temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(average_citations, 2))) + "</div>"
     temp += "<div class='metric_description'>The total number of citations divided by the total number of publications.</div>"
     temp += "</div>"
@@ -1048,6 +1203,8 @@ def build_metrics(papers, cohort_rating):
 
     temp += '<div id="cumulative_div"></div>'
     temp += '<div id="papers_per_year_div"></div>'
+    temp += '<div id="papers_per_citation_count_div"></div>'
+
 
     print >>html_file, temp
 
@@ -1055,10 +1212,10 @@ def build_metrics(papers, cohort_rating):
     print >>html_file, temp
 
 
+
 ###########################################################
 # Build keyword word cloud
 ###########################################################
-
 
 def build_word_cloud(papers,list):
 
@@ -1077,28 +1234,25 @@ def build_word_cloud(papers,list):
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
+    temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
-    shutil.copyfile('html/templates/wordcloud2.js', '../html/wordcloud/wordcloud2.js')
+    shutil.copyfile('html/templates/d3wordcloud.js', '../html/wordcloud/d3wordcloud.js')
+    shutil.copyfile('html/templates/d3.layout.cloud.js', '../html/wordcloud/d3.layout.cloud.js')
 
-    temp += '<script type="text/javascript" src="wordcloud2.js"></script>'
-    temp += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>'
+    temp += '<script>var word_list = ' + list + '</script>'
+    temp += '<script src="http://d3js.org/d3.v3.min.js"></script>'
+    temp += '<script src="d3.layout.cloud.js"></script>'
 
     temp += '</head>'
 
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Word Cloud</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keyword Cloud</p>', "../", "")
 
-    temp += '<h1 id="pagetitle">Word Cloud</h1>'
+    temp += '<h1 id="pagetitle">Major Keyword Cloud</h1>'
 
-    temp += '<div id="sourrounding_div" style="width:100%;height:500px">'
-    temp += '    <canvas id="canvas" class="canvas"></canvas>'
-    temp += '    <div id="html-canvas" class="canvas hide"></div>'
-    temp += '</div>'
+    temp += '<cloud id="sourrounding_div" style="width:100%;height:500px">'
+    temp += '</cloud>'
 
-    temp += '<script>var div = document.getElementById("sourrounding_div");var canvas = document.getElementById("canvas");canvas.height = div.offsetHeight;canvas.width  = div.offsetWidth;</script>'
-
-    temp += '<script>WordCloud(document.getElementById("canvas"),{ "list": ' + list + ', minSize: 10, gridSize: Math.round(16 * $("#canvas").width() / 1024), weightFactor: function (size) {    return Math.pow(size, 1.1) * $("#canvas").width() / 1024;  },  fontFamily: "Times, serif",  color: function (word, weight) {    return (weight === 12) ? "#c9002f" : "#c9002f";  },  rotateRatio: 0.5,  backgroundColor: "#efede9"} );</script>'
-
-    #temp += '<p>' + list + '</p>'
+    temp += '<script src="d3wordcloud.js"></script>'
 
     print >>html_file, temp
 
@@ -1157,12 +1311,8 @@ def build_abstract_word_cloud(papers):
     temp += '<link rel="stylesheet" href="../css/map.css">'
     temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
-    #shutil.copyfile('html/templates/wordcloud2.js', '../html/abstractwordcloud/wordcloud2.js')
     shutil.copyfile('html/templates/d3wordcloud.js', '../html/abstractwordcloud/d3wordcloud.js')
     shutil.copyfile('html/templates/d3.layout.cloud.js', '../html/abstractwordcloud/d3.layout.cloud.js')
-
-    #temp += '<script type="text/javascript" src="wordcloud2.js"></script>'
-    #temp += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>'
 
     temp += '<script src="list.js"></script>'
     temp += '<script src="http://d3js.org/d3.v3.min.js"></script>'
@@ -1176,17 +1326,6 @@ def build_abstract_word_cloud(papers):
 
     temp += '<cloud id="sourrounding_div" style="width:100%;height:500px">'
     temp += '</cloud>'
-
-    #temp += '<div id="sourrounding_div" style="width:100%;height:500px">'
-    #temp += '    <canvas id="canvas" class="canvas"></canvas>'
-    #temp += '    <div id="html-canvas" class="canvas hide"></div>'
-    #temp += '</div>'
-
-    #temp += '<script>var div = document.getElementById("sourrounding_div");var canvas = document.getElementById("canvas");canvas.height = div.offsetHeight;canvas.width  = div.offsetWidth;</script>'
-
-    #temp += '<script>WordCloud(document.getElementById("canvas"),{ "list": ' + list + ', minSize: 10, gridSize: Math.round(16 * $("#canvas").width() / 1024), weightFactor: function (size) {    return Math.pow(size, 1.1) * $("#canvas").width() / 1024;  },  fontFamily: "Times, serif",  color: function (word, weight) {    return (weight === 12) ? "#c9002f" : "#c9002f";  },  rotateRatio: 0.5,  backgroundColor: "#efede9"} );</script>'
-
-    # temp += '<p>' + list + '</p>'
 
     temp += '<script src="d3wordcloud.js"></script>'
 
