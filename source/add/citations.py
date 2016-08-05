@@ -6,12 +6,13 @@ import datetime
 import time
 import csv
 import logging
+import sys
 
 
 # Use the elsevier API to get the number of citations a paper has bsed on its PMID.
 # Ultimately need to build a GET string like
 # http://api.elsevier.com/content/search/scopus?query=PMID(18562177)&apiKey=8024d746590aade6be6856a22a734783&field=citedby-count
-def citations(papers, api_key, citation_max_life):
+def citations(papers, api_key, citation_max_life, force_update):
 
     url = 'http://api.elsevier.com/content/search/scopus'
 
@@ -19,23 +20,32 @@ def citations(papers, api_key, citation_max_life):
 
     # open the citation cache file
     cached_citations = {}
-    try:
-        with open('../cache/citations.csv', 'rb') as csvfile:
-            f = csv.reader(csvfile)
-            for row in f:
-                # Parse the date the citation was cached
-                date_downloaded = datetime.datetime.strptime(row[2], "%Y-%m-%d %H:%M:%S.%f")
 
-                # If the citation is younger than (today - citation_max_life)
-                # then use it. Not using it means we will download it again.
-                if abs(datetime.datetime.now() - date_downloaded) < datetime.timedelta(days=citation_max_life):
-                    cached_citations[row[0]] = {}
-                    cached_citations[row[0]]['citation_count'] = row[1]
-                    cached_citations[row[0]]['date_downloaded'] = row[2]
-        csvfile.close()
-        logging.info('Citation cache file read in')
-    except:
-        print 'make file'
+    # If the force_update flag is True then there is no point reading in the cache
+    logging.info('scopus_force_citation_update is ' + str(force_update))
+    if force_update is not True:
+        logging.info('Reading citation cache in.')
+        try:
+            with open('../cache/citations.csv', 'rb') as csvfile:
+                f = csv.reader(csvfile)
+                for row in f:
+                    # Parse the date the citation was cached
+                    date_downloaded = datetime.datetime.strptime(row[2], "%Y-%m-%d %H:%M:%S.%f")
+
+                    # If the citation is younger than (today - citation_max_life)
+                    # then use it. Not using it means we will download it again.
+                    if abs(datetime.datetime.now() - date_downloaded) < datetime.timedelta(days=citation_max_life):
+                        cached_citations[row[0]] = {}
+                        cached_citations[row[0]]['citation_count'] = row[1]
+                        cached_citations[row[0]]['date_downloaded'] = row[2]
+                        logging.debug('Cache ok for: ' + row[0] + ' ' + row[1] + '' + row[2])
+                    else:
+                        logging.debug('Cache too old for: ' + row[0] + ' ' + row[1] + '' + row[2])
+            csvfile.close()
+            logging.info('Citation cache file read in')
+        except:
+            print("Unexpected error:", sys.exc_info()[0])
+            print 'make file'
 
     number_papers_to_process = len(papers)
     counter = 0

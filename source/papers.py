@@ -5,6 +5,7 @@ import os.path
 from os import listdir
 import logging
 import time
+import ConfigParser
 # import pprint
 
 # import get.get
@@ -24,11 +25,26 @@ __date__ = 27/7/16
 __version__ = '0.2.6'
 
 
+config = ConfigParser.ConfigParser()
+config.read("../config/config.ini_sample")
+print config.sections()
+try:
+    # Scopus settings
+    scopus_force_citation_update = config.get('scopus', 'scopus_force_citation_update')
+    scopus_citation_max_age_days = int(config.get('scopus', 'scopus_citation_max_age_days'))
+    scopus_run_citation = config.get('scopus', 'scopus_run_citation')
+    scopus_api_key = config.get('scopus', 'scopus_api_key')
+except:
+    print 'Problem with the settings file'
+    exit(0)
+
+# exit(0)
+
 # Options - these should get moved out into a config file
 # Stick a flag into see if we want to update the citations
-update_citations = True
-scopus_api_key = '8024d746590aade6be6856a22a734783'
-scopus_citation_max_life = 30  # days
+# update_citations = True
+# scopus_api_key = '8024d746590aade6be6856a22a734783'
+# scopus_citation_max_life = 30  # days
 # pp = pprint.PrettyPrinter(indent=4)
 
 # Time Log
@@ -150,8 +166,8 @@ clean.clean.clean_institution(papers)
 # Add some extra data in - i.e. geocodes and citations
 add.geocode.geocode(papers, error_log)
 
-if update_citations:
-    add.citations.citations(papers, scopus_api_key, scopus_citation_max_life)
+if scopus_run_citation:
+    add.citations.citations(papers, scopus_api_key, scopus_citation_max_age_days, scopus_force_citation_update)
 
 file_name = '../data/summary_added_to'
 fo = open(file_name, 'wb')
