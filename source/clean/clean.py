@@ -39,8 +39,11 @@ def pre_clean(papers):
         authors_to_keep = []
         for i in range(0, len(this_paper['author'])-1):
             # print this_paper['author'][i]['family']
-            if this_paper['author'][i]['family'] != "":
-                authors_to_keep.append(this_paper['author'][i])
+            try:
+                if this_paper['author'][i]['family'] != "":
+                    authors_to_keep.append(this_paper['author'][i])
+            except:
+                pass
         this_paper['author'] = authors_to_keep
 
         # Try sticking in the DOI
