@@ -7,12 +7,15 @@ import logging
 import os
 # import hashlib
 
+import config.config as config
+
 
 # Copy all the raw data to the processed directory, this means we are only
 # ever working on the processed stuff and we never touch the raw data. This
 # makes it easier to rerun as we don't have to rebuild the raw cache each time.
 def pre_clean(papers):
     print 'precleaning'
+
     for this_paper in papers:
 
         print this_paper['title']
@@ -76,7 +79,7 @@ def clean_institution(papers):
     # Read in config file
     pattern = []
     replacements = []
-    with open('../config/institute_cleaning.csv', 'rb') as csvfile:
+    with open(config.config_dir + '/institute_cleaning.csv', 'rb') as csvfile:
         f = csv.reader(csvfile)
         for row in f:
             try:
@@ -134,7 +137,7 @@ def clean_institution(papers):
 # Go through the deltas directory and apply any changes that are needed
 def do_deltas(papers):
 
-    delta_dir = '../config/deltas/'
+    delta_dir = config.config_dir + '/deltas/'
 
     deltas = os.listdir(delta_dir)
 

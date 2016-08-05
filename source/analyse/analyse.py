@@ -3,6 +3,8 @@
 import csv
 import logging
 
+import config.config as config
+
 ############################################################
 # Have all the data now, so do something with it
 
@@ -32,7 +34,7 @@ def journals(papers):
     print 'Top 5'
 
     # print a list of sorted frequencies
-    with open('../data/journals.csv', 'wb') as csvfile:
+    with open(config.data_dir + '/journals.csv', 'wb') as csvfile:
         journals_file = csv.writer(csvfile)
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
@@ -48,19 +50,19 @@ def abstracts(papers):
 
     abstracts = ''
     for this_paper in papers:
-        #print this_paper
+        # print this_paper
         try:
             abstracts = abstracts + str(this_paper['MedlineCitation']['Article']['Abstract']['AbstractText'])
         except:
             pass
 
     abstracts = abstracts.lower()
-    abstracts = abstracts.replace(","," ")
-    abstracts = abstracts.replace("."," ")
-    abstracts = abstracts.replace(":"," ")
-    abstracts = abstracts.replace(";"," ")
-    abstracts = abstracts.replace("'","\'")
-    abstracts = abstracts.replace('"','\"')
+    abstracts = abstracts.replace(",", " ")
+    abstracts = abstracts.replace(".", " ")
+    abstracts = abstracts.replace(":", " ")
+    abstracts = abstracts.replace(";", " ")
+    abstracts = abstracts.replace("'", "\'")
+    abstracts = abstracts.replace('"', '\"')
 
     words = abstracts.split()
 
@@ -69,12 +71,12 @@ def abstracts(papers):
 
     # Delete stop words
     # Read stop words from file
-    stop_lines = tuple(open("../config/stopwords","r"))
+    stop_lines = tuple(open(config.config_dir + "/stopwords", "r"))
     stop_words = []
     for line in stop_lines:
         split = line.split()
         if len(split) > 0 and split[0] != "|" and not "|" in split[0]:
-           stop_words.append(split[0])
+            stop_words.append(split[0])
 
     # Remove words
     for stp in stop_words:
@@ -93,13 +95,14 @@ def abstracts(papers):
     print 'Top 5'
 
     # print a list of sorted frequencies
-    with open('../data/abstracts.csv', 'wb') as csvfile:
+    with open(config.data_dir + '/abstracts.csv', 'wb') as csvfile:
         abstracts_file = csv.writer(csvfile)
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
                 print w, freq[w]
                 i = i+1
             abstracts_file.writerow([w.encode('utf-8'), freq[w]])
+
 
 ############################################################
 # Try with the authors - these are in a nested dict
@@ -132,7 +135,7 @@ def authors(papers):
     i = 0
     print 'Top 5'
 
-    with open('../data/authors.csv', 'wb') as csvfile:
+    with open(config.data_dir + '/authors.csv', 'wb') as csvfile:
         authors_file = csv.writer(csvfile)
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
@@ -154,16 +157,16 @@ def authors(papers):
 
                 # Store author details
                 try:
-                    author_network['authors'][ author_hash ]
+                    author_network['authors'][author_hash]
                 except:
-                    author_network['authors'][ author_hash ] = {}
-                    author_network['authors'][ author_hash ]['family'] = this_author['family']
-                    author_network['authors'][ author_hash ]['given'] = this_author['given']
+                    author_network['authors'][author_hash] = {}
+                    author_network['authors'][author_hash]['family'] = this_author['family']
+                    author_network['authors'][author_hash]['given'] = this_author['given']
 
                 try:
-                    author_network['authors'][ author_hash ]['num_papers'] += 1
+                    author_network['authors'][author_hash]['num_papers'] += 1
                 except:
-                    author_network['authors'][ author_hash ]['num_papers'] = 1
+                    author_network['authors'][author_hash]['num_papers'] = 1
 
                 # Create edges
                 for con_author in this_paper['author']:
@@ -182,25 +185,26 @@ def authors(papers):
                         con_hash = con_id_hash_object.hexdigest()
 
                         try:
-                            author_network['connections'][ con_hash ]
+                            author_network['connections'][con_hash]
                         except:
-                            author_network['connections'][ con_hash ] = {}
-                            author_network['connections'][ con_hash ]['authors'] = []
-                            author_network['connections'][ con_hash ]['authors'].append( { 'author_hash': author_hash } )
-                            author_network['connections'][ con_hash ]['authors'].append( { 'author_hash': con_author_hash } )
+                            author_network['connections'][con_hash] = {}
+                            author_network['connections'][con_hash]['authors'] = []
+                            author_network['connections'][con_hash]['authors'].append({'author_hash': author_hash})
+                            author_network['connections'][con_hash]['authors'].append({'author_hash': con_author_hash})
 
                         try:
-                            author_network['connections'][ con_hash ]['num_connections'] += 1
+                            author_network['connections'][con_hash]['num_connections'] += 1
                         except:
-                            author_network['connections'][ con_hash ]['num_connections'] = 1
+                            author_network['connections'][con_hash]['num_connections'] = 1
 
         except:
             pass
 
     print "\n###Author network###"
-    print str(len( author_network['authors'])) + " Authors"
-    print str(len( author_network['connections'])) + " Connections"
+    print str(len(author_network['authors'])) + " Authors"
+    print str(len(author_network['connections'])) + " Connections"
     return author_network
+
 
 ############################################################
 # Try with the FIRST authors - these are in a nested dict
@@ -223,7 +227,7 @@ def first_authors(papers):
     i = 0
     print 'Top 5'
 
-    with open('../data/first_authors.csv', 'wb') as csvfile:
+    with open(config.data_dir + '/first_authors.csv', 'wb') as csvfile:
         authors_file = csv.writer(csvfile)
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
@@ -257,7 +261,7 @@ def inst(papers):
     i = 0
     print 'Top 5'
 
-    with open('../data/first_authors_inst.csv', 'wb') as csvfile:
+    with open(config.data_dir + '/first_authors_inst.csv', 'wb') as csvfile:
         authors_file = csv.writer(csvfile)
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
@@ -295,7 +299,7 @@ def mesh(papers):
     i = 0
     print 'Top 5'
 
-    with open('../data/mesh.csv', 'wb') as csvfile:
+    with open(config.data_dir + '/mesh.csv', 'wb') as csvfile:
         mesh_file = csv.writer(csvfile)
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
@@ -309,7 +313,7 @@ def mesh(papers):
 def output_csv(papers):
 
     print '\n###Outputting CSV file###\n'
-    with open('../data/all.csv', 'wb') as csvfile:
+    with open(config.data_dir + '/all.csv', 'wb') as csvfile:
         all_file = csv.writer(csvfile)
         for this_paper in papers:
             try:

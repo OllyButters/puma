@@ -10,8 +10,10 @@ import time
 import sys
 # import pprint
 
+# Internal packages
 # import get.get
 import config.config as config
+import setup.setup as setup
 import clean.clean as clean
 import add.geocode
 import add.citations
@@ -19,23 +21,23 @@ import analyse.analyse as analyse
 import html.htmlerrorlog.errorlog
 import html.build_htmlv2
 import bibliography.bibtex
-import get.collate
+# import get.collate
 
-##########################################################
-# Get all the paper metadata from pubmed and do stuff with it
-##########################################################
 __author__ = "Olly Butters, Hugh Garner, Tom Burton"
-__date__ = 25/8/16
+__date__ = 5/8/16
 __version__ = '0.2.7'
 
 # Lets figure out some paths that everything is relative to
-global root_dir
+# global root_dir
 path_to_papers_py = os.path.abspath(sys.argv[0])
 root_dir = os.path.dirname(os.path.dirname(path_to_papers_py))
 print 'Root directory = ' + root_dir
 
 # Get all the config - these will be a global vars available like config.varname
-config.parse_config(root_dir)
+config.build_config_variables(root_dir)
+
+# Build the file tree relative to the root_dir
+setup.build_file_tree(root_dir)
 
 # Time Log
 start_time = time.time()
@@ -46,65 +48,6 @@ print "Start Time: " + str(start_time)
 error_log = html.htmlerrorlog.errorlog.ErrorLog()
 # error_log.logError("Test Error")
 # error_log.logWarning("Test Warning")
-
-
-###########################################################
-# Make sure the directory structure is set up first.
-# Everything in the cache is grabbed from elsewhere, or built on the fly,
-# so it should all be considerd ready to be deleted at any point!
-if (os.path.exists('../cache') is False):
-    os.mkdir('../cache')
-
-if (os.path.exists('../data') is False):
-    os.mkdir('../data')
-
-# Log directory
-if (os.path.exists('../logs') is False):
-    os.mkdir('../logs')
-
-# Output html
-if not os.path.exists('../html'):
-    os.mkdir('../html')
-
-if not os.path.exists('../html/mesh'):
-    os.mkdir('../html/mesh')
-
-if not os.path.exists('../html/css'):
-    os.mkdir('../html/css')
-
-if not os.path.exists('../html/papers'):
-    os.mkdir('../html/papers')
-
-if not os.path.exists('../html/all_keywords'):
-    os.mkdir('../html/all_keywords')
-
-if not os.path.exists('../html/major_keywords'):
-    os.mkdir('../html/major_keywords')
-
-if not os.path.exists('../html/map'):
-    os.mkdir('../html/map')
-
-if not os.path.exists('../html/country'):
-    os.mkdir('../html/country')
-
-if not os.path.exists('../html/city'):
-    os.mkdir('../html/city')
-
-if not os.path.exists('../html/metrics'):
-    os.mkdir('../html/metrics')
-
-if not os.path.exists('../html/wordcloud'):
-    os.mkdir('../html/wordcloud')
-
-if not os.path.exists('../html/abstractwordcloud'):
-    os.mkdir('../html/abstractwordcloud')
-
-if not os.path.exists('../html/authornetwork'):
-    os.mkdir('../html/authornetwork')
-
-if not os.path.exists('../html/errorlog'):
-    os.mkdir('../html/errorlog')
-
 
 # Set up the logging. Level can be DEBUG|.....
 logging.basicConfig(filename=root_dir + '/logs/papers.log',

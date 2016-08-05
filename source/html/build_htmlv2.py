@@ -251,7 +251,7 @@ def build_papers(papers):
 
     print >>html_file, temp
     main = "<p>"
-    
+
 
 
 
@@ -466,7 +466,7 @@ def build_mesh(papers):
             # Get Second Level
             tree_number_split = tree_number.split(".")
             second_level = mesh_tree_reverse[tree_number_split[0]]
-            
+
             try:
                 mesh_second_level_headings[second_level] += len(mesh_papers_major[this_mesh])
             except:
@@ -600,14 +600,14 @@ def build_mesh(papers):
             if len( mesh_papers_all_temp[this_mesh] ) > max_val:
                 max_val = len( mesh_papers_all_temp[this_mesh] )
                 max_mesh = this_mesh
-            
+
         ordered_mesh_papers_all[max_mesh] = mesh_papers_all_temp[max_mesh]
         mesh_papers_all_temp.pop(max_mesh,None)
 
     # Make papers list for headings pages
     for this_mesh in ordered_mesh_papers_all:
 
-	# Word cloud 
+	# Word cloud
         if word_cloud_n > 0:
             word_cloud_list += ','
         word_cloud_n += 1
@@ -921,7 +921,7 @@ def build_country_map(papers):
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
- 
+
     temp += '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4&libraries=visualization"></script>'
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     temp += '<script type="text/javascript" src="map.kml"></script>'
@@ -1453,7 +1453,7 @@ def build_author_network(papers,network):
     n = 0
     for con in network['connections']:
         try:
-     
+
             author_0 = network['connections'][con]['authors'][0]['author_hash']
             author_1 = network['connections'][con]['authors'][1]['author_hash']
 
@@ -1461,13 +1461,13 @@ def build_author_network(papers,network):
 
             print >>connections_csv,  '"' + author_0 + '","' + author_1 + '"'
 
-           
+
         except:
             pass
         n += 1
-        
-        
-  
+
+
+
 
     #temp += '<p>' + nodes + '</p>'
     temp += '<img src="author_network2.png">'

@@ -8,6 +8,8 @@ import csv
 import logging
 import sys
 
+import config.config as config
+
 
 # Use the elsevier API to get the number of citations a paper has bsed on its PMID.
 # Ultimately need to build a GET string like
@@ -26,7 +28,7 @@ def citations(papers, api_key, citation_max_life, force_update):
     if force_update is not True:
         logging.info('Reading citation cache in.')
         try:
-            with open('../cache/citations.csv', 'rb') as csvfile:
+            with open(config.cache_dir + '/citations.csv', 'rb') as csvfile:
                 f = csv.reader(csvfile)
                 for row in f:
                     # Parse the date the citation was cached
@@ -143,7 +145,7 @@ def citations(papers, api_key, citation_max_life, force_update):
                 # If we get here then there is no citation.
                 logging.warn('No citations found for %s.', str(this_paper['IDs']['hash']))
 
-    csvfile = open('../cache/citations.csv', 'wb')
+    csvfile = open(config.cache_dir + '/citations.csv', 'wb')
     citation_file = csv.writer(csvfile)
     for this_citation in cached_citations:
         temp_citation_count = cached_citations[this_citation]['citation_count']

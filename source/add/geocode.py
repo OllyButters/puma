@@ -1,20 +1,19 @@
 #! /usr/bin/env python
 
-import csv
-import re
+# import csv
+# import re
 import logging
 import os.path
 import json
 import urllib2
 import requests
 
+import config.config as config
+
 
 # Have a go at geocoding the cleaned institute names
 # I would expect there to be a lat long for all of them
 def geocode(papers, error_log):
-
-    if (not os.path.exists('../cache/geodata')):
-        os.mkdir('../cache/geodata')
 
     print 'Geocoding'
 
@@ -26,14 +25,14 @@ def geocode(papers, error_log):
 
             # Check Cache
             clean = this_paper['Extras']['CleanInstitute']
-            if os.path.isfile("../cache/geodata/" + clean):
+            if os.path.isfile(config.cache_dir + "/geodata/" + clean):
                 # Load cached data
 
-                cache_file = open("../cache/geodata/" + clean ,"r")
+                cache_file = open(config.cache_dir + "/geodata/" + clean, "r")
                 data = cache_file.read()
                 split = data.split("#")
 
-                this_paper['Extras']['LatLong'] = {'lat': split[0], 'long': split[1] }
+                this_paper['Extras']['LatLong'] = {'lat': split[0], 'long': split[1]}
                 this_paper['Extras']['country_code'] = split[2]
                 this_paper['Extras']['postal_town'] = split[3]
 
@@ -67,8 +66,8 @@ def geocode(papers, error_log):
                             p_lat = retur['entities'][item_id]['claims']['P625'][0]['mainsnak']['datavalue']['value']['latitude']
 
                             locations_found += 1
-                            this_paper['Extras']['LatLong'] = {'lat': str(p_lat), 'long': str(p_lon) }
-                            
+                            this_paper['Extras']['LatLong'] = {'lat': str(p_lat), 'long': str(p_lon)}
+
                             found_coords = True
 
                         except:
@@ -80,7 +79,7 @@ def geocode(papers, error_log):
 
                                 # print "Location Found from HQ " + papers[this_pmid]['Extras']['CleanInstitute']
                                 locations_found += 1
-                                this_paper['Extras']['LatLong'] = {'lat': str(p_lat), 'long': str(p_lon) }
+                                this_paper['Extras']['LatLong'] = {'lat': str(p_lat), 'long': str(p_lon)}
 
                                 found_coords = True
 
@@ -103,10 +102,10 @@ def geocode(papers, error_log):
                                     if comp['types'][0] == "postal_town":
                                         postal_town = comp['long_name']
                                         this_paper['Extras']['postal_town'] = postal_town
-  
-                                 # Cache Data
-                                cache_file = open("../cache/geodata/" + clean,"w")
-                                cache_file.write( this_paper['Extras']['LatLong']['lat'] + "#" + this_paper['Extras']['LatLong']['long'] + "#" + country_short + "#" + postal_town )
+
+                                # Cache Data
+                                cache_file = open(config.cache_dir + "/geodata/" + clean, "w")
+                                cache_file.write(this_paper['Extras']['LatLong']['lat'] + "#" + this_paper['Extras']['LatLong']['long'] + "#" + country_short + "#" + postal_town)
                                 cache_file.close()
                             except:
                                 print 'Unable to get geo-data (Google API Quota Reached) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
@@ -128,10 +127,7 @@ def geocode(papers, error_log):
 
     print "locations found: " + str(locations_found) + "/" + str(number_done)
 
-
-
-
-    # Read in lat_long lookup file. Should have an inst name and lat long in each row
+# Read in lat_long lookup file. Should have an inst name and lat long in each row
 #    geocode = {}
 #    lat_long = []
 #    with open('../config/lat_longs.csv', 'rb') as csvfile:
