@@ -432,7 +432,7 @@ def build_mesh(papers):
 
 
     # Read in mesh tree hierarchy
-    f = open("../data/mesh_tree_hierarchy.csv", 'rt')
+    f = open("../config/mesh_tree_hierarchy.csv", 'rt')
     mesh_tree = {}
     mesh_tree_reverse = {}
     try:
@@ -444,7 +444,7 @@ def build_mesh(papers):
     finally:
         f.close()
 
-    f = open("../data/mesh_categories.csv", 'rt')
+    f = open("../config/mesh_categories.csv", 'rt')
     mesh_categories = {}
     try:
         reader = csv.reader(f)
