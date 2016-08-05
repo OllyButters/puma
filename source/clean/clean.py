@@ -111,7 +111,7 @@ def clean_institution(papers):
             continue
 
         for y in range(0, len(pattern)):
-            logging.debug('%s %s %s', institute, pattern[y], replacements[y])
+            # logging.debug('%s %s %s', institute, pattern[y], replacements[y])
             temp = re.search(pattern[y], institute, re.IGNORECASE)
             if(temp > 0):
                 logging.info(

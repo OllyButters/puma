@@ -1,51 +1,41 @@
 #! /usr/bin/env python
 
+# core packages
 import json
 import os.path
 from os import listdir
+import os
 import logging
 import time
-import ConfigParser
+import sys
 # import pprint
 
 # import get.get
-import clean.clean
+import config.config as config
+import clean.clean as clean
 import add.geocode
 import add.citations
-import analyse.analysis
+import analyse.analyse as analyse
 import html.htmlerrorlog.errorlog
 import html.build_htmlv2
 import bibliography.bibtex
+import get.collate
 
 ##########################################################
 # Get all the paper metadata from pubmed and do stuff with it
 ##########################################################
 __author__ = "Olly Butters, Hugh Garner, Tom Burton"
-__date__ = 27/7/16
-__version__ = '0.2.6'
+__date__ = 25/8/16
+__version__ = '0.2.7'
 
+# Lets figure out some paths that everything is relative to
+global root_dir
+path_to_papers_py = os.path.abspath(sys.argv[0])
+root_dir = os.path.dirname(os.path.dirname(path_to_papers_py))
+print 'Root directory = ' + root_dir
 
-config = ConfigParser.ConfigParser()
-config.read("../config/config.ini_sample")
-print config.sections()
-try:
-    # Scopus settings
-    scopus_force_citation_update = config.get('scopus', 'scopus_force_citation_update')
-    scopus_citation_max_age_days = int(config.get('scopus', 'scopus_citation_max_age_days'))
-    scopus_run_citation = config.get('scopus', 'scopus_run_citation')
-    scopus_api_key = config.get('scopus', 'scopus_api_key')
-except:
-    print 'Problem with the settings file'
-    exit(0)
-
-# exit(0)
-
-# Options - these should get moved out into a config file
-# Stick a flag into see if we want to update the citations
-# update_citations = True
-# scopus_api_key = '8024d746590aade6be6856a22a734783'
-# scopus_citation_max_life = 30  # days
-# pp = pprint.PrettyPrinter(indent=4)
+# Get all the config
+config.parse_config(root_dir)
 
 # Time Log
 start_time = time.time()
@@ -117,9 +107,9 @@ if not os.path.exists('../html/errorlog'):
 
 
 # Set up the logging. Level can be DEBUG|.....
-logging.basicConfig(filename='../logs/papers.log',
+logging.basicConfig(filename=root_dir + '/logs/papers.log',
                     filemode='w',
-                    level=logging.DEBUG)
+                    level=config.logging_loglevel)
 
 
 ###########################################################
@@ -128,19 +118,24 @@ logging.basicConfig(filename='../logs/papers.log',
 # papers will be the giant LIST that has all the papers in it, each as a dictionary
 papers = []
 
+# temp = get.collate.collate()
+# print temp
+# exit(1)
+
+
 # commenting out the get stuff as my assumption is that hughs work
 # will join this up
 # get.get.get(pmids, papers)
 
 # Get list of files in merged directory
-merged_files_list = listdir('../cache/processed/merged/')
+merged_files_list = listdir(root_dir + '/cache/processed/merged/')
 merged_files_list.sort()
-# merged_files_list = merged_files_list[0:10]
+merged_files_list = merged_files_list[0:10]
 print str(len(merged_files_list))+' merged papers to load'
 
 # Open each one and add to papers object
 for this_merged_file in merged_files_list:
-    with open('../cache/processed/merged/'+this_merged_file) as fo:
+    with open(root_dir + '/cache/processed/merged/'+this_merged_file) as fo:
         # Will be a dictionary
         this_paper = json.load(fo)
         this_paper['filename'] = this_merged_file
@@ -158,18 +153,18 @@ print str(len(papers))+' papers to process'
 
 ###########################################################
 # Clean the data - e.g. tidy institute names
-clean.clean.pre_clean(papers)
-clean.clean.clean_institution(papers)
+clean.pre_clean(papers)
+clean.clean_institution(papers)
 # clean.clean.do_deltas(papers)
 
 ###########################################################
 # Add some extra data in - i.e. geocodes and citations
 add.geocode.geocode(papers, error_log)
 
-if scopus_run_citation:
-    add.citations.citations(papers, scopus_api_key, scopus_citation_max_age_days, scopus_force_citation_update)
+if config.scopus_run_citation:
+    add.citations.citations(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update)
 
-file_name = '../data/summary_added_to'
+file_name = root_dir + '/data/summary_added_to'
 fo = open(file_name, 'wb')
 fo.write(json.dumps(papers, indent=4))
 fo.close()
@@ -180,16 +175,16 @@ bibliography.bibtex.bibtex(papers)
 ###########################################################
 # Do some actual analysis on the data. This will result in
 # some CSV type files that can be analysed.
-analyse.analysis.journals(papers)
+analyse.journals(papers)
 
 # pp.pprint(papers)
 
-analyse.analysis.abstracts(papers)
-network = analyse.analysis.authors(papers)
-analyse.analysis.first_authors(papers)
-analyse.analysis.inst(papers)
-analyse.analysis.mesh(papers)
-analyse.analysis.output_csv(papers)
+analyse.abstracts(papers)
+network = analyse.authors(papers)
+analyse.first_authors(papers)
+analyse.inst(papers)
+analyse.mesh(papers)
+analyse.output_csv(papers)
 
 
 ###########################################################
