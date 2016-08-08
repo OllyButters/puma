@@ -25,7 +25,8 @@ google.load("visualization", "1", {packages:["corechart"]});
         var data = google.visualization.arrayToDataTable(papers_per_citation_count);
         var options = {
           title: 'Number of Papers for Citation Counts',
-          colors: ["#c9002f"]
+          colors: ["#c9002f"],
+	  hAxis: {title:"Number of Citations"}
 
         };
         var chart = new google.visualization.ColumnChart(document.getElementById('papers_per_citation_count_div'));
