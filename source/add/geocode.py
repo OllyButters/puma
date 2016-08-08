@@ -121,9 +121,8 @@ def geocode(papers, error_log):
 
         except:
             print 'No Clean Institute for ' + this_paper['IDs']['hash'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
-            error_log.logError("Clean Institute Missing for " +  this_paper['IDs']['hash'] )
+            error_log.logError("Clean Institute Missing for " +  this_paper['IDs']['hash'] + " <a href='https://www.zotero.org/groups/300320/items/itemKey/" + this_paper['IDs']['zotero'] + "'>Zotero</a>" )
 
         number_done += 1
 
     print "locations found: " + str(locations_found) + "/" + str(number_done)
-
