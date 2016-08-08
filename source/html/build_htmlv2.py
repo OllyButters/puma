@@ -136,17 +136,17 @@ def build_home(papers):
                 summary[this_year] = {'num_papers': 0, 'cumulative': 0, 'uob': 0, 'citations': 0, 'cumulative_citations': 0}
 
             # increment the number of citaitons by one
-            summary[this_year]['num_papers'] = summary[this_year]['num_papers']+1
+            summary[this_year]['num_papers'] += 1
 
             # add the citations for this paper to the year running total
             try:
-                summary[this_year]['citations'] = summary[this_year]['citations'] + int(this_paper['Extras']['Citations'])
+                summary[this_year]['citations'] += int(this_paper['Extras']['Citations'])
             except:
                 pass
 
             # Get number of UoB papers published this year
             if this_paper['Extras']['CleanInstitute'] == 'University of Bristol':
-                summary[this_year]['uob'] = summary[this_year]['uob']+1
+                summary[this_year]['uob'] += 1
         except:
             pass
 
@@ -168,6 +168,8 @@ def build_home(papers):
         except:
             summary[this_year]['cumulative'] = summary[this_year]['num_papers']
             summary[this_year]['cumulative_citations'] = summary[this_year]['citations']
+
+    print "**** TOTAL CITATIONS: " + str(summary["2014"]['cumulative_citations'])
 
     ###################################
     # Make a data file that we can plot
@@ -259,11 +261,6 @@ def build_papers(papers):
     print >>html_file, temp
     main = "<p>"
 
-
-
-
-
-
     # Build the text needed for each paper
     for this_paper in papers:
 
@@ -272,7 +269,7 @@ def build_papers(papers):
 
             # altmetric data
             try:
-		if this_paper['IDs']['DOI']:
+                if this_paper['IDs']['DOI']:
                     html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
             except:
                 pass
@@ -301,21 +298,21 @@ def build_papers(papers):
 
             # PMID
             try:
-		if this_paper['IDs']['PMID']:
+                if this_paper['IDs']['PMID']:
                     html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">'+str(this_paper['IDs']['PMID']) + '</a>'
             except:
                 pass
 
             # Zotero
             try:
-		if this_paper['IDs']['zotero']:
+                if this_paper['IDs']['zotero']:
                     html += '&nbsp;Zotero: ' + this_paper['IDs']['zotero'] + ''
             except:
                 pass
 
             # DOI
             try:
-		if this_paper['IDs']['DOI']:
+                if this_paper['IDs']['DOI']:
                     html += '&nbsp;DOI: <a href="http://doi.org/' + this_paper['IDs']['DOI'] + '">' + this_paper['IDs']['DOI'] + '</a>'
             except:
                 pass
@@ -356,8 +353,8 @@ def build_papers(papers):
 
         main += '<a href="' + this_year + '/index.html">' + this_year + '</a> '
 
-        if not os.path.exists('../html/papers/' + this_year ):
-            os.mkdir('../html/papers/' + this_year )
+        if not os.path.exists('../html/papers/' + this_year):
+            os.mkdir('../html/papers/' + this_year)
         year_file = open('../html/papers/' + this_year + '/index.html', 'w')
 
         shutil.copyfile('html/templates/altmetric.png', '../html/papers/' + this_year + '/altmetric.png')
@@ -389,13 +386,14 @@ def build_papers(papers):
         temp = build_common_foot()
         print >>year_file, temp
 
-
     main += "</p>" + build_common_foot()
     print >>html_file, main
 
 ############################################################
 # Build a list of all mesh keywords
 ############################################################
+
+
 def build_mesh(papers):
     import os.path
     import shutil
@@ -436,7 +434,6 @@ def build_mesh(papers):
                     mesh_papers_major[this_mesh['DescriptorName']].append(this_paper['IDs']['hash'])
         except:
             pass
-
 
     # Read in mesh tree hierarchy
     f = open("../config/mesh_tree_hierarchy.csv", 'rt')
@@ -509,7 +506,6 @@ def build_mesh(papers):
     print "Top Level MeSH"
     for mesh in mesh_top_level_headings:
         print mesh + "\t" + str(mesh_top_level_headings[mesh])
-
 
     # Print mesh_papers
     # Make a JSON file for each mesh term, in it put all the PMIDs for this term
@@ -600,39 +596,39 @@ def build_mesh(papers):
         mesh_papers_all_temp[this_mesh] = mesh_papers_all[this_mesh]
 
     # Sort and get x words
-    for x in range(1,150):
+    for x in range(1, 150):
         max_val = -1
         max_mesh = None
         for this_mesh in mesh_papers_all_temp:
-            if len( mesh_papers_all_temp[this_mesh] ) > max_val:
-                max_val = len( mesh_papers_all_temp[this_mesh] )
+            if len(mesh_papers_all_temp[this_mesh]) > max_val:
+                max_val = len(mesh_papers_all_temp[this_mesh])
                 max_mesh = this_mesh
 
         ordered_mesh_papers_all[max_mesh] = mesh_papers_all_temp[max_mesh]
-        mesh_papers_all_temp.pop(max_mesh,None)
+        mesh_papers_all_temp.pop(max_mesh, None)
 
     # Make papers list for headings pages
     for this_mesh in ordered_mesh_papers_all:
 
-	# Word cloud
+        # Word cloud
         if word_cloud_n > 0:
             word_cloud_list += ','
         word_cloud_n += 1
 
- 	number = len(mesh_papers_all[this_mesh])
+        number = len(mesh_papers_all[this_mesh])
 
-	if number > word_cloud_max:
+        if number > word_cloud_max:
             word_cloud_max = number
-            word_cloud_max_name = this_mesh
 
-	word_cloud_list += '{"text":"' + this_mesh  + '", "size":' + str(math.sqrt(number)*2.5) + '}'
+        word_cloud_list += '{"text":"' + this_mesh + '", "size":' + str(math.sqrt(number)*2.5) + '}'
 
-        for x in range(0,number):
-             word_cloud_raw += " " + this_mesh
+        for x in range(0, number):
+            word_cloud_raw += " " + this_mesh
 
+    # Print page
     for this_mesh in mesh_papers_all:
 
-        if (not os.path.exists('../html/mesh/' + this_mesh)):
+        if not os.path.exists('../html/mesh/' + this_mesh):
             os.mkdir('../html/mesh/' + this_mesh)
 
         file_name = '../html/mesh/' + this_mesh + '/index.html'
@@ -667,10 +663,11 @@ def build_mesh(papers):
             for this_paper in mesh_papers_all[this_mesh]:
 
                 # Get paper object from the hash
-	        paper_obj = None
+                paper_obj = None
                 for p in papers:
                     if this_paper == p['IDs']['hash']:
-	                paper_obj = p
+                        paper_obj = p
+                        break
 
                 if paper_obj is not None:
                     this_paper = paper_obj
@@ -702,7 +699,6 @@ def build_mesh(papers):
                     except:
                         summary[str(this_year)] = {'num_papers': 0, 'citations': 0}
 
-
             # Print data to file
             data_file = open('../html/mesh/' + this_mesh + '.js', 'w')
             print >>data_file, 'var papers =([[\'Year\', \'Number of papers\'],'
@@ -729,19 +725,19 @@ def build_mesh(papers):
 
                 try:
                     # Get paper object
-		    paper_obj = None
+                    paper_obj = None
                     for p in papers:
                         if this_paper == p['IDs']['hash']:
-	                    paper_obj = p
+                            paper_obj = p
 
-                    if paper_obj is not None:
-                        this_paper = paper_obj
+                        if paper_obj is not None:
+                            this_paper = paper_obj
 
                         html = ''
 
                         # altmetric data
                         try:
-		            if this_paper['IDs']['DOI']:
+                            if this_paper['IDs']['DOI']:
                                 html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
                         except:
                             pass
@@ -774,21 +770,21 @@ def build_mesh(papers):
 
                         # PMID
                         try:
-               		    if this_paper['IDs']['PMID']:
+                            if this_paper['IDs']['PMID']:
                                 html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">'+str(this_paper['IDs']['PMID']) + '</a>'
                         except:
                             pass
 
                         # Zotero
                         try:
-            		    if this_paper['IDs']['zotero']:
+                            if this_paper['IDs']['zotero']:
                                 html += '&nbsp;Zotero: ' + this_paper['IDs']['zotero'] + ''
                         except:
                             pass
 
                         # DOI
                         try:
-		            if this_paper['IDs']['DOI']:
+                            if this_paper['IDs']['DOI']:
                                 html += '&nbsp;DOI: <a href="http://doi.org/' + this_paper['IDs']['DOI'] + '">' + this_paper['IDs']['DOI'] + '</a>'
                         except:
                             pass
@@ -807,9 +803,6 @@ def build_mesh(papers):
                         fo.write(html)
 
                 except:
-                    #print 'Failing on ' + this_paper['IDs']['hash']
-
-                    #print sys.exc_info()
                     pass
 
             temp = build_common_foot()
@@ -818,8 +811,7 @@ def build_mesh(papers):
         fo.close()
 
     word_cloud_list += "]"
-    #print word_cloud_raw # <<<<< PRINTS ALL WORDS
-    build_word_cloud(papers,word_cloud_list)
+    build_word_cloud(papers, word_cloud_list)
 
 
 ###########################################################
@@ -900,19 +892,17 @@ def build_country_map(papers, api_key):
     countries = {}
     for this_paper in papers:
         try:
-        #if not this_paper['Extras']['country_code'] is None:
 
             if this_paper['Extras']['country_code'] in countries:
-                countries[ this_paper['Extras']['country_code'] ] += 1
+                countries[this_paper['Extras']['country_code']] += 1
             else:
-                countries[ this_paper['Extras']['country_code'] ] = 1
+                countries[this_paper['Extras']['country_code']] = 1
         except:
             pass
 
-
     country_string = ""
     for country in countries.keys():
-       country_string += ",['" + country +"'," + str(countries[country]) + "]"
+        country_string += ",['" + country + "'," + str(countries[country]) + "]"
 
     html_file = open('../html/country/index.html', 'w')
 
@@ -931,8 +921,6 @@ def build_country_map(papers, api_key):
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     temp += '<script type="text/javascript">' + "google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawRegionsMap);function drawRegionsMap() {var data = google.visualization.arrayToDataTable([ ['Country', 'Publications']" + country_string + "]); var options = { colorAxis: {colors: ['#FFB612', '#c9002f']} }; var chart = new google.visualization.GeoChart(document.getElementById('regions_div')); chart.draw(data, options); }</script>"
 
-
-    #shutil.copyfile('html/templates/map.js', '../html/map/map.js')
     shutil.copyfile('html/templates/loading.gif', '../html/country/loading.gif')
     shutil.copyfile('html/templates/map.css', '../html/country/map.css')
 
@@ -944,7 +932,6 @@ def build_country_map(papers, api_key):
 
     temp += "<div class='loading'><img src='loading.gif'></div>"
     temp += "<div id='regions_div' style='width: 900px; height: 500px;'></div>"
-
 
     print >>html_file, temp
 
@@ -971,15 +958,15 @@ def build_city_map(papers):
         try:
             if this_paper['Extras']['postal_town'] != "":
                 if this_paper['Extras']['postal_town'] in cities:
-                    cities[ this_paper['Extras']['postal_town'] ] += 1
+                    cities[this_paper['Extras']['postal_town']] += 1
                 else:
-                    cities[ this_paper['Extras']['postal_town'] ] = 1
+                    cities[this_paper['Extras']['postal_town']] = 1
         except:
             pass
 
     city_string = ""
     for city in cities.keys():
-       city_string += ",['" + city + "'," + str(cities[city]) + "]"
+        city_string += ",['" + city + "'," + str(cities[city]) + "]"
 
     html_file = open('../html/city/index.html', 'w')
 
@@ -994,7 +981,6 @@ def build_city_map(papers):
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
-    #temp += '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4&libraries=visualization"></script>'
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     temp += "<script>google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['City',   'Publications']" + city_string + " ]); var options = {region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#FFB612', '#c9002f']}}; var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));chart.draw(data, options); };</script>"
 
@@ -1009,8 +995,6 @@ def build_city_map(papers):
 
     temp += "<div class='loading'><img src='loading.gif'></div>"
     temp += '<div id="regions_div" style="width: 900px; height: 500px;"></div>'
-
-
 
     print >>html_file, temp
 
@@ -1035,7 +1019,7 @@ def intWithCommas(x):
     return "%d%s" % (x, result)
 
 
-def build_metrics(papers, cohort_rating, study_start_year , study_current_year):
+def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
 
     import shutil
     print "\n###HTML - Metrics###"
@@ -1053,7 +1037,7 @@ def build_metrics(papers, cohort_rating, study_start_year , study_current_year):
             try:
                 num_papers_citations[n_cits] += 1
             except:
-                num_papers_citations.insert(n_cits,1)
+                num_papers_citations.insert(n_cits, 1)
         except:
             pass
 
@@ -1121,6 +1105,7 @@ def build_metrics(papers, cohort_rating, study_start_year , study_current_year):
         except:
             pass
 
+    print "**** TOTAL CITATIONS: " + str(total_citations)
     average_citations = float(total_citations)/float(total_publications)
     i20_index_per_year = float(c20_index)/float(study_duration)
 
@@ -1205,19 +1190,17 @@ def build_metrics(papers, cohort_rating, study_start_year , study_current_year):
     temp += '<div id="papers_per_year_div"></div>'
     temp += '<div id="papers_per_citation_count_div"></div>'
 
-
     print >>html_file, temp
 
     temp = build_common_foot()
     print >>html_file, temp
 
-
-
 ###########################################################
 # Build keyword word cloud
 ###########################################################
 
-def build_word_cloud(papers,list):
+
+def build_word_cloud(papers, list):
 
     import shutil
     print "\n###HTML - Keyword Cloud###"
@@ -1271,7 +1254,6 @@ def build_abstract_word_cloud(papers):
     import math
     print "\n###HTML - Abstract Word Cloud###"
 
-
     f = open("../data/abstracts.csv", 'rt')
 
     list = "["
@@ -1283,8 +1265,8 @@ def build_abstract_word_cloud(papers):
                 list += ","
 
             if row[0] != "":
-                #list += '["' + row[0].replace("'","\'").replace('"','\"') + '",' + str(row[1]) +  ']'
-                list += '{"text":"' + row[0].replace("'","\'").replace('"','\"') + '","size":' + str(math.sqrt(int(row[1]))*1.5) +  '}'
+                # list += '["' + row[0].replace("'","\'").replace('"','\"') + '",' + str(row[1]) +  ']'
+                list += '{"text":"' + row[0].replace("'", "\'").replace('"', '\"') + '","size":' + str(math.sqrt(int(row[1]))*1.5) + '}'
                 n += 1
 
             if n > 200:
@@ -1338,13 +1320,15 @@ def build_abstract_word_cloud(papers):
 # Build Author Network
 ###########################################################
 
-def get_author_string_from_hash( hash_string, network ):
+
+def get_author_string_from_hash(hash_string, network):
 
     for author in network['authors']:
         if author == hash_string:
-            return network['authors'][author]['family'] + ' ' +  network['authors'][author]['given']
+            return network['authors'][author]['family'] + ' ' + network['authors'][author]['given']
 
-def build_author_network(papers,network):
+
+def build_author_network(papers, network):
 
     import shutil
     print "\n###HTML - Author Network###"
@@ -1362,14 +1346,13 @@ def build_author_network(papers,network):
         net_json = ""
         if n > 0:
             net_json += ","
-        net_json += '{"id": "' + network['authors'][author]['family'] + ' ' +  network['authors'][author]['given'] + '", "group":1}'
+        net_json += '{"id": "' + network['authors'][author]['family'] + ' ' + network['authors'][author]['given'] + '", "group":1}'
 
         print >>net_file, net_json
-        n+=1
+        n += 1
 
     net_json = '],"links": ['
     print >>net_file, net_json
-
 
     n = 0
     for con in network['connections']:
@@ -1378,16 +1361,14 @@ def build_author_network(papers,network):
             if n > 0:
                 net_json += ","
 
-            author_0 = get_author_string_from_hash( network['connections'][con]['authors'][0]['author_hash'], network )
-            author_1 = get_author_string_from_hash( network['connections'][con]['authors'][1]['author_hash'], network )
-
-            #net_json = '{"id": "' + network['authors'][author]['family'] + ' ' +  network['authors'][author]['given'] + '", "group":1}'
+            author_0 = get_author_string_from_hash(network['connections'][con]['authors'][0]['author_hash'], network)
+            author_1 = get_author_string_from_hash(network['connections'][con]['authors'][1]['author_hash'], network)
 
             n_con = network['connections'][con]['num_connections']/2
 
             net_json += '{"source": "' + author_0 + '", "target": "' + author_1 + '", "value": ' + str(n_con) + '}'
 
-	    print >>net_file, net_json
+            print >>net_file, net_json
             n += 1
         except:
             pass
@@ -1395,7 +1376,6 @@ def build_author_network(papers,network):
     net_json = ']'
     net_json += '}'
     print >>net_file, net_json
-
 
     html_file = open('../html/authornetwork/index.html', 'w')
 
@@ -1421,22 +1401,17 @@ def build_author_network(papers,network):
 
     temp += '<h1 id="pagetitle">Author Network</h1>'
 
-    # Old force directed graph
-    #temp += '<svg width="960" height="600" id="chart"></svg><script src="https://d3js.org/d3.v4.min.js"></script>'
-    #temp += '<script type="text/javascript" src="network.js"></script>'
-
-
-    ## Print nodes to csv
+    # Print nodes to csv
     nodes_csv = open('../html/authornetwork/nodes.csv', 'w')
 
     print >>nodes_csv,  'id,Label'
     n = 0
 
     for author in network['authors']:
-        print >>nodes_csv,  author + "," + network['authors'][author]['family'] + ' ' +  network['authors'][author]['given']
+        print >>nodes_csv,  author + "," + network['authors'][author]['family'] + ' ' + network['authors'][author]['given']
         n += 1
 
-    ## Print conections to csv
+    # Print conections to csv
     connections_csv = open('../html/authornetwork/connections.csv', 'w')
 
     print >>connections_csv,  'Source,Target'
@@ -1452,17 +1427,11 @@ def build_author_network(papers,network):
 
             print >>connections_csv,  '"' + author_0 + '","' + author_1 + '"'
 
-
         except:
             pass
         n += 1
 
-
-
-
-    #temp += '<p>' + nodes + '</p>'
     temp += '<img src="author_network2.png">'
-
 
     print >>html_file, temp
 
@@ -1473,12 +1442,8 @@ def build_author_network(papers,network):
 ###########################################################
 # ErrorLog
 ###########################################################
-def build_error_log(papers, error_log ):
+def build_error_log(papers, error_log):
 
-    import shutil
-    import csv
-    import math
-    import html.htmlerrorlog.errorlog
     print "\n###HTML - Error Log###"
 
     html_file = open('../html/errorlog/index.html', 'w')

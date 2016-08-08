@@ -1,5 +1,6 @@
 [project_details]
 name: ALSPAC
+short_name: alspac
 
 [zotero_api]
 url:

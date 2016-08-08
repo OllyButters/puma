@@ -2,7 +2,6 @@
 
 # import csv
 # import re
-import logging
 import os.path
 import json
 import urllib2
@@ -88,7 +87,7 @@ def geocode(papers, error_log, api_key):
 
                         if found_coords:
                             # Get country for heatmap
-                            retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['Extras']['LatLong']['lat']  + ',' + this_paper['Extras']['LatLong']['long']  + '&key=' + api_key))
+                            retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['Extras']['LatLong']['lat'] + ',' + this_paper['Extras']['LatLong']['long'] + '&key=' + api_key))
 
                             try:
                                 comps = retur['results'][0]['address_components']
@@ -109,19 +108,19 @@ def geocode(papers, error_log, api_key):
                                 cache_file.close()
                             except:
                                 print 'Unable to get geo-data (Google API Quota Reached) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
-                                error_log.logError( this_paper['Extras']['CleanInstitute'] + " Google API Quota Reached!")
+                                error_log.logError(this_paper['Extras']['CleanInstitute'] + " Google API Quota Reached!")
                     except:
                         print 'Unable to get geo-data (Probably not on Wikidata) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
                         error_log.logWarning("Insititue " + this_paper['Extras']['CleanInstitute'] + " not on Wikidata")
                 except:
                     print 'Unable to get geo-data (Wikidata Query Failed) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
-                    error_log.logWarning("Wikidata query failed for " + this_paper['Extras']['CleanInstitute'] )
+                    error_log.logWarning("Wikidata query failed for " + this_paper['Extras']['CleanInstitute'])
 
                 # === End Look up ===
 
         except:
             print 'No Clean Institute for ' + this_paper['IDs']['hash'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
-            error_log.logError("Clean Institute Missing for " +  this_paper['IDs']['hash'] + " <a href='https://www.zotero.org/groups/300320/items/itemKey/" + this_paper['IDs']['zotero'] + "'>Zotero</a>" )
+            error_log.logError(" Clean Institute Missing for " + this_paper['IDs']['hash'] + " <a href='https://www.zotero.org/groups/300320/items/itemKey/" + this_paper['IDs']['zotero'] + "'>Zotero</a>")
 
         number_done += 1
 
