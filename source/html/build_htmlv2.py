@@ -24,7 +24,7 @@ def build_common_body(breadcrumb, nav_path, body):
     html += "<div class='uob-header width-master' role='banner'>"
 
     html += "<div class='title_stop'></div>"
-    html += "<div id='uoblogo'><a accesskey='1' title='University of Bristol homepage' href='http://www.bristol.ac.uk/''><span>University of Bristol</span></a></div>"
+    html += "<div id='uoblogo'><a accesskey='1' title='University of Bristol homepage' href='http://www.bristol.ac.uk/'><span>University of Bristol</span></a></div>"
     html += "<div class='maintitle' id='maintitle1'>"
     html += "<span id='title1'><a href='" + nav_path + "index.html'>" + config.project_details['name'] + site_title + "</a></span>"
     html += "</div>"
@@ -96,7 +96,7 @@ def build_common_foot():
 ############################################################
 
 
-def build_home(papers):
+def build_home(papers, error_log):
 
     import shutil
 
@@ -112,7 +112,7 @@ def build_home(papers):
     shutil.copyfile('html/templates/colour_scheme.css', '../html/css/colour_scheme.css')
 
     # Put html together for this page
-    temp = '<html>'
+    temp = '<!DOCTYPE html><html lang="en-GB">'
 
     # html head
     temp += '<head>'
@@ -148,7 +148,7 @@ def build_home(papers):
             if this_paper['Extras']['CleanInstitute'] == 'University of Bristol':
                 summary[this_year]['uob'] += 1
         except:
-            pass
+            error_log.logErrorPaper("Date Missing for " + this_paper['IDs']['hash'], this_paper)
 
     # Add in some zeros when there is no papers for this year
     years = summary.keys()
@@ -168,8 +168,6 @@ def build_home(papers):
         except:
             summary[this_year]['cumulative'] = summary[this_year]['num_papers']
             summary[this_year]['cumulative_citations'] = summary[this_year]['citations']
-
-    print "**** TOTAL CITATIONS: " + str(summary["2014"]['cumulative_citations'])
 
     ###################################
     # Make a data file that we can plot
@@ -243,7 +241,7 @@ def build_papers(papers):
     shutil.copyfile('html/templates/yellow-flag-th.png', '../html/papers/yellow-flag-th.png')
 
     # Put html together for this page
-    temp = '<html>'
+    temp = '<!DOCTYPE html><html lang="en-GB">'
 
     # html head
     temp += '<head>'
@@ -341,7 +339,6 @@ def build_papers(papers):
         except:
             print 'Failing on ' + this_paper['IDs']['hash']
             print sys.exc_info()
-            pass
 
     # Output the info into an HTML file
     # For each year dict item
@@ -361,7 +358,7 @@ def build_papers(papers):
         shutil.copyfile('html/templates/yellow-flag-th.png', '../html/papers/' + this_year + '/yellow-flag-th.png')
 
         # Put html together for this page
-        temp = '<html>'
+        temp = '<!DOCTYPE html><html lang="en-GB">'
 
         # html head
         temp += '<head>'
@@ -523,7 +520,7 @@ def build_mesh(papers):
         fo.close()
 
     # Put html together for this page
-    temp = '<html>'
+    temp = '<!DOCTYPE html><html lang="en-GB">'
 
     # html head
     temp += '<head>'
@@ -543,7 +540,7 @@ def build_mesh(papers):
     # Make a page with ALL the headings on it
     print >>html_file_all, '<ul>'
     for this_mesh in sorted(mesh_papers_all):
-        temp = '<li><a href="../mesh/'+this_mesh+'/index.html">' + this_mesh + '</a></li>'
+        temp = '<li><a href="../mesh/' + this_mesh.replace(" ", "%20") + '/index.html">' + this_mesh + '</a></li>'
         print >>html_file_all, temp
     print >>html_file_all, '</ul>'
 
@@ -551,7 +548,7 @@ def build_mesh(papers):
     print >>html_file_all, temp
 
     # Put html together for this page
-    temp = '<html>'
+    temp = '<!DOCTYPE html><html lang="en-GB">'
 
     # html head
     temp += '<head>'
@@ -571,7 +568,7 @@ def build_mesh(papers):
     # Make a page with the MAJOR headings on it
     print >>html_file_major, '<ul>'
     for this_mesh in sorted(mesh_papers_major):
-        temp = '<li><a href="../mesh/'+this_mesh+'/index.html">'+this_mesh+'</a></li>'
+        temp = '<li><a href="../mesh/' + this_mesh.replace(" ", "%20") + '/index.html">' + this_mesh + '</a></li>'
         print >>html_file_major, temp
     print >>html_file_major, '</ul>'
 
@@ -635,7 +632,7 @@ def build_mesh(papers):
         with codecs.open(file_name, 'wb', "utf-8") as fo:
 
             # Put html together for this page
-            temp = '<html>'
+            temp = '<!DOCTYPE html><html lang="en-GB">'
 
             # html head
             temp += '<head>'
@@ -645,7 +642,7 @@ def build_mesh(papers):
             temp += '<link rel="stylesheet" href="../../css/style_main.css">'
 
             temp += '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
-            temp += '<script type="text/javascript" src="../' + this_mesh + '.js"></script>'
+            temp += '<script type="text/javascript" src="../' + this_mesh.replace(" ", "%20") + '.js"></script>'
             temp += '<script type="text/javascript" src="../keyword_history.js"></script>'
 
             temp += '</head>'
@@ -845,7 +842,7 @@ def build_google_map(papers):
     html_file = open('../html/map/index.html', 'w')
 
     # Put html together for this page
-    temp = '<html>'
+    temp = '<!DOCTYPE html><html lang="en-GB">'
 
     # html head
     temp += '<head>'
@@ -887,8 +884,6 @@ def build_country_map(papers, api_key):
     import shutil
     print "\n###HTML - Country Map###"
 
-    info = []
-
     countries = {}
     for this_paper in papers:
         try:
@@ -907,7 +902,7 @@ def build_country_map(papers, api_key):
     html_file = open('../html/country/index.html', 'w')
 
     # Put html together for this page
-    temp = '<html>'
+    temp = '<!DOCTYPE html><html lang="en-GB">'
 
     # html head
     temp += '<head>'
@@ -971,7 +966,7 @@ def build_city_map(papers):
     html_file = open('../html/city/index.html', 'w')
 
     # Put html together for this page
-    temp = '<html>'
+    temp = '<!DOCTYPE html><html lang="en-GB">'
 
     # html head
     temp += '<head>'
@@ -1053,7 +1048,7 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
     n_papers_with_x_citations += "])"
 
     # Put html together for this page
-    temp = '<html>'
+    temp = '<!DOCTYPE html><html lang="en-GB">'
 
     # html head
     temp += '<head>'
@@ -1105,7 +1100,6 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
         except:
             pass
 
-    print "**** TOTAL CITATIONS: " + str(total_citations)
     average_citations = float(total_citations)/float(total_publications)
     i20_index_per_year = float(c20_index)/float(study_duration)
 
@@ -1208,7 +1202,7 @@ def build_word_cloud(papers, list):
     html_file = open('../html/wordcloud/index.html', 'w')
 
     # Put html together for this page
-    temp = '<html>'
+    temp = '<!DOCTYPE html><html lang="en-GB">'
 
     # html head
     temp += '<head>'
@@ -1282,7 +1276,7 @@ def build_abstract_word_cloud(papers):
     html_file = open('../html/abstractwordcloud/index.html', 'w')
 
     # Put html together for this page
-    temp = '<html>'
+    temp = '<!DOCTYPE html><html lang="en-GB">'
 
     # html head
     temp += '<head>'
@@ -1383,7 +1377,7 @@ def build_author_network(papers, network):
     shutil.copyfile('html/templates/author_network2.png', '../html/authornetwork/author_network2.png')
 
     # Put html together for this page
-    temp = '<html>'
+    temp = '<!DOCTYPE html><html lang="en-GB">'
 
     # html head
     temp += '<head>'
@@ -1404,17 +1398,17 @@ def build_author_network(papers, network):
     # Print nodes to csv
     nodes_csv = open('../html/authornetwork/nodes.csv', 'w')
 
-    print >>nodes_csv,  'id,Label'
+    print >>nodes_csv, 'id,Label'
     n = 0
 
     for author in network['authors']:
-        print >>nodes_csv,  author + "," + network['authors'][author]['family'] + ' ' + network['authors'][author]['given']
+        print >>nodes_csv, author + "," + network['authors'][author]['family'] + ' ' + network['authors'][author]['given']
         n += 1
 
     # Print conections to csv
     connections_csv = open('../html/authornetwork/connections.csv', 'w')
 
-    print >>connections_csv,  'Source,Target'
+    print >>connections_csv, 'Source,Target'
 
     n = 0
     for con in network['connections']:
@@ -1425,7 +1419,7 @@ def build_author_network(papers, network):
 
             n_con = network['connections'][con]['num_connections']/2
 
-            print >>connections_csv,  '"' + author_0 + '","' + author_1 + '"'
+            print >>connections_csv, '"' + author_0 + '","' + author_1 + '"'
 
         except:
             pass
@@ -1449,7 +1443,7 @@ def build_error_log(papers, error_log):
     html_file = open('../html/errorlog/index.html', 'w')
 
     # Put html together for this page
-    temp = '<html>'
+    temp = '<!DOCTYPE html><html lang="en-GB">'
 
     # html head
     temp += '<head>'

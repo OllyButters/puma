@@ -133,7 +133,7 @@ analyse.output_csv(papers)
 ###########################################################
 # Make some web pages
 
-cohort_rating = html.build_htmlv2.build_home(papers)
+cohort_rating = html.build_htmlv2.build_home(papers, error_log)
 html.build_htmlv2.build_papers(papers)
 html.build_htmlv2.build_mesh(papers)
 html.build_htmlv2.build_google_map(papers)
