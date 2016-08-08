@@ -188,7 +188,8 @@ def build_home(papers):
     # shutil.copyfile('html/templates/plot.html','../html/plot.html')
 
     # Cohort-Rating calculation
-    cr_current_year = 2016.0
+    cr_current_year = float(config.metrics_study_current_year)
+    print cr_current_year
     cr_sum = 0.0
 
     # print summary
@@ -200,7 +201,11 @@ def build_home(papers):
         if summary[this_year]['num_papers'] == 0:
             continue
 
-        cr_sum += float(summary[this_year]['citations']) / (cr_current_year - float(this_year))
+        cr_year = float(cr_current_year - float(this_year))
+        if cr_year < 1:
+            cr_year = 1.0
+
+        cr_sum += float(summary[this_year]['citations']) / cr_year
 
         # Build the table
         temp = '<tr><td><a href="papers/' + this_year + '/index.html">'+str(this_year)+'</a></td>'
