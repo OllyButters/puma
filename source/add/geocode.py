@@ -13,7 +13,7 @@ import config.config as config
 
 # Have a go at geocoding the cleaned institute names
 # I would expect there to be a lat long for all of them
-def geocode(papers, error_log):
+def geocode(papers, error_log, api_key):
 
     print 'Geocoding'
 
@@ -88,7 +88,7 @@ def geocode(papers, error_log):
 
                         if found_coords:
                             # Get country for heatmap
-                            retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['Extras']['LatLong']['lat']  + ',' + this_paper['Extras']['LatLong']['long']  + '&key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4'))
+                            retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['Extras']['LatLong']['lat']  + ',' + this_paper['Extras']['LatLong']['long']  + '&key=' + api_key))
 
                             try:
                                 comps = retur['results'][0]['address_components']

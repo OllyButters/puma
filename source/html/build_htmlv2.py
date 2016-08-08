@@ -3,13 +3,15 @@
 import json
 import sys
 
-# Version 2 of the html pages (New site that matches bristol site)
+import config.config as config
+
+# Version 2 of the html pages (New site that matches bristol's ALSPAC site)
 
 ############################################################
 # Have all the data now, so do something with it
 ############################################################
 
-site_title = "ALSPAC Data Set Publications"
+site_title = " Data Set Publications"
 
 # === Common Page Features ===
 
@@ -24,7 +26,7 @@ def build_common_body(breadcrumb, nav_path, body):
     html += "<div class='title_stop'></div>"
     html += "<div id='uoblogo'><a accesskey='1' title='University of Bristol homepage' href='http://www.bristol.ac.uk/''><span>University of Bristol</span></a></div>"
     html += "<div class='maintitle' id='maintitle1'>"
-    html += "<span id='title1'><a href='" + nav_path + "index.html'>" + site_title + "</a></span>"
+    html += "<span id='title1'><a href='" + nav_path + "index.html'>" + config.project_details['name'] + site_title + "</a></span>"
     html += "</div>"
     html += "</div>"
     html += "</div>"
@@ -857,7 +859,6 @@ def build_google_map(papers):
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
     temp += '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>'
-    #temp += '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4&libraries=visualization"></script>'
     temp += '<script type="text/javascript" src="map.kml"></script>'
     temp += '<script type="text/javascript" src="map.js"></script>'
 
@@ -884,7 +885,7 @@ def build_google_map(papers):
 ###########################################################
 
 
-def build_country_map(papers):
+def build_country_map(papers, api_key):
 
     import shutil
     print "\n###HTML - Country Map###"
@@ -921,11 +922,8 @@ def build_country_map(papers):
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
-
-    temp += '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4&libraries=visualization"></script>'
+    temp += '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=' + config.google_maps_api_key + '&libraries=visualization"></script>'
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
-    temp += '<script type="text/javascript" src="map.kml"></script>'
-    temp += '<script type="text/javascript" src="map.js"></script>'
     temp += '<script type="text/javascript">' + "google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawRegionsMap);function drawRegionsMap() {var data = google.visualization.arrayToDataTable([ ['Country', 'Publications']" + country_string + "]); var options = { colorAxis: {colors: ['#FFB612', '#c9002f']} }; var chart = new google.visualization.GeoChart(document.getElementById('regions_div')); chart.draw(data, options); }</script>"
 
 
@@ -1032,18 +1030,12 @@ def intWithCommas(x):
     return "%d%s" % (x, result)
 
 
-def build_metrics(papers, cohort_rating):
+def build_metrics(papers, cohort_rating, study_start_year , study_current_year):
 
     import shutil
     print "\n###HTML - Metrics###"
 
     html_file = open('../html/metrics/index.html', 'w')
-
-
-
-
-
-
 
     # NUMBER OF PAPERS PER CITATION COUNT
     num_papers_citations = []
@@ -1070,12 +1062,6 @@ def build_metrics(papers, cohort_rating):
             n_papers_with_x_citations += ",[" + str(this_n_citations) + ",0]"
 
     n_papers_with_x_citations += "])"
-
-
-
-
-
-
 
     # Put html together for this page
     temp = '<html>'
@@ -1110,8 +1096,8 @@ def build_metrics(papers, cohort_rating):
     paper_citations = []
     c20_index = 0
 
-    study_start_year = 1991
-    study_current_year = 2016
+    # study_start_year = 1991
+    # study_current_year = 2016
     study_duration = study_current_year - study_start_year
 
     c_index_bound = 100
