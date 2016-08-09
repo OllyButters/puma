@@ -2,7 +2,7 @@
 /data
 /html
 /logs
-/_alspac/html_alspac
+/_alspac/html
 
 source/tools.pyc
 *.pyc
