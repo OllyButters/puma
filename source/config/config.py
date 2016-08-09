@@ -28,7 +28,7 @@ def build_config_variables(root_dir):
     print config.sections()
     try:
         # Project Details
-        project_details = {'name': config.get('project_details', 'name')}
+        project_details = {'name': config.get('project_details', 'name'), 'short_name': config.get('project_details', 'short_name')}
 
         # Scopus settings
         scopus_force_citation_update = config.get('scopus', 'scopus_force_citation_update')
@@ -60,5 +60,5 @@ def build_config_variables(root_dir):
     cache_dir = root_dir + '/cache'
     config_dir = root_dir + '/config'
     data_dir = root_dir + '/data'
-    html_dir = root_dir + '/html'
+    html_dir = root_dir + '/html' + "_" + project_details['short_name']
     log_dir = root_dir + '/logs'

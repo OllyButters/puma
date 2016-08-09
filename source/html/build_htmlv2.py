@@ -103,13 +103,13 @@ def build_home(papers, error_log):
     print "\n###HTML - Home###"
 
     summary = {}
-    html_file = open('../html/index.html', 'w')
-    data_file = open('../html/data.js', 'w')
+    html_file = open(config.html_dir + '/index.html', 'w')
+    data_file = open(config.html_dir + '/data.js', 'w')
 
     # Copy CSS files
-    shutil.copyfile('html/templates/style_main.css', '../html/css/style_main.css')
-    shutil.copyfile('html/templates/uobcms_corporate.css', '../html/css/uobcms_corporate.css')
-    shutil.copyfile('html/templates/colour_scheme.css', '../html/css/colour_scheme.css')
+    shutil.copyfile('html/templates/style_main.css', config.html_dir + '/css/style_main.css')
+    shutil.copyfile('html/templates/uobcms_corporate.css', config.html_dir + '/css/uobcms_corporate.css')
+    shutil.copyfile('html/templates/colour_scheme.css', config.html_dir + '/css/colour_scheme.css')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -235,10 +235,10 @@ def build_papers(papers):
     print "\n###HTML papers list###"
 
     yearly_papers = {}
-    html_file = open('../html/papers/index.html', 'w')
+    html_file = open(config.html_dir + '/papers/index.html', 'w')
 
-    shutil.copyfile('html/templates/altmetric.png', '../html/papers/altmetric.png')
-    shutil.copyfile('html/templates/yellow-flag-th.png', '../html/papers/yellow-flag-th.png')
+    shutil.copyfile('html/templates/altmetric.png', config.html_dir + '/papers/altmetric.png')
+    shutil.copyfile('html/templates/yellow-flag-th.png', config.html_dir + '/papers/yellow-flag-th.png')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -350,12 +350,12 @@ def build_papers(papers):
 
         main += '<a href="' + this_year + '/index.html">' + this_year + '</a> '
 
-        if not os.path.exists('../html/papers/' + this_year):
-            os.mkdir('../html/papers/' + this_year)
-        year_file = open('../html/papers/' + this_year + '/index.html', 'w')
+        if not os.path.exists(config.html_dir + '/papers/' + this_year):
+            os.mkdir(config.html_dir + '/papers/' + this_year)
+        year_file = open(config.html_dir + '/papers/' + this_year + '/index.html', 'w')
 
-        shutil.copyfile('html/templates/altmetric.png', '../html/papers/' + this_year + '/altmetric.png')
-        shutil.copyfile('html/templates/yellow-flag-th.png', '../html/papers/' + this_year + '/yellow-flag-th.png')
+        shutil.copyfile('html/templates/altmetric.png', config.html_dir + '/papers/' + this_year + '/altmetric.png')
+        shutil.copyfile('html/templates/yellow-flag-th.png', config.html_dir + '/papers/' + this_year + '/yellow-flag-th.png')
 
         # Put html together for this page
         temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -399,12 +399,12 @@ def build_mesh(papers):
 
     print "\n###HTML - mesh###"
 
-    shutil.copyfile('html/templates/keyword_history.js', '../html/mesh/keyword_history.js')
+    shutil.copyfile('html/templates/keyword_history.js', config.html_dir + '/mesh/keyword_history.js')
 
     mesh_papers_all = {}
     mesh_papers_major = {}
-    html_file_all = open('../html/all_keywords/index.html', 'w')
-    html_file_major = open('../html/major_keywords/index.html', 'w')
+    html_file_all = open(config.html_dir + '/all_keywords/index.html', 'w')
+    html_file_major = open(config.html_dir + '/major_keywords/index.html', 'w')
 
     # Build a dict of ALL mesh headings with a list of each pmid in each
     for this_paper in papers:
@@ -507,14 +507,14 @@ def build_mesh(papers):
     # Print mesh_papers
     # Make a JSON file for each mesh term, in it put all the PMIDs for this term
     for this_mesh in mesh_papers_all:
-        file_name = '../html/mesh/all_' + this_mesh
+        file_name = config.html_dir + '/mesh/all_' + this_mesh
         fo = open(file_name, 'wb')
         fo.write(json.dumps(mesh_papers_all[this_mesh], indent=4))
         fo.close()
 
     # Make a JSON file for each major mesh term, in it put all the PMIDs for this term
     for this_mesh in mesh_papers_major:
-        file_name = '../html/mesh/major_' + this_mesh
+        file_name = config.html_dir + '/mesh/major_' + this_mesh
         fo = open(file_name, 'wb')
         fo.write(json.dumps(mesh_papers_major[this_mesh], indent=4))
         fo.close()
@@ -625,10 +625,10 @@ def build_mesh(papers):
     # Print page
     for this_mesh in mesh_papers_all:
 
-        if not os.path.exists('../html/mesh/' + this_mesh):
-            os.mkdir('../html/mesh/' + this_mesh)
+        if not os.path.exists(config.html_dir + '/mesh/' + this_mesh):
+            os.mkdir(config.html_dir + '/mesh/' + this_mesh)
 
-        file_name = '../html/mesh/' + this_mesh + '/index.html'
+        file_name = config.html_dir + '/mesh/' + this_mesh + '/index.html'
         with codecs.open(file_name, 'wb', "utf-8") as fo:
 
             # Put html together for this page
@@ -697,7 +697,7 @@ def build_mesh(papers):
                         summary[str(this_year)] = {'num_papers': 0, 'citations': 0}
 
             # Print data to file
-            data_file = open('../html/mesh/' + this_mesh + '.js', 'w')
+            data_file = open(config.html_dir + '/mesh/' + this_mesh + '.js', 'w')
             print >>data_file, 'var papers =([[\'Year\', \'Number of papers\'],'
             for this_year in sorted(summary, reverse=False):
                 print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['num_papers'])+'],'
@@ -837,10 +837,10 @@ def build_google_map(papers):
         kml += '["' + this_info['name'] + '",' + str(this_info['lat']) + ',' + str(this_info['long']) + '],'
     kml += ']'
 
-    kml_file = open('../html/map/map.kml', 'w')
+    kml_file = open(config.html_dir + '/map/map.kml', 'w')
     print >>kml_file, kml
 
-    html_file = open('../html/map/index.html', 'w')
+    html_file = open(config.html_dir + '/map/index.html', 'w')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -857,9 +857,9 @@ def build_google_map(papers):
     temp += '<script type="text/javascript" src="map.kml"></script>'
     temp += '<script type="text/javascript" src="map.js"></script>'
 
-    shutil.copyfile('html/templates/map.js', '../html/map/map.js')
-    shutil.copyfile('html/templates/loading.gif', '../html/map/loading.gif')
-    shutil.copyfile('html/templates/map.css', '../html/css/map.css')
+    shutil.copyfile('html/templates/map.js', config.html_dir + '/map/map.js')
+    shutil.copyfile('html/templates/loading.gif', config.html_dir + '/map/loading.gif')
+    shutil.copyfile('html/templates/map.css', config.html_dir + '/css/map.css')
 
     temp += '</head>'
 
@@ -900,7 +900,7 @@ def build_country_map(papers, api_key):
     for country in countries.keys():
         country_string += ",['" + country + "'," + str(countries[country]) + "]"
 
-    html_file = open('../html/country/index.html', 'w')
+    html_file = open(config.html_dir + '/country/index.html', 'w')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -917,8 +917,8 @@ def build_country_map(papers, api_key):
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     temp += '<script type="text/javascript">' + "google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawRegionsMap);function drawRegionsMap() {var data = google.visualization.arrayToDataTable([ ['Country', 'Publications']" + country_string + "]); var options = { colorAxis: {colors: ['#FFB612', '#c9002f']} }; var chart = new google.visualization.GeoChart(document.getElementById('regions_div')); chart.draw(data, options); }</script>"
 
-    shutil.copyfile('html/templates/loading.gif', '../html/country/loading.gif')
-    shutil.copyfile('html/templates/map.css', '../html/country/map.css')
+    shutil.copyfile('html/templates/loading.gif', config.html_dir + '/country/loading.gif')
+    shutil.copyfile('html/templates/map.css', config.html_dir + '/country/map.css')
 
     temp += '</head>'
 
@@ -964,7 +964,7 @@ def build_city_map(papers):
     for city in cities.keys():
         city_string += ",['" + city + "'," + str(cities[city]) + "]"
 
-    html_file = open('../html/city/index.html', 'w')
+    html_file = open(config.html_dir + '/city/index.html', 'w')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -980,8 +980,8 @@ def build_city_map(papers):
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     temp += "<script>google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['City',   'Publications']" + city_string + " ]); var options = {region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#FFB612', '#c9002f']}}; var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));chart.draw(data, options); };</script>"
 
-    shutil.copyfile('html/templates/loading.gif', '../html/city/loading.gif')
-    shutil.copyfile('html/templates/map.css', '../html/city/map.css')
+    shutil.copyfile('html/templates/loading.gif', config.html_dir + '/city/loading.gif')
+    shutil.copyfile('html/templates/map.css', config.html_dir + '/city/map.css')
 
     temp += '</head>'
 
@@ -1020,7 +1020,7 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
     import shutil
     print "\n###HTML - Metrics###"
 
-    html_file = open('../html/metrics/index.html', 'w')
+    html_file = open(config.html_dir + '/metrics/index.html', 'w')
 
     # NUMBER OF PAPERS PER CITATION COUNT
     num_papers_citations = []
@@ -1059,7 +1059,7 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
-    shutil.copyfile('html/templates/metrics.js', '../html/metrics/metrics.js')
+    shutil.copyfile('html/templates/metrics.js', config.html_dir + '/metrics/metrics.js')
 
     temp += '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     temp += '<script type="text/javascript" src="../data.js"></script>'
@@ -1200,7 +1200,7 @@ def build_word_cloud(papers, list):
     import shutil
     print "\n###HTML - Keyword Cloud###"
 
-    html_file = open('../html/wordcloud/index.html', 'w')
+    html_file = open(config.html_dir + '/wordcloud/index.html', 'w')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -1214,8 +1214,8 @@ def build_word_cloud(papers, list):
     temp += '<link rel="stylesheet" href="../css/map.css">'
     temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
-    shutil.copyfile('html/templates/d3wordcloud.js', '../html/wordcloud/d3wordcloud.js')
-    shutil.copyfile('html/templates/d3.layout.cloud.js', '../html/wordcloud/d3.layout.cloud.js')
+    shutil.copyfile('html/templates/d3wordcloud.js', config.html_dir + '/wordcloud/d3wordcloud.js')
+    shutil.copyfile('html/templates/d3.layout.cloud.js', config.html_dir + '/wordcloud/d3.layout.cloud.js')
 
     temp += '<script>var word_list = ' + list + '</script>'
     temp += '<script src="http://d3js.org/d3.v3.min.js"></script>'
@@ -1271,10 +1271,10 @@ def build_abstract_word_cloud(papers):
         f.close()
 
     list += "];"
-    list_file = open('../html/abstractwordcloud/list.js', 'w')
+    list_file = open(config.html_dir + '/abstractwordcloud/list.js', 'w')
     print >>list_file, " var word_list = " + list
 
-    html_file = open('../html/abstractwordcloud/index.html', 'w')
+    html_file = open(config.html_dir + '/abstractwordcloud/index.html', 'w')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -1288,8 +1288,8 @@ def build_abstract_word_cloud(papers):
     temp += '<link rel="stylesheet" href="../css/map.css">'
     temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
-    shutil.copyfile('html/templates/d3wordcloud.js', '../html/abstractwordcloud/d3wordcloud.js')
-    shutil.copyfile('html/templates/d3.layout.cloud.js', '../html/abstractwordcloud/d3.layout.cloud.js')
+    shutil.copyfile('html/templates/d3wordcloud.js', config.html_dir + '/abstractwordcloud/d3wordcloud.js')
+    shutil.copyfile('html/templates/d3.layout.cloud.js', config.html_dir + '/abstractwordcloud/d3.layout.cloud.js')
 
     temp += '<script src="list.js"></script>'
     temp += '<script src="http://d3js.org/d3.v3.min.js"></script>'
@@ -1329,7 +1329,7 @@ def build_author_network(papers, network):
     print "\n###HTML - Author Network###"
 
     # Create json file
-    net_file = open('../html/authornetwork/network.json', 'w')
+    net_file = open(config.html_dir + '/authornetwork/network.json', 'w')
 
     net_json = '{'
     net_json += '"nodes":['
@@ -1372,10 +1372,10 @@ def build_author_network(papers, network):
     net_json += '}'
     print >>net_file, net_json
 
-    html_file = open('../html/authornetwork/index.html', 'w')
+    html_file = open(config.html_dir + '/authornetwork/index.html', 'w')
 
-    shutil.copyfile('html/templates/network.js', '../html/authornetwork/network.js')
-    shutil.copyfile('html/templates/author_network2.png', '../html/authornetwork/author_network2.png')
+    shutil.copyfile('html/templates/network.js', config.html_dir + '/authornetwork/network.js')
+    shutil.copyfile('html/templates/author_network2.png', config.html_dir + '/authornetwork/author_network2.png')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -1441,7 +1441,7 @@ def build_error_log(papers, error_log):
 
     print "\n###HTML - Error Log###"
 
-    html_file = open('../html/errorlog/index.html', 'w')
+    html_file = open(config.html_dir + '/errorlog/index.html', 'w')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
