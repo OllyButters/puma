@@ -48,28 +48,31 @@ def journals(papers):
 def abstracts(papers):
     print "\n###Abstracts###"
 
-    abstracts = ''
+    words = []
+    # Go through all papers
     for this_paper in papers:
-        # print this_paper
         try:
-            abstracts = abstracts + str(this_paper['MedlineCitation']['Article']['Abstract']['AbstractText'])
+            # Get abstract text
+            abstracts = str(this_paper['MedlineCitation']['Article']['Abstract']['AbstractText'])
+
+            # Remove punctuation and esacpe characters that will cause a problem
+            abstracts = abstracts.lower()
+            abstracts = abstracts.replace(",", " ")
+            abstracts = abstracts.replace(".", " ")
+            abstracts = abstracts.replace(":", " ")
+            abstracts = abstracts.replace(";", " ")
+            abstracts = abstracts.replace("'", "\'")
+            abstracts = abstracts.replace('"', '\"')
+
+            # Add abstract words into list of all words
+            words.extend(abstracts.split())
         except:
             pass
-
-    abstracts = abstracts.lower()
-    abstracts = abstracts.replace(",", " ")
-    abstracts = abstracts.replace(".", " ")
-    abstracts = abstracts.replace(":", " ")
-    abstracts = abstracts.replace(";", " ")
-    abstracts = abstracts.replace("'", "\'")
-    abstracts = abstracts.replace('"', '\"')
-
-    words = abstracts.split()
 
     # calculate the frequency of each word in abstracts
     freq = dict((x, words.count(x)) for x in set(words))
 
-    # Delete stop words
+    # = Remove stop words from the list of all words =
     # Read stop words from file
     stop_lines = tuple(open(config.config_dir + "/stopwords", "r"))
     stop_words = []

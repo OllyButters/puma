@@ -175,13 +175,13 @@ def build_home(papers, error_log):
     # Cumulative first
     print >>data_file, 'var cumulative =([[\'Year\', \'Number of papers\'],'
     for this_year in sorted(summary, reverse=False):
-        print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['cumulative'])+'],'
+        print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['cumulative']) + '],'
     print >>data_file, ']);'
 
     # Number per year now
     print >>data_file, 'var papers_per_year=([[\'Year\', \'Number of papers\'],'
     for this_year in sorted(summary, reverse=False):
-        print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['num_papers'])+'],'
+        print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['num_papers']) + '],'
     print >>data_file, ']);'
 
     # Copy the main html page across
@@ -208,13 +208,13 @@ def build_home(papers, error_log):
         cr_sum += float(summary[this_year]['citations']) / cr_year
 
         # Build the table
-        temp = '<tr><td><a href="papers/' + this_year + '/index.html">'+str(this_year)+'</a></td>'
-        temp += '<td>'+intWithCommas(summary[this_year]['num_papers'])+'</td>'
-        temp += '<td>'+str(summary[this_year]['cumulative'])+'</td>'
-        temp += '<td>'+intWithCommas(summary[this_year]['uob'])+'</td>'
-        temp += '<td>'+str(int(100*summary[this_year]['uob']/summary[this_year]['num_papers']))+'</td>'
-        temp += '<td>'+intWithCommas(summary[this_year]['citations'])+'</td>'
-        temp += '<td>'+intWithCommas(summary[this_year]['cumulative_citations'])+'</td></tr>'
+        temp = '<tr><td><a href="papers/' + this_year + '/index.html">' + str(this_year) + '</a></td>'
+        temp += '<td>' + intWithCommas(summary[this_year]['num_papers']) + '</td>'
+        temp += '<td>' + str(summary[this_year]['cumulative']) + '</td>'
+        temp += '<td>' + intWithCommas(summary[this_year]['uob']) + '</td>'
+        temp += '<td>' + str(int(100*summary[this_year]['uob']/summary[this_year]['num_papers'])) + '</td>'
+        temp += '<td>' + intWithCommas(summary[this_year]['citations']) + '</td>'
+        temp += '<td>' + intWithCommas(summary[this_year]['cumulative_citations']) + '</td></tr>'
         print >>html_file, temp
     print >>html_file, '</table>'
 
@@ -297,7 +297,7 @@ def build_papers(papers):
             # PMID
             try:
                 if this_paper['IDs']['PMID']:
-                    html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">'+str(this_paper['IDs']['PMID']) + '</a>'
+                    html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">' + str(this_paper['IDs']['PMID']) + '</a>'
             except:
                 pass
 
@@ -317,7 +317,7 @@ def build_papers(papers):
 
             # citation count
             try:
-                html += '&nbsp; Citations: '+this_paper['Extras']['Citations']
+                html += '&nbsp; Citations: ' + this_paper['Extras']['Citations']
             except:
                 pass
 
