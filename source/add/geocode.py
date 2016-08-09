@@ -108,13 +108,13 @@ def geocode(papers, error_log, api_key):
                                 cache_file.close()
                             except:
                                 print 'Unable to get geo-data (Google API Quota Reached) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
-                                error_log.logError(this_paper['Extras']['CleanInstitute'] + " Google API Quota Reached!")
+                                error_log.logErrorPaper(this_paper['Extras']['CleanInstitute'] + " Google API Quota Reached!", this_paper)
                     except:
                         print 'Unable to get geo-data (Probably not on Wikidata) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
-                        error_log.logWarning("Insititue " + this_paper['Extras']['CleanInstitute'] + " not on Wikidata")
+                        error_log.logWarningPaper("Insititue " + this_paper['Extras']['CleanInstitute'] + " not on Wikidata", this_paper)
                 except:
                     print 'Unable to get geo-data (Wikidata Query Failed) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
-                    error_log.logWarning("Wikidata query failed for " + this_paper['Extras']['CleanInstitute'])
+                    error_log.logWarningPaper("Wikidata query failed for " + this_paper['Extras']['CleanInstitute'], this_paper)
 
                 # === End Look up ===
 

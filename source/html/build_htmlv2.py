@@ -321,7 +321,7 @@ def build_papers(papers):
             except:
                 pass
 
-            html += '<img style="width:20px;padding-left:20px;" src="yellow-flag-th.png" title="At least one author is on the ALSPAC executive committee">'
+            html += '<img style="width:20px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author is on the ALSPAC executive committee">'
 
             # Add an extra line break at the end
             html += '<br/><br/>'
@@ -726,78 +726,79 @@ def build_mesh(papers):
                     for p in papers:
                         if this_paper == p['IDs']['hash']:
                             paper_obj = p
+                            break
 
-                        if paper_obj is not None:
-                            this_paper = paper_obj
+                    if paper_obj is not None:
+                        this_paper = paper_obj
 
-                        html = ''
+                    html = ''
 
-                        # altmetric data
+                    # altmetric data
+                    try:
+                        if this_paper['IDs']['DOI']:
+                            html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
+                    except:
+                        pass
+
+                    # Paper title as a link
+                    html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['title'] + '</span><br/>'
+
+                    # Abstract text - probably too long to go on this page
+                    # html += papers[this_pmid]['AbstractText'][0]+'<br/>'
+
+                    # Authors
+                    authors = []
+
+                    for this_author in this_paper['author']:
+                        # Some author lists have a collective name. Ignore this.
+                        # Some people don't actually have initials. eg wraight in pmid:18454148
                         try:
-                            if this_paper['IDs']['DOI']:
-                                html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
+                            authors.append(this_author['family'] + ', ' + this_author['given'])
                         except:
                             pass
 
-                        # Paper title as a link
-                        html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['title'] + '</span><br/>'
+                    html += '; '.join(authors)
+                    html += '<br/>'
 
-                        # Abstract text - probably too long to go on this page
-                        # html += papers[this_pmid]['AbstractText'][0]+'<br/>'
+                    # Journal volume
+                    try:
+                        html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'] + ' Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue'] + '<br/>'
+                    except:
+                        pass
 
-                        # Authors
-                        authors = []
+                    # PMID
+                    try:
+                        if this_paper['IDs']['PMID']:
+                            html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">'+str(this_paper['IDs']['PMID']) + '</a>'
+                    except:
+                        pass
 
-                        for this_author in this_paper['author']:
-                            # Some author lists have a collective name. Ignore this.
-                            # Some people don't actually have initials. eg wraight in pmid:18454148
-                            try:
-                                authors.append(this_author['family'] + ', ' + this_author['given'])
-                            except:
-                                pass
+                    # Zotero
+                    try:
+                        if this_paper['IDs']['zotero']:
+                            html += '&nbsp;Zotero: ' + this_paper['IDs']['zotero'] + ''
+                    except:
+                        pass
 
-                        html += '; '.join(authors)
-                        html += '<br/>'
+                    # DOI
+                    try:
+                        if this_paper['IDs']['DOI']:
+                            html += '&nbsp;DOI: <a href="http://doi.org/' + this_paper['IDs']['DOI'] + '">' + this_paper['IDs']['DOI'] + '</a>'
+                    except:
+                        pass
 
-                        # Journal volume
-                        try:
-                            html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'] + ' Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue'] + '<br/>'
-                        except:
-                            pass
+                    # citation count
+                    try:
+                        html += '&nbsp; Citations: '+this_paper['Extras']['Citations']
+                    except:
+                        pass
 
-                        # PMID
-                        try:
-                            if this_paper['IDs']['PMID']:
-                                html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">'+str(this_paper['IDs']['PMID']) + '</a>'
-                        except:
-                            pass
+                    html += '<img style="width:20px;padding-left:20px;" src="../../papers/yellow-flag-th.png" alt="Comittee flag" title="At least one author is on the ALSPAC executive committee">'
 
-                        # Zotero
-                        try:
-                            if this_paper['IDs']['zotero']:
-                                html += '&nbsp;Zotero: ' + this_paper['IDs']['zotero'] + ''
-                        except:
-                            pass
+                    # Add an extra line break at the end
+                    html += '<br/><br/>'
 
-                        # DOI
-                        try:
-                            if this_paper['IDs']['DOI']:
-                                html += '&nbsp;DOI: <a href="http://doi.org/' + this_paper['IDs']['DOI'] + '">' + this_paper['IDs']['DOI'] + '</a>'
-                        except:
-                            pass
-
-                        # citation count
-                        try:
-                            html += '&nbsp; Citations: '+this_paper['Extras']['Citations']
-                        except:
-                            pass
-
-                        html += '<img style="width:20px;padding-left:20px;" src="../../papers/yellow-flag-th.png" title="At least one author is on the ALSPAC executive committee">'
-
-                        # Add an extra line break at the end
-                        html += '<br/><br/>'
-
-                        fo.write(html)
+                    fo.write(html)
 
                 except:
                     pass
@@ -866,7 +867,7 @@ def build_google_map(papers):
 
     temp += '<h1 id="pagetitle">Institutions Map</h1>'
 
-    temp += "<div class='loading'><img src='loading.gif'></div>"
+    temp += "<div class='loading'><img src='loading.gif' alt='Loading'></div>"
     temp += "<div id='map_canvas'></div>"
 
     print >>html_file, temp
@@ -925,7 +926,7 @@ def build_country_map(papers, api_key):
 
     temp += '<h1 id="pagetitle">Publications by Country</h1>'
 
-    temp += "<div class='loading'><img src='loading.gif'></div>"
+    temp += "<div class='loading'><img src='loading.gif' alt='Loading'></div>"
     temp += "<div id='regions_div' style='width: 900px; height: 500px;'></div>"
 
     print >>html_file, temp
@@ -988,7 +989,7 @@ def build_city_map(papers):
 
     temp += '<h1 id="pagetitle">Publications by UK City</h1>'
 
-    temp += "<div class='loading'><img src='loading.gif'></div>"
+    temp += "<div class='loading'><img src='loading.gif' alt='Loading'></div>"
     temp += '<div id="regions_div" style="width: 900px; height: 500px;"></div>'
 
     print >>html_file, temp
@@ -1425,7 +1426,7 @@ def build_author_network(papers, network):
             pass
         n += 1
 
-    temp += '<img src="author_network2.png">'
+    temp += '<img src="author_network2.png" alt="author network">'
 
     print >>html_file, temp
 
