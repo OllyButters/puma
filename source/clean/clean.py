@@ -84,7 +84,7 @@ def clean_institution(papers):
         for row in f:
             try:
                 # Check it is not a comment string first.
-                if(re.match('#', row[0])):
+                if re.match('#', row[0]):
                     continue
 
                 # Check for blank lines
@@ -116,14 +116,14 @@ def clean_institution(papers):
         for y in range(0, len(pattern)):
             # logging.debug('%s %s %s', institute, pattern[y], replacements[y])
             temp = re.search(pattern[y], institute, re.IGNORECASE)
-            if(temp > 0):
+            if temp > 0:
                 logging.info(
                     'ID:%s. %s MATCHES %s REPLACEDBY %s',
                     this_paper, institute, pattern[y], replacements[y])
                 this_paper['Extras']['CleanInstitute'] = replacements[y]
                 break
 
-            if(y == len(pattern)-1):
+            if y == len(pattern)-1:
                 logging.info('No match for %s. ID:%s', institute, this_paper)
                 logging.warn('No match for %s. ID:%s', institute, this_paper)
                 number_not_matched += 1

@@ -102,7 +102,7 @@ clean.clean_institution(papers)
 
 ###########################################################
 # Add some extra data in - i.e. geocodes and citations
-add.geocode.geocode(papers, error_log)
+add.geocode.geocode(papers, error_log, config.google_maps_api_key)
 
 if config.scopus_run_citation:
     add.citations.citations(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update)
@@ -133,12 +133,12 @@ analyse.output_csv(papers)
 ###########################################################
 # Make some web pages
 
-cohort_rating = html.build_htmlv2.build_home(papers)
+cohort_rating = html.build_htmlv2.build_home(papers, error_log)
 html.build_htmlv2.build_papers(papers)
 html.build_htmlv2.build_mesh(papers)
 html.build_htmlv2.build_google_map(papers)
-html.build_htmlv2.build_country_map(papers)
-html.build_htmlv2.build_metrics(papers, cohort_rating)
+html.build_htmlv2.build_country_map(papers, config.google_maps_api_key)
+html.build_htmlv2.build_metrics(papers, cohort_rating, config.metrics_study_start_year, config.metrics_study_current_year)
 html.build_htmlv2.build_abstract_word_cloud(papers)
 html.build_htmlv2.build_author_network(papers, network)
 html.build_htmlv2.build_error_log(papers, error_log)

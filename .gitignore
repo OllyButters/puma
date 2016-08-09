@@ -2,8 +2,8 @@
 /data
 /html
 /logs
+/html_alspac
 
 source/tools.pyc
 *.pyc
 *.*~
-

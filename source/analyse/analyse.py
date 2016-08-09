@@ -75,7 +75,7 @@ def abstracts(papers):
     stop_words = []
     for line in stop_lines:
         split = line.split()
-        if len(split) > 0 and split[0] != "|" and not "|" in split[0]:
+        if len(split) > 0 and split[0] != "|" and "|" not in split[0]:
             stop_words.append(split[0])
 
     # Remove words

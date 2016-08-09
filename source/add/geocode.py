@@ -2,7 +2,6 @@
 
 # import csv
 # import re
-import logging
 import os.path
 import json
 import urllib2
@@ -13,7 +12,7 @@ import config.config as config
 
 # Have a go at geocoding the cleaned institute names
 # I would expect there to be a lat long for all of them
-def geocode(papers, error_log):
+def geocode(papers, error_log, api_key):
 
     print 'Geocoding'
 
@@ -88,7 +87,7 @@ def geocode(papers, error_log):
 
                         if found_coords:
                             # Get country for heatmap
-                            retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['Extras']['LatLong']['lat']  + ',' + this_paper['Extras']['LatLong']['long']  + '&key=AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4'))
+                            retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['Extras']['LatLong']['lat'] + ',' + this_paper['Extras']['LatLong']['long'] + '&key=' + api_key))
 
                             try:
                                 comps = retur['results'][0]['address_components']
@@ -109,21 +108,20 @@ def geocode(papers, error_log):
                                 cache_file.close()
                             except:
                                 print 'Unable to get geo-data (Google API Quota Reached) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
-                                error_log.logError( this_paper['Extras']['CleanInstitute'] + " Google API Quota Reached!")
+                                error_log.logErrorPaper(this_paper['Extras']['CleanInstitute'] + " Google API Quota Reached!", this_paper)
                     except:
                         print 'Unable to get geo-data (Probably not on Wikidata) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
-                        error_log.logWarning("Insititue " + this_paper['Extras']['CleanInstitute'] + " not on Wikidata")
+                        error_log.logWarningPaper("Insititue " + this_paper['Extras']['CleanInstitute'] + " not on Wikidata", this_paper)
                 except:
                     print 'Unable to get geo-data (Wikidata Query Failed) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
-                    error_log.logWarning("Wikidata query failed for " + this_paper['Extras']['CleanInstitute'] )
+                    error_log.logWarningPaper("Wikidata query failed for " + this_paper['Extras']['CleanInstitute'], this_paper)
 
                 # === End Look up ===
 
         except:
             print 'No Clean Institute for ' + this_paper['IDs']['hash'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
-            error_log.logError("Clean Institute Missing for " +  this_paper['IDs']['hash'] )
+            error_log.logErrorPaper(" Clean Institute Missing for " + this_paper['IDs']['hash'] + " <a href='https://www.zotero.org/groups/300320/items/itemKey/" + this_paper['IDs']['zotero'] + "'>Zotero</a>", this_paper)
 
         number_done += 1
 
     print "locations found: " + str(locations_found) + "/" + str(number_done)
-
