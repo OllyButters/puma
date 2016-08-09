@@ -28,7 +28,7 @@ def build_config_variables(root_dir):
     print config.sections()
     try:
         # Project Details
-        project_details = { 'name': config.get('project_details','name') }
+        project_details = {'name': config.get('project_details', 'name')}
 
         # Scopus settings
         scopus_force_citation_update = config.get('scopus', 'scopus_force_citation_update')
@@ -40,11 +40,11 @@ def build_config_variables(root_dir):
         logging_loglevel = config.get('logging', 'loglevel')
 
         # Mapping
-        google_maps_api_key = config.get('google_chart_api','google_maps_api_key')
+        google_maps_api_key = config.get('google_chart_api', 'google_maps_api_key')
 
         # Metrics
-        metrics_study_start_year = int(config.get('metrics','metrics_study_start_year'))
-        metrics_study_current_year = int(config.get('metrics','metrics_study_current_year'))
+        metrics_study_start_year = int(config.get('metrics', 'metrics_study_start_year'))
+        metrics_study_current_year = int(config.get('metrics', 'metrics_study_current_year'))
 
     except:
         print 'Problem with the settings file'
