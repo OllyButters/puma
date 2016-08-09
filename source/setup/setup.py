@@ -13,17 +13,17 @@ def build_file_tree(root_dir):
     # if (os.path.exists(root_dir + '/cache') is False):
     #    os.mkdir(root_dir + '/cache')
 
-    if (os.path.exists(config.cache_dir) is False):
+    if not os.path.exists(config.cache_dir):
         os.mkdir(config.cache_dir)
 
-    if (os.path.exists(config.cache_dir + '/geodata') is False):
+    if not os.path.exists(config.cache_dir + '/geodata'):
         os.mkdir(config.cache_dir + '/geodata')
 
-    if (os.path.exists(root_dir + '/data') is False):
+    if not os.path.exists(root_dir + '/data'):
         os.mkdir(root_dir + '/data')
 
     # Log directory
-    if (os.path.exists(root_dir + '/logs') is False):
+    if not os.path.exists(root_dir + '/logs'):
         os.mkdir(root_dir + '/logs')
 
     # Output html
