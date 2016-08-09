@@ -1397,7 +1397,7 @@ def build_author_network(papers, network):
     temp += '<h1 id="pagetitle">Author Network</h1>'
 
     # Print nodes to csv
-    nodes_csv = open('../html/authornetwork/nodes.csv', 'w')
+    nodes_csv = open(config.html_dir + '/authornetwork/nodes.csv', 'w')
 
     print >>nodes_csv, 'id,Label'
     n = 0
@@ -1407,7 +1407,7 @@ def build_author_network(papers, network):
         n += 1
 
     # Print conections to csv
-    connections_csv = open('../html/authornetwork/connections.csv', 'w')
+    connections_csv = open(config.html_dir + '/authornetwork/connections.csv', 'w')
 
     print >>connections_csv, 'Source,Target'
 
