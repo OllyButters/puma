@@ -107,9 +107,9 @@ def build_home(papers, error_log):
     data_file = open(config.html_dir + '/data.js', 'w')
 
     # Copy CSS files
-    shutil.copyfile('html/templates/style_main.css', config.html_dir + '/css/style_main.css')
-    shutil.copyfile('html/templates/uobcms_corporate.css', config.html_dir + '/css/uobcms_corporate.css')
-    shutil.copyfile('html/templates/colour_scheme.css', config.html_dir + '/css/colour_scheme.css')
+    shutil.copyfile(config.template_dir + '/style_main.css', config.html_dir + '/css/style_main.css')
+    shutil.copyfile(config.template_dir + '/uobcms_corporate.css', config.html_dir + '/css/uobcms_corporate.css')
+    shutil.copyfile(config.template_dir + '/colour_scheme.css', config.html_dir + '/css/colour_scheme.css')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -237,8 +237,8 @@ def build_papers(papers):
     yearly_papers = {}
     html_file = open(config.html_dir + '/papers/index.html', 'w')
 
-    shutil.copyfile('html/templates/altmetric.png', config.html_dir + '/papers/altmetric.png')
-    shutil.copyfile('html/templates/yellow-flag-th.png', config.html_dir + '/papers/yellow-flag-th.png')
+    shutil.copyfile(config.template_dir + '/altmetric.png', config.html_dir + '/papers/altmetric.png')
+    shutil.copyfile(config.template_dir + '/yellow-flag-th.png', config.html_dir + '/papers/yellow-flag-th.png')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -354,8 +354,8 @@ def build_papers(papers):
             os.mkdir(config.html_dir + '/papers/' + this_year)
         year_file = open(config.html_dir + '/papers/' + this_year + '/index.html', 'w')
 
-        shutil.copyfile('html/templates/altmetric.png', config.html_dir + '/papers/' + this_year + '/altmetric.png')
-        shutil.copyfile('html/templates/yellow-flag-th.png', config.html_dir + '/papers/' + this_year + '/yellow-flag-th.png')
+        shutil.copyfile(config.template_dir + '/altmetric.png', config.html_dir + '/papers/' + this_year + '/altmetric.png')
+        shutil.copyfile(config.template_dir + '/yellow-flag-th.png', config.html_dir + '/papers/' + this_year + '/yellow-flag-th.png')
 
         # Put html together for this page
         temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -399,7 +399,7 @@ def build_mesh(papers):
 
     print "\n###HTML - mesh###"
 
-    shutil.copyfile('html/templates/keyword_history.js', config.html_dir + '/mesh/keyword_history.js')
+    shutil.copyfile(config.template_dir + '/keyword_history.js', config.html_dir + '/mesh/keyword_history.js')
 
     mesh_papers_all = {}
     mesh_papers_major = {}
@@ -580,7 +580,6 @@ def build_mesh(papers):
     word_cloud_list = "["
     word_cloud_n = 0
     word_cloud_max = 0
-    word_cloud_max_name = ""
 
     word_cloud_raw = ""
 
@@ -857,9 +856,9 @@ def build_google_map(papers):
     temp += '<script type="text/javascript" src="map.kml"></script>'
     temp += '<script type="text/javascript" src="map.js"></script>'
 
-    shutil.copyfile('html/templates/map.js', config.html_dir + '/map/map.js')
-    shutil.copyfile('html/templates/loading.gif', config.html_dir + '/map/loading.gif')
-    shutil.copyfile('html/templates/map.css', config.html_dir + '/css/map.css')
+    shutil.copyfile(config.template_dir + '/map.js', config.html_dir + '/map/map.js')
+    shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/map/loading.gif')
+    shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/css/map.css')
 
     temp += '</head>'
 
@@ -917,8 +916,8 @@ def build_country_map(papers, api_key):
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     temp += '<script type="text/javascript">' + "google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawRegionsMap);function drawRegionsMap() {var data = google.visualization.arrayToDataTable([ ['Country', 'Publications']" + country_string + "]); var options = { colorAxis: {colors: ['#FFB612', '#c9002f']} }; var chart = new google.visualization.GeoChart(document.getElementById('regions_div')); chart.draw(data, options); }</script>"
 
-    shutil.copyfile('html/templates/loading.gif', config.html_dir + '/country/loading.gif')
-    shutil.copyfile('html/templates/map.css', config.html_dir + '/country/map.css')
+    shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/country/loading.gif')
+    shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/country/map.css')
 
     temp += '</head>'
 
@@ -945,8 +944,6 @@ def build_city_map(papers):
 
     import shutil
     print "\n###HTML - City Map###"
-
-    info = []
 
     cities = {}
     for this_paper in papers:
@@ -980,8 +977,8 @@ def build_city_map(papers):
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     temp += "<script>google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['City',   'Publications']" + city_string + " ]); var options = {region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#FFB612', '#c9002f']}}; var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));chart.draw(data, options); };</script>"
 
-    shutil.copyfile('html/templates/loading.gif', config.html_dir + '/city/loading.gif')
-    shutil.copyfile('html/templates/map.css', config.html_dir + '/city/map.css')
+    shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/city/loading.gif')
+    shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/city/map.css')
 
     temp += '</head>'
 
@@ -1059,7 +1056,7 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
-    shutil.copyfile('html/templates/metrics.js', config.html_dir + '/metrics/metrics.js')
+    shutil.copyfile(config.template_dir + '/metrics.js', config.html_dir + '/metrics/metrics.js')
 
     temp += '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     temp += '<script type="text/javascript" src="../data.js"></script>'
@@ -1214,8 +1211,8 @@ def build_word_cloud(papers, list):
     temp += '<link rel="stylesheet" href="../css/map.css">'
     temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
-    shutil.copyfile('html/templates/d3wordcloud.js', config.html_dir + '/wordcloud/d3wordcloud.js')
-    shutil.copyfile('html/templates/d3.layout.cloud.js', config.html_dir + '/wordcloud/d3.layout.cloud.js')
+    shutil.copyfile(config.template_dir + '/d3wordcloud.js', config.html_dir + '/wordcloud/d3wordcloud.js')
+    shutil.copyfile(config.template_dir + '/d3.layout.cloud.js', config.html_dir + '/wordcloud/d3.layout.cloud.js')
 
     temp += '<script>var word_list = ' + list + '</script>'
     temp += '<script src="http://d3js.org/d3.v3.min.js"></script>'
@@ -1288,8 +1285,8 @@ def build_abstract_word_cloud(papers):
     temp += '<link rel="stylesheet" href="../css/map.css">'
     temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
-    shutil.copyfile('html/templates/d3wordcloud.js', config.html_dir + '/abstractwordcloud/d3wordcloud.js')
-    shutil.copyfile('html/templates/d3.layout.cloud.js', config.html_dir + '/abstractwordcloud/d3.layout.cloud.js')
+    shutil.copyfile(config.template_dir + '/d3wordcloud.js', config.html_dir + '/abstractwordcloud/d3wordcloud.js')
+    shutil.copyfile(config.template_dir + '/d3.layout.cloud.js', config.html_dir + '/abstractwordcloud/d3.layout.cloud.js')
 
     temp += '<script src="list.js"></script>'
     temp += '<script src="http://d3js.org/d3.v3.min.js"></script>'
@@ -1374,8 +1371,8 @@ def build_author_network(papers, network):
 
     html_file = open(config.html_dir + '/authornetwork/index.html', 'w')
 
-    shutil.copyfile('html/templates/network.js', config.html_dir + '/authornetwork/network.js')
-    shutil.copyfile('html/templates/author_network2.png', config.html_dir + '/authornetwork/author_network2.png')
+    shutil.copyfile(config.template_dir + '/network.js', config.html_dir + '/authornetwork/network.js')
+    shutil.copyfile(config.template_dir + '/author_network2.png', config.html_dir + '/authornetwork/author_network2.png')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
