@@ -214,6 +214,14 @@ div#uobcms-content {
        top:calc( -40px + 30px  + 55px );
      }
 
+     div#uobcms-content div.metric div.metric_stats_data {
+       font-size:9px;
+       position: absolute;
+       top:calc( 25vh/2 - 40px + 30px + 55px );
+       width:100%;
+       text-transform: uppercase;
+     }
+
      div#uobcms-content div.metric div.metric_description {
        position:absolute;
        bottom:4px;

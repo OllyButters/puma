@@ -49,6 +49,7 @@ def abstracts(papers):
     print "\n###Abstracts###"
 
     words = []
+    data_from_count = 0
     # Go through all papers
     for this_paper in papers:
         try:
@@ -66,6 +67,7 @@ def abstracts(papers):
 
             # Add abstract words into list of all words
             words.extend(abstracts.split())
+            data_from_count += 1
         except:
             pass
 
@@ -105,6 +107,8 @@ def abstracts(papers):
                 print w, freq[w]
                 i = i+1
             abstracts_file.writerow([w.encode('utf-8'), freq[w]])
+
+    return data_from_count
 
 
 ############################################################

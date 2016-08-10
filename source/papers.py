@@ -122,7 +122,7 @@ analyse.journals(papers)
 
 # pp.pprint(papers)
 
-analyse.abstracts(papers)
+abstract_data_from_count = analyse.abstracts(papers)
 network = analyse.authors(papers)
 analyse.first_authors(papers)
 analyse.inst(papers)
@@ -132,16 +132,16 @@ analyse.output_csv(papers)
 
 ###########################################################
 # Make some web pages
-
-cohort_rating = html.build_htmlv2.build_home(papers, error_log)
+cohort_rating, cohort_rating_data_from = html.build_htmlv2.build_home(papers, error_log)
 html.build_htmlv2.build_papers(papers)
 html.build_htmlv2.build_mesh(papers)
 html.build_htmlv2.build_google_map(papers)
 html.build_htmlv2.build_country_map(papers, config.google_maps_api_key)
-html.build_htmlv2.build_metrics(papers, cohort_rating, config.metrics_study_start_year, config.metrics_study_current_year)
-html.build_htmlv2.build_abstract_word_cloud(papers)
+html.build_htmlv2.build_metrics(papers, cohort_rating, cohort_rating_data_from, config.metrics_study_start_year, config.metrics_study_current_year)
+html.build_htmlv2.build_abstract_word_cloud(papers, abstract_data_from_count)
 html.build_htmlv2.build_author_network(papers, network)
 html.build_htmlv2.build_error_log(papers, error_log)
+html.build_htmlv2.build_help()
 
 # Time Log
 end_time = time.time()

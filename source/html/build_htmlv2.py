@@ -46,6 +46,7 @@ def build_common_body(breadcrumb, nav_path, body):
 
     html += '<ul class="navgroup">'
     html += '<li><a href="' + nav_path + 'index.html">Home</a></li>'
+    html += '<li><a href="' + nav_path + 'help/index.html">Information</a></li>'
     html += '<li><a href="' + nav_path + 'papers/index.html">Papers List</a></li>'
     html += '<li><a href="' + nav_path + 'all_keywords/index.html">All Keywords</a></li>'
     html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords</a></li>'
@@ -191,6 +192,7 @@ def build_home(papers, error_log):
     cr_current_year = float(config.metrics_study_current_year)
     print cr_current_year
     cr_sum = 0.0
+    cr_data_from = 0
 
     # print summary
     # Make a page with the headings on it
@@ -206,6 +208,7 @@ def build_home(papers, error_log):
             cr_year = 1.0
 
         cr_sum += float(summary[this_year]['citations']) / cr_year
+        cr_data_from += summary[this_year]['num_papers']
 
         # Build the table
         temp = '<tr><td><a href="papers/' + this_year + '/index.html">' + str(this_year) + '</a></td>'
@@ -218,11 +221,13 @@ def build_home(papers, error_log):
         print >>html_file, temp
     print >>html_file, '</table>'
 
-    temp = build_common_foot()
+    temp = "<p>Data from " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications</p>"
+
+    temp += build_common_foot()
     print >>html_file, temp
 
     cr_sum = cr_sum / len(papers)
-    return cr_sum
+    return cr_sum, cr_data_from
 ############################################################
 # Home page with summary of years
 ############################################################
@@ -419,6 +424,7 @@ def build_mesh(papers):
             pass
 
     # Build a dict of ONLY MAJOR mesh headings with a list of each pmid in each
+    data_from_count = 0
     for this_paper in papers:
         try:
             # Look at all the mesh headings for this paper
@@ -429,6 +435,8 @@ def build_mesh(papers):
                     if this_mesh['DescriptorName'] not in mesh_papers_major:
                         mesh_papers_major[this_mesh['DescriptorName']] = list()
                     mesh_papers_major[this_mesh['DescriptorName']].append(this_paper['IDs']['hash'])
+
+            data_from_count += 1
         except:
             pass
 
@@ -808,7 +816,7 @@ def build_mesh(papers):
         fo.close()
 
     word_cloud_list += "]"
-    build_word_cloud(papers, word_cloud_list)
+    build_word_cloud(papers, word_cloud_list, data_from_count)
 
 
 ###########################################################
@@ -1012,7 +1020,7 @@ def intWithCommas(x):
     return "%d%s" % (x, result)
 
 
-def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
+def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_year, study_current_year):
 
     import shutil
     print "\n###HTML - Metrics###"
@@ -1075,6 +1083,7 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
     # Metric calculations
     total_publications = len(papers)
     total_citations = 0
+    total_citations_data_from_count = 0
     paper_citations = []
     c20_index = 0
 
@@ -1090,6 +1099,7 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
 
             cit = int(this_paper['Extras']['Citations'])
             total_citations += cit
+            total_citations_data_from_count += 1
             paper_citations.append(cit)
 
             # increment c20-index if more that 20 citations
@@ -1098,7 +1108,7 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
         except:
             pass
 
-    average_citations = float(total_citations)/float(total_publications)
+    average_citations = float(total_citations)/float(total_citations_data_from_count)
     i20_index_per_year = float(c20_index)/float(study_duration)
 
     # cal h-index
@@ -1131,48 +1141,56 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>h-index</div>"
     temp += "<div class='metric_value'>" + str(h_index) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>h-index is the largest number h such that h publications from a study have at least h citations.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>g-index</div>"
     temp += "<div class='metric_value'>" + str(g_index) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>The largest number n of highly cited articles for which the average number of citations is at least n.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>Cohort-Rating</div>"
     temp += "<div class='metric_value'>" + str("{0:.3f}".format(round(cohort_rating, 3))) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(cohort_rating_data_from) + " Publications</div>"
     temp += "<div class='metric_description'></div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>Mean Citations Per Publication</div>"
     temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(average_citations, 2))) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>The total number of citations divided by the total number of publications.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>c" + str(c_index_bound) + "-index</div>"
     temp += "<div class='metric_value'>" + intWithCommas(c20_index) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>The number of publications from a study that have at least " + str(c_index_bound) + " citations.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>c" + str(c_index_bound) + "-index per Study Year</div>"
     temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(i20_index_per_year, 2))) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>The c" + str(c_index_bound) + "-index divided by the number of years the study has been running for.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
-    temp += "<div class='metric_name'>Total Papers</div>"
+    temp += "<div class='metric_name'>Total Publications</div>"
     temp += "<div class='metric_value'>" + intWithCommas(total_publications) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_publications) + " Publications</div>"
     temp += "<div class='metric_description'>This is the number of all publications for the study.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>Total Citations</div>"
     temp += "<div class='metric_value'>" + intWithCommas(total_citations) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>This is the number of citations to all publications for the study.</div>"
     temp += "</div>"
     temp += "</div>"
@@ -1192,7 +1210,7 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
 ###########################################################
 
 
-def build_word_cloud(papers, list):
+def build_word_cloud(papers, list, data_from_count):
 
     import shutil
     print "\n###HTML - Keyword Cloud###"
@@ -1226,6 +1244,7 @@ def build_word_cloud(papers, list):
 
     temp += '<cloud id="sourrounding_div" style="width:100%;height:500px">'
     temp += '</cloud>'
+    temp += "<p>Data from " + intWithCommas(data_from_count) + " publications</p>"
 
     temp += '<script src="d3wordcloud.js"></script>'
 
@@ -1239,7 +1258,7 @@ def build_word_cloud(papers, list):
 ###########################################################
 
 
-def build_abstract_word_cloud(papers):
+def build_abstract_word_cloud(papers, data_from_count):
 
     import shutil
     import csv
@@ -1302,6 +1321,7 @@ def build_abstract_word_cloud(papers):
     temp += '</cloud>'
 
     temp += '<script src="d3wordcloud.js"></script>'
+    temp += "<p>Data from " + intWithCommas(data_from_count) + " publications</p>"
 
     print >>html_file, temp
 
@@ -1458,6 +1478,41 @@ def build_error_log(papers, error_log):
     temp += '<h1 id="pagetitle">Error Log</h1>'
 
     temp += error_log.printLog()
+
+    print >>html_file, temp
+
+    temp = build_common_foot()
+    print >>html_file, temp
+
+
+###########################################################
+# Help Page
+###########################################################
+def build_help():
+
+    print "\n###HTML - Help/Information page###"
+
+    html_file = open(config.html_dir + '/help/index.html', 'w')
+
+    # Put html together for this page
+    temp = '<!DOCTYPE html><html lang="en-GB">'
+
+    # html head
+    temp += '<head>'
+    temp += '<title>' + site_title + '</title>'
+    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
+    temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/map.css">'
+
+    temp += '</head>'
+
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Information</p>', "../", "")
+
+    temp += '<h1 id="pagetitle">Information</h1>'
+
+    temp += '<h2>Data Collection</h2>'
+    temp += '<p>Helpful Information!</p>'
 
     print >>html_file, temp
 

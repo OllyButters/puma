@@ -71,3 +71,6 @@ def build_file_tree(root_dir):
 
     if not os.path.exists(config.html_dir + '/errorlog'):
         os.mkdir(config.html_dir + '/errorlog')
+
+    if not os.path.exists(config.html_dir + '/help'):
+        os.mkdir(config.html_dir + '/help')
