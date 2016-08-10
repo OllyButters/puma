@@ -1392,7 +1392,7 @@ def build_author_network(papers, network):
     html_file = open(config.html_dir + '/authornetwork/index.html', 'w')
 
     shutil.copyfile(config.template_dir + '/network.js', config.html_dir + '/authornetwork/network.js')
-    shutil.copyfile(config.template_dir + '/author_network2.png', config.html_dir + '/authornetwork/author_network2.png')
+    shutil.copyfile(config.template_dir + '/author_network.png', config.html_dir + '/authornetwork/author_network.png')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -1443,7 +1443,7 @@ def build_author_network(papers, network):
             pass
         n += 1
 
-    temp += '<img src="author_network2.png" alt="author network">'
+    temp += '<img src="author_network.png" alt="author network">'
 
     print >>html_file, temp
 
