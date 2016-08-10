@@ -566,9 +566,9 @@ def build_mesh(papers):
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '</head>'
 
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keywords</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keywords (MeSH)</p>', "../", "")
 
-    temp += '<h1 id="pagetitle">Major Keywords</h1>'
+    temp += '<h1 id="pagetitle">Major Keywords (MeSH)</h1>'
     temp += '<p>' + str(len(mesh_papers_major)) + ' Keywords</p>'
 
     print >>html_file_major, temp
@@ -1511,8 +1511,10 @@ def build_help():
 
     temp += '<h1 id="pagetitle">Information</h1>'
 
-    temp += '<h2>Data Collection</h2>'
+    temp += '<h2>Where does the data come from?</h2>'
     temp += '<p>Helpful Information!</p>'
+
+    temp += "<h2>Why don't some statistics use data from all publications?</h2>"
 
     print >>html_file, temp
 
