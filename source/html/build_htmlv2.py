@@ -1337,7 +1337,7 @@ def get_author_string_from_hash(hash_string, network):
 
     for author in network['authors']:
         if author == hash_string:
-            return network['authors'][author]['family'] + ' ' + network['authors'][author]['given']
+            return network['authors'][author]['clean']
 
 
 def build_author_network(papers, network):
@@ -1358,7 +1358,7 @@ def build_author_network(papers, network):
         net_json = ""
         if n > 0:
             net_json += ","
-        net_json += '{"id": "' + network['authors'][author]['family'] + ' ' + network['authors'][author]['given'] + '", "group":1}'
+        net_json += '{"id": "' + network['authors'][author]['clean'] + '", "group":1}'
 
         print >>net_file, net_json
         n += 1
@@ -1420,7 +1420,7 @@ def build_author_network(papers, network):
     n = 0
 
     for author in network['authors']:
-        print >>nodes_csv, author + "," + network['authors'][author]['family'] + ' ' + network['authors'][author]['given']
+        print >>nodes_csv, author + "," + network['authors'][author]['clean']
         n += 1
 
     # Print conections to csv
@@ -1512,9 +1512,10 @@ def build_help():
     temp += '<h1 id="pagetitle">Information</h1>'
 
     temp += '<h2>Where does the data come from?</h2>'
-    temp += '<p>Helpful Information!</p>'
+    temp += '<p>Places.</p>'
 
     temp += "<h2>Why don't some statistics use data from all publications?</h2>"
+    temp += '<p>Because.</p>'
 
     print >>html_file, temp
 
