@@ -1199,6 +1199,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     temp += '<div id="cumulative_div"></div>'
     temp += '<div id="papers_per_year_div"></div>'
     temp += '<div id="papers_per_citation_count_div"></div>'
+    temp += "<p>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
 
     print >>html_file, temp
 
@@ -1443,7 +1444,7 @@ def build_author_network(papers, network):
             pass
         n += 1
 
-    temp += '<img src="author_network.png" alt="author network">'
+    temp += '<a href="author_network.png"><img src="author_network.png" alt="author network"></a>'
 
     print >>html_file, temp
 
