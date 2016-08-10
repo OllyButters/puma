@@ -1513,7 +1513,10 @@ def build_help():
     temp += '<h1 id="pagetitle">Information</h1>'
 
     temp += '<h2>Where does the data come from?</h2>'
-    temp += '<p>Places.</p>'
+    temp += '<h3>Publication Data</h3>'
+    temp += '<p>Pubmed.</p>'
+    temp += '<h3>Citations Data</h3>'
+    temp += '<p>Scopus - Elsevier.</p>'
 
     temp += "<h2>Why don't some statistics use data from all publications?</h2>"
     temp += '<p>Because.</p>'
