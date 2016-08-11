@@ -874,10 +874,12 @@ def build_google_map(papers):
     print "\n###HTML - Insititutions Map###"
 
     info = []
+    number_of_points = 0
     for this_paper in papers:
         try:
             this_place = {'lat': this_paper['Extras']['LatLong']['lat'], 'long': this_paper['Extras']['LatLong']['long'], 'name': this_paper['Extras']['CleanInstitute']}
             info.append(this_place)
+            number_of_points += 1
         except:
             pass
 
@@ -920,6 +922,7 @@ def build_google_map(papers):
 
     temp += "<div class='loading'><img src='loading.gif' alt='Loading'></div>"
     temp += "<div id='map_canvas'></div>"
+    temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
 
     print >>html_file, temp
 
@@ -937,6 +940,7 @@ def build_country_map(papers, api_key):
     print "\n###HTML - Country Map###"
 
     countries = {}
+    number_of_points = 0
     for this_paper in papers:
         try:
 
@@ -944,6 +948,7 @@ def build_country_map(papers, api_key):
                 countries[this_paper['Extras']['country_code']] += 1
             else:
                 countries[this_paper['Extras']['country_code']] = 1
+            number_of_points += 1
         except:
             pass
 
@@ -979,6 +984,7 @@ def build_country_map(papers, api_key):
 
     temp += "<div class='loading'><img src='loading.gif' alt='Loading'></div>"
     temp += "<div id='regions_div' style='width: 900px; height: 500px;'></div>"
+    temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
 
     print >>html_file, temp
 
@@ -998,6 +1004,7 @@ def build_city_map(papers):
     print "\n###HTML - City Map###"
 
     cities = {}
+    number_of_points = 0
     for this_paper in papers:
 
         try:
@@ -1006,6 +1013,7 @@ def build_city_map(papers):
                     cities[this_paper['Extras']['postal_town']] += 1
                 else:
                     cities[this_paper['Extras']['postal_town']] = 1
+                number_of_points += 1
         except:
             pass
 
@@ -1040,7 +1048,7 @@ def build_city_map(papers):
 
     temp += "<div class='loading'><img src='loading.gif' alt='Loading'></div>"
     temp += '<div id="regions_div" style="width: 900px; height: 500px;"></div>'
-
+    temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
     print >>html_file, temp
 
     temp = build_common_foot()
