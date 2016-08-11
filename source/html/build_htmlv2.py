@@ -293,11 +293,22 @@ def build_papers(papers):
             html += '; '.join(authors)
             html += '<br/>'
 
-            # Journal volume
+            # Journal volume and issue
             try:
-                html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'] + ' Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue'] + '<br/>'
+                html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
             except:
                 pass
+
+            try:
+                html += ' Volume ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['volume']
+            except:
+                pass
+
+            try:
+                html += ' Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue']
+            except:
+                pass
+            html += '<br/>'
 
             # PMID
             try:
@@ -767,11 +778,22 @@ def build_mesh(papers):
                     html += '; '.join(authors)
                     html += '<br/>'
 
-                    # Journal volume
+                    # Journal volume and issue
                     try:
-                        html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'] + ' Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue'] + '<br/>'
+                        html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
                     except:
                         pass
+
+                    try:
+                        html += ' Volume ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['volume']
+                    except:
+                        pass
+
+                    try:
+                        html += ' Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue']
+                    except:
+                        pass
+                    html += '<br/>'
 
                     # PMID
                     try:
