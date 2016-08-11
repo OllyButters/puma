@@ -46,6 +46,7 @@ def build_common_body(breadcrumb, nav_path, body):
 
     html += '<ul class="navgroup">'
     html += '<li><a href="' + nav_path + 'index.html">Home</a></li>'
+    html += '<li><a href="' + nav_path + 'help/index.html">Information</a></li>'
     html += '<li><a href="' + nav_path + 'papers/index.html">Papers List</a></li>'
     html += '<li><a href="' + nav_path + 'all_keywords/index.html">All Keywords</a></li>'
     html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords</a></li>'
@@ -107,9 +108,9 @@ def build_home(papers, error_log):
     data_file = open(config.html_dir + '/data.js', 'w')
 
     # Copy CSS files
-    shutil.copyfile('html/templates/style_main.css', config.html_dir + '/css/style_main.css')
-    shutil.copyfile('html/templates/uobcms_corporate.css', config.html_dir + '/css/uobcms_corporate.css')
-    shutil.copyfile('html/templates/colour_scheme.css', config.html_dir + '/css/colour_scheme.css')
+    shutil.copyfile(config.template_dir + '/style_main.css', config.html_dir + '/css/style_main.css')
+    shutil.copyfile(config.template_dir + '/uobcms_corporate.css', config.html_dir + '/css/uobcms_corporate.css')
+    shutil.copyfile(config.template_dir + '/colour_scheme.css', config.html_dir + '/css/colour_scheme.css')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -175,13 +176,13 @@ def build_home(papers, error_log):
     # Cumulative first
     print >>data_file, 'var cumulative =([[\'Year\', \'Number of papers\'],'
     for this_year in sorted(summary, reverse=False):
-        print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['cumulative'])+'],'
+        print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['cumulative']) + '],'
     print >>data_file, ']);'
 
     # Number per year now
     print >>data_file, 'var papers_per_year=([[\'Year\', \'Number of papers\'],'
     for this_year in sorted(summary, reverse=False):
-        print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['num_papers'])+'],'
+        print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['num_papers']) + '],'
     print >>data_file, ']);'
 
     # Copy the main html page across
@@ -191,6 +192,7 @@ def build_home(papers, error_log):
     cr_current_year = float(config.metrics_study_current_year)
     print cr_current_year
     cr_sum = 0.0
+    cr_data_from = 0
 
     # print summary
     # Make a page with the headings on it
@@ -206,23 +208,26 @@ def build_home(papers, error_log):
             cr_year = 1.0
 
         cr_sum += float(summary[this_year]['citations']) / cr_year
+        cr_data_from += summary[this_year]['num_papers']
 
         # Build the table
-        temp = '<tr><td><a href="papers/' + this_year + '/index.html">'+str(this_year)+'</a></td>'
-        temp += '<td>'+intWithCommas(summary[this_year]['num_papers'])+'</td>'
-        temp += '<td>'+str(summary[this_year]['cumulative'])+'</td>'
-        temp += '<td>'+intWithCommas(summary[this_year]['uob'])+'</td>'
-        temp += '<td>'+str(int(100*summary[this_year]['uob']/summary[this_year]['num_papers']))+'</td>'
-        temp += '<td>'+intWithCommas(summary[this_year]['citations'])+'</td>'
-        temp += '<td>'+intWithCommas(summary[this_year]['cumulative_citations'])+'</td></tr>'
+        temp = '<tr><td><a href="papers/' + this_year + '/index.html">' + str(this_year) + '</a></td>'
+        temp += '<td>' + intWithCommas(summary[this_year]['num_papers']) + '</td>'
+        temp += '<td>' + str(summary[this_year]['cumulative']) + '</td>'
+        temp += '<td>' + intWithCommas(summary[this_year]['uob']) + '</td>'
+        temp += '<td>' + str(int(100*summary[this_year]['uob']/summary[this_year]['num_papers'])) + '</td>'
+        temp += '<td>' + intWithCommas(summary[this_year]['citations']) + '</td>'
+        temp += '<td>' + intWithCommas(summary[this_year]['cumulative_citations']) + '</td></tr>'
         print >>html_file, temp
     print >>html_file, '</table>'
 
-    temp = build_common_foot()
+    temp = "<p>Data from " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications</p>"
+
+    temp += build_common_foot()
     print >>html_file, temp
 
     cr_sum = cr_sum / len(papers)
-    return cr_sum
+    return cr_sum, cr_data_from
 ############################################################
 # Home page with summary of years
 ############################################################
@@ -232,13 +237,29 @@ def build_papers(papers):
 
     import shutil
     import os.path
+    import csv
+    import htmlentities
+
     print "\n###HTML papers list###"
 
     yearly_papers = {}
     html_file = open(config.html_dir + '/papers/index.html', 'w')
 
-    shutil.copyfile('html/templates/altmetric.png', config.html_dir + '/papers/altmetric.png')
-    shutil.copyfile('html/templates/yellow-flag-th.png', config.html_dir + '/papers/yellow-flag-th.png')
+    shutil.copyfile(config.template_dir + '/altmetric.png', config.html_dir + '/papers/altmetric.png')
+    shutil.copyfile(config.template_dir + '/yellow-flag-th.png', config.html_dir + '/papers/yellow-flag-th.png')
+
+    # Read in exec csv
+    exec_list = []
+    f = open(config.config_dir + "/" + config.project_details['short_name'] + '_exec_members.csv', 'rt')
+    try:
+        reader = csv.reader(f)
+        n = 0
+        for row in reader:
+            if n > 0:
+                exec_list.append(row)
+            n += 1
+    finally:
+        f.close()
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -277,27 +298,47 @@ def build_papers(papers):
 
             # Authors
             authors = []
+            author_on_exec = False
             for this_author in this_paper['author']:
+                # print this_author['family'] + ', ' + this_author['given'] + "      " + htmlentities.encode(this_author['family'] + ', ' + this_author['given'])
+
                 # Some author lists have a collective name. Ignore this.
                 # Some people don't actually have initials. eg wraight in pmid:18454148
                 try:
+                    # Check if an author was on the exec Comittee
+                    for x in exec_list:
+                        if x[2] == this_author['clean']:
+                            author_on_exec = True
+                            break
+
                     authors.append(this_author['family'] + ', ' + this_author['given'])
                 except:
                     pass
 
-            html += '; '.join(authors)
+            html += htmlentities.encode('; '.join(authors))
             html += '<br/>'
 
-            # Journal volume
+            # Journal volume and issue
             try:
-                html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'] + ' Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue'] + '<br/>'
+                html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
             except:
                 pass
+
+            try:
+                html += ', Volume ' + this_paper['volume']
+            except:
+                pass
+
+            try:
+                html += ', Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue']
+            except:
+                pass
+            html += '<br/>'
 
             # PMID
             try:
                 if this_paper['IDs']['PMID']:
-                    html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">'+str(this_paper['IDs']['PMID']) + '</a>'
+                    html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">' + str(this_paper['IDs']['PMID']) + '</a>'
             except:
                 pass
 
@@ -317,11 +358,12 @@ def build_papers(papers):
 
             # citation count
             try:
-                html += '&nbsp; Citations: '+this_paper['Extras']['Citations']
+                html += '&nbsp; Citations: ' + this_paper['Extras']['Citations']
             except:
                 pass
 
-            html += '<img style="width:20px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author is on the ALSPAC executive committee">'
+            if author_on_exec:
+                html += '<img style="width:16px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
 
             # Add an extra line break at the end
             html += '<br/><br/>'
@@ -354,8 +396,8 @@ def build_papers(papers):
             os.mkdir(config.html_dir + '/papers/' + this_year)
         year_file = open(config.html_dir + '/papers/' + this_year + '/index.html', 'w')
 
-        shutil.copyfile('html/templates/altmetric.png', config.html_dir + '/papers/' + this_year + '/altmetric.png')
-        shutil.copyfile('html/templates/yellow-flag-th.png', config.html_dir + '/papers/' + this_year + '/yellow-flag-th.png')
+        shutil.copyfile(config.template_dir + '/altmetric.png', config.html_dir + '/papers/' + this_year + '/altmetric.png')
+        shutil.copyfile(config.template_dir + '/yellow-flag-th.png', config.html_dir + '/papers/' + this_year + '/yellow-flag-th.png')
 
         # Put html together for this page
         temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -396,10 +438,11 @@ def build_mesh(papers):
     import shutil
     import math
     import csv
+    import htmlentities
 
     print "\n###HTML - mesh###"
 
-    shutil.copyfile('html/templates/keyword_history.js', config.html_dir + '/mesh/keyword_history.js')
+    shutil.copyfile(config.template_dir + '/keyword_history.js', config.html_dir + '/mesh/keyword_history.js')
 
     mesh_papers_all = {}
     mesh_papers_major = {}
@@ -419,6 +462,7 @@ def build_mesh(papers):
             pass
 
     # Build a dict of ONLY MAJOR mesh headings with a list of each pmid in each
+    data_from_count = 0
     for this_paper in papers:
         try:
             # Look at all the mesh headings for this paper
@@ -429,6 +473,8 @@ def build_mesh(papers):
                     if this_mesh['DescriptorName'] not in mesh_papers_major:
                         mesh_papers_major[this_mesh['DescriptorName']] = list()
                     mesh_papers_major[this_mesh['DescriptorName']].append(this_paper['IDs']['hash'])
+
+            data_from_count += 1
         except:
             pass
 
@@ -558,9 +604,9 @@ def build_mesh(papers):
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '</head>'
 
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keywords</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keywords (MeSH)</p>', "../", "")
 
-    temp += '<h1 id="pagetitle">Major Keywords</h1>'
+    temp += '<h1 id="pagetitle">Major Keywords (MeSH)</h1>'
     temp += '<p>' + str(len(mesh_papers_major)) + ' Keywords</p>'
 
     print >>html_file_major, temp
@@ -580,7 +626,6 @@ def build_mesh(papers):
     word_cloud_list = "["
     word_cloud_n = 0
     word_cloud_max = 0
-    word_cloud_max_name = ""
 
     word_cloud_raw = ""
 
@@ -748,7 +793,6 @@ def build_mesh(papers):
 
                     # Authors
                     authors = []
-
                     for this_author in this_paper['author']:
                         # Some author lists have a collective name. Ignore this.
                         # Some people don't actually have initials. eg wraight in pmid:18454148
@@ -757,14 +801,25 @@ def build_mesh(papers):
                         except:
                             pass
 
-                    html += '; '.join(authors)
+                    html += htmlentities.encode('; '.join(authors))
                     html += '<br/>'
 
-                    # Journal volume
+                    # Journal volume and issue
                     try:
-                        html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'] + ' Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue'] + '<br/>'
+                        html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
                     except:
                         pass
+
+                    try:
+                        html += ', Volume ' + this_paper['volume']
+                    except:
+                        pass
+
+                    try:
+                        html += ', Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue']
+                    except:
+                        pass
+                    html += '<br/>'
 
                     # PMID
                     try:
@@ -793,7 +848,7 @@ def build_mesh(papers):
                     except:
                         pass
 
-                    html += '<img style="width:20px;padding-left:20px;" src="../../papers/yellow-flag-th.png" alt="Comittee flag" title="At least one author is on the ALSPAC executive committee">'
+                    html += '<img style="width:16px;padding-left:20px;" src="../../papers/yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
 
                     # Add an extra line break at the end
                     html += '<br/><br/>'
@@ -809,7 +864,7 @@ def build_mesh(papers):
         fo.close()
 
     word_cloud_list += "]"
-    build_word_cloud(papers, word_cloud_list)
+    build_word_cloud(papers, word_cloud_list, data_from_count)
 
 
 ###########################################################
@@ -820,13 +875,16 @@ def build_mesh(papers):
 def build_google_map(papers):
 
     import shutil
+    import codecs
     print "\n###HTML - Insititutions Map###"
 
     info = []
+    number_of_points = 0
     for this_paper in papers:
         try:
             this_place = {'lat': this_paper['Extras']['LatLong']['lat'], 'long': this_paper['Extras']['LatLong']['long'], 'name': this_paper['Extras']['CleanInstitute']}
             info.append(this_place)
+            number_of_points += 1
         except:
             pass
 
@@ -837,10 +895,10 @@ def build_google_map(papers):
         kml += '["' + this_info['name'] + '",' + str(this_info['lat']) + ',' + str(this_info['long']) + '],'
     kml += ']'
 
-    kml_file = open(config.html_dir + '/map/map.kml', 'w')
+    kml_file = codecs.open(config.html_dir + '/map/map.kml', 'w', 'utf-8')
     print >>kml_file, kml
 
-    html_file = open(config.html_dir + '/map/index.html', 'w')
+    html_file = codecs.open(config.html_dir + '/map/index.html', 'w', 'utf-8')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -857,9 +915,9 @@ def build_google_map(papers):
     temp += '<script type="text/javascript" src="map.kml"></script>'
     temp += '<script type="text/javascript" src="map.js"></script>'
 
-    shutil.copyfile('html/templates/map.js', config.html_dir + '/map/map.js')
-    shutil.copyfile('html/templates/loading.gif', config.html_dir + '/map/loading.gif')
-    shutil.copyfile('html/templates/map.css', config.html_dir + '/css/map.css')
+    shutil.copyfile(config.template_dir + '/map.js', config.html_dir + '/map/map.js')
+    shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/map/loading.gif')
+    shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/css/map.css')
 
     temp += '</head>'
 
@@ -869,6 +927,7 @@ def build_google_map(papers):
 
     temp += "<div class='loading'><img src='loading.gif' alt='Loading'></div>"
     temp += "<div id='map_canvas'></div>"
+    temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
 
     print >>html_file, temp
 
@@ -886,6 +945,7 @@ def build_country_map(papers, api_key):
     print "\n###HTML - Country Map###"
 
     countries = {}
+    number_of_points = 0
     for this_paper in papers:
         try:
 
@@ -893,6 +953,7 @@ def build_country_map(papers, api_key):
                 countries[this_paper['Extras']['country_code']] += 1
             else:
                 countries[this_paper['Extras']['country_code']] = 1
+            number_of_points += 1
         except:
             pass
 
@@ -917,8 +978,8 @@ def build_country_map(papers, api_key):
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     temp += '<script type="text/javascript">' + "google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawRegionsMap);function drawRegionsMap() {var data = google.visualization.arrayToDataTable([ ['Country', 'Publications']" + country_string + "]); var options = { colorAxis: {colors: ['#FFB612', '#c9002f']} }; var chart = new google.visualization.GeoChart(document.getElementById('regions_div')); chart.draw(data, options); }</script>"
 
-    shutil.copyfile('html/templates/loading.gif', config.html_dir + '/country/loading.gif')
-    shutil.copyfile('html/templates/map.css', config.html_dir + '/country/map.css')
+    shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/country/loading.gif')
+    shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/country/map.css')
 
     temp += '</head>'
 
@@ -928,6 +989,7 @@ def build_country_map(papers, api_key):
 
     temp += "<div class='loading'><img src='loading.gif' alt='Loading'></div>"
     temp += "<div id='regions_div' style='width: 900px; height: 500px;'></div>"
+    temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
 
     print >>html_file, temp
 
@@ -946,9 +1008,8 @@ def build_city_map(papers):
     import shutil
     print "\n###HTML - City Map###"
 
-    info = []
-
     cities = {}
+    number_of_points = 0
     for this_paper in papers:
 
         try:
@@ -957,6 +1018,7 @@ def build_city_map(papers):
                     cities[this_paper['Extras']['postal_town']] += 1
                 else:
                     cities[this_paper['Extras']['postal_town']] = 1
+                number_of_points += 1
         except:
             pass
 
@@ -980,8 +1042,8 @@ def build_city_map(papers):
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     temp += "<script>google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['City',   'Publications']" + city_string + " ]); var options = {region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#FFB612', '#c9002f']}}; var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));chart.draw(data, options); };</script>"
 
-    shutil.copyfile('html/templates/loading.gif', config.html_dir + '/city/loading.gif')
-    shutil.copyfile('html/templates/map.css', config.html_dir + '/city/map.css')
+    shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/city/loading.gif')
+    shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/city/map.css')
 
     temp += '</head>'
 
@@ -991,7 +1053,7 @@ def build_city_map(papers):
 
     temp += "<div class='loading'><img src='loading.gif' alt='Loading'></div>"
     temp += '<div id="regions_div" style="width: 900px; height: 500px;"></div>'
-
+    temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
     print >>html_file, temp
 
     temp = build_common_foot()
@@ -1015,7 +1077,7 @@ def intWithCommas(x):
     return "%d%s" % (x, result)
 
 
-def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
+def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_year, study_current_year):
 
     import shutil
     print "\n###HTML - Metrics###"
@@ -1059,7 +1121,7 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
-    shutil.copyfile('html/templates/metrics.js', config.html_dir + '/metrics/metrics.js')
+    shutil.copyfile(config.template_dir + '/metrics.js', config.html_dir + '/metrics/metrics.js')
 
     temp += '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     temp += '<script type="text/javascript" src="../data.js"></script>'
@@ -1078,6 +1140,7 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
     # Metric calculations
     total_publications = len(papers)
     total_citations = 0
+    total_citations_data_from_count = 0
     paper_citations = []
     c20_index = 0
 
@@ -1093,6 +1156,7 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
 
             cit = int(this_paper['Extras']['Citations'])
             total_citations += cit
+            total_citations_data_from_count += 1
             paper_citations.append(cit)
 
             # increment c20-index if more that 20 citations
@@ -1101,7 +1165,7 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
         except:
             pass
 
-    average_citations = float(total_citations)/float(total_publications)
+    average_citations = float(total_citations)/float(total_citations_data_from_count)
     i20_index_per_year = float(c20_index)/float(study_duration)
 
     # cal h-index
@@ -1134,48 +1198,56 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>h-index</div>"
     temp += "<div class='metric_value'>" + str(h_index) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>h-index is the largest number h such that h publications from a study have at least h citations.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>g-index</div>"
     temp += "<div class='metric_value'>" + str(g_index) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>The largest number n of highly cited articles for which the average number of citations is at least n.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>Cohort-Rating</div>"
     temp += "<div class='metric_value'>" + str("{0:.3f}".format(round(cohort_rating, 3))) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(cohort_rating_data_from) + " Publications</div>"
     temp += "<div class='metric_description'></div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>Mean Citations Per Publication</div>"
     temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(average_citations, 2))) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>The total number of citations divided by the total number of publications.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>c" + str(c_index_bound) + "-index</div>"
     temp += "<div class='metric_value'>" + intWithCommas(c20_index) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>The number of publications from a study that have at least " + str(c_index_bound) + " citations.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>c" + str(c_index_bound) + "-index per Study Year</div>"
     temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(i20_index_per_year, 2))) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>The c" + str(c_index_bound) + "-index divided by the number of years the study has been running for.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
-    temp += "<div class='metric_name'>Total Papers</div>"
+    temp += "<div class='metric_name'>Total Publications</div>"
     temp += "<div class='metric_value'>" + intWithCommas(total_publications) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_publications) + " Publications</div>"
     temp += "<div class='metric_description'>This is the number of all publications for the study.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>Total Citations</div>"
     temp += "<div class='metric_value'>" + intWithCommas(total_citations) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>This is the number of citations to all publications for the study.</div>"
     temp += "</div>"
     temp += "</div>"
@@ -1184,6 +1256,7 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
     temp += '<div id="cumulative_div"></div>'
     temp += '<div id="papers_per_year_div"></div>'
     temp += '<div id="papers_per_citation_count_div"></div>'
+    temp += "<p>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
 
     print >>html_file, temp
 
@@ -1195,7 +1268,7 @@ def build_metrics(papers, cohort_rating, study_start_year, study_current_year):
 ###########################################################
 
 
-def build_word_cloud(papers, list):
+def build_word_cloud(papers, list, data_from_count):
 
     import shutil
     print "\n###HTML - Keyword Cloud###"
@@ -1214,8 +1287,8 @@ def build_word_cloud(papers, list):
     temp += '<link rel="stylesheet" href="../css/map.css">'
     temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
-    shutil.copyfile('html/templates/d3wordcloud.js', config.html_dir + '/wordcloud/d3wordcloud.js')
-    shutil.copyfile('html/templates/d3.layout.cloud.js', config.html_dir + '/wordcloud/d3.layout.cloud.js')
+    shutil.copyfile(config.template_dir + '/d3wordcloud.js', config.html_dir + '/wordcloud/d3wordcloud.js')
+    shutil.copyfile(config.template_dir + '/d3.layout.cloud.js', config.html_dir + '/wordcloud/d3.layout.cloud.js')
 
     temp += '<script>var word_list = ' + list + '</script>'
     temp += '<script src="http://d3js.org/d3.v3.min.js"></script>'
@@ -1229,6 +1302,7 @@ def build_word_cloud(papers, list):
 
     temp += '<cloud id="sourrounding_div" style="width:100%;height:500px">'
     temp += '</cloud>'
+    temp += "<p>Data from " + intWithCommas(data_from_count) + " publications</p>"
 
     temp += '<script src="d3wordcloud.js"></script>'
 
@@ -1242,7 +1316,7 @@ def build_word_cloud(papers, list):
 ###########################################################
 
 
-def build_abstract_word_cloud(papers):
+def build_abstract_word_cloud(papers, data_from_count):
 
     import shutil
     import csv
@@ -1288,8 +1362,8 @@ def build_abstract_word_cloud(papers):
     temp += '<link rel="stylesheet" href="../css/map.css">'
     temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
-    shutil.copyfile('html/templates/d3wordcloud.js', config.html_dir + '/abstractwordcloud/d3wordcloud.js')
-    shutil.copyfile('html/templates/d3.layout.cloud.js', config.html_dir + '/abstractwordcloud/d3.layout.cloud.js')
+    shutil.copyfile(config.template_dir + '/d3wordcloud.js', config.html_dir + '/abstractwordcloud/d3wordcloud.js')
+    shutil.copyfile(config.template_dir + '/d3.layout.cloud.js', config.html_dir + '/abstractwordcloud/d3.layout.cloud.js')
 
     temp += '<script src="list.js"></script>'
     temp += '<script src="http://d3js.org/d3.v3.min.js"></script>'
@@ -1305,6 +1379,7 @@ def build_abstract_word_cloud(papers):
     temp += '</cloud>'
 
     temp += '<script src="d3wordcloud.js"></script>'
+    temp += "<p>Data from " + intWithCommas(data_from_count) + " publications</p>"
 
     print >>html_file, temp
 
@@ -1320,7 +1395,7 @@ def get_author_string_from_hash(hash_string, network):
 
     for author in network['authors']:
         if author == hash_string:
-            return network['authors'][author]['family'] + ' ' + network['authors'][author]['given']
+            return network['authors'][author]['clean']
 
 
 def build_author_network(papers, network):
@@ -1341,7 +1416,7 @@ def build_author_network(papers, network):
         net_json = ""
         if n > 0:
             net_json += ","
-        net_json += '{"id": "' + network['authors'][author]['family'] + ' ' + network['authors'][author]['given'] + '", "group":1}'
+        net_json += '{"id": "' + network['authors'][author]['clean'] + '", "group":1}'
 
         print >>net_file, net_json
         n += 1
@@ -1374,8 +1449,8 @@ def build_author_network(papers, network):
 
     html_file = open(config.html_dir + '/authornetwork/index.html', 'w')
 
-    shutil.copyfile('html/templates/network.js', config.html_dir + '/authornetwork/network.js')
-    shutil.copyfile('html/templates/author_network2.png', config.html_dir + '/authornetwork/author_network2.png')
+    shutil.copyfile(config.template_dir + '/network.js', config.html_dir + '/authornetwork/network.js')
+    shutil.copyfile(config.template_dir + '/author_network.png', config.html_dir + '/authornetwork/author_network.png')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -1403,7 +1478,7 @@ def build_author_network(papers, network):
     n = 0
 
     for author in network['authors']:
-        print >>nodes_csv, author + "," + network['authors'][author]['family'] + ' ' + network['authors'][author]['given']
+        print >>nodes_csv, author + "," + network['authors'][author]['clean']
         n += 1
 
     # Print conections to csv
@@ -1426,7 +1501,7 @@ def build_author_network(papers, network):
             pass
         n += 1
 
-    temp += '<img src="author_network2.png" alt="author network">'
+    temp += '<a href="author_network.png"><img src="author_network.png" alt="author network"></a>'
 
     print >>html_file, temp
 
@@ -1461,6 +1536,52 @@ def build_error_log(papers, error_log):
     temp += '<h1 id="pagetitle">Error Log</h1>'
 
     temp += error_log.printLog()
+
+    print >>html_file, temp
+
+    temp = build_common_foot()
+    print >>html_file, temp
+
+
+###########################################################
+# Help Page
+###########################################################
+def build_help():
+
+    print "\n###HTML - Help/Information page###"
+
+    html_file = open(config.html_dir + '/help/index.html', 'w')
+
+    # Put html together for this page
+    temp = '<!DOCTYPE html><html lang="en-GB">'
+
+    # html head
+    temp += '<head>'
+    temp += '<title>' + site_title + '</title>'
+    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
+    temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/map.css">'
+
+    temp += '</head>'
+
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Information</p>', "../", "")
+
+    temp += '<h1 id="pagetitle">Information</h1>'
+
+    temp += '<h2>Where does the data come from?</h2>'
+    temp += '<h3>Publication Data</h3>'
+    temp += '<p>Pubmed.</p>'
+    temp += '<h3>Citations Data</h3>'
+    temp += '<p>Scopus - Elsevier.</p>'
+
+    temp += "<h2>Why don't some statistics use data from all publications?</h2>"
+    temp += '<p>The data used for the statistics are gathered from databases which only collect data from particular journals.'
+    temp += ' This problem is most obvious for citation data from Scopus. Although they have a particular publication on record,'
+    temp += ' there may be citations for this publication from a journal that they do not index and therefore these will not be in the citation count.</p>'
+
+    temp += '<p>Other data can be missing because a publication is very old. There are many different ways to track publications'
+    temp += ' and Prior to the introduction of DOIs in 2000 there was no unified method. This means some metadata on old publications could have been lost or not recorded.</p>'
 
     print >>html_file, temp
 

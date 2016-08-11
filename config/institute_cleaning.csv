@@ -15,8 +15,8 @@ emory.edu,Emory University
 speech-therapy.org.uk,Southmead Hospital
 gla.ac.uk,University of Glasgow
 harvard.edu,Harvard University
-helmholtz-muenchen.de,Helmholtz Zentrum Munchen
-helmholtzmuenchen.de,Helmholtz Zentrum Munchen
+helmholtz-muenchen.de,Helmholtz Zentrum München
+helmholtzmuenchen.de,Helmholtz Zentrum München
 inserm.fr,Centre for Research in Epidemiology and Population Health - Villejuif
 jhsph.edu,Johns Hopkins University
 jhmi.edu,Johns Hopkins University
@@ -43,6 +43,7 @@ vumc.nl,VU University Medical Center
 wustl.edu,Washington University in St. Louis
 University of Virginia,University of Virginia
 utwente.nl,University of Twente
+nshd.mrc.ac.uk,"Medical Research Council National Survey of Health and Development, Department of Epidemiology and Public Health, Royal Free and University College Medical School, London"
 ,
 ,
 #Do the UK institution addresses.,
@@ -126,6 +127,12 @@ University Hospital of Nottingham,Queen's Medical Centre
 Royal United Hospital,Royal United Hospital
 Southmead Hospital,Southmead Hospital
 St George's Hospital,St George's Hospital
+"Severn Deanery, Deanery House Unit D, Vantage Office Park Hambrook, Bristol, United Kingdom.","Severn Deanery"
+"Vascular Physiology Unit, National Centre for Cardiovascular Disease Prevention & Outcomes","National Centre for Cardiovascular Disease Prevention & Outcomes"
+"Leopold Muller Centre for Child and Family Mental Health","Leopold Muller Centre for Child and Family Mental Health"
+"Institute of Child Health, London","Institute of Child Health, London"
+United Bristol Healthcare Trust,United Bristol Healthcare Trust
+"Elsie Widdowson Laboratory, Cambridge","Elsie Widdowson Laboratory, Cambridge"
 ,
 #International,
 23andMe,23andMe
@@ -204,6 +211,15 @@ Yale University,Yale University
 VU University,Vrije Universiteit
 "Bethesda, Maryland",Eunice Kennedy Shriver National Institute of Child Health and Human Development
 University Medical Centre Utrecht,University Medical Center Utrecht
+"Department of Ophthalmology, National University of Singapore and National University Health System","National University of Singapore"
+"Max Planck Institute for Psycholinguistics","Max Planck Institute for Psycholinguistics"
+"KP Agricultural University","KP Agricultural University"
+"Children's Memorial Hospital, Chicago","Children's Memorial Hospital, Chicago"
+"Massachusetts General Hospital, UK","Massachusetts General Hospital, UK"
+"Retina Foundation of the Southwest","Retina Foundation of the Southwest"
+University of Seville,University of Seville
+University of Texas Health Science Center,University of Texas Health Science Center
+"Montefiore Medical Center/Albert Einstein College of Medicine","Montefiore Medical Center/Albert Einstein College of Medicine"
 ,
 #Some special ALSPAC munging,
 Oakfield Grove,University of Bristol
