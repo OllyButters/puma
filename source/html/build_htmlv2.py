@@ -313,21 +313,14 @@ def build_papers(papers):
                         if x[2] == this_author['clean']:
                             # Get start and end date of exec membership
                             exec_start = time.mktime(datetime.datetime.strptime(x[0], "%d/%m/%Y").timetuple())
-                            print "1"
                             exec_end = int(time.time())
                             if not x[1] == "":
                                 exec_end = time.mktime(datetime.datetime.strptime(x[1], "%d/%m/%Y").timetuple())
-                            print "2"
 
                             # Convert issued date into a timestamp
                             issued_date = this_paper['issued']['date-parts']
-                            print issued_date
                             date = str(issued_date[0][2]) + "/" + str(issued_date[0][1]) + "/" + str(issued_date[0][0])
-                            print "3 " + date
                             issued_timestamp = time.mktime(datetime.datetime.strptime(date, "%d/%m/%Y").timetuple())
-
-                            print "4"
-                            print str(issued_timestamp) + " " + str(exec_start) + " " + str(exec_end)
 
                             # If publication is issued between exec_start and exec_end then flag
                             if issued_timestamp > exec_start and issued_timestamp < exec_end:
