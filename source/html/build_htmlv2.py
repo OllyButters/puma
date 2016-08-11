@@ -238,6 +238,8 @@ def build_papers(papers):
     import shutil
     import os.path
     import csv
+    import htmlentities
+
     print "\n###HTML papers list###"
 
     yearly_papers = {}
@@ -298,6 +300,8 @@ def build_papers(papers):
             authors = []
             author_on_exec = False
             for this_author in this_paper['author']:
+                # print this_author['family'] + ', ' + this_author['given'] + "      " + htmlentities.encode(this_author['family'] + ', ' + this_author['given'])
+
                 # Some author lists have a collective name. Ignore this.
                 # Some people don't actually have initials. eg wraight in pmid:18454148
                 try:
@@ -311,7 +315,7 @@ def build_papers(papers):
                 except:
                     pass
 
-            html += '; '.join(authors)
+            html += htmlentities.encode('; '.join(authors))
             html += '<br/>'
 
             # Journal volume and issue
@@ -434,6 +438,7 @@ def build_mesh(papers):
     import shutil
     import math
     import csv
+    import htmlentities
 
     print "\n###HTML - mesh###"
 
@@ -788,7 +793,6 @@ def build_mesh(papers):
 
                     # Authors
                     authors = []
-
                     for this_author in this_paper['author']:
                         # Some author lists have a collective name. Ignore this.
                         # Some people don't actually have initials. eg wraight in pmid:18454148
@@ -797,7 +801,7 @@ def build_mesh(papers):
                         except:
                             pass
 
-                    html += '; '.join(authors)
+                    html += htmlentities.encode('; '.join(authors))
                     html += '<br/>'
 
                     # Journal volume and issue
@@ -871,6 +875,7 @@ def build_mesh(papers):
 def build_google_map(papers):
 
     import shutil
+    import codecs
     print "\n###HTML - Insititutions Map###"
 
     info = []
@@ -890,10 +895,10 @@ def build_google_map(papers):
         kml += '["' + this_info['name'] + '",' + str(this_info['lat']) + ',' + str(this_info['long']) + '],'
     kml += ']'
 
-    kml_file = open(config.html_dir + '/map/map.kml', 'w')
+    kml_file = codecs.open(config.html_dir + '/map/map.kml', 'w', 'utf-8')
     print >>kml_file, kml
 
-    html_file = open(config.html_dir + '/map/index.html', 'w')
+    html_file = codecs.open(config.html_dir + '/map/index.html', 'w', 'utf-8')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
