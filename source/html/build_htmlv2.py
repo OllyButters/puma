@@ -237,6 +237,7 @@ def build_papers(papers):
 
     import shutil
     import os.path
+    import csv
     print "\n###HTML papers list###"
 
     yearly_papers = {}
@@ -244,6 +245,19 @@ def build_papers(papers):
 
     shutil.copyfile(config.template_dir + '/altmetric.png', config.html_dir + '/papers/altmetric.png')
     shutil.copyfile(config.template_dir + '/yellow-flag-th.png', config.html_dir + '/papers/yellow-flag-th.png')
+
+    # Read in exec csv
+    exec_list = []
+    f = open(config.config_dir + "/" + config.project_details['short_name'] + '_exec_members.csv', 'rt')
+    try:
+        reader = csv.reader(f)
+        n = 0
+        for row in reader:
+            if n > 0:
+                exec_list.append(row)
+            n += 1
+    finally:
+        f.close()
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -282,10 +296,17 @@ def build_papers(papers):
 
             # Authors
             authors = []
+            author_on_exec = False
             for this_author in this_paper['author']:
                 # Some author lists have a collective name. Ignore this.
                 # Some people don't actually have initials. eg wraight in pmid:18454148
                 try:
+                    # Check if an author was on the exec Comittee
+                    for x in exec_list:
+                        if x[2] == this_author['clean']:
+                            author_on_exec = True
+                            break
+
                     authors.append(this_author['family'] + ', ' + this_author['given'])
                 except:
                     pass
@@ -300,12 +321,12 @@ def build_papers(papers):
                 pass
 
             try:
-                html += ' Volume ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['volume']
+                html += ', Volume ' + this_paper['volume']
             except:
                 pass
 
             try:
-                html += ' Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue']
+                html += ', Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue']
             except:
                 pass
             html += '<br/>'
@@ -337,7 +358,8 @@ def build_papers(papers):
             except:
                 pass
 
-            html += '<img style="width:20px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author is on the ALSPAC executive committee">'
+            if author_on_exec:
+                html += '<img style="width:20px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
 
             # Add an extra line break at the end
             html += '<br/><br/>'
@@ -785,12 +807,12 @@ def build_mesh(papers):
                         pass
 
                     try:
-                        html += ' Volume ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['volume']
+                        html += ', Volume ' + this_paper['volume']
                     except:
                         pass
 
                     try:
-                        html += ' Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue']
+                        html += ', Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue']
                     except:
                         pass
                     html += '<br/>'
@@ -822,7 +844,7 @@ def build_mesh(papers):
                     except:
                         pass
 
-                    html += '<img style="width:20px;padding-left:20px;" src="../../papers/yellow-flag-th.png" alt="Comittee flag" title="At least one author is on the ALSPAC executive committee">'
+                    html += '<img style="width:20px;padding-left:20px;" src="../../papers/yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
 
                     # Add an extra line break at the end
                     html += '<br/><br/>'
