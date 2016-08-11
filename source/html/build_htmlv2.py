@@ -359,7 +359,7 @@ def build_papers(papers):
                 pass
 
             if author_on_exec:
-                html += '<img style="width:20px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
+                html += '<img style="width:16px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
 
             # Add an extra line break at the end
             html += '<br/><br/>'
@@ -844,7 +844,7 @@ def build_mesh(papers):
                     except:
                         pass
 
-                    html += '<img style="width:20px;padding-left:20px;" src="../../papers/yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
+                    html += '<img style="width:16px;padding-left:20px;" src="../../papers/yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
 
                     # Add an extra line break at the end
                     html += '<br/><br/>'
@@ -1563,7 +1563,12 @@ def build_help():
     temp += '<p>Scopus - Elsevier.</p>'
 
     temp += "<h2>Why don't some statistics use data from all publications?</h2>"
-    temp += '<p>Because.</p>'
+    temp += '<p>The data used for the statistics are gathered from databases which only collect data from particular journals.'
+    temp += ' This problem is most obvious for citation data from Scopus. Although they have a particular publication on record,'
+    temp += ' there may be citations for this publication from a journal that they do not index and therefore these will not be in the citation count.</p>'
+
+    temp += '<p>Other data can be missing because a publication is very old. There are many different ways to track publications'
+    temp += ' and Prior to the introduction of DOIs in 2000 there was no unified method. This means some metadata on old publications could have been lost or not recorded.</p>'
 
     print >>html_file, temp
 
