@@ -302,8 +302,6 @@ def build_papers(papers):
             authors = []
             author_on_exec = False
             for this_author in this_paper['author']:
-                # print this_author['family'] + ', ' + this_author['given'] + "      " + htmlentities.encode(this_author['family'] + ', ' + this_author['given'])
-
                 # Some author lists have a collective name. Ignore this.
                 # Some people don't actually have initials. eg wraight in pmid:18454148
                 try:
@@ -455,6 +453,8 @@ def build_mesh(papers):
     import math
     import csv
     import htmlentities
+    import time
+    import datetime
 
     print "\n###HTML - mesh###"
 
@@ -683,6 +683,19 @@ def build_mesh(papers):
         for x in range(0, number):
             word_cloud_raw += " " + this_mesh
 
+    # Read in exec csv
+    exec_list = []
+    f = open(config.config_dir + "/" + config.project_details['short_name'] + '_exec_members.csv', 'rt')
+    try:
+        reader = csv.reader(f)
+        n = 0
+        for row in reader:
+            if n > 0:
+                exec_list.append(row)
+            n += 1
+    finally:
+        f.close()
+
     # Print page
     for this_mesh in mesh_papers_all:
 
@@ -809,10 +822,31 @@ def build_mesh(papers):
 
                     # Authors
                     authors = []
+                    author_on_exec = False
                     for this_author in this_paper['author']:
                         # Some author lists have a collective name. Ignore this.
                         # Some people don't actually have initials. eg wraight in pmid:18454148
                         try:
+                            # Check if an author was on the exec Comittee
+                            for x in exec_list:
+                                # Check if authors name matches
+                                if x[2] == this_author['clean']:
+                                    # Get start and end date of exec membership
+                                    exec_start = time.mktime(datetime.datetime.strptime(x[0], "%d/%m/%Y").timetuple())
+                                    exec_end = int(time.time())
+                                    if not x[1] == "":
+                                        exec_end = time.mktime(datetime.datetime.strptime(x[1], "%d/%m/%Y").timetuple())
+
+                                    # Convert issued date into a timestamp
+                                    issued_date = this_paper['issued']['date-parts']
+                                    date = str(issued_date[0][2]) + "/" + str(issued_date[0][1]) + "/" + str(issued_date[0][0])
+                                    issued_timestamp = time.mktime(datetime.datetime.strptime(date, "%d/%m/%Y").timetuple())
+
+                                    # If publication is issued between exec_start and exec_end then flag
+                                    if issued_timestamp > exec_start and issued_timestamp < exec_end:
+                                        author_on_exec = True
+                                        break
+
                             authors.append(this_author['family'] + ', ' + this_author['given'])
                         except:
                             pass
@@ -864,7 +898,8 @@ def build_mesh(papers):
                     except:
                         pass
 
-                    html += '<img style="width:16px;padding-left:20px;" src="../../papers/yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
+                    if author_on_exec:
+                        html += '<img style="width:16px;padding-left:20px;" src="../../papers/yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
 
                     # Add an extra line break at the end
                     html += '<br/><br/>'
