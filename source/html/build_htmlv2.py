@@ -24,7 +24,7 @@ site_second_title = " Data Set Publications"
 
 # === Common Page Features ===
 def build_common_body(breadcrumb, nav_path, body):
-    # nav_path used for changes to relative pathing depending on the page (ie Home does not need anything but next levels need leading ../)
+    # nav_path used for changes to relative pathing depending on the page (ie Home does not need anything but next level down needs leading ../)
     html = "<body " + body + ">"
 
     html += "<div class='uob-header-container'>"

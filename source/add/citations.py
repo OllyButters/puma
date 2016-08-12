@@ -67,6 +67,7 @@ def citations(papers, api_key, citation_max_life, force_update):
             time.sleep(1)
 
             # Handle Max Quota Reached
+            error_number = 0
             try:
                 # try querying with the DOI first - there might not be a DOI
                 if this_paper['IDs']['DOI'] != "":
@@ -104,8 +105,13 @@ def citations(papers, api_key, citation_max_life, force_update):
                             print t['search-results']['entry'][0]['error']
                 else:
                     logging.info('No DOI for = '+this_paper['IDs']['hash'])
+
+                error_number = 0
             except:
-                print 'An unexpected error happened getting the citations via DOI! (Check if reached MAX_QUOTA)'
+                error_number += 1
+                print 'An unexpected error happened getting the citations via DOI!'
+                if error_number > 10:
+                    print 'Check if reached Scopus MAX_QUOTA'
 
             # shoud wrap the above up as a fn and run it with doi and pmid separately
             # The above could have failed a couple of points - no DOI or nothing returned from a DOI query

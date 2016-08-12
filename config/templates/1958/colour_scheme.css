@@ -13,7 +13,6 @@ color: #fff!important;
 }
 
 .maintitle {
-border-left: 1px solid #fff;
 border-left: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -32,8 +31,7 @@ color: #fff;
 }
 
 .nav-users .icon-arrow-right:after {
-color: #fff!important;
-color: rgba(255,255,255,0.4)!important
+color: rgba(255,255,255,0.4)!important;
 }
 
 /* keywords list */
