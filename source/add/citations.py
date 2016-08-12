@@ -75,6 +75,7 @@ def citations(papers, api_key, citation_max_life, force_update):
                     logging.info(request_string)
                     try:
                         response = urllib2.urlopen(request_string).read()
+                        print "DOI: " + str(response)
                         t = json.loads(response)
                     except:
                         logging.error('The citation query failed - maybe it timed out?')
@@ -121,10 +122,10 @@ def citations(papers, api_key, citation_max_life, force_update):
                     request_string = url + '?apiKey=' + api_key + '&field=citedby-count&query=PMID(' + this_paper['IDs']['PMID'] + ')'
                     logging.info(request_string)
                     response = urllib2.urlopen(request_string).read()
+                    print "PMID: " + str(response)
                     t = json.loads(response)
 
                     # sometimes this returns multiple entries e.g. 22935244
-
                     try:
                         citations = t['search-results']['entry'][0]['citedby-count']
                         # print citations
