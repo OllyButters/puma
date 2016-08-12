@@ -26,7 +26,7 @@ def build_common_body(breadcrumb, nav_path, body):
     html += "<div class='title_stop'></div>"
     html += "<div id='uoblogo'><a accesskey='1' title='University of Bristol homepage' href='http://www.bristol.ac.uk/'><span>University of Bristol</span></a></div>"
     html += "<div class='maintitle' id='maintitle1'>"
-    html += "<span id='title1'><a href='" + nav_path + "index.html'>" + config.project_details['name'] + site_title + "</a></span>"
+    html += "<span id='title1'><a href='" + nav_path + "index.html'>" + config.project_details['name'] + " - " + site_title + "</a></span>"
     html += "</div>"
     html += "</div>"
     html += "</div>"
@@ -119,8 +119,8 @@ def build_home(papers, error_log):
     temp += '<head>'
     temp += '<title>' + site_title + '</title>'
     temp += '<link rel="stylesheet" href="css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="css/style_main.css">'
+    temp += '<link rel="stylesheet" href="css/colour_scheme.css">'
     temp += '</head>'
 
     temp += build_common_body("", "", "")
@@ -270,8 +270,8 @@ def build_papers(papers):
     temp += '<head>'
     temp += '<title>' + site_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '</head>'
 
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Papers List</p>', "../", "")
@@ -356,13 +356,6 @@ def build_papers(papers):
             except:
                 pass
 
-            # Zotero
-            try:
-                if this_paper['IDs']['zotero']:
-                    html += '&nbsp;Zotero: ' + this_paper['IDs']['zotero'] + ''
-            except:
-                pass
-
             # DOI
             try:
                 if this_paper['IDs']['DOI']:
@@ -420,8 +413,8 @@ def build_papers(papers):
         temp += '<head>'
         temp += '<title>' + site_title + '</title>'
         temp += '<link rel="stylesheet" href="../../css/uobcms_corporate.css">'
-        temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
         temp += '<link rel="stylesheet" href="../../css/style_main.css">'
+        temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
         temp += '</head>'
 
         temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; <a href="../index.html">Papers List</a> &gt; ' + this_year + '</p>', "../../", "")
@@ -588,8 +581,8 @@ def build_mesh(papers):
     temp += '<head>'
     temp += '<title>' + site_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '</head>'
 
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; All Keywords</p>', "../", "")
@@ -616,8 +609,8 @@ def build_mesh(papers):
     temp += '<head>'
     temp += '<title>' + site_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '</head>'
 
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keywords (MeSH)</p>', "../", "")
@@ -712,8 +705,8 @@ def build_mesh(papers):
             temp += '<head>'
             temp += '<title>' + site_title + '</title>'
             temp += '<link rel="stylesheet" href="../../css/uobcms_corporate.css">'
-            temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
             temp += '<link rel="stylesheet" href="../../css/style_main.css">'
+            temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
 
             temp += '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
             temp += '<script type="text/javascript" src="../' + this_mesh.replace(" ", "%20") + '.js"></script>'
@@ -878,13 +871,6 @@ def build_mesh(papers):
                     except:
                         pass
 
-                    # Zotero
-                    try:
-                        if this_paper['IDs']['zotero']:
-                            html += '&nbsp;Zotero: ' + this_paper['IDs']['zotero'] + ''
-                    except:
-                        pass
-
                     # DOI
                     try:
                         if this_paper['IDs']['DOI']:
@@ -958,8 +944,8 @@ def build_google_map(papers):
     temp += '<head>'
     temp += '<title>' + site_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
     temp += '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>'
@@ -1021,13 +1007,13 @@ def build_country_map(papers, api_key):
     temp += '<head>'
     temp += '<title>' + site_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
     temp += '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=' + config.google_maps_api_key + '&libraries=visualization"></script>'
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
-    temp += '<script type="text/javascript">' + "google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawRegionsMap);function drawRegionsMap() {var data = google.visualization.arrayToDataTable([ ['Country', 'Publications']" + country_string + "]); var options = { colorAxis: {colors: ['#FFB612', '#c9002f']} }; var chart = new google.visualization.GeoChart(document.getElementById('regions_div')); chart.draw(data, options); }</script>"
+    temp += '<script type="text/javascript">' + "google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawRegionsMap);function drawRegionsMap() {var data = google.visualization.arrayToDataTable([ ['Country', 'Publications']" + country_string + "]); var options = { colorAxis: {colors: ['#" + config.project_details['colour_hex_secondary'] + "', '#" + config.project_details['colour_hex_primary'] + "']} }; var chart = new google.visualization.GeoChart(document.getElementById('regions_div')); chart.draw(data, options); }</script>"
 
     shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/country/loading.gif')
     shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/country/map.css')
@@ -1086,12 +1072,12 @@ def build_city_map(papers):
     temp += '<head>'
     temp += '<title>' + site_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
-    temp += "<script>google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['City',   'Publications']" + city_string + " ]); var options = {region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#FFB612', '#c9002f']}}; var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));chart.draw(data, options); };</script>"
+    temp += "<script>google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['City',   'Publications']" + city_string + " ]); var options = {region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#" + config.project_details['colour_hex_secondary'] + "', '#" + config.project_details['colour_hex_primary'] + "']}}; var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));chart.draw(data, options); };</script>"
 
     shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/city/loading.gif')
     shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/city/map.css')
@@ -1168,9 +1154,9 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     temp += '<head>'
     temp += '<title>' + site_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
 
     shutil.copyfile(config.template_dir + '/metrics.js', config.html_dir + '/metrics/metrics.js')
 
@@ -1333,8 +1319,8 @@ def build_word_cloud(papers, list, data_from_count):
     temp += '<head>'
     temp += '<title>' + site_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
     temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
@@ -1408,8 +1394,8 @@ def build_abstract_word_cloud(papers, data_from_count):
     temp += '<head>'
     temp += '<title>' + site_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
     temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
@@ -1510,8 +1496,8 @@ def build_author_network(papers, network):
     temp += '<head>'
     temp += '<title>' + site_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<style>.links line {  stroke: #999;  stroke-opacity: 0.6;} .nodes circle {  stroke: #fff;  stroke-width: 1.5px;} </style>'
 
     temp += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>'
@@ -1576,8 +1562,8 @@ def build_error_log(papers, error_log):
     temp += '<head>'
     temp += '<title>' + site_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
     temp += '</head>'
@@ -1610,8 +1596,8 @@ def build_help():
     temp += '<head>'
     temp += '<title>' + site_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
     temp += '</head>'

@@ -1,6 +1,9 @@
 [project_details]
-name: ALSPAC
-short_name: alspac
+name: 1958 National Child Development Study
+short_name: 1958
+
+colour_hex_primary: 1d294d
+colour_hex_secondary: 9e9e9e
 
 [zotero_api]
 url:

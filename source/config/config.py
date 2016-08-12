@@ -28,7 +28,7 @@ def build_config_variables(root_dir):
     print config.sections()
     try:
         # Project Details
-        project_details = {'name': config.get('project_details', 'name'), 'short_name': config.get('project_details', 'short_name')}
+        project_details = {'name': config.get('project_details', 'name'), 'short_name': config.get('project_details', 'short_name'), 'colour_hex_primary': config.get('project_details', 'colour_hex_primary'), 'colour_hex_secondary': config.get('project_details', 'colour_hex_secondary')}
 
         # Scopus settings
         scopus_force_citation_update = config.get('scopus', 'scopus_force_citation_update')

@@ -1,0 +1,65 @@
+
+.uob-header-container {
+    background: #1d294d;
+}
+
+/* h1 */
+#pagetitle {
+    color:#1d294d;
+}
+
+.maintitle a {
+color: #fff!important;
+}
+
+.maintitle {
+border-left: 1px solid #fff;
+border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#uoblogo span {
+background-image: url(http://bristol.ac.uk/media-library/protected/images/uob-logo-white-largest.png);
+}
+
+.uob-header-container:before,
+.uob-header-container:after {
+display: block;
+visibility: visible;
+}
+
+.nav-users a {
+color: #fff;
+}
+
+.nav-users .icon-arrow-right:after {
+color: #fff!important;
+color: rgba(255,255,255,0.4)!important
+}
+
+/* keywords list */
+div#uobcms-content ul a {
+    color: #1d294d;
+}
+
+/* Metrics Page */
+
+ div#uobcms-content div.metric {
+     background:#efede9;
+     color:#1d294d;
+}
+
+div#uobcms-content div.metric:hover {
+     background:#1d294d;
+}
+
+     div#uobcms-content div.metric:hover div.metric_name {
+       color:#f2f2f2;
+     }
+
+     div#uobcms-content div.metric:hover div.metric_value {
+       color:#f2f2f2;
+     }
+
+     div#uobcms-content div.metric div.metric_description {
+       color:#efede9;
+     }
