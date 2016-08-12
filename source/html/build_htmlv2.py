@@ -2,6 +2,14 @@
 
 import json
 import sys
+import shutil
+import os.path
+import csv
+import htmlentities
+import time
+import datetime
+import math
+import codecs
 
 import config.config as config
 
@@ -98,8 +106,6 @@ def build_common_foot():
 
 
 def build_home(papers, error_log):
-
-    import shutil
 
     print "\n###HTML - Home###"
 
@@ -234,13 +240,6 @@ def build_home(papers, error_log):
 
 
 def build_papers(papers):
-
-    import shutil
-    import os.path
-    import csv
-    import htmlentities
-    import time
-    import datetime
 
     print "\n###HTML papers list###"
 
@@ -441,13 +440,6 @@ def build_papers(papers):
 
 
 def build_mesh(papers):
-    import os.path
-    import shutil
-    import math
-    import csv
-    import htmlentities
-    import time
-    import datetime
 
     print "\n###HTML - mesh###"
 
@@ -488,7 +480,7 @@ def build_mesh(papers):
             pass
 
     # Read in mesh tree hierarchy
-    f = open("../config/mesh_tree_hierarchy.csv", 'rt')
+    f = open(config.config_dir + "/mesh_tree_hierarchy.csv", 'rt')
     mesh_tree = {}
     mesh_tree_reverse = {}
     try:
@@ -500,7 +492,7 @@ def build_mesh(papers):
     finally:
         f.close()
 
-    f = open("../config/mesh_categories.csv", 'rt')
+    f = open(config.config_dir + "/mesh_categories.csv", 'rt')
     mesh_categories = {}
     try:
         reader = csv.reader(f)
@@ -630,8 +622,6 @@ def build_mesh(papers):
     temp = build_common_foot()
     print >>html_file_major, temp
 
-    import codecs
-
     word_cloud_list = "["
     word_cloud_n = 0
     word_cloud_max = 0
@@ -710,6 +700,8 @@ def build_mesh(papers):
 
             temp += '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
             temp += '<script type="text/javascript" src="../' + this_mesh.replace(" ", "%20") + '.js"></script>'
+            temp += '<script>var primary_colour = "#' + config.project_details['colour_hex_primary'] + '";</script>'
+            temp += '<script>var secondary_colour = "#' + config.project_details['colour_hex_secondary'] + '";</script>'
             temp += '<script type="text/javascript" src="../keyword_history.js"></script>'
 
             temp += '</head>'
@@ -911,8 +903,6 @@ def build_mesh(papers):
 
 def build_google_map(papers):
 
-    import shutil
-    import codecs
     print "\n###HTML - Insititutions Map###"
 
     info = []
@@ -978,7 +968,6 @@ def build_google_map(papers):
 
 def build_country_map(papers, api_key):
 
-    import shutil
     print "\n###HTML - Country Map###"
 
     countries = {}
@@ -1042,7 +1031,6 @@ def build_country_map(papers, api_key):
 
 def build_city_map(papers):
 
-    import shutil
     print "\n###HTML - City Map###"
 
     cities = {}
@@ -1116,7 +1104,6 @@ def intWithCommas(x):
 
 def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_year, study_current_year):
 
-    import shutil
     print "\n###HTML - Metrics###"
 
     html_file = open(config.html_dir + '/metrics/index.html', 'w')
@@ -1164,6 +1151,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     temp += '<script type="text/javascript" src="../data.js"></script>'
     temp += '<script>' + n_papers_with_x_citations + '</script>'
     temp += '<script type="text/javascript" src="../map/map.js"></script>'
+    temp += '<script>var primary_colour = "#' + config.project_details['colour_hex_primary'] + '";</script>'
     temp += '<script type="text/javascript" src="metrics.js"></script>'
 
     temp += '</head>'
@@ -1307,7 +1295,6 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
 
 def build_word_cloud(papers, list, data_from_count):
 
-    import shutil
     print "\n###HTML - Keyword Cloud###"
 
     html_file = open(config.html_dir + '/wordcloud/index.html', 'w')
@@ -1355,12 +1342,9 @@ def build_word_cloud(papers, list, data_from_count):
 
 def build_abstract_word_cloud(papers, data_from_count):
 
-    import shutil
-    import csv
-    import math
     print "\n###HTML - Abstract Word Cloud###"
 
-    f = open("../data/abstracts.csv", 'rt')
+    f = open(config.data_dir + "/abstracts.csv", 'rt')
 
     list = "["
     n = 0
@@ -1437,7 +1421,6 @@ def get_author_string_from_hash(hash_string, network):
 
 def build_author_network(papers, network):
 
-    import shutil
     print "\n###HTML - Author Network###"
 
     # Create json file
