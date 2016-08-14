@@ -2,6 +2,14 @@
 
 import json
 import sys
+import shutil
+import os.path
+import csv
+import htmlentities
+import time
+import datetime
+import math
+import codecs
 
 import config.config as config
 
@@ -11,13 +19,12 @@ import config.config as config
 # Have all the data now, so do something with it
 ############################################################
 
-site_title = " Data Set Publications"
+site_second_title = " Data Set Publications"
+
 
 # === Common Page Features ===
-
-
 def build_common_body(breadcrumb, nav_path, body):
-    # nav_path used for changes to relative pathing depending on the page (ie Home does not need anything but next levels need leading ../)
+    # nav_path used for changes to relative pathing depending on the page (ie Home does not need anything but next level down needs leading ../)
     html = "<body " + body + ">"
 
     html += "<div class='uob-header-container'>"
@@ -26,7 +33,7 @@ def build_common_body(breadcrumb, nav_path, body):
     html += "<div class='title_stop'></div>"
     html += "<div id='uoblogo'><a accesskey='1' title='University of Bristol homepage' href='http://www.bristol.ac.uk/'><span>University of Bristol</span></a></div>"
     html += "<div class='maintitle' id='maintitle1'>"
-    html += "<span id='title1'><a href='" + nav_path + "index.html'>" + config.project_details['name'] + site_title + "</a></span>"
+    html += "<span id='title1'><a href='" + nav_path + "index.html'>" + config.project_details['name'] + " - " + site_second_title + "</a></span>"
     html += "</div>"
     html += "</div>"
     html += "</div>"
@@ -92,14 +99,11 @@ def build_common_foot():
 
     return html
 
+
 ############################################################
 # Home page with summary of years
 ############################################################
-
-
 def build_home(papers, error_log):
-
-    import shutil
 
     print "\n###HTML - Home###"
 
@@ -117,10 +121,10 @@ def build_home(papers, error_log):
 
     # html head
     temp += '<head>'
-    temp += '<title>' + site_title + '</title>'
+    temp += '<title>' + site_second_title + '</title>'
     temp += '<link rel="stylesheet" href="css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="css/style_main.css">'
+    temp += '<link rel="stylesheet" href="css/colour_scheme.css">'
     temp += '</head>'
 
     temp += build_common_body("", "", "")
@@ -228,17 +232,12 @@ def build_home(papers, error_log):
 
     cr_sum = cr_sum / len(papers)
     return cr_sum, cr_data_from
+
+
 ############################################################
 # Home page with summary of years
 ############################################################
-
-
 def build_papers(papers):
-
-    import shutil
-    import os.path
-    import csv
-    import htmlentities
 
     print "\n###HTML papers list###"
 
@@ -266,10 +265,10 @@ def build_papers(papers):
 
     # html head
     temp += '<head>'
-    temp += '<title>' + site_title + '</title>'
+    temp += '<title>' + site_second_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '</head>'
 
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Papers List</p>', "../", "")
@@ -300,16 +299,28 @@ def build_papers(papers):
             authors = []
             author_on_exec = False
             for this_author in this_paper['author']:
-                # print this_author['family'] + ', ' + this_author['given'] + "      " + htmlentities.encode(this_author['family'] + ', ' + this_author['given'])
-
                 # Some author lists have a collective name. Ignore this.
                 # Some people don't actually have initials. eg wraight in pmid:18454148
                 try:
                     # Check if an author was on the exec Comittee
                     for x in exec_list:
+                        # Check if authors name matches
                         if x[2] == this_author['clean']:
-                            author_on_exec = True
-                            break
+                            # Get start and end date of exec membership
+                            exec_start = time.mktime(datetime.datetime.strptime(x[0], "%d/%m/%Y").timetuple())
+                            exec_end = int(time.time())
+                            if not x[1] == "":
+                                exec_end = time.mktime(datetime.datetime.strptime(x[1], "%d/%m/%Y").timetuple())
+
+                            # Convert issued date into a timestamp
+                            issued_date = this_paper['issued']['date-parts']
+                            date = str(issued_date[0][2]) + "/" + str(issued_date[0][1]) + "/" + str(issued_date[0][0])
+                            issued_timestamp = time.mktime(datetime.datetime.strptime(date, "%d/%m/%Y").timetuple())
+
+                            # If publication is issued between exec_start and exec_end then flag
+                            if issued_timestamp > exec_start and issued_timestamp < exec_end:
+                                author_on_exec = True
+                                break
 
                     authors.append(this_author['family'] + ', ' + this_author['given'])
                 except:
@@ -339,13 +350,6 @@ def build_papers(papers):
             try:
                 if this_paper['IDs']['PMID']:
                     html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">' + str(this_paper['IDs']['PMID']) + '</a>'
-            except:
-                pass
-
-            # Zotero
-            try:
-                if this_paper['IDs']['zotero']:
-                    html += '&nbsp;Zotero: ' + this_paper['IDs']['zotero'] + ''
             except:
                 pass
 
@@ -404,10 +408,10 @@ def build_papers(papers):
 
         # html head
         temp += '<head>'
-        temp += '<title>' + site_title + '</title>'
+        temp += '<title>' + site_second_title + '</title>'
         temp += '<link rel="stylesheet" href="../../css/uobcms_corporate.css">'
-        temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
         temp += '<link rel="stylesheet" href="../../css/style_main.css">'
+        temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
         temp += '</head>'
 
         temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; <a href="../index.html">Papers List</a> &gt; ' + this_year + '</p>', "../../", "")
@@ -428,17 +432,11 @@ def build_papers(papers):
     main += "</p>" + build_common_foot()
     print >>html_file, main
 
+
 ############################################################
 # Build a list of all mesh keywords
 ############################################################
-
-
 def build_mesh(papers):
-    import os.path
-    import shutil
-    import math
-    import csv
-    import htmlentities
 
     print "\n###HTML - mesh###"
 
@@ -479,7 +477,7 @@ def build_mesh(papers):
             pass
 
     # Read in mesh tree hierarchy
-    f = open("../config/mesh_tree_hierarchy.csv", 'rt')
+    f = open(config.config_dir + "/mesh_tree_hierarchy.csv", 'rt')
     mesh_tree = {}
     mesh_tree_reverse = {}
     try:
@@ -491,7 +489,7 @@ def build_mesh(papers):
     finally:
         f.close()
 
-    f = open("../config/mesh_categories.csv", 'rt')
+    f = open(config.config_dir + "/mesh_categories.csv", 'rt')
     mesh_categories = {}
     try:
         reader = csv.reader(f)
@@ -570,10 +568,10 @@ def build_mesh(papers):
 
     # html head
     temp += '<head>'
-    temp += '<title>' + site_title + '</title>'
+    temp += '<title>' + site_second_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '</head>'
 
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; All Keywords</p>', "../", "")
@@ -598,10 +596,10 @@ def build_mesh(papers):
 
     # html head
     temp += '<head>'
-    temp += '<title>' + site_title + '</title>'
+    temp += '<title>' + site_second_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '</head>'
 
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keywords (MeSH)</p>', "../", "")
@@ -620,8 +618,6 @@ def build_mesh(papers):
 
     temp = build_common_foot()
     print >>html_file_major, temp
-
-    import codecs
 
     word_cloud_list = "["
     word_cloud_n = 0
@@ -667,6 +663,19 @@ def build_mesh(papers):
         for x in range(0, number):
             word_cloud_raw += " " + this_mesh
 
+    # Read in exec csv
+    exec_list = []
+    f = open(config.config_dir + "/" + config.project_details['short_name'] + '_exec_members.csv', 'rt')
+    try:
+        reader = csv.reader(f)
+        n = 0
+        for row in reader:
+            if n > 0:
+                exec_list.append(row)
+            n += 1
+    finally:
+        f.close()
+
     # Print page
     for this_mesh in mesh_papers_all:
 
@@ -681,13 +690,15 @@ def build_mesh(papers):
 
             # html head
             temp += '<head>'
-            temp += '<title>' + site_title + '</title>'
+            temp += '<title>' + site_second_title + '</title>'
             temp += '<link rel="stylesheet" href="../../css/uobcms_corporate.css">'
-            temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
             temp += '<link rel="stylesheet" href="../../css/style_main.css">'
+            temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
 
             temp += '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
             temp += '<script type="text/javascript" src="../' + this_mesh.replace(" ", "%20") + '.js"></script>'
+            temp += '<script>var primary_colour = "#' + config.project_details['colour_hex_primary'] + '";</script>'
+            temp += '<script>var secondary_colour = "#' + config.project_details['colour_hex_secondary'] + '";</script>'
             temp += '<script type="text/javascript" src="../keyword_history.js"></script>'
 
             temp += '</head>'
@@ -793,10 +804,31 @@ def build_mesh(papers):
 
                     # Authors
                     authors = []
+                    author_on_exec = False
                     for this_author in this_paper['author']:
                         # Some author lists have a collective name. Ignore this.
                         # Some people don't actually have initials. eg wraight in pmid:18454148
                         try:
+                            # Check if an author was on the exec Comittee
+                            for x in exec_list:
+                                # Check if authors name matches
+                                if x[2] == this_author['clean']:
+                                    # Get start and end date of exec membership
+                                    exec_start = time.mktime(datetime.datetime.strptime(x[0], "%d/%m/%Y").timetuple())
+                                    exec_end = int(time.time())
+                                    if not x[1] == "":
+                                        exec_end = time.mktime(datetime.datetime.strptime(x[1], "%d/%m/%Y").timetuple())
+
+                                    # Convert issued date into a timestamp
+                                    issued_date = this_paper['issued']['date-parts']
+                                    date = str(issued_date[0][2]) + "/" + str(issued_date[0][1]) + "/" + str(issued_date[0][0])
+                                    issued_timestamp = time.mktime(datetime.datetime.strptime(date, "%d/%m/%Y").timetuple())
+
+                                    # If publication is issued between exec_start and exec_end then flag
+                                    if issued_timestamp > exec_start and issued_timestamp < exec_end:
+                                        author_on_exec = True
+                                        break
+
                             authors.append(this_author['family'] + ', ' + this_author['given'])
                         except:
                             pass
@@ -828,13 +860,6 @@ def build_mesh(papers):
                     except:
                         pass
 
-                    # Zotero
-                    try:
-                        if this_paper['IDs']['zotero']:
-                            html += '&nbsp;Zotero: ' + this_paper['IDs']['zotero'] + ''
-                    except:
-                        pass
-
                     # DOI
                     try:
                         if this_paper['IDs']['DOI']:
@@ -848,7 +873,8 @@ def build_mesh(papers):
                     except:
                         pass
 
-                    html += '<img style="width:16px;padding-left:20px;" src="../../papers/yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
+                    if author_on_exec:
+                        html += '<img style="width:16px;padding-left:20px;" src="../../papers/yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
 
                     # Add an extra line break at the end
                     html += '<br/><br/>'
@@ -870,12 +896,8 @@ def build_mesh(papers):
 ###########################################################
 # Build a google map based on the lat longs provided before.
 ###########################################################
-
-
 def build_google_map(papers):
 
-    import shutil
-    import codecs
     print "\n###HTML - Insititutions Map###"
 
     info = []
@@ -905,10 +927,10 @@ def build_google_map(papers):
 
     # html head
     temp += '<head>'
-    temp += '<title>' + site_title + '</title>'
+    temp += '<title>' + site_second_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
     temp += '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>'
@@ -934,14 +956,12 @@ def build_google_map(papers):
     temp = build_common_foot()
     print >>html_file, temp
 
+
 ###########################################################
 # Publications by country
 ###########################################################
-
-
 def build_country_map(papers, api_key):
 
-    import shutil
     print "\n###HTML - Country Map###"
 
     countries = {}
@@ -968,15 +988,15 @@ def build_country_map(papers, api_key):
 
     # html head
     temp += '<head>'
-    temp += '<title>' + site_title + '</title>'
+    temp += '<title>' + site_second_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
     temp += '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=' + config.google_maps_api_key + '&libraries=visualization"></script>'
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
-    temp += '<script type="text/javascript">' + "google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawRegionsMap);function drawRegionsMap() {var data = google.visualization.arrayToDataTable([ ['Country', 'Publications']" + country_string + "]); var options = { colorAxis: {colors: ['#FFB612', '#c9002f']} }; var chart = new google.visualization.GeoChart(document.getElementById('regions_div')); chart.draw(data, options); }</script>"
+    temp += '<script type="text/javascript">' + "google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawRegionsMap);function drawRegionsMap() {var data = google.visualization.arrayToDataTable([ ['Country', 'Publications']" + country_string + "]); var options = { colorAxis: {colors: ['#" + config.project_details['colour_hex_secondary'] + "', '#" + config.project_details['colour_hex_primary'] + "']} }; var chart = new google.visualization.GeoChart(document.getElementById('regions_div')); chart.draw(data, options); }</script>"
 
     shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/country/loading.gif')
     shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/country/map.css')
@@ -998,14 +1018,12 @@ def build_country_map(papers, api_key):
 
     build_city_map(papers)
 
+
 ###########################################################
 # Publications by UK city
 ###########################################################
-
-
 def build_city_map(papers):
 
-    import shutil
     print "\n###HTML - City Map###"
 
     cities = {}
@@ -1033,14 +1051,14 @@ def build_city_map(papers):
 
     # html head
     temp += '<head>'
-    temp += '<title>' + site_title + '</title>'
+    temp += '<title>' + site_second_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
-    temp += "<script>google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['City',   'Publications']" + city_string + " ]); var options = {region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#FFB612', '#c9002f']}}; var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));chart.draw(data, options); };</script>"
+    temp += "<script>google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['City',   'Publications']" + city_string + " ]); var options = {region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#" + config.project_details['colour_hex_secondary'] + "', '#" + config.project_details['colour_hex_primary'] + "']}}; var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));chart.draw(data, options); };</script>"
 
     shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/city/loading.gif')
     shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/city/map.css')
@@ -1063,8 +1081,6 @@ def build_city_map(papers):
 ###########################################################
 # Build metrics page
 ###########################################################
-
-
 def intWithCommas(x):
     if type(x) not in [type(0), type(0L)]:
         raise TypeError("Parameter must be an integer.")
@@ -1079,7 +1095,6 @@ def intWithCommas(x):
 
 def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_year, study_current_year):
 
-    import shutil
     print "\n###HTML - Metrics###"
 
     html_file = open(config.html_dir + '/metrics/index.html', 'w')
@@ -1115,11 +1130,11 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
 
     # html head
     temp += '<head>'
-    temp += '<title>' + site_title + '</title>'
+    temp += '<title>' + site_second_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
 
     shutil.copyfile(config.template_dir + '/metrics.js', config.html_dir + '/metrics/metrics.js')
 
@@ -1127,6 +1142,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     temp += '<script type="text/javascript" src="../data.js"></script>'
     temp += '<script>' + n_papers_with_x_citations + '</script>'
     temp += '<script type="text/javascript" src="../map/map.js"></script>'
+    temp += '<script>var primary_colour = "#' + config.project_details['colour_hex_primary'] + '";</script>'
     temp += '<script type="text/javascript" src="metrics.js"></script>'
 
     temp += '</head>'
@@ -1263,14 +1279,12 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     temp = build_common_foot()
     print >>html_file, temp
 
+
 ###########################################################
 # Build keyword word cloud
 ###########################################################
-
-
 def build_word_cloud(papers, list, data_from_count):
 
-    import shutil
     print "\n###HTML - Keyword Cloud###"
 
     html_file = open(config.html_dir + '/wordcloud/index.html', 'w')
@@ -1280,10 +1294,10 @@ def build_word_cloud(papers, list, data_from_count):
 
     # html head
     temp += '<head>'
-    temp += '<title>' + site_title + '</title>'
+    temp += '<title>' + site_second_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
     temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
@@ -1311,19 +1325,15 @@ def build_word_cloud(papers, list, data_from_count):
     temp = build_common_foot()
     print >>html_file, temp
 
+
 ###########################################################
 # Build abstract word cloud
 ###########################################################
-
-
 def build_abstract_word_cloud(papers, data_from_count):
 
-    import shutil
-    import csv
-    import math
     print "\n###HTML - Abstract Word Cloud###"
 
-    f = open("../data/abstracts.csv", 'rt')
+    f = open(config.data_dir + "/abstracts.csv", 'rt')
 
     list = "["
     n = 0
@@ -1355,10 +1365,10 @@ def build_abstract_word_cloud(papers, data_from_count):
 
     # html head
     temp += '<head>'
-    temp += '<title>' + site_title + '</title>'
+    temp += '<title>' + site_second_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
     temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
@@ -1386,11 +1396,10 @@ def build_abstract_word_cloud(papers, data_from_count):
     temp = build_common_foot()
     print >>html_file, temp
 
+
 ###########################################################
 # Build Author Network
 ###########################################################
-
-
 def get_author_string_from_hash(hash_string, network):
 
     for author in network['authors']:
@@ -1400,7 +1409,6 @@ def get_author_string_from_hash(hash_string, network):
 
 def build_author_network(papers, network):
 
-    import shutil
     print "\n###HTML - Author Network###"
 
     # Create json file
@@ -1457,10 +1465,10 @@ def build_author_network(papers, network):
 
     # html head
     temp += '<head>'
-    temp += '<title>' + site_title + '</title>'
+    temp += '<title>' + site_second_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<style>.links line {  stroke: #999;  stroke-opacity: 0.6;} .nodes circle {  stroke: #fff;  stroke-width: 1.5px;} </style>'
 
     temp += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>'
@@ -1523,10 +1531,10 @@ def build_error_log(papers, error_log):
 
     # html head
     temp += '<head>'
-    temp += '<title>' + site_title + '</title>'
+    temp += '<title>' + site_second_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
     temp += '</head>'
@@ -1557,10 +1565,10 @@ def build_help():
 
     # html head
     temp += '<head>'
-    temp += '<title>' + site_title + '</title>'
+    temp += '<title>' + site_second_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
     temp += '</head>'

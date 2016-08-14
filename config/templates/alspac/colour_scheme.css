@@ -3,6 +3,11 @@
     background: #c9002f;
 }
 
+/* h1 */
+#pagetitle {
+    color:#B01C2E;
+}
+
 .maintitle a {
 color: #fff!important;
 }
@@ -30,3 +35,31 @@ color: #fff;
 color: #fff!important;
 color: rgba(255,255,255,0.4)!important
 }
+
+/* keywords list */
+div#uobcms-content ul a {
+    color: #c9002f;
+}
+
+/* Metrics Page */
+
+ div#uobcms-content div.metric {
+     background:#efede9;
+     color:#c9002f;
+}
+
+div#uobcms-content div.metric:hover {
+     background:#c9002f;
+}
+
+     div#uobcms-content div.metric:hover div.metric_name {
+       color:#f2f2f2;
+     }
+
+     div#uobcms-content div.metric:hover div.metric_value {
+       color:#f2f2f2;
+     }
+
+     div#uobcms-content div.metric div.metric_description {
+       color:#efede9;
+     }

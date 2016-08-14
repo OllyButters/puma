@@ -67,6 +67,7 @@ def citations(papers, api_key, citation_max_life, force_update):
             time.sleep(1)
 
             # Handle Max Quota Reached
+            error_number = 0
             try:
                 # try querying with the DOI first - there might not be a DOI
                 if this_paper['IDs']['DOI'] != "":
@@ -74,6 +75,7 @@ def citations(papers, api_key, citation_max_life, force_update):
                     logging.info(request_string)
                     try:
                         response = urllib2.urlopen(request_string).read()
+                        print "DOI: " + str(response)  # <<<<<<<<<<<<<<<< TO REMOVE
                         t = json.loads(response)
                     except:
                         logging.error('The citation query failed - maybe it timed out?')
@@ -104,8 +106,13 @@ def citations(papers, api_key, citation_max_life, force_update):
                             print t['search-results']['entry'][0]['error']
                 else:
                     logging.info('No DOI for = '+this_paper['IDs']['hash'])
+
+                error_number = 0
             except:
-                print 'An unexpected error happened getting the citations via DOI! (Check if reached MAX_QUOTA)'
+                error_number += 1
+                print 'An unexpected error happened getting the citations via DOI!'
+                if error_number > 10:
+                    print 'Check if reached Scopus MAX_QUOTA'
 
             # shoud wrap the above up as a fn and run it with doi and pmid separately
             # The above could have failed a couple of points - no DOI or nothing returned from a DOI query
@@ -115,10 +122,10 @@ def citations(papers, api_key, citation_max_life, force_update):
                     request_string = url + '?apiKey=' + api_key + '&field=citedby-count&query=PMID(' + this_paper['IDs']['PMID'] + ')'
                     logging.info(request_string)
                     response = urllib2.urlopen(request_string).read()
+                    print "PMID: " + str(response)  # <<<<<<<<<<<<<<<< TO REMOVE
                     t = json.loads(response)
 
                     # sometimes this returns multiple entries e.g. 22935244
-
                     try:
                         citations = t['search-results']['entry'][0]['citedby-count']
                         # print citations
