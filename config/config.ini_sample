@@ -25,5 +25,5 @@ google_maps_api_key: AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4
 loglevel: DEBUG
 
 [metrics]
-metrics_study_start_year: 1991
+metrics_study_start_year: 1958
 metrics_study_current_year: 2014

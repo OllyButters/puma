@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-
 import ConfigParser
 
 
@@ -24,7 +23,7 @@ def build_config_variables(root_dir):
     global metrics_study_current_year
 
     config = ConfigParser.ConfigParser()
-    config.read(root_dir + "/config/config.ini_sample")
+    config.read(root_dir + "/config/config_alspac.ini_sample")
     print config.sections()
     try:
         # Project Details
