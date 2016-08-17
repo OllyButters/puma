@@ -31,7 +31,7 @@ def build_common_body(breadcrumb, nav_path, body):
     html += "<div class='uob-header width-master' role='banner'>"
 
     html += "<div class='title_stop'></div>"
-    html += "<div id='uoblogo'><a accesskey='1' title='University of Bristol homepage' href='http://www.bristol.ac.uk/'><span>University of Bristol</span></a></div>"
+    html += "<div id='uoblogo'><a accesskey='1' title='" + config.project_details['header_institution'] + "' href='" + config.project_details['header_institution_url'] + "'><span>" + config.project_details['header_institution'] + "</span></a></div>"
     html += "<div class='maintitle' id='maintitle1'>"
     html += "<span id='title1'><a href='" + nav_path + "index.html'>" + config.project_details['name'] + " - " + site_second_title + "</a></span>"
     html += "</div>"
@@ -1270,10 +1270,11 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     temp += "<div class='clear'></div>"
 
     temp += '<div id="cumulative_div"></div>'
+    temp += "<p style='text-align:center;'>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
     temp += '<div id="papers_per_year_div"></div>'
+    temp += "<p style='text-align:center;'>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
     temp += '<div id="papers_per_citation_count_div"></div>'
-    temp += "<p>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
-
+    temp += "<p style='text-align:center;'>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
     print >>html_file, temp
 
     temp = build_common_foot()
@@ -1620,7 +1621,7 @@ def build_css_colour_scheme():
     temp += "}"
 
     temp += "#uoblogo span {"
-    temp += "background-image: url(http://bristol.ac.uk/media-library/protected/images/uob-logo-white-largest.png);"
+    temp += "background-image: url(" + config.project_details['header_image_url'] + ");"
     temp += "}"
 
     temp += ".uob-header-container:before,"
