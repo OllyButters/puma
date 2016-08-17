@@ -75,7 +75,7 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<!-- navigation object : navigation bottom -->'
     html += '<!-- start navigation : additional logo -->'
     html += '<div class="logo-additional">'
-    html += '<a href="http://www.bristol.ac.uk/alspac/25/"><img src="http://www.bristol.ac.uk/media-library/sites/alspac/images/alspac-25-logo.png" alt="" width="279" height="375" /></a>&zwnj;'
+    html += '<a href="' + config.project_details['side_image_link'] + '"><img src="' + config.project_details['side_image_url'] + '" alt="" width="279" height="375" /></a>&zwnj;'
     html += '</div>'
     html += '</div>'
     html += '</div>'
