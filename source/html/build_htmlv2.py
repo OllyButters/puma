@@ -1595,3 +1595,74 @@ def build_help():
 
     temp = build_common_foot()
     print >>html_file, temp
+
+
+###########################################################
+# CSS colour scheme
+###########################################################
+def build_css_colour_scheme():
+
+    html_file = open(config.template_dir + '/colour_scheme.css', 'w')
+
+    temp = ".uob-header-container {background: #" + config.project_details['colour_hex_primary'] + ";}"
+
+    temp += "/* h1 */"
+    temp += "#pagetitle {"
+    temp += "color:#" + config.project_details['colour_hex_primary'] + ";"
+    temp += "}"
+
+    temp += ".maintitle a {"
+    temp += "color: #fff!important;"
+    temp += "}"
+
+    temp += ".maintitle {"
+    temp += "border-left: 1px solid rgba(255, 255, 255, 0.2);"
+    temp += "}"
+
+    temp += "#uoblogo span {"
+    temp += "background-image: url(http://bristol.ac.uk/media-library/protected/images/uob-logo-white-largest.png);"
+    temp += "}"
+
+    temp += ".uob-header-container:before,"
+    temp += ".uob-header-container:after {"
+    temp += "display: block;"
+    temp += "visibility: visible;"
+    temp += "}"
+
+    temp += ".nav-users a {"
+    temp += "color: #fff;"
+    temp += "}"
+
+    temp += "color: rgba(255,255,255,0.4)!important;"
+    temp += ".nav-users .icon-arrow-right:after {"
+    temp += "}"
+
+    temp += "/* keywords list */"
+    temp += "div#uobcms-content ul a {"
+    temp += "color: #" + config.project_details['colour_hex_primary'] + ";"
+    temp += "}"
+
+    temp += "/* Metrics Page */"
+
+    temp += "div#uobcms-content div.metric {"
+    temp += "background:#efede9;"
+    temp += "color:#" + config.project_details['colour_hex_primary'] + ";"
+    temp += "}"
+
+    temp += "div#uobcms-content div.metric:hover {"
+    temp += "background:#" + config.project_details['colour_hex_primary'] + ";"
+    temp += "}"
+
+    temp += "div#uobcms-content div.metric:hover div.metric_name {"
+    temp += "color:#f2f2f2;"
+    temp += "}"
+
+    temp += "div#uobcms-content div.metric:hover div.metric_value {"
+    temp += "color:#f2f2f2;"
+    temp += "}"
+
+    temp += "div#uobcms-content div.metric div.metric_description {"
+    temp += "color:#efede9;"
+    temp += "}"
+
+    print >>html_file, temp

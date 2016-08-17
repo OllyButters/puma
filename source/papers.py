@@ -132,6 +132,7 @@ analyse.output_csv(papers)
 
 ###########################################################
 # Make some web pages
+html.build_htmlv2.build_css_colour_scheme()
 cohort_rating, cohort_rating_data_from = html.build_htmlv2.build_home(papers, error_log)
 html.build_htmlv2.build_papers(papers)
 html.build_htmlv2.build_mesh(papers)
