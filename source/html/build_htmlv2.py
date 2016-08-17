@@ -1583,6 +1583,8 @@ def build_help():
     temp += '<p>Pubmed.</p>'
     temp += '<h3>Citations Data</h3>'
     temp += '<p>Scopus - Elsevier.</p>'
+    temp += '<h3>Geodata</h3>'
+    temp += '<p>Wikidata and Google Maps</p>'
 
     temp += "<h2>Why don't some statistics use data from all publications?</h2>"
     temp += '<p>The data used for the statistics are gathered from databases which only collect data from particular journals.'
