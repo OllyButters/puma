@@ -31,7 +31,7 @@ def build_common_body(breadcrumb, nav_path, body):
     html += "<div class='uob-header width-master' role='banner'>"
 
     html += "<div class='title_stop'></div>"
-    html += "<div id='uoblogo'><a accesskey='1' title='University of Bristol homepage' href='http://www.bristol.ac.uk/'><span>University of Bristol</span></a></div>"
+    html += "<div id='uoblogo'><a accesskey='1' title='" + config.project_details['header_institution'] + "' href='" + config.project_details['header_institution_url'] + "'><span>" + config.project_details['header_institution'] + "</span></a></div>"
     html += "<div class='maintitle' id='maintitle1'>"
     html += "<span id='title1'><a href='" + nav_path + "index.html'>" + config.project_details['name'] + " - " + site_second_title + "</a></span>"
     html += "</div>"
@@ -54,9 +54,9 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<ul class="navgroup">'
     html += '<li><a href="' + nav_path + 'index.html">Home</a></li>'
     html += '<li><a href="' + nav_path + 'help/index.html">Information</a></li>'
-    html += '<li><a href="' + nav_path + 'papers/index.html">Papers List</a></li>'
+    # html += '<li><a href="' + nav_path + 'papers/index.html">Papers List</a></li>'
     html += '<li><a href="' + nav_path + 'all_keywords/index.html">All Keywords</a></li>'
-    html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords</a></li>'
+    html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords (MeSH)</a></li>'
 
     html += '<li><a>Maps</a>'
     html += '<ul class="multilevel-linkul-0">'
@@ -69,13 +69,18 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
     html += '<li><a href="' + nav_path + 'wordcloud/index.html">Major Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
+    html += '<li id="error_page_li" style="display:none;"><a href="' + nav_path + 'errorlog/index.html">Error Log</a></li>'
     html += '</ul>'
+
+    # Cookie errorlog display
+    html += '<script>function getCookie(cname) {var name = cname + "=";var ca = document.cookie.split(";");for(var i = 0; i <ca.length; i++) { var c = ca[i]; while (c.charAt(0)==" ") {c = c.substring(1);}if (c.indexOf(name) == 0) {return c.substring(name.length,c.length);}}return "";}</script>'
+    html += '<script>if ( getCookie("show_error_page") != "" ){ document.getElementById("error_page_li").style.display = "block";}</script>'
 
     html += '<div class="after-navgroup">'
     html += '<!-- navigation object : navigation bottom -->'
     html += '<!-- start navigation : additional logo -->'
     html += '<div class="logo-additional">'
-    html += '<a href="http://www.bristol.ac.uk/alspac/25/"><img src="http://www.bristol.ac.uk/media-library/sites/alspac/images/alspac-25-logo.png" alt="" width="279" height="375" /></a>&zwnj;'
+    html += '<a href="' + config.project_details['side_image_link'] + '"><img src="' + config.project_details['side_image_url'] + '" alt="" width="279" height="375" /></a>&zwnj;'
     html += '</div>'
     html += '</div>'
     html += '</div>'
@@ -108,6 +113,8 @@ def build_home(papers, error_log):
     print "\n###HTML - Home###"
 
     summary = {}
+    missing_year = {'num_papers': 0, 'uob': 0, 'citations': 0}
+
     html_file = open(config.html_dir + '/index.html', 'w')
     data_file = open(config.html_dir + '/data.js', 'w')
 
@@ -150,10 +157,27 @@ def build_home(papers, error_log):
                 pass
 
             # Get number of UoB papers published this year
-            if this_paper['Extras']['CleanInstitute'] == 'University of Bristol':
-                summary[this_year]['uob'] += 1
+            try:
+                if this_paper['Extras']['CleanInstitute'] == 'University of Bristol':
+                    summary[this_year]['uob'] += 1
+            except:
+                pass
+
         except:
-            error_log.logErrorPaper("Date Missing for " + this_paper['IDs']['hash'], this_paper)
+            try:
+                this_paper['PubmedData']['History'][0]['Year']
+            except:
+                error_log.logErrorPaper("Date Missing for " + this_paper['IDs']['hash'], this_paper)
+                missing_year['num_papers'] += 1
+                try:
+                    missing_year['citations'] += int(this_paper['Extras']['Citations'])
+                except:
+                    pass
+                    try:
+                        if this_paper['Extras']['CleanInstitute'] == 'University of Bristol':
+                            missing_year['uob'] += 1
+                    except:
+                        pass
 
     # Add in some zeros when there is no papers for this year
     years = summary.keys()
@@ -223,9 +247,20 @@ def build_home(papers, error_log):
         temp += '<td>' + intWithCommas(summary[this_year]['citations']) + '</td>'
         temp += '<td>' + intWithCommas(summary[this_year]['cumulative_citations']) + '</td></tr>'
         print >>html_file, temp
+
+        temp = '<tr>'
+        temp += '<td style="font-size:12px;font-weight:bold;">UNKNOWN</td>'
+        temp += '<td>' + str(missing_year['num_papers']) + '</td>'
+        temp += '<td>-</td>'
+        temp += '<td>' + str(missing_year['uob']) + '</td>'
+        temp += '<td>' + str(int(100*missing_year['uob']/missing_year['num_papers'])) + '</td>'
+        temp += '<td>' + str(missing_year['citations']) + '</td>'
+        temp += '<td>-</td>'
+        temp += '</tr>'
+    print >>html_file, temp
     print >>html_file, '</table>'
 
-    temp = "<p>Data from " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications</p>"
+    temp = "<p>Known publication year for " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications</p>"
 
     temp += build_common_foot()
     print >>html_file, temp
@@ -368,6 +403,9 @@ def build_papers(papers):
 
             if author_on_exec:
                 html += '<img style="width:16px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
+                this_paper['Extras']['author_on_exec'] = True
+            else:
+                this_paper['Extras']['author_on_exec'] = False
 
             # Add an extra line break at the end
             html += '<br/><br/>'
@@ -389,6 +427,8 @@ def build_papers(papers):
     # Output the info into an HTML file
     # For each year dict item
     # for this_year in sorted(yearly_papers, key=yearly_papers.get, reverse=True):
+    exec_data = {}
+    exec_data_string = "year,papers with author on executive committee,total papers"
     for this_year in sorted(yearly_papers, reverse=True):
         # Check there is some data for this year - not all do
         if len(yearly_papers[this_year]) == 0:
@@ -425,12 +465,33 @@ def build_papers(papers):
         for this_item in yearly_papers[this_year]:
             temp = this_item.values()
             print >>year_file, temp[0].encode('utf-8')
+            for this_paper in papers:
+                if this_paper['IDs']['hash'] == this_item.keys()[0]:
+                    if this_paper['Extras']['author_on_exec']:
+                        try:
+                            exec_data[this_year] += 1
+                        except:
+                            exec_data[this_year] = 1
+
+                    break
+
+            try:
+                exec_data[this_year]
+            except:
+                exec_data[this_year] = 0
 
         temp = build_common_foot()
         print >>year_file, temp
+        try:
+            exec_data_string += "\n" + str(this_year) + "," + str(exec_data[this_year]) + "," + str(len(yearly_papers[this_year]))
+        except:
+            pass
 
     main += "</p>" + build_common_foot()
     print >>html_file, main
+
+    exec_csv = open(config.data_dir + '/exec_publications.csv', 'w')
+    print >>exec_csv, exec_data_string
 
 
 ############################################################
@@ -1270,10 +1331,11 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     temp += "<div class='clear'></div>"
 
     temp += '<div id="cumulative_div"></div>'
+    temp += "<p style='text-align:center;'>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
     temp += '<div id="papers_per_year_div"></div>'
+    temp += "<p style='text-align:center;'>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
     temp += '<div id="papers_per_citation_count_div"></div>'
-    temp += "<p>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
-
+    temp += "<p style='text-align:center;'>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
     print >>html_file, temp
 
     temp = build_common_foot()
@@ -1545,6 +1607,11 @@ def build_error_log(papers, error_log):
 
     temp += error_log.printLog()
 
+    temp += "<script>"
+    # Set cookie
+    temp += ' var expiration_date = new Date(); var cookie_string = ""; expiration_date.setFullYear(expiration_date.getFullYear() + 1); cookie_string = "show_error_page=true; path=/; expires=" + expiration_date.toUTCString(); document.cookie = cookie_string;'
+    temp += "</script>"
+
     print >>html_file, temp
 
     temp = build_common_foot()
@@ -1579,17 +1646,23 @@ def build_help():
 
     temp += '<h2>Where does the data come from?</h2>'
     temp += '<h3>Publication Data</h3>'
-    temp += '<p>Pubmed.</p>'
+    temp += '<p>Data and metadata for the publications are located using the PubMed search engine.</p>'
+
     temp += '<h3>Citations Data</h3>'
-    temp += '<p>Scopus - Elsevier.</p>'
+    temp += '<p>Citation data is retrieved from the Scopus API provided by Elsevier.</p>'
+
+    temp += '<h3>Geodata</h3>'
+    temp += '<p>The Coordinate location of institutions is retrieved from the free project Wikidata. The coordinate data is then converted into country'
+    temp += ' and city names using the Google Maps API.</p>'
 
     temp += "<h2>Why don't some statistics use data from all publications?</h2>"
+
+    temp += '<p>Data can be missing because some publications are very old. There are many different ways to track publications'
+    temp += ' and Prior to the introduction of DOIs in 2000 there was no unified method. This means some metadata on old publications could have been lost or not recorded.</p>'
+
     temp += '<p>The data used for the statistics are gathered from databases which only collect data from particular journals.'
     temp += ' This problem is most obvious for citation data from Scopus. Although they have a particular publication on record,'
     temp += ' there may be citations for this publication from a journal that they do not index and therefore these will not be in the citation count.</p>'
-
-    temp += '<p>Other data can be missing because a publication is very old. There are many different ways to track publications'
-    temp += ' and Prior to the introduction of DOIs in 2000 there was no unified method. This means some metadata on old publications could have been lost or not recorded.</p>'
 
     print >>html_file, temp
 
@@ -1620,7 +1693,7 @@ def build_css_colour_scheme():
     temp += "}"
 
     temp += "#uoblogo span {"
-    temp += "background-image: url(http://bristol.ac.uk/media-library/protected/images/uob-logo-white-largest.png);"
+    temp += "background-image: url(" + config.project_details['header_image_url'] + ");"
     temp += "}"
 
     temp += ".uob-header-container:before,"
@@ -1664,5 +1737,8 @@ def build_css_colour_scheme():
     temp += "div#uobcms-content div.metric div.metric_description {"
     temp += "color:#efede9;"
     temp += "}"
+
+    temp += "a:link {color:#" + config.project_details['colour_hex_primary'] + "}"
+    temp += "a:visited {color:#" + config.project_details['colour_hex_primary'] + "}"
 
     print >>html_file, temp

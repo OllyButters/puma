@@ -7,11 +7,12 @@ class ErrorLog:
     warningArray = []
     index = 0
 
-    def logError(self, txt):
-        self.errorArray.append("[ERROR] " + txt)
+    # OLD ERROR LOGGING FUNCTIONS - Shouldn't be used anymore
+    # def logError(self, txt):
+    #   self.errorArray.append("[ERROR] " + txt)
 
-    def logWarning(self, txt):
-        self.warningArray.append("[WARNING] " + txt)
+    # def logWarning(self, txt):
+    #   self.warningArray.append("[WARNING] " + txt)
 
     def logErrorPaper(self, txt, this_paper):
         string = ""

@@ -5,6 +5,13 @@ short_name: 1958
 colour_hex_primary: 1d294d
 colour_hex_secondary: 9e9e9e
 
+header_image_url: http://bristol.ac.uk/media-library/protected/images/uob-logo-white-largest.png
+header_institution: University of Bristol
+header_institution_url: http://bristol.ac.uk
+
+side_image_url: http://www.bristol.ac.uk/media-library/sites/alspac/images/alspac-25-logo.png
+side_image_link: http://www.bristol.ac.uk/alspac/25/
+
 [zotero_api]
 url:
 api_key:

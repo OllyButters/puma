@@ -5,6 +5,13 @@ short_name: alspac
 colour_hex_primary: c9002f
 colour_hex_secondary: FFB612
 
+header_image_url: http://bristol.ac.uk/media-library/protected/images/uob-logo-white-largest.png
+header_institution: University of Bristol
+header_institution_url: http://bristol.ac.uk
+
+side_image_url: http://www.bristol.ac.uk/media-library/sites/alspac/images/alspac-25-logo.png
+side_image_link: http://www.bristol.ac.uk/alspac/25/
+
 [zotero_api]
 url:
 api_key:
