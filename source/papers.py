@@ -105,7 +105,7 @@ clean.clean_institution(papers)
 add.geocode.geocode(papers, error_log, config.google_maps_api_key)
 
 if config.scopus_run_citation:
-    add.citations.citations(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update)
+    add.citations.citations(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update, error_log)
 
 file_name = root_dir + '/data/summary_added_to'
 fo = open(file_name, 'wb')
