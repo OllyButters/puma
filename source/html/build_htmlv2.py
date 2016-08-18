@@ -54,9 +54,9 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<ul class="navgroup">'
     html += '<li><a href="' + nav_path + 'index.html">Home</a></li>'
     html += '<li><a href="' + nav_path + 'help/index.html">Information</a></li>'
-    html += '<li><a href="' + nav_path + 'papers/index.html">Papers List</a></li>'
+    # html += '<li><a href="' + nav_path + 'papers/index.html">Papers List</a></li>'
     html += '<li><a href="' + nav_path + 'all_keywords/index.html">All Keywords</a></li>'
-    html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords</a></li>'
+    html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords (MeSH)</a></li>'
 
     html += '<li><a>Maps</a>'
     html += '<ul class="multilevel-linkul-0">'
@@ -403,6 +403,9 @@ def build_papers(papers):
 
             if author_on_exec:
                 html += '<img style="width:16px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
+                this_paper['Extras']['author_on_exec'] = True
+            else:
+                this_paper['Extras']['author_on_exec'] = False
 
             # Add an extra line break at the end
             html += '<br/><br/>'
@@ -424,6 +427,8 @@ def build_papers(papers):
     # Output the info into an HTML file
     # For each year dict item
     # for this_year in sorted(yearly_papers, key=yearly_papers.get, reverse=True):
+    exec_data = {}
+    exec_data_string = "year,papers with author on executive committee,total papers"
     for this_year in sorted(yearly_papers, reverse=True):
         # Check there is some data for this year - not all do
         if len(yearly_papers[this_year]) == 0:
@@ -460,12 +465,33 @@ def build_papers(papers):
         for this_item in yearly_papers[this_year]:
             temp = this_item.values()
             print >>year_file, temp[0].encode('utf-8')
+            for this_paper in papers:
+                if this_paper['IDs']['hash'] == this_item.keys()[0]:
+                    if this_paper['Extras']['author_on_exec']:
+                        try:
+                            exec_data[this_year] += 1
+                        except:
+                            exec_data[this_year] = 1
+
+                    break
+
+            try:
+                exec_data[this_year]
+            except:
+                exec_data[this_year] = 0
 
         temp = build_common_foot()
         print >>year_file, temp
+        try:
+            exec_data_string += "\n" + str(this_year) + "," + str(exec_data[this_year]) + "," + str(len(yearly_papers[this_year]))
+        except:
+            pass
 
     main += "</p>" + build_common_foot()
     print >>html_file, main
+
+    exec_csv = open(config.data_dir + '/exec_publications.csv', 'w')
+    print >>exec_csv, exec_data_string
 
 
 ############################################################
