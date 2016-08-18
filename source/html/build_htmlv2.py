@@ -113,6 +113,8 @@ def build_home(papers, error_log):
     print "\n###HTML - Home###"
 
     summary = {}
+    missing_year = {'num_papers': 0, 'uob': 0, 'citations': 0}
+
     html_file = open(config.html_dir + '/index.html', 'w')
     data_file = open(config.html_dir + '/data.js', 'w')
 
@@ -155,10 +157,27 @@ def build_home(papers, error_log):
                 pass
 
             # Get number of UoB papers published this year
-            if this_paper['Extras']['CleanInstitute'] == 'University of Bristol':
-                summary[this_year]['uob'] += 1
+            try:
+                if this_paper['Extras']['CleanInstitute'] == 'University of Bristol':
+                    summary[this_year]['uob'] += 1
+            except:
+                pass
+
         except:
-            error_log.logErrorPaper("Date Missing for " + this_paper['IDs']['hash'], this_paper)
+            try:
+                this_paper['PubmedData']['History'][0]['Year']
+            except:
+                error_log.logErrorPaper("Date Missing for " + this_paper['IDs']['hash'], this_paper)
+                missing_year['num_papers'] += 1
+                try:
+                    missing_year['citations'] += int(this_paper['Extras']['Citations'])
+                except:
+                    pass
+                    try:
+                        if this_paper['Extras']['CleanInstitute'] == 'University of Bristol':
+                            missing_year['uob'] += 1
+                    except:
+                        pass
 
     # Add in some zeros when there is no papers for this year
     years = summary.keys()
@@ -228,9 +247,20 @@ def build_home(papers, error_log):
         temp += '<td>' + intWithCommas(summary[this_year]['citations']) + '</td>'
         temp += '<td>' + intWithCommas(summary[this_year]['cumulative_citations']) + '</td></tr>'
         print >>html_file, temp
+
+        temp = '<tr>'
+        temp += '<td style="font-size:12px;font-weight:bold;">UNKNOWN</td>'
+        temp += '<td>' + str(missing_year['num_papers']) + '</td>'
+        temp += '<td>-</td>'
+        temp += '<td>' + str(missing_year['uob']) + '</td>'
+        temp += '<td>' + str(int(100*missing_year['uob']/missing_year['num_papers'])) + '</td>'
+        temp += '<td>' + str(missing_year['citations']) + '</td>'
+        temp += '<td>-</td>'
+        temp += '</tr>'
+    print >>html_file, temp
     print >>html_file, '</table>'
 
-    temp = "<p>Data from " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications</p>"
+    temp = "<p>Known publication year for " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications</p>"
 
     temp += build_common_foot()
     print >>html_file, temp
