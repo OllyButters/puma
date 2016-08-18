@@ -1672,4 +1672,7 @@ def build_css_colour_scheme():
     temp += "color:#efede9;"
     temp += "}"
 
+    temp += "a:link {color:#" + config.project_details['colour_hex_primary'] + "}"
+    temp += "a:visited {color:#" + config.project_details['colour_hex_primary'] + "}"
+
     print >>html_file, temp
