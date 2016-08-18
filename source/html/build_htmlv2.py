@@ -1580,19 +1580,23 @@ def build_help():
 
     temp += '<h2>Where does the data come from?</h2>'
     temp += '<h3>Publication Data</h3>'
-    temp += '<p>Pubmed.</p>'
+    temp += '<p>Data and metadata for the publications are located using the PubMed search engine.</p>'
+
     temp += '<h3>Citations Data</h3>'
-    temp += '<p>Scopus - Elsevier.</p>'
+    temp += '<p>Citation data is retrieved from the Scopus API provided by Elsevier.</p>'
+
     temp += '<h3>Geodata</h3>'
-    temp += '<p>Wikidata and Google Maps</p>'
+    temp += '<p>The Coordinate location of institutions is retrieved from the free project Wikidata. The coordinate data is then converted into country'
+    temp += ' and city names using the Google Maps API.</p>'
 
     temp += "<h2>Why don't some statistics use data from all publications?</h2>"
+
+    temp += '<p>Data can be missing because some publications are very old. There are many different ways to track publications'
+    temp += ' and Prior to the introduction of DOIs in 2000 there was no unified method. This means some metadata on old publications could have been lost or not recorded.</p>'
+
     temp += '<p>The data used for the statistics are gathered from databases which only collect data from particular journals.'
     temp += ' This problem is most obvious for citation data from Scopus. Although they have a particular publication on record,'
     temp += ' there may be citations for this publication from a journal that they do not index and therefore these will not be in the citation count.</p>'
-
-    temp += '<p>Other data can be missing because a publication is very old. There are many different ways to track publications'
-    temp += ' and Prior to the introduction of DOIs in 2000 there was no unified method. This means some metadata on old publications could have been lost or not recorded.</p>'
 
     print >>html_file, temp
 
