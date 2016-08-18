@@ -69,7 +69,12 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
     html += '<li><a href="' + nav_path + 'wordcloud/index.html">Major Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
+    html += '<li id="error_page_li" style="display:none;"><a href="' + nav_path + 'errorlog/index.html">Error Log</a></li>'
     html += '</ul>'
+
+    # Cookie errorlog display
+    html += '<script>function getCookie(cname) {var name = cname + "=";var ca = document.cookie.split(";");for(var i = 0; i <ca.length; i++) { var c = ca[i]; while (c.charAt(0)==" ") {c = c.substring(1);}if (c.indexOf(name) == 0) {return c.substring(name.length,c.length);}}return "";}</script>'
+    html += '<script>if ( getCookie("show_error_page") != "" ){ document.getElementById("error_page_li").style.display = "block";}</script>'
 
     html += '<div class="after-navgroup">'
     html += '<!-- navigation object : navigation bottom -->'
@@ -1545,6 +1550,11 @@ def build_error_log(papers, error_log):
     temp += '<h1 id="pagetitle">Error Log</h1>'
 
     temp += error_log.printLog()
+
+    temp += "<script>"
+    # Set cookie
+    temp += ' var expiration_date = new Date(); var cookie_string = ""; expiration_date.setFullYear(expiration_date.getFullYear() + 1); cookie_string = "show_error_page=true; path=/; expires=" + expiration_date.toUTCString(); document.cookie = cookie_string;'
+    temp += "</script>"
 
     print >>html_file, temp
 
