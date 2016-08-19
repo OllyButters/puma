@@ -11,7 +11,6 @@ import datetime
 import math
 import codecs
 import os
-import glob
 
 
 import config.config as config
@@ -367,6 +366,13 @@ def build_papers(papers):
             html += htmlentities.encode('; '.join(authors))
             html += '<br/>'
 
+            if author_on_exec:
+                # html += '<img style="width:16px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive
+                html += '<div style="text-align:center;font-size:14px;background:#' + config.project_details['colour_hex_secondary'] + ';color:#' + config.project_details['colour_hex_primary'] + ';padding:2px 4px;box-shadow: 0px 0px 1px #4e4e4e inset;">At least one author was a member of the ' + config.project_details['name'] + ' Executive Committee.</div>'
+                this_paper['Extras']['author_on_exec'] = True
+            else:
+                this_paper['Extras']['author_on_exec'] = False
+
             # Journal volume and issue
             try:
                 html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
@@ -399,21 +405,21 @@ def build_papers(papers):
                 pass
 
             # citation count
-            html += "<table>"
-            html += '<tr><td colspan="4">Citations</td></tr>'
+            html += "<table class='citation_table'>"
+            html += '<tr><th colspan="4">Citation Counts</th></tr>'
             html += '<tr>'
             try:
-                html += '<td>Scopus</td><td>' + this_paper['Extras']['Citations'] + '<td>'
+                html += '<td>Scopus: ' + this_paper['Extras']['Citations'] + '<td>'
             except:
                 pass
+
+            try:
+                html += '<td>Europe PMC: ' + '-' + '<td>'
+            except:
+                pass
+
             html += '</tr>'
             html += "</table>"
-
-            if author_on_exec:
-                html += '<img style="width:16px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
-                this_paper['Extras']['author_on_exec'] = True
-            else:
-                this_paper['Extras']['author_on_exec'] = False
 
             # Add an extra line break at the end
             html += '<br/><br/>'
@@ -868,9 +874,6 @@ def build_mesh(papers):
                     # Paper title as a link
                     html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['title'] + '</span><br/>'
 
-                    # Abstract text - probably too long to go on this page
-                    # html += papers[this_pmid]['AbstractText'][0]+'<br/>'
-
                     # Authors
                     authors = []
                     author_on_exec = False
@@ -905,6 +908,13 @@ def build_mesh(papers):
                     html += htmlentities.encode('; '.join(authors))
                     html += '<br/>'
 
+                    if author_on_exec:
+                        # html += '<img style="width:16px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive
+                        html += '<div style="text-align:center;font-size:14px;background:#' + config.project_details['colour_hex_secondary'] + ';color:#' + config.project_details['colour_hex_primary'] + ';padding:2px 4px;box-shadow: 0px 0px 1px #4e4e4e inset;">At least one author was a member of the ' + config.project_details['name'] + ' Executive Committee.</div>'
+                        this_paper['Extras']['author_on_exec'] = True
+                    else:
+                        this_paper['Extras']['author_on_exec'] = False
+
                     # Journal volume and issue
                     try:
                         html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
@@ -925,7 +935,7 @@ def build_mesh(papers):
                     # PMID
                     try:
                         if this_paper['IDs']['PMID']:
-                            html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">'+str(this_paper['IDs']['PMID']) + '</a>'
+                            html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">' + str(this_paper['IDs']['PMID']) + '</a>'
                     except:
                         pass
 
@@ -937,13 +947,21 @@ def build_mesh(papers):
                         pass
 
                     # citation count
+                    html += "<table class='citation_table'>"
+                    html += '<tr><th colspan="4">Citation Counts</th></tr>'
+                    html += '<tr>'
                     try:
-                        html += '&nbsp; Citations: '+this_paper['Extras']['Citations']
+                        html += '<td>Scopus: ' + this_paper['Extras']['Citations'] + '<td>'
                     except:
                         pass
 
-                    if author_on_exec:
-                        html += '<img style="width:16px;padding-left:20px;" src="../../papers/yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
+                    try:
+                        html += '<td>Europe PMC: ' + '-' + '<td>'
+                    except:
+                        pass
+
+                    html += '</tr>'
+                    html += "</table>"
 
                     # Add an extra line break at the end
                     html += '<br/><br/>'

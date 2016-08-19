@@ -135,6 +135,19 @@ div#uobcms-content {
 
           }
 
+  table.citation_table {
+  }
+
+    table.citation_table td {
+      font-size:14px;
+    }
+
+    table.citation_table th {
+      font-size:14px;
+      text-transform:uppercase;
+      font-weight: bold;
+    }
+
   /* --- Metrics --- */
 
   div#uobcms-content div.metric {
