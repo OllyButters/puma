@@ -9,29 +9,9 @@ import copy
 import pprint
 import json
 import os
+import config.config as config
 
 def collate():
-  if (os.path.exists('../../cache/raw') is False):
-      os.mkdir('../../cache/raw')
-
-  if (os.path.exists('../../cache/raw/pubmed') is False):
-      os.mkdir('../../cache/raw/pubmed')
-
-  if (os.path.exists('../../cache/raw/pubmed/xml') is False):
-      os.mkdir('../../cache/raw/pubmed/xml')
-
-  if (os.path.exists('../../cache/raw/zotero') is False):
-      os.mkdir('../../cache/raw/zotero')
-
-  if (os.path.exists('../../cache/raw/doi') is False):
-      os.mkdir('../../cache/raw/doi')
-
-  if (os.path.exists('../../cache/processed') is False):
-      os.mkdir('../../cache/processed')
-
-  if (os.path.exists('../../cache/processed/merged') is False):
-      os.mkdir('../../cache/processed/merged')
-
   #first, check for new papers from zotero repo
   zot = pz.zotPaper()
 
@@ -40,7 +20,7 @@ def collate():
   doi_cache = pc.getCacheList(filetype='raw/doi')
   pm_cache = pc.getCacheList(filetype='raw/pubmed')
 
-  zot.collection = 'ALSPAC_PAPERS_ALL'
+  zot.collection = config.zotero_collection
 
   zot.getPapersList()
 
@@ -98,7 +78,7 @@ def collate():
   #now do merge data
   merged_papers = {}
   #merged_papers = []
-  template_file = open('config/data-doi-template', 'r')
+  template_file = open(config.config_dir+'/data-doi-template', 'r')
   template = json.load(template_file)
   template_file.close()
   #template = pc.getCacheData(filenames=['data-doi-template'])['data-doi-template']
@@ -114,7 +94,7 @@ def collate():
     print "Merging to filename: "+filename
 
     mgr = pMerge.Merge()
-    map_file = open('config/data-pubmed-doi-jsonpath', 'r')
+    map_file = open(config.config_dir+'/data-pubmed-doi-jsonpath', 'r')
     mgr.mapping = json.load(map_file)
     map_file.close()
 
@@ -125,7 +105,7 @@ def collate():
     merged_paper['pmid_data'] = copy.deepcopy(mgr.dest)
 
     #now do zotero data
-    map_file = open('config/data-zotero-doi-jsonpath', 'r')
+    map_file = open(config.config_dir+'/data-zotero-doi-jsonpath', 'r')
     mgr.mapping = json.load(map_file)
     map_file.close()
     #mgr.mapping = pc.getCacheData(filenames=['data-zotero-doi-jsonpath'])['data-zotero-doi-jsonpath']
@@ -163,5 +143,6 @@ def collate():
 
 if __name__ == "__main__":
   print "Collate data"
+  
   collate()
 

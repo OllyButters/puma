@@ -4,18 +4,19 @@ import os.path
 import logging
 import papersCache as pc
 from pprint import pprint
+import config.config as config
 
 from Bio import Entrez
-Entrez.email = "olly.butters@bristol.ac.uk"     # Always tell NCBI who you are
-
-#Look at the PubModel. See http://www.nlm.nih.gov/bsd/licensee/elements_article_source.html
-override_pubmodel=False
 
 def getPubmed(this_pmid):
   print 'Working on '+this_pmid
   logging.info('Working on %s',this_pmid)
 
   logging.info('Downloading %s', this_pmid)
+  Entrez.email = config.pubmed_email     # Always tell NCBI who you are
+
+  #Look at the PubModel. See http://www.nlm.nih.gov/bsd/licensee/elements_article_source.html
+  override_pubmodel=False
   handle = Entrez.efetch(db="pubmed", id=this_pmid, retmode="xml")
 
   pmid_xml_data = handle.read()
