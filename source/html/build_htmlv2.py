@@ -10,6 +10,9 @@ import time
 import datetime
 import math
 import codecs
+import os
+import glob
+
 
 import config.config as config
 
@@ -396,10 +399,15 @@ def build_papers(papers):
                 pass
 
             # citation count
+            html += "<table>"
+            html += '<tr><td colspan="4">Citations</td></tr>'
+            html += '<tr>'
             try:
-                html += '&nbsp; Citations: ' + this_paper['Extras']['Citations']
+                html += '<td>Scopus</td><td>' + this_paper['Extras']['Citations'] + '<td>'
             except:
                 pass
+            html += '</tr>'
+            html += "</table>"
 
             if author_on_exec:
                 html += '<img style="width:16px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
@@ -1599,9 +1607,11 @@ def build_error_log(papers, error_log):
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
+    temp += '<script>function jsonFormat(){ var x = document.getElementsByClassName("textoutput"); for (i = 0; i < x.length; i++) { x[i].innerHTML = JSON.stringify(JSON.parse(x[i].innerHTML) , null, 4); } }</script>'
+
     temp += '</head>'
 
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Error Log</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Error Log</p>', "../", "onload='jsonFormat();'")
 
     temp += '<h1 id="pagetitle">Error Log</h1>'
 

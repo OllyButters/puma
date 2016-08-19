@@ -71,7 +71,6 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
 
             # ==================================================
             # shoud wrap the above up as a fn and run it with doi and pmid separately
-            # The above could have failed a couple of points - no DOI or nothing returned from a DOI query
             if this_paper['IDs']['PMID'] != "":
                 try:
                     # Now try with a PMID
@@ -115,10 +114,10 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
             except:
                 # If we get here then there is no citation.
                 logging.warn('No citations found for %s.', str(this_paper['IDs']['hash']))
-
             # ==================================================
 
             # ==================================================
+            # The above could have failed a couple of points - no DOI or nothing returned from a DOI query
             try:
                 # try querying with the DOI first - there might not be a DOI
                 if 'Citations' not in this_paper['Extras'] and this_paper['IDs']['DOI'] != "":

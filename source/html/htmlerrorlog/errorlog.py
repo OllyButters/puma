@@ -1,7 +1,10 @@
 #! /usr/bin/env python
+import json
 
 
 class ErrorLog:
+
+    # import json
 
     errorArray = []
     warningArray = []
@@ -43,7 +46,7 @@ class ErrorLog:
             string += "<td>PUBMED ID</td><td>No PMID</td>"
         string += "</tr>"
         string += "<tr>"
-        string += "<td>Object</td><td style='font-size:14px'>" + str(this_paper).replace("<", "&lt;").replace(">", "&gt;") + "</td>"
+        string += "<td>Object</td><td><code class='prettyprint'><textarea class='textoutput' style='width:100%;min-height:600px;font-size:14px;font-family:\"Courier New\", Courier, monospace'>" + str(json.dumps(this_paper)).replace("<", "&lt;").replace(">", "&gt;") + "</textarea></code></td>"
         string += "</tr>"
         string += "</table>"
         string += "</div>"
@@ -52,6 +55,8 @@ class ErrorLog:
         self.index += 1
 
     def logWarningPaper(self, txt, this_paper):
+        # import json
+
         string = ""
 
         string += "[WARNING] " + txt + " <strong><a onclick=' var obj = document.getElementById(\"error_extra_info_" + str(self.index) + "\"); if (obj.style.display == \"none\") obj.style.display = \"block\"; else obj.style.display = \"none\";'>Details</a></strong>"
@@ -80,7 +85,7 @@ class ErrorLog:
             string += "<td>PUBMED ID</td><td>No PMID</td>"
         string += "</tr>"
         string += "<tr>"
-        string += "<td>Object</td><td style='font-size:14px'>" + str(this_paper).replace("<", "&lt;").replace(">", "&gt;") + "</td>"
+        string += "<td>Object</td><td><code class='prettyprint'><textarea class='textoutput' style='width:100%;min-height:600px;font-size:14px;font-family:\"Courier New\", Courier, monospace'>" + str(json.dumps(this_paper)).replace("<", "&lt;").replace(">", "&gt;") + "</textarea></code></td>"
         string += "</tr>"
         string += "</table>"
         string += "</div>"
