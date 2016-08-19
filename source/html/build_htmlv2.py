@@ -320,7 +320,7 @@ def build_papers(papers):
     for this_paper in papers:
 
         try:
-            html = ''
+            html = '<div class="paper">'
 
             # altmetric data
             try:
@@ -422,7 +422,7 @@ def build_papers(papers):
             html += "</table>"
 
             # Add an extra line break at the end
-            html += '<br/><br/>'
+            html += '</div>'
 
             # Append this paper to the list indexed by the year
             this_year = this_paper['PubmedData']['History'][0]['Year']
@@ -862,7 +862,7 @@ def build_mesh(papers):
                     if paper_obj is not None:
                         this_paper = paper_obj
 
-                    html = ''
+                    html = '<div class="paper">'
 
                     # altmetric data
                     try:
@@ -964,7 +964,7 @@ def build_mesh(papers):
                     html += "</table>"
 
                     # Add an extra line break at the end
-                    html += '<br/><br/>'
+                    html += '</div>'
 
                     fo.write(html)
 
