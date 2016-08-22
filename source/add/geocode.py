@@ -52,6 +52,8 @@ def geocode(papers, error_log, api_key):
             else:
 
                 # === Look up clean institute geo location ===
+
+                # First we need to get the wikidata ID
                 # Form query and get data
                 query = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?item WHERE { ?item rdfs:label "' + this_paper['Extras']['CleanInstitute'] + '"@en }'
                 url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql'
@@ -65,7 +67,6 @@ def geocode(papers, error_log, api_key):
                         item_uri = data['results']['bindings'][0]['item']['value']
                         item_uri_components = item_uri.split("/")
                         item_id = item_uri_components[len(item_uri_components)-1]
-                        # print( "WD Item id: " + item_id )
                         this_paper['wikidata_item_id'] = item_id
 
                         # -- USE WIKIDATA ID TO GET GEO-COORDS
@@ -83,7 +84,7 @@ def geocode(papers, error_log, api_key):
                         except:
                             try:
 
-                                # Check headquaters location
+                                # There is not coordinate location property for the object Check headquaters location property
                                 p_lon = retur['entities'][item_id]['claims']['P159'][0]['qualifiers']['P625'][0]['datavalue']['value']['longitude']
                                 p_lat = retur['entities'][item_id]['claims']['P159'][0]['qualifiers']['P625'][0]['datavalue']['value']['latitude']
 
@@ -120,7 +121,7 @@ def geocode(papers, error_log, api_key):
             error_log.logErrorPaper(" Clean Institute Missing for " + this_paper['IDs']['hash'] + " <a href='https://www.zotero.org/groups/300320/items/itemKey/" + this_paper['IDs']['zotero'] + "'>Zotero</a>", this_paper)
 
         # The coorditates have been found from either wikidata or the backup file
-        # Now using the goold maps api to get the country and city data
+        # Now using the google maps api to get the country and city data
         if found_coords:
             # Get country for heatmap
             retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['Extras']['LatLong']['lat'] + ',' + this_paper['Extras']['LatLong']['long'] + '&key=' + api_key))
