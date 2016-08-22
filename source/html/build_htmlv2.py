@@ -227,7 +227,7 @@ def build_home(papers, error_log):
     # print summary
     # Make a page with the headings on it
     print >>html_file, '<table>'
-    print >>html_file, '<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>UoB #</th><th>UoB %</th><th>Citations for papers published in this year</th><th>Cumulative citations for papers published in this year</th></tr>'
+    print >>html_file, '<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>UoB #</th><th>UoB %</th><th>Citations* for papers published in this year</th><th>Cumulative citations* for papers published in this year</th></tr>'
     for this_year in sorted(summary, reverse=True):
         # Skip the years where nothing was published
         if summary[this_year]['num_papers'] == 0:
@@ -263,6 +263,7 @@ def build_home(papers, error_log):
     print >>html_file, '</table>'
 
     temp = "<p>Known publication year for " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications</p>"
+    temp += "<p>Citation Data From Scopus.</p>"
 
     temp += build_common_foot()
     print >>html_file, temp
@@ -409,13 +410,14 @@ def build_papers(papers):
             html += '<tr><th colspan="4">Citation Counts</th></tr>'
             html += '<tr>'
             try:
-                html += '<td>Scopus: ' + this_paper['Extras']['Citations'] + '<td>'
+                html += '<td>Scopus: ' + str(this_paper['Extras']['Citations']) + '<td>'
             except:
-                pass
+                html += '<td>Scopus: -<td>'
 
             try:
-                html += '<td>Europe PMC: ' + '-' + '<td>'
+                html += '<td>Europe PMC: ' + str(this_paper['Extras']['Citations-EuropePMC']) + '<td>'
             except:
+                html += '<td>Europe PMC: -<td>'
                 pass
 
             html += '</tr>'
@@ -956,7 +958,7 @@ def build_mesh(papers):
                         pass
 
                     try:
-                        html += '<td>Europe PMC: ' + '-' + '<td>'
+                        html += '<td>Europe PMC: ' + this_paper['Extras']['Citations-EuropePMC'] + '<td>'
                     except:
                         pass
 
