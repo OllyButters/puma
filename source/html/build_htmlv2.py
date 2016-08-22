@@ -67,7 +67,9 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '    <li><a href="' + nav_path + 'city/index.html">Publications by UK City</a></li>'
     html += '</ul></li>'
 
-    html += '<li><a href="' + nav_path + 'authornetwork/index.html">Author Network</a></li>'
+    if config.page_show_author_network == "True":
+        html += '<li><a href="' + nav_path + 'authornetwork/index.html">Author Network</a></li>'
+
     html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
     html += '<li><a href="' + nav_path + 'wordcloud/index.html">Major Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'

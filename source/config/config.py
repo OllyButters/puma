@@ -22,6 +22,8 @@ def build_config_variables(root_dir):
     global metrics_study_start_year
     global metrics_study_current_year
 
+    global page_show_author_network
+
     config = ConfigParser.ConfigParser()
     config.read(root_dir + "/config/config_alspac.ini_sample")
     print config.sections()
@@ -44,6 +46,9 @@ def build_config_variables(root_dir):
         # Metrics
         metrics_study_start_year = int(config.get('metrics', 'metrics_study_start_year'))
         metrics_study_current_year = int(config.get('metrics', 'metrics_study_current_year'))
+
+        # Mages
+        page_show_author_network = config.get('pages', 'page_show_author_network')
 
     except:
         print 'Problem with the settings file'
