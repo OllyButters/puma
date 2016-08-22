@@ -1679,20 +1679,19 @@ def build_help():
     temp += '<p>Data and metadata for the publications are located using the PubMed search engine.</p>'
 
     temp += '<h3>Citations Data</h3>'
-    temp += '<p>Citation data is retrieved from the Scopus API provided by Elsevier.</p>'
+    temp += '<p>Citation data is retrieved from the <a href="https://www.elsevier.com/solutions/scopus">Scopus</a> API provided by Elsevier and from the <a href="https://europepmc.org/">Europe PMC</a> API.</p>'
 
     temp += '<h3>Geodata</h3>'
-    temp += '<p>The Coordinate location of institutions is retrieved from the free project Wikidata. The coordinate data is then converted into country'
-    temp += ' and city names using the Google Maps API.</p>'
+    temp += '<p>The Coordinate location of institutions is retrieved from the free project <a href="https://www.wikidata.org">Wikidata</a>. The coordinate data is then converted into country and city names using the <a href="https://developers.google.com/maps/">Google Maps API</a>.</p>'
 
     temp += "<h2>Why don't some statistics use data from all publications?</h2>"
 
     temp += '<p>Data can be missing because some publications are very old. There are many different ways to track publications'
-    temp += ' and Prior to the introduction of DOIs in 2000 there was no unified method. This means some metadata on old publications could have been lost or not recorded.</p>'
+    temp += ' and Prior to the introduction of DOIs in 2000 there was no standard method. This means some metadata on old publications could have been lost or not recorded.</p>'
 
     temp += '<p>The data used for the statistics are gathered from databases which only collect data from particular journals.'
-    temp += ' This problem is most obvious for citation data from Scopus. Although they have a particular publication on record,'
-    temp += ' there may be citations for this publication from a journal that they do not index and therefore these will not be in the citation count.</p>'
+    temp += ' This problem is most obvious for citation data from Scopus and Europe PMC. Although they have a particular publication on record,'
+    temp += ' there may be citations for this publication from a journal that they do not index and therefore these will not be in the citation count. This is why citiation counts from different sources are not always the same.</p>'
 
     print >>html_file, temp
 
