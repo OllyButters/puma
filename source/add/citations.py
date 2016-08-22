@@ -53,7 +53,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
     counter = 0
     for this_paper in papers:
         counter = counter + 1
-        logging.info('on # '+str(counter)+' of '+str(number_papers_to_process))
+        logging.info('on # ' + str(counter) + ' of ' + str(number_papers_to_process))
 
         print this_paper['IDs']
         # exit()
@@ -61,7 +61,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
         # read the cache
         try:
             this_paper['Extras']['Citations'] = cached_citations[this_paper['IDs']['hash']]['citation_count']
-            logging.info(str(this_paper['IDs']['hash'])+' in citation cache')
+            logging.info(str(this_paper['IDs']['hash']) + ' in citation cache')
         except:
             # Stick in a small nap so we arent hammering the api too much
             time.sleep(1)

@@ -263,7 +263,7 @@ def build_home(papers, error_log):
     print >>html_file, '</table>'
 
     temp = "<p>Known publication year for " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications</p>"
-    temp += "<p>Citation Data From Scopus.</p>"
+    temp += "<p>*Citation Data From Scopus.</p>"
 
     temp += build_common_foot()
     print >>html_file, temp
@@ -1188,60 +1188,6 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
 
     html_file = open(config.html_dir + '/metrics/index.html', 'w')
 
-    # NUMBER OF PAPERS PER CITATION COUNT
-    num_papers_citations = []
-    max_citations = 0
-    for this_paper in papers:
-        try:
-            n_cits = int(this_paper['Extras']['Citations'])
-            if n_cits > max_citations and n_cits < 200:
-                max_citations = n_cits
-            try:
-                num_papers_citations[n_cits] += 1
-            except:
-                num_papers_citations.insert(n_cits, 1)
-        except:
-            pass
-
-    # Create data string for plot
-    n_papers_with_x_citations = "var papers_per_citation_count = ([['Number of Citations','Number of Papers']"
-    # Add Zeros in missing indexes
-    for this_n_citations in range(1, max_citations+1):
-        try:
-            n_papers_with_x_citations += ",[" + str(this_n_citations) + "," + str(num_papers_citations[this_n_citations]) + "]"
-        except:
-            n_papers_with_x_citations += ",[" + str(this_n_citations) + ",0]"
-
-    n_papers_with_x_citations += "])"
-
-    # Put html together for this page
-    temp = '<!DOCTYPE html><html lang="en-GB">'
-
-    # html head
-    temp += '<head>'
-    temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/style_main.css">'
-    temp += '<link rel="stylesheet" href="../css/map.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
-
-    shutil.copyfile(config.template_dir + '/metrics.js', config.html_dir + '/metrics/metrics.js')
-
-    temp += '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
-    temp += '<script type="text/javascript" src="../data.js"></script>'
-    temp += '<script>' + n_papers_with_x_citations + '</script>'
-    temp += '<script type="text/javascript" src="../map/map.js"></script>'
-    temp += '<script>var primary_colour = "#' + config.project_details['colour_hex_primary'] + '";</script>'
-    temp += '<script type="text/javascript" src="metrics.js"></script>'
-
-    temp += '</head>'
-
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Study Metrics</p>', "../", "")
-
-    temp += '<h1 id="pagetitle">Study Metrics</h1>'
-
-    temp += "<p>{Explanation of study metrics}</p>"
-
     # Metric calculations
     total_publications = len(papers)
     total_citations = 0
@@ -1284,10 +1230,6 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
         h_index = x
         cits_so_far += paper_citations[x]
 
-    # cal e-index
-    # This is probably calculated wrong
-    # e_index = math.sqrt(total_citations - cits_so_far)
-
     # cal g-index
     g_index = 0
     cits_so_far = 0
@@ -1297,6 +1239,66 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
         if cits_so_far < x * x:
             break
         g_index = x
+
+    # NUMBER OF PAPERS PER CITATION COUNT
+    num_papers_citations = []
+    max_citations = 0
+    for this_paper in papers:
+        try:
+            n_cits = int(this_paper['Extras']['Citations'])
+            if n_cits > max_citations and n_cits < 200:
+                max_citations = n_cits
+            try:
+                num_papers_citations[n_cits] += 1
+            except:
+                num_papers_citations.insert(n_cits, 1)
+        except:
+            pass
+
+    # Create data string for plot
+    n_papers_with_x_citations = "var papers_per_citation_count = ([['Number of Citations','Number of Papers',{ role: 'style' }]"
+    # Add Zeros in missing indexes
+    for this_n_citations in range(1, max_citations+1):
+
+        colour = ""
+
+        # if this_n_citations == round(average_citations, 0):
+        #   colour = "#" + config.project_details['colour_hex_secondary']
+
+        try:
+            n_papers_with_x_citations += ",[" + str(this_n_citations) + "," + str(num_papers_citations[this_n_citations]) + ",'" + colour + "']"
+        except:
+            n_papers_with_x_citations += ",[" + str(this_n_citations) + ",0,'" + colour + "']"
+
+    n_papers_with_x_citations += "])"
+
+    # Put html together for this page
+    temp = '<!DOCTYPE html><html lang="en-GB">'
+
+    # html head
+    temp += '<head>'
+    temp += '<title>' + site_second_title + '</title>'
+    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
+    temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/map.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
+
+    shutil.copyfile(config.template_dir + '/metrics.js', config.html_dir + '/metrics/metrics.js')
+
+    temp += '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
+    temp += '<script type="text/javascript" src="../data.js"></script>'
+    temp += '<script>' + n_papers_with_x_citations + '</script>'
+    temp += '<script type="text/javascript" src="../map/map.js"></script>'
+    temp += '<script>var primary_colour = "#' + config.project_details['colour_hex_primary'] + '";</script>'
+    temp += '<script type="text/javascript" src="metrics.js"></script>'
+
+    temp += '</head>'
+
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Study Metrics</p>', "../", "")
+
+    temp += '<h1 id="pagetitle">Study Metrics</h1>'
+
+    temp += "<p>{Explanation of study metrics}</p>"
 
     # Ouput Metrics
     temp += "<div class='metric_con'>"
@@ -1363,7 +1365,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     temp += '<div id="papers_per_year_div"></div>'
     temp += "<p style='text-align:center;'>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
     temp += '<div id="papers_per_citation_count_div"></div>'
-    temp += "<p style='text-align:center;'>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
+    temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
     print >>html_file, temp
 
     temp = build_common_foot()

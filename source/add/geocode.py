@@ -16,7 +16,7 @@ def geocode(papers, error_log, api_key):
 
     print 'Geocoding'
 
-    # Read the backup csv file
+    # Read in the backup csv file
     # This is used to make up for old places not being on wikidata
     institute_coordinates_backup = {}
     with open(config.config_dir + '/institute_coordinates.csv', 'rb') as csvfile:
@@ -27,6 +27,7 @@ def geocode(papers, error_log, api_key):
             institute_coordinates_backup[row[0]]['long'] = row[2]
     csvfile.close()
 
+    # Loop through papers and geocode
     locations_found = 0
     number_done = 1
     for this_paper in papers:
@@ -34,7 +35,7 @@ def geocode(papers, error_log, api_key):
 
         try:
 
-            # Check Cache
+            # === Check if the location is already cached ===
             clean = this_paper['Extras']['CleanInstitute']
             if os.path.isfile(config.cache_dir + "/geodata/" + clean):
                 # Load cached data
@@ -51,7 +52,7 @@ def geocode(papers, error_log, api_key):
 
             else:
 
-                # === Look up clean institute geo location ===
+                # === Look up clean institute coordinates on wikidata ===
 
                 # First we need to get the wikidata ID
                 # Form query and get data
@@ -69,7 +70,7 @@ def geocode(papers, error_log, api_key):
                         item_id = item_uri_components[len(item_uri_components)-1]
                         this_paper['wikidata_item_id'] = item_id
 
-                        # -- USE WIKIDATA ID TO GET GEO-COORDS
+                        # === USE WIKIDATA ID TO GET GEO-COORDS ===
                         try:
 
                             retur = json.load(urllib2.urlopen('https://www.wikidata.org/w/api.php?action=wbgetentities&ids=' + item_id + '&format=json'))
@@ -98,7 +99,7 @@ def geocode(papers, error_log, api_key):
                                 print 'Unable to get geo-data (No HQ P625 Or P625) ' + this_paper['Extras']['CleanInstitute'] + " " + item_id + " (" + str(number_done) + "/" + str(len(papers)) + ")"
 
                     except:
-                        # -- Use Backup File --
+                        # === No On Wikidata Check Backup File ===
                         try:
                             backup_coords = institute_coordinates_backup[this_paper['Extras']['CleanInstitute']]
                             print 'Using Institute coordinates backup to get coordinates for ' + this_paper['Extras']['CleanInstitute']
@@ -114,13 +115,11 @@ def geocode(papers, error_log, api_key):
                     print 'Unable to get geo-data (Wikidata Query Failed) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
                     error_log.logWarningPaper("Wikidata query failed for " + this_paper['Extras']['CleanInstitute'], this_paper)
 
-                # === End Look up ===
-
         except:
             print 'No Clean Institute for ' + this_paper['IDs']['hash'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
             error_log.logErrorPaper(" Clean Institute Missing for " + this_paper['IDs']['hash'] + " <a href='https://www.zotero.org/groups/300320/items/itemKey/" + this_paper['IDs']['zotero'] + "'>Zotero</a>", this_paper)
 
-        # The coorditates have been found from either wikidata or the backup file
+        # The coordinates have been found from either wikidata or the backup file
         # Now using the google maps api to get the country and city data
         if found_coords:
             # Get country for heatmap
@@ -144,7 +143,7 @@ def geocode(papers, error_log, api_key):
                 cache_file.write(this_paper['Extras']['LatLong']['lat'] + "#" + this_paper['Extras']['LatLong']['long'] + "#" + country_short + "#" + postal_town)
                 cache_file.close()
             except:
-                print 'Unable to get geo-data (Google API Quota Reached) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
+                print 'Unable to get geo-data (Maybe Google API Quota Reached?) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
                 error_log.logErrorPaper(this_paper['Extras']['CleanInstitute'] + " Google API Quota Reached!", this_paper)
 
         number_done += 1
