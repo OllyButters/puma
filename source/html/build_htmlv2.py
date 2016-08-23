@@ -283,9 +283,6 @@ def build_papers(papers):
     yearly_papers = {}
     html_file = open(config.html_dir + '/papers/index.html', 'w')
 
-    shutil.copyfile(config.template_dir + '/altmetric.png', config.html_dir + '/papers/altmetric.png')
-    shutil.copyfile(config.template_dir + '/yellow-flag-th.png', config.html_dir + '/papers/yellow-flag-th.png')
-
     # Read in exec csv
     exec_list = []
     f = open(config.config_dir + "/" + config.project_details['short_name'] + '_exec_members.csv', 'rt')
@@ -456,9 +453,6 @@ def build_papers(papers):
         if not os.path.exists(config.html_dir + '/papers/' + this_year):
             os.mkdir(config.html_dir + '/papers/' + this_year)
         year_file = open(config.html_dir + '/papers/' + this_year + '/index.html', 'w')
-
-        shutil.copyfile(config.template_dir + '/altmetric.png', config.html_dir + '/papers/' + this_year + '/altmetric.png')
-        shutil.copyfile(config.template_dir + '/yellow-flag-th.png', config.html_dir + '/papers/' + this_year + '/yellow-flag-th.png')
 
         # Put html together for this page
         temp = '<!DOCTYPE html><html lang="en-GB">'
