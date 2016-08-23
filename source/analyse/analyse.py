@@ -48,28 +48,33 @@ def journals(papers):
 def abstracts(papers):
     print "\n###Abstracts###"
 
-    abstracts = ''
+    words = []
+    data_from_count = 0
+    # Go through all papers
     for this_paper in papers:
-        # print this_paper
         try:
-            abstracts = abstracts + str(this_paper['MedlineCitation']['Article']['Abstract']['AbstractText'])
+            # Get abstract text
+            abstracts = str(this_paper['MedlineCitation']['Article']['Abstract']['AbstractText'])
+
+            # Remove punctuation and esacpe characters that will cause a problem
+            abstracts = abstracts.lower()
+            abstracts = abstracts.replace(",", " ")
+            abstracts = abstracts.replace(".", " ")
+            abstracts = abstracts.replace(":", " ")
+            abstracts = abstracts.replace(";", " ")
+            abstracts = abstracts.replace("'", "\'")
+            abstracts = abstracts.replace('"', '\"')
+
+            # Add abstract words into list of all words
+            words.extend(abstracts.split())
+            data_from_count += 1
         except:
             pass
-
-    abstracts = abstracts.lower()
-    abstracts = abstracts.replace(",", " ")
-    abstracts = abstracts.replace(".", " ")
-    abstracts = abstracts.replace(":", " ")
-    abstracts = abstracts.replace(";", " ")
-    abstracts = abstracts.replace("'", "\'")
-    abstracts = abstracts.replace('"', '\"')
-
-    words = abstracts.split()
 
     # calculate the frequency of each word in abstracts
     freq = dict((x, words.count(x)) for x in set(words))
 
-    # Delete stop words
+    # = Remove stop words from the list of all words =
     # Read stop words from file
     stop_lines = tuple(open(config.config_dir + "/stopwords", "r"))
     stop_words = []
@@ -103,6 +108,8 @@ def abstracts(papers):
                 i = i+1
             abstracts_file.writerow([w.encode('utf-8'), freq[w]])
 
+    return data_from_count
+
 
 ############################################################
 # Try with the authors - these are in a nested dict
@@ -120,8 +127,10 @@ def authors(papers):
                 # There are some entries in the author list that are not actually authors e.g. 21379325 last author
                 try:
                     authors.append(this_author['family'])
+                    this_author.update({'clean': this_author['family'] + " " + this_author['given'][0]})
                 except:
                     pass
+
         except:
             logging.warn('No AuthorList for '+this_paper['IDs']['hash'])
 
@@ -129,7 +138,7 @@ def authors(papers):
     freq = dict((x, authors.count(x)) for x in set(authors))
     print "\n###Authors###"
 
-    print str(len(set(authors)))+' different authors'
+    print str(len(set(authors))) + ' different authors'
     # print freq
 
     i = 0
@@ -152,7 +161,7 @@ def authors(papers):
         try:
             for this_author in this_paper['author']:
                 # Create author hash
-                hash_object = hashlib.sha256(this_author['family'] + this_author['given'])
+                hash_object = hashlib.sha256(this_author['clean'])
                 author_hash = hash_object.hexdigest()
 
                 # Store author details
@@ -160,8 +169,7 @@ def authors(papers):
                     author_network['authors'][author_hash]
                 except:
                     author_network['authors'][author_hash] = {}
-                    author_network['authors'][author_hash]['family'] = this_author['family']
-                    author_network['authors'][author_hash]['given'] = this_author['given']
+                    author_network['authors'][author_hash]['clean'] = this_author['clean']
 
                 try:
                     author_network['authors'][author_hash]['num_papers'] += 1
@@ -172,7 +180,7 @@ def authors(papers):
                 for con_author in this_paper['author']:
 
                     if not this_author == con_author:
-                        con_hash_object = hashlib.sha256(con_author['family'] + con_author['given'])
+                        con_hash_object = hashlib.sha256(con_author['clean'])
                         con_author_hash = con_hash_object.hexdigest()
 
                         con_id = ""

@@ -14,7 +14,7 @@ import config.config as config
 # Use the elsevier API to get the number of citations a paper has bsed on its PMID.
 # Ultimately need to build a GET string like
 # http://api.elsevier.com/content/search/scopus?query=PMID(18562177)&apiKey=8024d746590aade6be6856a22a734783&field=citedby-count
-def citations(papers, api_key, citation_max_life, force_update):
+def citations(papers, api_key, citation_max_life, force_update, error_log):
 
     url = 'http://api.elsevier.com/content/search/scopus'
 
@@ -53,7 +53,7 @@ def citations(papers, api_key, citation_max_life, force_update):
     counter = 0
     for this_paper in papers:
         counter = counter + 1
-        logging.info('on # '+str(counter)+' of '+str(number_papers_to_process))
+        logging.info('on # ' + str(counter) + ' of ' + str(number_papers_to_process))
 
         print this_paper['IDs']
         # exit()
@@ -61,91 +61,175 @@ def citations(papers, api_key, citation_max_life, force_update):
         # read the cache
         try:
             this_paper['Extras']['Citations'] = cached_citations[this_paper['IDs']['hash']]['citation_count']
-            logging.info(str(this_paper['IDs']['hash'])+' in citation cache')
+            logging.info(str(this_paper['IDs']['hash']) + ' in citation cache')
         except:
             # Stick in a small nap so we arent hammering the api too much
             time.sleep(1)
 
-            # try querying with the DOI first - there might not be a DOI
-            if this_paper['IDs']['DOI'] != "":
-                request_string = url+'?apiKey='+api_key+'&field=citedby-count&query=DOI('+this_paper['IDs']['DOI']+')'
-                logging.info(request_string)
+            # Handle Max Quota Reached
+            error_number = 0
+
+            # ==================================================
+            # shoud wrap the above up as a fn and run it with doi and pmid separately
+            if this_paper['IDs']['PMID'] != "":
                 try:
+                    # Now try with a PMID
+                    request_string = url + '?apiKey=' + api_key + '&field=citedby-count&query=PMID(' + this_paper['IDs']['PMID'] + ')'
+                    logging.info(request_string)
                     response = urllib2.urlopen(request_string).read()
                     t = json.loads(response)
-                except:
-                    logging.error('The citation query failed - maybe it timed out?')
-                    print 'The citation query failed - maybe it timed out?'
-                    # exit()
 
-                try:
-                    citations = t['search-results']['entry'][0]['citedby-count']
-                    this_paper['Extras']['Citations'] = citations
-                    cached_citations[this_paper['IDs']['hash']] = {}
-                    cached_citations[this_paper['IDs']['hash']]['citation_count'] = citations
-                    cached_citations[this_paper['IDs']['hash']]['date_downloaded'] = datetime.datetime.now()
-                    logging.info('Citation added via DOI')
-                except:
-                    # there wasnt a number of citations returned, so see if we can catch this.
+                    # sometimes this returns multiple entries e.g. 22935244
                     try:
-                        error = t['search-results']['entry'][0]['error']
-                        if error == 'Result set was empty':
-                            logging.info('No citation results from scopus using DOI %s %s', str(this_paper['IDs']['DOI']), str(this_paper))
+                        if len(t['search-results']['entry']) > 1:
+                            error_log.logErrorPaper("Multiple Papers Found for PMID", this_paper)
+                        citations = t['search-results']['entry'][0]['citedby-count']
+                        # print citations
+                        this_paper['Extras']['Citations'] = citations
+                        cached_citations[this_paper['IDs']['hash']] = {}
+                        cached_citations[this_paper['IDs']['hash']]['citation_count'] = citations
+                        cached_citations[this_paper['IDs']['hash']]['date_downloaded'] = datetime.datetime.now()
+                        logging.info('Citation added via PMID')
                     except:
-                        # a different error happened!
-                        # log this
-                        logging.warn('An unexpected error happened getting the citations via DOI!')
-                        logging.warn(t)
-                        print 'An unexpected error happened getting the citations via DOI!'
-                        print request_string
-                        print t
-                        print t['search-results']['entry'][0]['error']
-            else:
-                logging.info('No DOI for = '+this_paper['IDs']['hash'])
-
-            # shoud wrap the above up as a fn and run it with doi and pmid separately
-            # The above could have failed a couple of points - no DOI or nothing returned from a DOI query
-            if 'Citations' not in this_paper['Extras'] and this_paper['IDs']['PMID'] != "":
-                # Now try with a PMID
-                request_string = url + '?apiKey=' + api_key + '&field=citedby-count&query=PMID(' + this_paper['IDs']['PMID'] + ')'
-                logging.info(request_string)
-                response = urllib2.urlopen(request_string).read()
-                t = json.loads(response)
-
-                # sometimes this returns multiple entries e.g. 22935244
-
-                try:
-                    citations = t['search-results']['entry'][0]['citedby-count']
-                    # print citations
-                    this_paper['Extras']['Citations'] = citations
-                    cached_citations[this_paper['IDs']['hash']] = {}
-                    cached_citations[this_paper['IDs']['hash']]['citation_count'] = citations
-                    cached_citations[this_paper['IDs']['hash']]['date_downloaded'] = datetime.datetime.now()
-                    logging.info('Citation added via PMID')
-                except:
-                    # there wasnt a number of citations returned, so see if we can catch this.
-                    try:
-                        error = t['search-results']['entry'][0]['error']
-                        if error == 'Result set was empty':
+                        # there wasnt a number of citations returned, so see if we can catch this.
+                        try:
+                            error = t['search-results']['entry'][0]['error']
+                            if error == 'Result set was empty':
+                                # log this
+                                logging.info('No citation results from scopus for ' + str(this_paper['IDs']['PMID']))
+                                # print 'No citations'
+                        except:
+                            # a different error happened!
                             # log this
-                            logging.info('No citation results from scopus for ' + str(this_paper['IDs']['PMID']))
-                            # print 'No citations'
-                    except:
-                        # a different error happened!
-                        # log this
-                        logging.warn('An unexpected error happened getting the citations!')
-                        logging.warn(t)
-                        print 'An unexpected error happened getting the citations!'
-                        print request_string
-                        print t
+                            logging.warn('An unexpected error happened getting the citations!')
+                            logging.warn(t)
+                            print 'An unexpected error happened getting the citations!'
+                            print request_string
+                            print t
+                except:
+                    print 'An unexpected error happened getting the citations via PMID!'
 
             try:
                 this_paper['Extras']['Citations']
             except:
                 # If we get here then there is no citation.
                 logging.warn('No citations found for %s.', str(this_paper['IDs']['hash']))
+            # ==================================================
+
+            # ==================================================
+            # The above could have failed a couple of points - no DOI or nothing returned from a DOI query
+            try:
+                # try querying with the DOI first - there might not be a DOI
+                if 'Citations' not in this_paper['Extras'] and this_paper['IDs']['DOI'] != "":
+                    request_string = url+'?apiKey='+api_key+'&field=citedby-count&query=DOI('+this_paper['IDs']['DOI']+')'
+                    logging.info(request_string)
+                    try:
+                        response = urllib2.urlopen(request_string).read()
+                        t = json.loads(response)
+                    except:
+                        logging.error('The citation query failed - maybe it timed out?')
+                        print 'The citation query failed - maybe it timed out?'
+                        # exit()
+
+                    try:
+                        if len(t['search-results']['entry']) > 1:
+                            error_log.logErrorPaper("Multiple Papers Found for DOI", this_paper)
+                        citations = t['search-results']['entry'][0]['citedby-count']
+                        this_paper['Extras']['Citations'] = citations
+                        cached_citations[this_paper['IDs']['hash']] = {}
+                        cached_citations[this_paper['IDs']['hash']]['citation_count'] = citations
+                        cached_citations[this_paper['IDs']['hash']]['date_downloaded'] = datetime.datetime.now()
+                        logging.info('Citation added via DOI')
+                    except:
+                        # there wasnt a number of citations returned, so see if we can catch this.
+                        try:
+                            error = t['search-results']['entry'][0]['error']
+                            if error == 'Result set was empty':
+                                logging.info('No citation results from scopus using DOI %s %s', str(this_paper['IDs']['DOI']), str(this_paper))
+                        except:
+                            # a different error happened!
+                            # log this
+                            logging.warn('An unexpected error happened getting the citations via DOI!')
+                            logging.warn(t)
+                            print 'An unexpected error happened getting the citations via DOI!'
+                            print request_string
+                            print t
+                            print t['search-results']['entry'][0]['error']
+                else:
+                    logging.info('No DOI for = '+this_paper['IDs']['hash'])
+
+                error_number = 0
+            except:
+                error_number += 1
+                print 'An unexpected error happened getting the citations via DOI!'
+                if error_number > 10:
+                    print 'Check if reached Scopus MAX_QUOTA'
+
+            # ==================================================
 
     csvfile = open(config.cache_dir + '/citations.csv', 'wb')
+    citation_file = csv.writer(csvfile)
+    for this_citation in cached_citations:
+        temp_citation_count = cached_citations[this_citation]['citation_count']
+        temp_date_downloaded = cached_citations[this_citation]['date_downloaded']
+        citation_file.writerow([this_citation, str(temp_citation_count), temp_date_downloaded])
+
+    # === Europe PMC ===
+    cached_citations = {}
+
+    # If the force_update flag is True then there is no point reading in the cache
+    if force_update is not True:
+        logging.info('Reading citation cache in.')
+        try:
+            with open(config.cache_dir + '/citations_europePMC.csv', 'rb') as csvfile:
+                f = csv.reader(csvfile)
+                for row in f:
+                    # Parse the date the citation was cached
+                    date_downloaded = datetime.datetime.strptime(row[2], "%Y-%m-%d %H:%M:%S.%f")
+
+                    # If the citation is younger than (today - citation_max_life)
+                    # then use it. Not using it means we will download it again.
+                    if abs(datetime.datetime.now() - date_downloaded) < datetime.timedelta(days=citation_max_life):
+                        cached_citations[row[0]] = {}
+                        cached_citations[row[0]]['citation_count'] = row[1]
+                        cached_citations[row[0]]['date_downloaded'] = row[2]
+                        logging.debug('Cache ok for: ' + row[0] + ' ' + row[1] + '' + row[2])
+                    else:
+                        logging.debug('Cache too old for: ' + row[0] + ' ' + row[1] + '' + row[2])
+            csvfile.close()
+            logging.info('Citation cache file read in')
+        except:
+            print("Unexpected error:", sys.exc_info()[0])
+            print 'make file'
+
+    # Get Citation Data
+    n_checked = 0
+    for this_paper in papers:
+
+        try:
+            this_paper['Extras']['Citations-EuropePMC'] = cached_citations[this_paper['IDs']['hash']]['citation_count']
+            logging.info(str(this_paper['IDs']['hash'])+' in EuropePMC citation cache')
+        except:
+            time.sleep(0.4)
+            try:
+                request_string = 'http://www.ebi.ac.uk/europepmc/webservices/rest/search?format=JSON&query=' + this_paper['IDs']['PMID']
+                response = urllib2.urlopen(request_string).read()
+                t = json.loads(response)
+
+                citations = t["resultList"]["result"][0]["citedByCount"]
+                this_paper['Extras']['Citations-EuropePMC'] = citations
+
+                cached_citations[this_paper['IDs']['hash']] = {}
+                cached_citations[this_paper['IDs']['hash']]['citation_count'] = citations
+                cached_citations[this_paper['IDs']['hash']]['date_downloaded'] = datetime.datetime.now()
+            except:
+                print "No Europe PMC citations count for " + this_paper['IDs']['hash'] + " (" + str(n_checked) + "/" + str(len(papers)) + ")"
+                pass
+
+        n_checked += 1
+
+    # Write to file
+    csvfile = open(config.cache_dir + '/citations_europePMC.csv', 'wb')
     citation_file = csv.writer(csvfile)
     for this_citation in cached_citations:
         temp_citation_count = cached_citations[this_citation]['citation_count']

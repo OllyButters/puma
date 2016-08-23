@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 
 import json
-import csv
 import re
 import logging
 import os
@@ -73,14 +72,14 @@ def pre_clean(papers):
 # in the institute_cleaning.csv file. If it does then replace it with a
 # standard name.
 def clean_institution(papers):
-
+    import unicodecsv
     logging.info('Starting institute cleaning')
 
     # Read in config file
     pattern = []
     replacements = []
     with open(config.config_dir + '/institute_cleaning.csv', 'rb') as csvfile:
-        f = csv.reader(csvfile)
+        f = unicodecsv.reader(csvfile,  encoding='utf-8')
         for row in f:
             try:
                 # Check it is not a comment string first.
