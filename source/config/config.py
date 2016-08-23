@@ -22,8 +22,10 @@ def build_config_variables(root_dir):
     global metrics_study_start_year
     global metrics_study_current_year
 
+    global page_show_author_network
+
     config = ConfigParser.ConfigParser()
-    config.read(root_dir + "/config/config.ini_sample")
+    config.read(root_dir + "/config/config_alspac.ini_sample")
     print config.sections()
     try:
         # Project Details
@@ -39,11 +41,14 @@ def build_config_variables(root_dir):
         logging_loglevel = config.get('logging', 'loglevel')
 
         # Mapping
-        google_maps_api_key = config.get('google_chart_api', 'google_maps_api_key')
+        google_maps_api_key = config.get('google_apis', 'google_maps_api_key')
 
         # Metrics
         metrics_study_start_year = int(config.get('metrics', 'metrics_study_start_year'))
         metrics_study_current_year = int(config.get('metrics', 'metrics_study_current_year'))
+
+        # Mages
+        page_show_author_network = config.get('pages', 'page_show_author_network')
 
     except:
         print 'Problem with the settings file'
@@ -61,5 +66,5 @@ def build_config_variables(root_dir):
     config_dir = root_dir + '/config'
     data_dir = root_dir + '/data'
     html_dir = root_dir + "/html/" + project_details['short_name']
-    template_dir = config_dir + '/templates/' + project_details['short_name']
+    template_dir = 'html/template'
     log_dir = root_dir + '/logs'

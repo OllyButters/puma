@@ -10,6 +10,8 @@ import time
 import datetime
 import math
 import codecs
+import os
+
 
 import config.config as config
 
@@ -65,7 +67,9 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '    <li><a href="' + nav_path + 'city/index.html">Publications by UK City</a></li>'
     html += '</ul></li>'
 
-    html += '<li><a href="' + nav_path + 'authornetwork/index.html">Author Network</a></li>'
+    if config.page_show_author_network == "True":
+        html += '<li><a href="' + nav_path + 'authornetwork/index.html">Author Network</a></li>'
+
     html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
     html += '<li><a href="' + nav_path + 'wordcloud/index.html">Major Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
@@ -121,7 +125,6 @@ def build_home(papers, error_log):
     # Copy CSS files
     shutil.copyfile(config.template_dir + '/style_main.css', config.html_dir + '/css/style_main.css')
     shutil.copyfile(config.template_dir + '/uobcms_corporate.css', config.html_dir + '/css/uobcms_corporate.css')
-    shutil.copyfile(config.template_dir + '/colour_scheme.css', config.html_dir + '/css/colour_scheme.css')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -225,7 +228,7 @@ def build_home(papers, error_log):
     # print summary
     # Make a page with the headings on it
     print >>html_file, '<table>'
-    print >>html_file, '<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>UoB #</th><th>UoB %</th><th>Citations for papers published in this year</th><th>Cumulative citations for papers published in this year</th></tr>'
+    print >>html_file, '<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>UoB #</th><th>UoB %</th><th>Citations* for papers published in this year</th><th>Cumulative citations* for papers published in this year</th></tr>'
     for this_year in sorted(summary, reverse=True):
         # Skip the years where nothing was published
         if summary[this_year]['num_papers'] == 0:
@@ -261,6 +264,7 @@ def build_home(papers, error_log):
     print >>html_file, '</table>'
 
     temp = "<p>Known publication year for " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications</p>"
+    temp += "<p>* Citation data from Scopus.</p>"
 
     temp += build_common_foot()
     print >>html_file, temp
@@ -278,9 +282,6 @@ def build_papers(papers):
 
     yearly_papers = {}
     html_file = open(config.html_dir + '/papers/index.html', 'w')
-
-    shutil.copyfile(config.template_dir + '/altmetric.png', config.html_dir + '/papers/altmetric.png')
-    shutil.copyfile(config.template_dir + '/yellow-flag-th.png', config.html_dir + '/papers/yellow-flag-th.png')
 
     # Read in exec csv
     exec_list = []
@@ -318,7 +319,7 @@ def build_papers(papers):
     for this_paper in papers:
 
         try:
-            html = ''
+            html = '<div class="paper">'
 
             # altmetric data
             try:
@@ -364,6 +365,13 @@ def build_papers(papers):
             html += htmlentities.encode('; '.join(authors))
             html += '<br/>'
 
+            if author_on_exec:
+                # html += '<img style="width:16px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive
+                html += '<div style="text-align:center;font-size:14px;background:#' + config.project_details['colour_hex_secondary'] + ';color:#' + config.project_details['colour_hex_primary'] + ';padding:2px 4px;box-shadow: 0px 0px 1px #4e4e4e inset;">At least one author was a member of the ' + config.project_details['name'] + ' Executive Committee.</div>'
+                this_paper['Extras']['author_on_exec'] = True
+            else:
+                this_paper['Extras']['author_on_exec'] = False
+
             # Journal volume and issue
             try:
                 html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
@@ -396,19 +404,25 @@ def build_papers(papers):
                 pass
 
             # citation count
+            html += "<table class='citation_table'>"
+            html += '<tr><th colspan="4">Citation Counts</th></tr>'
+            html += '<tr>'
             try:
-                html += '&nbsp; Citations: ' + this_paper['Extras']['Citations']
+                html += '<td>Scopus: ' + str(this_paper['Extras']['Citations']) + '<td>'
             except:
+                html += '<td>Scopus: -<td>'
+
+            try:
+                html += '<td>Europe PMC: ' + str(this_paper['Extras']['Citations-EuropePMC']) + '<td>'
+            except:
+                html += '<td>Europe PMC: -<td>'
                 pass
 
-            if author_on_exec:
-                html += '<img style="width:16px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
-                this_paper['Extras']['author_on_exec'] = True
-            else:
-                this_paper['Extras']['author_on_exec'] = False
+            html += '</tr>'
+            html += "</table>"
 
             # Add an extra line break at the end
-            html += '<br/><br/>'
+            html += '</div>'
 
             # Append this paper to the list indexed by the year
             this_year = this_paper['PubmedData']['History'][0]['Year']
@@ -439,9 +453,6 @@ def build_papers(papers):
         if not os.path.exists(config.html_dir + '/papers/' + this_year):
             os.mkdir(config.html_dir + '/papers/' + this_year)
         year_file = open(config.html_dir + '/papers/' + this_year + '/index.html', 'w')
-
-        shutil.copyfile(config.template_dir + '/altmetric.png', config.html_dir + '/papers/' + this_year + '/altmetric.png')
-        shutil.copyfile(config.template_dir + '/yellow-flag-th.png', config.html_dir + '/papers/' + this_year + '/yellow-flag-th.png')
 
         # Put html together for this page
         temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -848,7 +859,7 @@ def build_mesh(papers):
                     if paper_obj is not None:
                         this_paper = paper_obj
 
-                    html = ''
+                    html = '<div class="paper">'
 
                     # altmetric data
                     try:
@@ -859,9 +870,6 @@ def build_mesh(papers):
 
                     # Paper title as a link
                     html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['title'] + '</span><br/>'
-
-                    # Abstract text - probably too long to go on this page
-                    # html += papers[this_pmid]['AbstractText'][0]+'<br/>'
 
                     # Authors
                     authors = []
@@ -897,6 +905,13 @@ def build_mesh(papers):
                     html += htmlentities.encode('; '.join(authors))
                     html += '<br/>'
 
+                    if author_on_exec:
+                        # html += '<img style="width:16px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive
+                        html += '<div style="text-align:center;font-size:14px;background:#' + config.project_details['colour_hex_secondary'] + ';color:#' + config.project_details['colour_hex_primary'] + ';padding:2px 4px;box-shadow: 0px 0px 1px #4e4e4e inset;">At least one author was a member of the ' + config.project_details['name'] + ' Executive Committee.</div>'
+                        this_paper['Extras']['author_on_exec'] = True
+                    else:
+                        this_paper['Extras']['author_on_exec'] = False
+
                     # Journal volume and issue
                     try:
                         html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
@@ -917,7 +932,7 @@ def build_mesh(papers):
                     # PMID
                     try:
                         if this_paper['IDs']['PMID']:
-                            html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">'+str(this_paper['IDs']['PMID']) + '</a>'
+                            html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">' + str(this_paper['IDs']['PMID']) + '</a>'
                     except:
                         pass
 
@@ -929,16 +944,24 @@ def build_mesh(papers):
                         pass
 
                     # citation count
+                    html += "<table class='citation_table'>"
+                    html += '<tr><th colspan="4">Citation Counts</th></tr>'
+                    html += '<tr>'
                     try:
-                        html += '&nbsp; Citations: '+this_paper['Extras']['Citations']
+                        html += '<td>Scopus: ' + this_paper['Extras']['Citations'] + '<td>'
                     except:
                         pass
 
-                    if author_on_exec:
-                        html += '<img style="width:16px;padding-left:20px;" src="../../papers/yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive committee">'
+                    try:
+                        html += '<td>Europe PMC: ' + this_paper['Extras']['Citations-EuropePMC'] + '<td>'
+                    except:
+                        pass
+
+                    html += '</tr>'
+                    html += "</table>"
 
                     # Add an extra line break at the end
-                    html += '<br/><br/>'
+                    html += '</div>'
 
                     fo.write(html)
 
@@ -1160,60 +1183,6 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
 
     html_file = open(config.html_dir + '/metrics/index.html', 'w')
 
-    # NUMBER OF PAPERS PER CITATION COUNT
-    num_papers_citations = []
-    max_citations = 0
-    for this_paper in papers:
-        try:
-            n_cits = int(this_paper['Extras']['Citations'])
-            if n_cits > max_citations and n_cits < 200:
-                max_citations = n_cits
-            try:
-                num_papers_citations[n_cits] += 1
-            except:
-                num_papers_citations.insert(n_cits, 1)
-        except:
-            pass
-
-    # Create data string for plot
-    n_papers_with_x_citations = "var papers_per_citation_count = ([['Number of Citations','Number of Papers']"
-    # Add Zeros in missing indexes
-    for this_n_citations in range(1, max_citations+1):
-        try:
-            n_papers_with_x_citations += ",[" + str(this_n_citations) + "," + str(num_papers_citations[this_n_citations]) + "]"
-        except:
-            n_papers_with_x_citations += ",[" + str(this_n_citations) + ",0]"
-
-    n_papers_with_x_citations += "])"
-
-    # Put html together for this page
-    temp = '<!DOCTYPE html><html lang="en-GB">'
-
-    # html head
-    temp += '<head>'
-    temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/style_main.css">'
-    temp += '<link rel="stylesheet" href="../css/map.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
-
-    shutil.copyfile(config.template_dir + '/metrics.js', config.html_dir + '/metrics/metrics.js')
-
-    temp += '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
-    temp += '<script type="text/javascript" src="../data.js"></script>'
-    temp += '<script>' + n_papers_with_x_citations + '</script>'
-    temp += '<script type="text/javascript" src="../map/map.js"></script>'
-    temp += '<script>var primary_colour = "#' + config.project_details['colour_hex_primary'] + '";</script>'
-    temp += '<script type="text/javascript" src="metrics.js"></script>'
-
-    temp += '</head>'
-
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Study Metrics</p>', "../", "")
-
-    temp += '<h1 id="pagetitle">Study Metrics</h1>'
-
-    temp += "<p>{Explanation of study metrics}</p>"
-
     # Metric calculations
     total_publications = len(papers)
     total_citations = 0
@@ -1256,10 +1225,6 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
         h_index = x
         cits_so_far += paper_citations[x]
 
-    # cal e-index
-    # This is probably calculated wrong
-    # e_index = math.sqrt(total_citations - cits_so_far)
-
     # cal g-index
     g_index = 0
     cits_so_far = 0
@@ -1269,6 +1234,66 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
         if cits_so_far < x * x:
             break
         g_index = x
+
+    # NUMBER OF PAPERS PER CITATION COUNT
+    num_papers_citations = []
+    max_citations = 0
+    for this_paper in papers:
+        try:
+            n_cits = int(this_paper['Extras']['Citations'])
+            if n_cits > max_citations and n_cits < 200:
+                max_citations = n_cits
+            try:
+                num_papers_citations[n_cits] += 1
+            except:
+                num_papers_citations.insert(n_cits, 1)
+        except:
+            pass
+
+    # Create data string for plot
+    n_papers_with_x_citations = "var papers_per_citation_count = ([['Number of Citations','Number of Papers',{ role: 'style' }]"
+    # Add Zeros in missing indexes
+    for this_n_citations in range(1, max_citations+1):
+
+        colour = ""
+
+        # if this_n_citations == round(average_citations, 0):
+        #   colour = "#" + config.project_details['colour_hex_secondary']
+
+        try:
+            n_papers_with_x_citations += ",[" + str(this_n_citations) + "," + str(num_papers_citations[this_n_citations]) + ",'" + colour + "']"
+        except:
+            n_papers_with_x_citations += ",[" + str(this_n_citations) + ",0,'" + colour + "']"
+
+    n_papers_with_x_citations += "])"
+
+    # Put html together for this page
+    temp = '<!DOCTYPE html><html lang="en-GB">'
+
+    # html head
+    temp += '<head>'
+    temp += '<title>' + site_second_title + '</title>'
+    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
+    temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/map.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
+
+    shutil.copyfile(config.template_dir + '/metrics.js', config.html_dir + '/metrics/metrics.js')
+
+    temp += '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
+    temp += '<script type="text/javascript" src="../data.js"></script>'
+    temp += '<script>' + n_papers_with_x_citations + '</script>'
+    temp += '<script type="text/javascript" src="../map/map.js"></script>'
+    temp += '<script>var primary_colour = "#' + config.project_details['colour_hex_primary'] + '";</script>'
+    temp += '<script type="text/javascript" src="metrics.js"></script>'
+
+    temp += '</head>'
+
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Study Metrics</p>', "../", "")
+
+    temp += '<h1 id="pagetitle">Study Metrics</h1>'
+
+    temp += "<p>{Explanation of study metrics}</p>"
 
     # Ouput Metrics
     temp += "<div class='metric_con'>"
@@ -1335,7 +1360,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     temp += '<div id="papers_per_year_div"></div>'
     temp += "<p style='text-align:center;'>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
     temp += '<div id="papers_per_citation_count_div"></div>'
-    temp += "<p style='text-align:center;'>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
+    temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
     print >>html_file, temp
 
     temp = build_common_foot()
@@ -1599,9 +1624,11 @@ def build_error_log(papers, error_log):
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
+    temp += '<script>function jsonFormat(){ var x = document.getElementsByClassName("textoutput"); for (i = 0; i < x.length; i++) { x[i].innerHTML = JSON.stringify(JSON.parse(x[i].innerHTML) , null, 4); } }</script>'
+
     temp += '</head>'
 
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Error Log</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Error Log</p>', "../", "onload='jsonFormat();'")
 
     temp += '<h1 id="pagetitle">Error Log</h1>'
 
@@ -1649,20 +1676,19 @@ def build_help():
     temp += '<p>Data and metadata for the publications are located using the PubMed search engine.</p>'
 
     temp += '<h3>Citations Data</h3>'
-    temp += '<p>Citation data is retrieved from the Scopus API provided by Elsevier.</p>'
+    temp += '<p>Citation data is retrieved from the <a href="https://www.elsevier.com/solutions/scopus">Scopus</a> API provided by Elsevier and from the <a href="https://europepmc.org/">Europe PMC</a> API.</p>'
 
     temp += '<h3>Geodata</h3>'
-    temp += '<p>The Coordinate location of institutions is retrieved from the free project Wikidata. The coordinate data is then converted into country'
-    temp += ' and city names using the Google Maps API.</p>'
+    temp += '<p>The Coordinate location of institutions is retrieved from the free project <a href="https://www.wikidata.org">Wikidata</a>. The coordinate data is then converted into country and city names using the <a href="https://developers.google.com/maps/">Google Maps API</a>.</p>'
 
     temp += "<h2>Why don't some statistics use data from all publications?</h2>"
 
     temp += '<p>Data can be missing because some publications are very old. There are many different ways to track publications'
-    temp += ' and Prior to the introduction of DOIs in 2000 there was no unified method. This means some metadata on old publications could have been lost or not recorded.</p>'
+    temp += ' and Prior to the introduction of DOIs in 2000 there was no standard method. This means some metadata on old publications could have been lost or not recorded.</p>'
 
     temp += '<p>The data used for the statistics are gathered from databases which only collect data from particular journals.'
-    temp += ' This problem is most obvious for citation data from Scopus. Although they have a particular publication on record,'
-    temp += ' there may be citations for this publication from a journal that they do not index and therefore these will not be in the citation count.</p>'
+    temp += ' This problem is most obvious for citation data from Scopus and Europe PMC. Although they have a particular publication on record,'
+    temp += ' there may be citations for this publication from a journal that they do not index and therefore these will not be in the citation count. This is why citiation counts from different sources are not always the same.</p>'
 
     print >>html_file, temp
 
@@ -1675,7 +1701,7 @@ def build_help():
 ###########################################################
 def build_css_colour_scheme():
 
-    html_file = open(config.template_dir + '/colour_scheme.css', 'w')
+    html_file = open(config.html_dir + '/css/colour_scheme.css', 'w')
 
     temp = ".uob-header-container {background: #" + config.project_details['colour_hex_primary'] + ";}"
 
