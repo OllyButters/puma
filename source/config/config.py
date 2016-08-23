@@ -41,7 +41,7 @@ def build_config_variables(root_dir):
         logging_loglevel = config.get('logging', 'loglevel')
 
         # Mapping
-        google_maps_api_key = config.get('google_chart_api', 'google_maps_api_key')
+        google_maps_api_key = config.get('google_apis', 'google_maps_api_key')
 
         # Metrics
         metrics_study_start_year = int(config.get('metrics', 'metrics_study_start_year'))

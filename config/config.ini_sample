@@ -25,7 +25,7 @@ scopus_api_key: 8024d746590aade6be6856a22a734783
 scopus_citation_max_age_days: 30
 scopus_run_citation: True
 
-[google_chart_api]
+[google_apis]
 google_maps_api_key: AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4
 
 [logging]
