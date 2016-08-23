@@ -264,7 +264,7 @@ def build_home(papers, error_log):
     print >>html_file, '</table>'
 
     temp = "<p>Known publication year for " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications</p>"
-    temp += "<p>*Citation Data From Scopus.</p>"
+    temp += "<p>* Citation data from Scopus.</p>"
 
     temp += build_common_foot()
     print >>html_file, temp
