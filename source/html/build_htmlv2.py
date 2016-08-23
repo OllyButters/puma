@@ -125,7 +125,6 @@ def build_home(papers, error_log):
     # Copy CSS files
     shutil.copyfile(config.template_dir + '/style_main.css', config.html_dir + '/css/style_main.css')
     shutil.copyfile(config.template_dir + '/uobcms_corporate.css', config.html_dir + '/css/uobcms_corporate.css')
-    shutil.copyfile(config.template_dir + '/colour_scheme.css', config.html_dir + '/css/colour_scheme.css')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -1708,7 +1707,7 @@ def build_help():
 ###########################################################
 def build_css_colour_scheme():
 
-    html_file = open(config.template_dir + '/colour_scheme.css', 'w')
+    html_file = open(config.html_dir + '/css/colour_scheme.css', 'w')
 
     temp = ".uob-header-container {background: #" + config.project_details['colour_hex_primary'] + ";}"
 
