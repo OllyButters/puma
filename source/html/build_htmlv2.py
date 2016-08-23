@@ -1236,24 +1236,36 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
         g_index = x
 
     # NUMBER OF PAPERS PER CITATION COUNT
+    citation_number_limit = 200
+    citation_bin_size = 20
+
     num_papers_citations = []
     max_citations = 0
     for this_paper in papers:
         try:
             n_cits = int(this_paper['Extras']['Citations'])
-            if n_cits > max_citations and n_cits < 200:
+            if n_cits > max_citations:
                 max_citations = n_cits
-            try:
-                num_papers_citations[n_cits] += 1
-            except:
-                num_papers_citations.insert(n_cits, 1)
+        except:
+            pass
+
+    print max_citations
+
+    for x in range(0, max_citations + 1):
+        num_papers_citations.insert(x, 0)
+
+    for this_paper in papers:
+        try:
+            n_cits = int(this_paper['Extras']['Citations'])
+            num_papers_citations[n_cits] += 1
+
         except:
             pass
 
     # Create data string for plot
     n_papers_with_x_citations = "var papers_per_citation_count = ([['Number of Citations','Number of Papers',{ role: 'style' }]"
     # Add Zeros in missing indexes
-    for this_n_citations in range(1, max_citations+1):
+    for this_n_citations in range(1, citation_number_limit):
 
         colour = ""
 
@@ -1265,7 +1277,29 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
         except:
             n_papers_with_x_citations += ",[" + str(this_n_citations) + ",0,'" + colour + "']"
 
-    n_papers_with_x_citations += "])"
+    n_papers_with_x_citations += "]);"
+
+    # = High Range =
+    n_papers_with_x_citations += "var papers_per_high_citation_count = ([['Number of Citations','Number of Papers',{ role: 'style' }]"
+    for this_bin in range(0, (max_citations - citation_number_limit)/citation_bin_size + 1):
+
+        bin_start = this_bin * citation_bin_size + citation_number_limit + 1
+        bin_end = bin_start + citation_bin_size
+
+        half_way = (bin_end - bin_start)/2 + bin_start
+        num_papers_in_bin = 0
+
+        # print str(bin_start) + " " + str(bin_end)
+        for n in range(bin_start, bin_end):
+            try:
+                num_papers_in_bin += num_papers_citations[n]
+
+            except:
+                pass
+
+        n_papers_with_x_citations += ",[" + str(half_way) + "," + str(num_papers_in_bin) + ",'" + colour + "']"
+
+    n_papers_with_x_citations += "]);"
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -1360,6 +1394,8 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     temp += '<div id="papers_per_year_div"></div>'
     temp += "<p style='text-align:center;'>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
     temp += '<div id="papers_per_citation_count_div"></div>'
+    temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
+    temp += '<div id="papers_per_high_citation_count_div"></div>'
     temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
     print >>html_file, temp
 
