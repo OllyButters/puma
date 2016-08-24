@@ -1,0 +1,39 @@
+[project_details]
+name: ALSPAC
+short_name: alspac
+
+colour_hex_primary: c9002f
+colour_hex_secondary: FFB612
+
+header_image_url: http://bristol.ac.uk/media-library/protected/images/uob-logo-white-largest.png
+header_institution: University of Bristol
+header_institution_url: http://bristol.ac.uk
+
+side_image_url: http://www.bristol.ac.uk/media-library/sites/alspac/images/alspac-25-logo.png
+side_image_link: http://www.bristol.ac.uk/alspac/25/
+
+[zotero_api]
+url:
+api_key:
+
+[pubmed_api]
+email_address:
+
+[scopus]
+scopus_force_citation_update: False
+scopus_api_key: 8024d746590aade6be6856a22a734783
+scopus_citation_max_age_days: 30
+scopus_run_citation: True
+
+[google_apis]
+google_maps_api_key: AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4
+
+[logging]
+loglevel: DEBUG
+
+[metrics]
+metrics_study_start_year: 1991
+metrics_study_current_year: 2014
+
+[pages]
+page_show_author_network = True

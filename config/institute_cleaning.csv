@@ -3,20 +3,20 @@
 bbk.ac.uk,"Birkbeck, University of London"
 bristol.ac.uk,University of Bristol
 bris.ac.uk,University of Bristol
-bpmf.ac.uk,DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+bpmf.ac.uk,University College London
 bre.co.uk,Building Research Establishment
 cam.ac.uk,University of Cambridge
-northlandsrnd.org.uk,"Northlands Surgery, Calne"
+northlandsrnd.org.uk,"Northlands Surgery"
 city.ac.uk,City University London
 ex.ac.uk,University of Essex
-ehesp.fr,"EHESP School of Public Health, Rennes"
+ehesp.fr,"EHESP"
 einstein.yu.edu,Albert Einstein College of Medicine
 emory.edu,Emory University
-speech-therapy.org.uk,Frenchay Speech & Language Therapy Research Unit
+speech-therapy.org.uk,Southmead Hospital
 gla.ac.uk,University of Glasgow
 harvard.edu,Harvard University
-helmholtz-muenchen.de,Helmholtz Zentrum Munchen
-helmholtzmuenchen.de,Helmholtz Zentrum Munchen
+helmholtz-muenchen.de,Helmholtz Zentrum München
+helmholtzmuenchen.de,Helmholtz Zentrum München
 inserm.fr,Centre for Research in Epidemiology and Population Health - Villejuif
 jhsph.edu,Johns Hopkins University
 jhmi.edu,Johns Hopkins University
@@ -24,12 +24,12 @@ kcl.ac.uk,King's College London
 ki.es,Karolinska Institutet
 liverpool.ac.uk,University of Liverpool
 lshtm.ac.uk,London School of Hygiene & Tropical Medicine
-leedsmh.nhs.uk,NHS - East Leeds PCT 
+leedsmh.nhs.uk,NHS Leeds South and East
 niehs.nih.gov,National Institute of Environmental Health Sciences
 nottingham.ac.uk,University of Nottingham
 ox.ac.uk,University of Oxford
 pds.ac.uk,Peninsula College of Medicine and Dentistry
-qimrberghofer.edu.au,QIMR Berghofer Medical Research Institute
+qimrberghofer.edu.au,Queensland Institute of Medical Research
 qmw.ac.uk,"Queen Mary, University of London"
 qmul,"Queen Mary, University of London"
 qub.ac.uk,Queens University
@@ -43,6 +43,7 @@ vumc.nl,VU University Medical Center
 wustl.edu,Washington University in St. Louis
 University of Virginia,University of Virginia
 utwente.nl,University of Twente
+nshd.mrc.ac.uk,"Medical Research Council National Survey of Health and Development, Department of Epidemiology and Public Health, Royal Free and University College Medical School, London"
 ,
 ,
 #Do the UK institution addresses.,
@@ -55,7 +56,7 @@ Blackpool Royal Victoria Hospital,Blackpool Victoria Hospital
 University of Brighton,University of Brighton
 University of Bristol,University of Bristol
 University of Bristol,University of Bristol
-Brunel University,Brunel University
+Brunel University,Brunel University London
 University of Cambridge,University of Cambridge
 Cardiff University,Cardiff University
 City University,City University London
@@ -80,17 +81,17 @@ University of Leicester,University of Leicester
 University of Liverpool,University of Liverpool
 London Metropolitan University,London Metropolitan University
 University of Manchester,University of Manchester
-Medical Research Council Epidemiology Unit,MRC Cambridge
-MRC Epidemiology Unit,MRC Cambridge
-Medical Research Council Human Nutrition Research ,MRC Cambridge
-University of Munich,University of Munich
+Medical Research Council Epidemiology Unit,Medical Research Council Centre Cambridge
+MRC Epidemiology Unit,Medical Research Council Centre Cambridge
+Medical Research Council Human Nutrition Research ,Medical Research Council Centre Cambridge
+University of Munich,Ludwig Maximilian University of Munich
 Newcastle University,Newcastle University
 University of Newcastle,Newcastle University
 University of Nottingham,University of Nottingham
 University of Oxford,University of Oxford
 Peninsula,Peninsula College of Medicine and Dentistry
 Plymouth,Plymouth University
-"Institute of Psychiatry, London","Institute of Psychiatry, London"
+"Institute of Psychiatry, London","Institute of Psychiatry"
 Queen\'s University,Queens University
 University of Sheffield,University of Sheffield
 University of Southampton,University of Southampton
@@ -101,7 +102,7 @@ UCL,University College London
 University College London,University College London
 University of East Anglia,University of East Anglia
 University of Warwick,University of Warwick
-Wellcome Trust Sanger Institute,The Wellcome Trust Sanger Institute
+Wellcome Trust Sanger Institute,Wellcome Trust Sanger Institute
 University of the West of England,UWE
 University of York,University of York
 ,
@@ -118,14 +119,20 @@ Great Ormond Street Hospital,Great Ormond Street Hospital
 Guy's and St Thomas',Guy's and St Thomas' NHS Foundation Trust
 Guy's Hospital,Guy's and St Thomas' NHS Foundation Trust
 John Radcliffe Hospital,John Radcliffe Hospital
-Ty Bryn Unit,"St Cadocs Hospital, Newport"
+Ty Bryn Unit,"St Cadoc's Hospital"
 North Bristol NHS Trust,North Bristol NHS Trust
 Northlands R & D Unit,Northlands R & D Unit
-University Hospital of Nottingham,University Hospital of Nottingham
-"Park Hospital, Headington, Oxford, UK.","Park Hospital, Oxford"
+University Hospital of Nottingham,Queen's Medical Centre
+"Park Hospital, Headington, Oxford, UK.","Park Hospital for Children"
 Royal United Hospital,Royal United Hospital
 Southmead Hospital,Southmead Hospital
 St George's Hospital,St George's Hospital
+"Severn Deanery, Deanery House Unit D, Vantage Office Park Hambrook, Bristol, United Kingdom.","Severn Deanery"
+"Vascular Physiology Unit, National Centre for Cardiovascular Disease Prevention & Outcomes","National Centre for Cardiovascular Disease Prevention & Outcomes"
+"Leopold Muller Centre for Child and Family Mental Health","Leopold Muller Centre for Child and Family Mental Health"
+"Institute of Child Health, London","Institute of Child Health, London"
+United Bristol Healthcare Trust,United Bristol Healthcare Trust
+"Elsie Widdowson Laboratory, Cambridge","Elsie Widdowson Laboratory, Cambridge"
 ,
 #International,
 23andMe,23andMe
@@ -142,7 +149,7 @@ Christchurch School of Medicine,University of Otago Christchurch School of Medic
 "Centres for Disease Control Prevention, Atlanta","Centers for Disease Control and Prevention"
 "Centers for Disease Control and Prevention, Atlanta","Centers for Disease Control and Prevention"
 University of Copenhagen,University of Copenhagen
-TX 75231,"Retina Foundation of the Southwest, Dallas"
+TX 75231,"Retina Foundation of the Southwest"
 Deakin University,Deakin University
 Deodoro,Deodoro
 Emory University,Emory University
@@ -167,11 +174,11 @@ Johns Hopkins University,Johns Hopkins University
 "Hunter Genetics, Hunter New England Health Service, NSW, Australia.","John Hunter Hospital"
 Hospital for Sick Children,Hospital for Sick Children
 Karolinska Institutet,Karolinska Institutet
-Mayo clinic,"Mayo Clinic College of Medicine, Rochester"
+Mayo clinic,"Mayo Medical School"
 McGill University,McGill University
 University of Michigan,University of Michigan
 University of Melbourne,University of Melbourne
-murdoch,"Murdoch Childrens Research Institute, Royal Children's Hospital, Melbourne"
+murdoch,"Murdoch Childrens Research Institute"
 turningpoint.org.au,"Turning Point Alcohol and Drug Centre"
 lrz.tum.de,Technical University of Munich
 NIAA,National Institute on Alcohol Abuse and Alcoholism
@@ -188,7 +195,7 @@ Federal University of Pelotas,Federal University of Pelotas
 University of Queensland,University of Queensland
 Queensland Institute of Medical Research,"Queensland Institute of Medical Research"
 Queensland University of Technology,Queensland University of Technology
-Regensburg University Medical Center,Regensburg University Medical Center
+Regensburg University Medical Center,University Hospital Regensburg
 University of Rochester,University of Rochester
 Erasmus University Medical Center,Erasmus MC
 Erasmus University Rotterdam,Erasmus University Rotterdam
@@ -201,9 +208,18 @@ Syracuse University,Syracuse University
 University of Toronto,University of Toronto
 Virginia Commonwealth University,Virginia Commonwealth University
 Yale University,Yale University
-VU University,VU University
-"Bethesda, Maryland",National Institute of Child Health and Human Development
-University Medical Centre Utrecht,University Medical Centre Utrecht
+VU University,Vrije Universiteit
+"Bethesda, Maryland",Eunice Kennedy Shriver National Institute of Child Health and Human Development
+University Medical Centre Utrecht,University Medical Center Utrecht
+"Department of Ophthalmology, National University of Singapore and National University Health System","National University of Singapore"
+"Max Planck Institute for Psycholinguistics","Max Planck Institute for Psycholinguistics"
+"KP Agricultural University","KP Agricultural University"
+"Children's Memorial Hospital, Chicago","Children's Memorial Hospital, Chicago"
+"Massachusetts General Hospital, UK","Massachusetts General Hospital, UK"
+"Retina Foundation of the Southwest","Retina Foundation of the Southwest"
+University of Seville,University of Seville
+University of Texas Health Science Center,University of Texas Health Science Center at San Antonio
+"Montefiore Medical Center/Albert Einstein College of Medicine","Montefiore Medical Center/Albert Einstein College of Medicine"
 ,
 #Some special ALSPAC munging,
 Oakfield Grove,University of Bristol

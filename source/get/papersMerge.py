@@ -2,7 +2,7 @@ import re
 import json
 import papersCache as pc
 import jsonpath_rw as jsonp
-import pprint
+from pprint import pprint
 import copy
 import logging
 
@@ -166,17 +166,11 @@ class Merge():
     else:
       #data is str, int, etc (n.b. this ignores sets, tuples as they don't currently exist in data, but may be a future issue)
       #we therefore assign value to dest[key]
-      if not(isinstance(src_data, str) and src_data == '') and src_data != None:
+      if src_data != u'' and src_data != None:
         if isinstance(dest, list):
           if isinstance(dest_field, jsonp.Index):
             dest_field = re.sub('[\[\]]', '', str(dest_field))
           dest[int(dest_field)] = src_data
-          #try:
-          #  dest[int(dest_field)] = src_data
-          #except IndexError:
-          #  for i in range(len(dest), int(dest_field) + 1):
-          #    dest.append({})
-          #  dest[int(dest_field)] = src_data
         elif isinstance(dest, dict):
           dest[str(dest_field)] = src_data
         else:

@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="data.js"></script>
+    <script type="text/javascript" src="map.js"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+
+        //cumulative
+        var data = google.visualization.arrayToDataTable(cumulative);
+        var options = {
+          title: 'Cumulative number of papers published'
+        };
+        var chart = new google.visualization.LineChart(document.getElementById('cumulative_div'));    
+        chart.draw(data, options);
+
+        //number per year
+        var data = google.visualization.arrayToDataTable(papers_per_year);
+        var options = {
+          title: 'Number of papers published'
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('papers_per_year_div'));    
+        chart.draw(data, options);
+
+        //map
+        var data = google.visualization.arrayToDataTable(map);
+        var options = {
+          title: 'Number of papers published',
+          displayMode: 'markers',
+          colorAxis: {colors: ['#e7711c', '#4374e0']} // orange to blue
+        };
+        var chart = new google.visualization.GeoChart(document.getElementById('map_div'));    
+        chart.draw(data, options);
+
+
+      }
+    </script>
+  </head>
+  <body>
+    <div id="cumulative_div" style="width: 900px; height: 500px;"></div>
+    <div id="papers_per_year_div" style="width: 900px; height: 500px;"></div>
+    <div id="map_div" style="width: 900px; height: 500px;"></div>
+  </body>
+</html>

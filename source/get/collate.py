@@ -143,12 +143,14 @@ def collate():
     merged_paper['pmid_zotero_data'] = copy.deepcopy(mgr.dest)
 
     #now set the src to be doi_data and merge to the template (otherwise the output data gets oddly formatted)
+    mgr.mapping = {}
     mgr.src = doi_data
     mgr.dest = copy.deepcopy(template)
     mgr.mapSrc()
     merged_paper['doi_data'] = copy.deepcopy(mgr.dest)
 
     #now set the src to be doi_data and merge to the dest (pmid/zotero data)
+    mgr.mapping = {"$.DOI": "$.DOI", "$.title": "$.title"}
     mgr.dest = merged_paper['doi_data']
     mgr.src = merged_paper['pmid_zotero_data']
     mgr.mapSrc()
@@ -159,6 +161,7 @@ def collate():
 
   return merged_papers 
 
-if __name__ == "main":
+if __name__ == "__main__":
+  print "Collate data"
   collate()
 

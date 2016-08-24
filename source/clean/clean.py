@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 
 import json
-import csv
 import re
 import logging
 import os
 # import hashlib
+
+import config.config as config
 
 
 # Copy all the raw data to the processed directory, this means we are only
@@ -13,6 +14,7 @@ import os
 # makes it easier to rerun as we don't have to rebuild the raw cache each time.
 def pre_clean(papers):
     print 'precleaning'
+
     for this_paper in papers:
 
         print this_paper['title']
@@ -39,8 +41,11 @@ def pre_clean(papers):
         authors_to_keep = []
         for i in range(0, len(this_paper['author'])-1):
             # print this_paper['author'][i]['family']
-            if this_paper['author'][i]['family'] != "":
-                authors_to_keep.append(this_paper['author'][i])
+            try:
+                if this_paper['author'][i]['family'] != "":
+                    authors_to_keep.append(this_paper['author'][i])
+            except:
+                pass
         this_paper['author'] = authors_to_keep
 
         # Try sticking in the DOI
@@ -67,18 +72,18 @@ def pre_clean(papers):
 # in the institute_cleaning.csv file. If it does then replace it with a
 # standard name.
 def clean_institution(papers):
-
+    import unicodecsv
     logging.info('Starting institute cleaning')
 
     # Read in config file
     pattern = []
     replacements = []
-    with open('../config/institute_cleaning.csv', 'rb') as csvfile:
-        f = csv.reader(csvfile)
+    with open(config.config_dir + '/institute_cleaning.csv', 'rb') as csvfile:
+        f = unicodecsv.reader(csvfile,  encoding='utf-8')
         for row in f:
             try:
                 # Check it is not a comment string first.
-                if(re.match('#', row[0])):
+                if re.match('#', row[0]):
                     continue
 
                 # Check for blank lines
@@ -108,16 +113,16 @@ def clean_institution(papers):
             continue
 
         for y in range(0, len(pattern)):
-            logging.debug('%s %s %s', institute, pattern[y], replacements[y])
+            # logging.debug('%s %s %s', institute, pattern[y], replacements[y])
             temp = re.search(pattern[y], institute, re.IGNORECASE)
-            if(temp > 0):
+            if temp > 0:
                 logging.info(
                     'ID:%s. %s MATCHES %s REPLACEDBY %s',
                     this_paper, institute, pattern[y], replacements[y])
                 this_paper['Extras']['CleanInstitute'] = replacements[y]
                 break
 
-            if(y == len(pattern)-1):
+            if y == len(pattern)-1:
                 logging.info('No match for %s. ID:%s', institute, this_paper)
                 logging.warn('No match for %s. ID:%s', institute, this_paper)
                 number_not_matched += 1
@@ -131,7 +136,7 @@ def clean_institution(papers):
 # Go through the deltas directory and apply any changes that are needed
 def do_deltas(papers):
 
-    delta_dir = '../config/deltas/'
+    delta_dir = config.config_dir + '/deltas/'
 
     deltas = os.listdir(delta_dir)
 
