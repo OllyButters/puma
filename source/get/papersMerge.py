@@ -5,6 +5,7 @@ import jsonpath_rw as jsonp
 from pprint import pprint
 import copy
 import logging
+import config.config as config
 
 class Merge():
   def __init__(self):
@@ -14,7 +15,7 @@ class Merge():
     self.output = []
     self.log = logging.getLogger('mergeLog')
     self.log.setLevel(logging.INFO)
-    fh = logging.FileHandler(filename='../../logs/mergeLog', mode="w")
+    fh = logging.FileHandler(filename=config.log_dir+'/mergeLog', mode="w")
     self.log_fh = fh
     fh.setLevel(logging.INFO)
     fh_format = logging.Formatter('%(message)s')

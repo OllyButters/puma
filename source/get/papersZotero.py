@@ -1,15 +1,14 @@
 from pyzotero import zotero
 import json
+import config.config as config
 
 class zotPaper (zotero.Zotero):
 
-  def __init__(self, config='config/zotero.conf', **kwargs):
-    conf = open('config/zotero.conf', 'r')
-    self.connection = json.load(conf)
+  def __init__(self, **kwargs):
     self.__collection = None
     self.collection_key = None
     self.papers = []
-    super(zotPaper, self).__init__(self.connection['id'], self.connection['type'], self.connection['apikey'], **kwargs)
+    super(zotPaper, self).__init__(config.zotero_id, config.zotero_type, config.zotero_api_key, **kwargs)
 
   @property 
   def collection(self):
