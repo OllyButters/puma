@@ -138,13 +138,16 @@ def geocode(papers, error_log, api_key):
                         postal_town = comp['long_name']
                         this_paper['Extras']['postal_town'] = postal_town
 
+                clean = clean.replace("/", "#")
+
                 # Cache Data
                 cache_file = open(config.cache_dir + "/geodata/" + clean, "w")
                 cache_file.write(this_paper['Extras']['LatLong']['lat'] + "#" + this_paper['Extras']['LatLong']['long'] + "#" + country_short + "#" + postal_town)
                 cache_file.close()
             except:
+                print retur['results'][0]['address_components']
                 print 'Unable to get geo-data (Maybe Google API Quota Reached?) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
-                error_log.logErrorPaper(this_paper['Extras']['CleanInstitute'] + " Google API Quota Reached!", this_paper)
+                error_log.logErrorPaper(this_paper['Extras']['CleanInstitute'] + " Maybe Google API Quota Reached!", this_paper)
 
         number_done += 1
 

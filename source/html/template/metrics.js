@@ -33,4 +33,17 @@ google.load("visualization", "1", {packages:["corechart"]});
         chart.draw(data, options);
 
 
+	//Number of Papers for Citation Counts
+        var data = google.visualization.arrayToDataTable(papers_per_high_citation_count);
+        var options = {
+          title: 'Number of Papers for High Citation Counts',
+          colors: [primary_colour],
+	  hAxis: {title:"Number of Citations"}
+
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('papers_per_high_citation_count_div'));
+        chart.draw(data, options);
+
+
+
       }

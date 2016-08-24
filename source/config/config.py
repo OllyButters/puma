@@ -66,5 +66,5 @@ def build_config_variables(root_dir):
     config_dir = root_dir + '/config'
     data_dir = root_dir + '/data'
     html_dir = root_dir + "/html/" + project_details['short_name']
-    template_dir = 'html/template'
+    template_dir = root_dir + '/source/html/template'
     log_dir = root_dir + '/logs'

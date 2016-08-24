@@ -1236,36 +1236,70 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
         g_index = x
 
     # NUMBER OF PAPERS PER CITATION COUNT
+    citation_number_limit = 200
+    citation_bin_size = 20
+
     num_papers_citations = []
     max_citations = 0
+
+    # Get the max number of citations
     for this_paper in papers:
         try:
             n_cits = int(this_paper['Extras']['Citations'])
-            if n_cits > max_citations and n_cits < 200:
+            if n_cits > max_citations:
                 max_citations = n_cits
-            try:
-                num_papers_citations[n_cits] += 1
-            except:
-                num_papers_citations.insert(n_cits, 1)
         except:
             pass
 
+    # Create a array of zeros of length max_citations + 1
+    for x in range(0, max_citations + 1):
+        num_papers_citations.insert(x, 0)
+
+    # Count citations into array
+    for this_paper in papers:
+        try:
+            n_cits = int(this_paper['Extras']['Citations'])
+            num_papers_citations[n_cits] += 1
+        except:
+            pass
+
+    # = Low Citations Range =
     # Create data string for plot
-    n_papers_with_x_citations = "var papers_per_citation_count = ([['Number of Citations','Number of Papers',{ role: 'style' }]"
-    # Add Zeros in missing indexes
-    for this_n_citations in range(1, max_citations+1):
+    n_papers_with_x_citations = "var papers_per_citation_count = ([['Number of Citations (Scopus)','Number of Papers',{ role: 'style' }]"
+    for this_n_citations in range(1, citation_number_limit):
 
+        # colour used to mark average value
         colour = ""
-
-        # if this_n_citations == round(average_citations, 0):
-        #   colour = "#" + config.project_details['colour_hex_secondary']
+        if this_n_citations == round(average_citations, 0):
+            colour = "#" + config.project_details['colour_hex_secondary']
 
         try:
             n_papers_with_x_citations += ",[" + str(this_n_citations) + "," + str(num_papers_citations[this_n_citations]) + ",'" + colour + "']"
         except:
             n_papers_with_x_citations += ",[" + str(this_n_citations) + ",0,'" + colour + "']"
 
-    n_papers_with_x_citations += "])"
+    n_papers_with_x_citations += "]);"
+
+    # = High Citations Range =
+    n_papers_with_x_citations += "var papers_per_high_citation_count = ([['Number of Citations (Scopus)','Number of Papers',{ role: 'style' }]"
+    for this_bin in range(0, (max_citations - citation_number_limit)/citation_bin_size + 1):
+
+        # Calculate the start and end of the bin
+        bin_start = this_bin * citation_bin_size + citation_number_limit + 1
+        bin_end = bin_start + citation_bin_size
+
+        num_papers_in_bin = 0
+
+        # Count all citation counts in bin
+        for n in range(bin_start, bin_end):
+            try:
+                num_papers_in_bin += num_papers_citations[n]
+            except:
+                pass
+
+        n_papers_with_x_citations += ",['" + str(bin_start) + "-" + str(bin_end) + "'," + str(num_papers_in_bin) + ",'" + colour + "']"
+
+    n_papers_with_x_citations += "]);"
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -1360,6 +1394,9 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     temp += '<div id="papers_per_year_div"></div>'
     temp += "<p style='text-align:center;'>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
     temp += '<div id="papers_per_citation_count_div"></div>'
+    temp += "<div style='margin-left:auto;margin-right:auto;'><div class='average_citations' style='height:15px; width:33px; float:left; background:#" + config.project_details['colour_hex_secondary'] + "'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Mean number of citations</div></div>"
+    temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
+    temp += '<div id="papers_per_high_citation_count_div"></div>'
     temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
     print >>html_file, temp
 
