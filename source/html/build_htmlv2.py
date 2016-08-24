@@ -1249,8 +1249,6 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
         except:
             pass
 
-    print max_citations
-
     for x in range(0, max_citations + 1):
         num_papers_citations.insert(x, 0)
 
@@ -1263,7 +1261,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
             pass
 
     # Create data string for plot
-    n_papers_with_x_citations = "var papers_per_citation_count = ([['Number of Citations','Number of Papers',{ role: 'style' }]"
+    n_papers_with_x_citations = "var papers_per_citation_count = ([['Number of Citations (Scopus)','Number of Papers',{ role: 'style' }]"
     # Add Zeros in missing indexes
     for this_n_citations in range(1, citation_number_limit):
 
@@ -1279,14 +1277,13 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
 
     n_papers_with_x_citations += "]);"
 
-    # = High Range =
-    n_papers_with_x_citations += "var papers_per_high_citation_count = ([['Number of Citations','Number of Papers',{ role: 'style' }]"
+    # = High Range
+    n_papers_with_x_citations += "var papers_per_high_citation_count = ([['Number of Citations (Scopus)','Number of Papers',{ role: 'style' }]"
     for this_bin in range(0, (max_citations - citation_number_limit)/citation_bin_size + 1):
 
         bin_start = this_bin * citation_bin_size + citation_number_limit + 1
         bin_end = bin_start + citation_bin_size
 
-        half_way = (bin_end - bin_start)/2 + bin_start
         num_papers_in_bin = 0
 
         # print str(bin_start) + " " + str(bin_end)
@@ -1297,7 +1294,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
             except:
                 pass
 
-        n_papers_with_x_citations += ",[" + str(half_way) + "," + str(num_papers_in_bin) + ",'" + colour + "']"
+        n_papers_with_x_citations += ",['" + str(bin_start) + "-" + str(bin_end) + "'," + str(num_papers_in_bin) + ",'" + colour + "']"
 
     n_papers_with_x_citations += "]);"
 
