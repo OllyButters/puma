@@ -251,8 +251,10 @@ def build_home(papers, error_log):
         temp += '<td>' + intWithCommas(summary[this_year]['cumulative_citations']) + '</td></tr>'
         print >>html_file, temp
 
+    # Unknown Row
+    if missing_year['num_papers'] > 0:
         temp = '<tr>'
-        temp += '<td style="font-size:12px;font-weight:bold;">UNKNOWN</td>'
+        temp += '<td style="font-size:12px;font-weight:bold;"><a href="papers/unknown/index.html">UNKNOWN</a></td>'
         temp += '<td>' + str(missing_year['num_papers']) + '</td>'
         temp += '<td>-</td>'
         temp += '<td>' + str(missing_year['uob']) + '</td>'
@@ -260,7 +262,7 @@ def build_home(papers, error_log):
         temp += '<td>' + str(missing_year['citations']) + '</td>'
         temp += '<td>-</td>'
         temp += '</tr>'
-    print >>html_file, temp
+        print >>html_file, temp
     print >>html_file, '</table>'
 
     temp = "<p>Known publication year for " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications</p>"
@@ -271,6 +273,123 @@ def build_home(papers, error_log):
 
     cr_sum = cr_sum / len(papers)
     return cr_sum, cr_data_from
+
+
+############################################################
+# Draw Paper Function
+############################################################
+def draw_paper(this_paper, exec_list):
+    html = '<div class="paper">'
+
+    # altmetric data
+    try:
+        if this_paper['IDs']['DOI']:
+            html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
+    except:
+        pass
+
+    # Paper title as a link
+    html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['title'] + '</span><br/>'
+
+    # Authors
+    authors = []
+    author_on_exec = False
+    for this_author in this_paper['author']:
+        # Some author lists have a collective name. Ignore this.
+        # Some people don't actually have initials. eg wraight in pmid:18454148
+        try:
+            # Check if an author was on the exec Comittee
+            for x in exec_list:
+                # Check if authors name matches
+                if x[2] == this_author['clean']:
+                    # Get start and end date of exec membership
+                    exec_start = time.mktime(datetime.datetime.strptime(x[0], "%d/%m/%Y").timetuple())
+                    exec_end = int(time.time())
+                    if not x[1] == "":
+                        exec_end = time.mktime(datetime.datetime.strptime(x[1], "%d/%m/%Y").timetuple())
+
+                    # Convert issued date into a timestamp
+                    issued_date = this_paper['issued']['date-parts']
+                    date = str(issued_date[0][2]) + "/" + str(issued_date[0][1]) + "/" + str(issued_date[0][0])
+                    issued_timestamp = time.mktime(datetime.datetime.strptime(date, "%d/%m/%Y").timetuple())
+
+                    # If publication is issued between exec_start and exec_end then flag
+                    if issued_timestamp > exec_start and issued_timestamp < exec_end:
+                        author_on_exec = True
+                        break
+
+            authors.append(this_author['family'] + ', ' + this_author['given'])
+        except:
+            pass
+
+    html += htmlentities.encode('; '.join(authors))
+    html += '<br/>'
+
+    if author_on_exec:
+        # html += '<img style="width:16px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive
+        html += '<div style="text-align:center;font-size:14px;background:#' + config.project_details['colour_hex_secondary'] + ';color:#' + config.project_details['colour_hex_primary'] + ';padding:2px 4px;box-shadow: 0px 0px 1px #4e4e4e inset;">At least one author was a member of the ' + config.project_details['name'] + ' Executive Committee.</div>'
+        this_paper['Extras']['author_on_exec'] = True
+    else:
+        this_paper['Extras']['author_on_exec'] = False
+
+    # Journal volume and issue
+    try:
+        html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
+    except:
+        pass
+
+    try:
+        html += ', Volume ' + this_paper['volume']
+    except:
+        pass
+
+    try:
+        html += ', Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue']
+    except:
+        pass
+    html += '<br/>'
+
+    # PMID
+    try:
+        if this_paper['IDs']['PMID']:
+            html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">' + str(this_paper['IDs']['PMID']) + '</a>&nbsp;'
+    except:
+        pass
+
+    # DOI
+    try:
+        if this_paper['IDs']['DOI']:
+            html += 'DOI: <a href="http://doi.org/' + this_paper['IDs']['DOI'] + '">' + this_paper['IDs']['DOI'] + '</a>&nbsp;'
+    except:
+        pass
+
+    # citation count
+    number_citations_counts = 2  # The number of different citation count sources
+    citations_counts_width = 100 / number_citations_counts
+    html += "<table class='citation_table'>"
+    html += '<tr><th colspan="' + str(number_citations_counts) + '">Citation Counts</th></tr>'
+    html += '<tr>'
+    try:
+        html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + str(this_paper['Extras']['eid']) + '&origin=inward&txGid=0">' + str(this_paper['Extras']['Citations']) + '</a></td>'
+    except:
+        try:
+            html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: ' + str(this_paper['Extras']['Citations']) + '</td>'
+        except:
+            html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: -</td>'
+
+    try:
+        html += '<td style="width:' + str(citations_counts_width) + '%;">Europe PMC: ' + str(this_paper['Extras']['Citations-EuropePMC']) + '</td>'
+    except:
+        html += '<td style="width:' + str(citations_counts_width) + '%;">Europe PMC: -</td>'
+        pass
+
+    html += '</tr>'
+    html += "</table>"
+
+    # Add an extra line break at the end
+    html += '</div>'
+
+    return html
 
 
 ############################################################
@@ -319,110 +438,8 @@ def build_papers(papers):
     for this_paper in papers:
 
         try:
-            html = '<div class="paper">'
-
-            # altmetric data
-            try:
-                if this_paper['IDs']['DOI']:
-                    html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
-            except:
-                pass
-
-            # Paper title as a link
-            html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['title'] + '</span><br/>'
-
-            # Authors
-            authors = []
-            author_on_exec = False
-            for this_author in this_paper['author']:
-                # Some author lists have a collective name. Ignore this.
-                # Some people don't actually have initials. eg wraight in pmid:18454148
-                try:
-                    # Check if an author was on the exec Comittee
-                    for x in exec_list:
-                        # Check if authors name matches
-                        if x[2] == this_author['clean']:
-                            # Get start and end date of exec membership
-                            exec_start = time.mktime(datetime.datetime.strptime(x[0], "%d/%m/%Y").timetuple())
-                            exec_end = int(time.time())
-                            if not x[1] == "":
-                                exec_end = time.mktime(datetime.datetime.strptime(x[1], "%d/%m/%Y").timetuple())
-
-                            # Convert issued date into a timestamp
-                            issued_date = this_paper['issued']['date-parts']
-                            date = str(issued_date[0][2]) + "/" + str(issued_date[0][1]) + "/" + str(issued_date[0][0])
-                            issued_timestamp = time.mktime(datetime.datetime.strptime(date, "%d/%m/%Y").timetuple())
-
-                            # If publication is issued between exec_start and exec_end then flag
-                            if issued_timestamp > exec_start and issued_timestamp < exec_end:
-                                author_on_exec = True
-                                break
-
-                    authors.append(this_author['family'] + ', ' + this_author['given'])
-                except:
-                    pass
-
-            html += htmlentities.encode('; '.join(authors))
-            html += '<br/>'
-
-            if author_on_exec:
-                # html += '<img style="width:16px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive
-                html += '<div style="text-align:center;font-size:14px;background:#' + config.project_details['colour_hex_secondary'] + ';color:#' + config.project_details['colour_hex_primary'] + ';padding:2px 4px;box-shadow: 0px 0px 1px #4e4e4e inset;">At least one author was a member of the ' + config.project_details['name'] + ' Executive Committee.</div>'
-                this_paper['Extras']['author_on_exec'] = True
-            else:
-                this_paper['Extras']['author_on_exec'] = False
-
-            # Journal volume and issue
-            try:
-                html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
-            except:
-                pass
-
-            try:
-                html += ', Volume ' + this_paper['volume']
-            except:
-                pass
-
-            try:
-                html += ', Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue']
-            except:
-                pass
-            html += '<br/>'
-
-            # PMID
-            try:
-                if this_paper['IDs']['PMID']:
-                    html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">' + str(this_paper['IDs']['PMID']) + '</a>'
-            except:
-                pass
-
-            # DOI
-            try:
-                if this_paper['IDs']['DOI']:
-                    html += '&nbsp;DOI: <a href="http://doi.org/' + this_paper['IDs']['DOI'] + '">' + this_paper['IDs']['DOI'] + '</a>'
-            except:
-                pass
-
-            # citation count
-            html += "<table class='citation_table'>"
-            html += '<tr><th colspan="4">Citation Counts</th></tr>'
-            html += '<tr>'
-            try:
-                html += '<td>Scopus: ' + str(this_paper['Extras']['Citations']) + '<td>'
-            except:
-                html += '<td>Scopus: -<td>'
-
-            try:
-                html += '<td>Europe PMC: ' + str(this_paper['Extras']['Citations-EuropePMC']) + '<td>'
-            except:
-                html += '<td>Europe PMC: -<td>'
-                pass
-
-            html += '</tr>'
-            html += "</table>"
-
-            # Add an extra line break at the end
-            html += '</div>'
+            # Call draw paper function
+            html = draw_paper(this_paper, exec_list)
 
             # Append this paper to the list indexed by the year
             this_year = this_paper['PubmedData']['History'][0]['Year']
@@ -448,7 +465,7 @@ def build_papers(papers):
         if len(yearly_papers[this_year]) == 0:
             continue
 
-        main += '<a href="' + this_year + '/index.html">' + this_year + '</a> '
+        main += '<a href="' + this_year + '/index.html">' + this_year + '</a><br/> '
 
         if not os.path.exists(config.html_dir + '/papers/' + this_year):
             os.mkdir(config.html_dir + '/papers/' + this_year)
@@ -503,6 +520,44 @@ def build_papers(papers):
 
     exec_csv = open(config.data_dir + '/exec_publications.csv', 'w')
     print >>exec_csv, exec_data_string
+
+    # == Publications from unknown years ==
+    if not os.path.exists(config.html_dir + '/papers/unknown'):
+        os.mkdir(config.html_dir + '/papers/unknown')
+    unknown_file = open(config.html_dir + '/papers/unknown/index.html', 'w')
+
+    # Put html together for this page
+    temp = '<!DOCTYPE html><html lang="en-GB">'
+
+    # html head
+    temp += '<head>'
+    temp += '<title>' + site_second_title + '</title>'
+    temp += '<link rel="stylesheet" href="../../css/uobcms_corporate.css">'
+    temp += '<link rel="stylesheet" href="../../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
+    temp += '</head>'
+
+    temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; <a href="../index.html">Papers List</a> &gt; Unknown Year</p>', "../../", "")
+
+    temp += '<h1 id="pagetitle">Papers List - Unknown Year</h1>'
+    temp += "<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>"
+
+    n = 0
+    html = ""
+    for this_paper in papers:
+        try:
+            this_paper['PubmedData']['History'][0]['Year']
+        except:
+            html += draw_paper(this_paper, exec_list)
+            n += 1
+
+    temp += '<h2>' + str(n) + ' Publications From Unknown Years</h2>'
+    temp += '<h3>Some data may be missing from these publications.</h3>'
+    temp += html
+
+    temp += build_common_foot()
+
+    print >>unknown_file, temp.encode('utf-8')
 
 
 ############################################################
@@ -714,8 +769,9 @@ def build_mesh(papers):
                 max_val = len(mesh_papers_all_temp[this_mesh])
                 max_mesh = this_mesh
 
-        ordered_mesh_papers_all[max_mesh] = mesh_papers_all_temp[max_mesh]
-        mesh_papers_all_temp.pop(max_mesh, None)
+        if max_mesh is not None:
+            ordered_mesh_papers_all[max_mesh] = mesh_papers_all_temp[max_mesh]
+            mesh_papers_all_temp.pop(max_mesh, None)
 
     # Make papers list for headings pages
     for this_mesh in ordered_mesh_papers_all:
@@ -778,7 +834,7 @@ def build_mesh(papers):
             temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; Keyword &gt; ' + this_mesh + '</p>', "../../", "")
 
             temp += '<h1 id="pagetitle">Keyword - ' + this_mesh + '</h1>'
-            temp += '<h2>All Keyword History</h2>'
+            temp += '<h2>Keyword History</h2>'
 
             # ===== KEYWORD OVER TIME CALCULATIONS =====
             # First some prep has to be done to set up the array for the number of year. This is copied from the citations graph prep and is probably very inefficent for this task
@@ -859,109 +915,8 @@ def build_mesh(papers):
                     if paper_obj is not None:
                         this_paper = paper_obj
 
-                    html = '<div class="paper">'
-
-                    # altmetric data
-                    try:
-                        if this_paper['IDs']['DOI']:
-                            html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
-                    except:
-                        pass
-
-                    # Paper title as a link
-                    html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['title'] + '</span><br/>'
-
-                    # Authors
-                    authors = []
-                    author_on_exec = False
-                    for this_author in this_paper['author']:
-                        # Some author lists have a collective name. Ignore this.
-                        # Some people don't actually have initials. eg wraight in pmid:18454148
-                        try:
-                            # Check if an author was on the exec Comittee
-                            for x in exec_list:
-                                # Check if authors name matches
-                                if x[2] == this_author['clean']:
-                                    # Get start and end date of exec membership
-                                    exec_start = time.mktime(datetime.datetime.strptime(x[0], "%d/%m/%Y").timetuple())
-                                    exec_end = int(time.time())
-                                    if not x[1] == "":
-                                        exec_end = time.mktime(datetime.datetime.strptime(x[1], "%d/%m/%Y").timetuple())
-
-                                    # Convert issued date into a timestamp
-                                    issued_date = this_paper['issued']['date-parts']
-                                    date = str(issued_date[0][2]) + "/" + str(issued_date[0][1]) + "/" + str(issued_date[0][0])
-                                    issued_timestamp = time.mktime(datetime.datetime.strptime(date, "%d/%m/%Y").timetuple())
-
-                                    # If publication is issued between exec_start and exec_end then flag
-                                    if issued_timestamp > exec_start and issued_timestamp < exec_end:
-                                        author_on_exec = True
-                                        break
-
-                            authors.append(this_author['family'] + ', ' + this_author['given'])
-                        except:
-                            pass
-
-                    html += htmlentities.encode('; '.join(authors))
-                    html += '<br/>'
-
-                    if author_on_exec:
-                        # html += '<img style="width:16px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive
-                        html += '<div style="text-align:center;font-size:14px;background:#' + config.project_details['colour_hex_secondary'] + ';color:#' + config.project_details['colour_hex_primary'] + ';padding:2px 4px;box-shadow: 0px 0px 1px #4e4e4e inset;">At least one author was a member of the ' + config.project_details['name'] + ' Executive Committee.</div>'
-                        this_paper['Extras']['author_on_exec'] = True
-                    else:
-                        this_paper['Extras']['author_on_exec'] = False
-
-                    # Journal volume and issue
-                    try:
-                        html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
-                    except:
-                        pass
-
-                    try:
-                        html += ', Volume ' + this_paper['volume']
-                    except:
-                        pass
-
-                    try:
-                        html += ', Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue']
-                    except:
-                        pass
-                    html += '<br/>'
-
-                    # PMID
-                    try:
-                        if this_paper['IDs']['PMID']:
-                            html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">' + str(this_paper['IDs']['PMID']) + '</a>'
-                    except:
-                        pass
-
-                    # DOI
-                    try:
-                        if this_paper['IDs']['DOI']:
-                            html += '&nbsp;DOI: <a href="http://doi.org/' + this_paper['IDs']['DOI'] + '">' + this_paper['IDs']['DOI'] + '</a>'
-                    except:
-                        pass
-
-                    # citation count
-                    html += "<table class='citation_table'>"
-                    html += '<tr><th colspan="4">Citation Counts</th></tr>'
-                    html += '<tr>'
-                    try:
-                        html += '<td>Scopus: ' + this_paper['Extras']['Citations'] + '<td>'
-                    except:
-                        pass
-
-                    try:
-                        html += '<td>Europe PMC: ' + this_paper['Extras']['Citations-EuropePMC'] + '<td>'
-                    except:
-                        pass
-
-                    html += '</tr>'
-                    html += "</table>"
-
-                    # Add an extra line break at the end
-                    html += '</div>'
+                    # Call draw paper function
+                    html = draw_paper(this_paper, exec_list)
 
                     fo.write(html)
 
