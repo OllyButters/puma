@@ -1196,6 +1196,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
 
     num_papers_citations = []
     max_citations = 0
+    list_of_citation_counts = []
 
     # Get the max number of citations
     for this_paper in papers:
@@ -1214,9 +1215,14 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     for this_paper in papers:
         try:
             n_cits = int(this_paper['Extras']['Citations'])
+            list_of_citation_counts.append(n_cits)
             num_papers_citations[n_cits] += 1
         except:
             pass
+
+    # Get the median number of citations
+    list_of_citation_counts.sort()
+    median_citations = list_of_citation_counts[len(list_of_citation_counts)/2]
 
     # = Low Citations Range =
     # Create data string for plot
@@ -1227,6 +1233,8 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
         colour = ""
         if this_n_citations == round(average_citations, 0):
             colour = "#" + config.project_details['colour_hex_secondary']
+        if this_n_citations == median_citations:
+            colour = "green"
 
         try:
             n_papers_with_x_citations += ",[" + str(this_n_citations) + "," + str(num_papers_citations[this_n_citations]) + ",'" + colour + "']"
@@ -1350,6 +1358,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     temp += "<p style='text-align:center;'>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
     temp += '<div id="papers_per_citation_count_div"></div>'
     temp += "<div style='margin-left:auto;margin-right:auto;'><div class='average_citations' style='height:15px; width:33px; float:left; background:#" + config.project_details['colour_hex_secondary'] + "'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Mean number of citations</div></div>"
+    temp += "<div style='margin-left:auto;margin-right:auto;margin-top:5px;'><div class='average_citations' style='height:15px; width:33px; float:left; background:green'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Median number of citations</div></div>"
     temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
     temp += '<div id="papers_per_high_citation_count_div"></div>'
     temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
