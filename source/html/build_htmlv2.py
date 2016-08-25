@@ -364,21 +364,23 @@ def draw_paper(this_paper, exec_list):
         pass
 
     # citation count
+    number_citations_counts = 2  # The number of different citation count sources
+    citations_counts_width = 100 / number_citations_counts
     html += "<table class='citation_table'>"
-    html += '<tr><th colspan="4">Citation Counts</th></tr>'
+    html += '<tr><th colspan="' + str(number_citations_counts) + '">Citation Counts</th></tr>'
     html += '<tr>'
     try:
-        html += '<td>Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + str(this_paper['Extras']['eid']) + '&origin=inward&txGid=0">' + str(this_paper['Extras']['Citations']) + '</a><td>'
+        html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + str(this_paper['Extras']['eid']) + '&origin=inward&txGid=0">' + str(this_paper['Extras']['Citations']) + '</a></td>'
     except:
         try:
-            html += '<td>Scopus: ' + str(this_paper['Extras']['Citations']) + '<td>'
+            html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: ' + str(this_paper['Extras']['Citations']) + '</td>'
         except:
-            html += '<td>Scopus: -<td>'
+            html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: -</td>'
 
     try:
-        html += '<td>Europe PMC: ' + str(this_paper['Extras']['Citations-EuropePMC']) + '<td>'
+        html += '<td style="width:' + str(citations_counts_width) + '%;">Europe PMC: ' + str(this_paper['Extras']['Citations-EuropePMC']) + '</td>'
     except:
-        html += '<td>Europe PMC: -<td>'
+        html += '<td style="width:' + str(citations_counts_width) + '%;">Europe PMC: -</td>'
         pass
 
     html += '</tr>'
