@@ -246,10 +246,12 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
                 cached_citations[this_paper['IDs']['hash']]['citation_count'] = citations
                 cached_citations[this_paper['IDs']['hash']]['date_downloaded'] = datetime.datetime.now()
             except:
-                print "No Europe PMC citations count for " + this_paper['IDs']['hash'] + " (" + str(n_checked) + "/" + str(len(papers)) + ")"
+                # print "No Europe PMC citations count for " + this_paper['IDs']['hash'] + " (" + str(n_checked) + "/" + str(len(papers)) + ")"
                 pass
 
         n_checked += 1
+        if n_checked % 25 == 0:
+            print "Europe PMC Citations (" + str(n_checked) + "/" + str(len(papers)) + ")"
 
     # Write to file
     csvfile = open(config.cache_dir + '/citations_europePMC.csv', 'wb')

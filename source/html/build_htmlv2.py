@@ -221,7 +221,6 @@ def build_home(papers, error_log):
 
     # Cohort-Rating calculation
     cr_current_year = float(config.metrics_study_current_year)
-    print cr_current_year
     cr_sum = 0.0
     cr_data_from = 0
 
@@ -255,11 +254,11 @@ def build_home(papers, error_log):
     if missing_year['num_papers'] > 0:
         temp = '<tr>'
         temp += '<td style="font-size:12px;font-weight:bold;"><a href="papers/unknown/index.html">UNKNOWN</a></td>'
-        temp += '<td>' + str(missing_year['num_papers']) + '</td>'
+        temp += '<td>' + intWithCommas(missing_year['num_papers']) + '</td>'
         temp += '<td>-</td>'
         temp += '<td>' + str(missing_year['uob']) + '</td>'
         temp += '<td>' + str(int(100*missing_year['uob']/missing_year['num_papers'])) + '</td>'
-        temp += '<td>' + str(missing_year['citations']) + '</td>'
+        temp += '<td>' + intWithCommas(missing_year['citations']) + '</td>'
         temp += '<td>-</td>'
         temp += '</tr>'
         print >>html_file, temp
@@ -278,6 +277,7 @@ def build_home(papers, error_log):
 ############################################################
 # Draw Paper Function
 ############################################################
+# This function is used in the different paper lists to display a consistently formatted list.
 def draw_paper(this_paper, exec_list):
     html = '<div class="paper">'
 
@@ -288,7 +288,7 @@ def draw_paper(this_paper, exec_list):
     except:
         pass
 
-    # Paper title as a link
+    # Paper title
     html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['title'] + '</span><br/>'
 
     # Authors
@@ -325,14 +325,14 @@ def draw_paper(this_paper, exec_list):
     html += htmlentities.encode('; '.join(authors))
     html += '<br/>'
 
+    # IF the author is on exec committee display a message
     if author_on_exec:
-        # html += '<img style="width:16px;padding-left:20px;" src="yellow-flag-th.png" alt="Comittee flag" title="At least one author was on the ALSPAC executive
         html += '<div style="text-align:center;font-size:14px;background:#' + config.project_details['colour_hex_secondary'] + ';color:#' + config.project_details['colour_hex_primary'] + ';padding:2px 4px;box-shadow: 0px 0px 1px #4e4e4e inset;">At least one author was a member of the ' + config.project_details['name'] + ' Executive Committee.</div>'
         this_paper['Extras']['author_on_exec'] = True
     else:
         this_paper['Extras']['author_on_exec'] = False
 
-    # Journal volume and issue
+    # Journal, volume and issue
     try:
         html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
     except:
@@ -363,13 +363,14 @@ def draw_paper(this_paper, exec_list):
     except:
         pass
 
-    # citation count
+    # Citation Counts and Sources
     number_citations_counts = 2  # The number of different citation count sources
     citations_counts_width = 100 / number_citations_counts
     html += "<table class='citation_table'>"
     html += '<tr><th colspan="' + str(number_citations_counts) + '">Citation Counts</th></tr>'
     html += '<tr>'
     try:
+        # Try to display citation count with link to scopus page
         html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + str(this_paper['Extras']['eid']) + '&origin=inward&txGid=0">' + str(this_paper['Extras']['Citations']) + '</a></td>'
     except:
         try:
@@ -385,8 +386,6 @@ def draw_paper(this_paper, exec_list):
 
     html += '</tr>'
     html += "</table>"
-
-    # Add an extra line break at the end
     html += '</div>'
 
     return html
@@ -452,8 +451,9 @@ def build_papers(papers):
             temp.append({this_paper['IDs']['hash']: html})
             yearly_papers[this_year] = temp
         except:
-            print 'Failing on ' + this_paper['IDs']['hash']
-            print sys.exc_info()
+            pass
+            # print 'Failing on ' + this_paper['IDs']['hash']
+            # print sys.exc_info()
 
     # Output the info into an HTML file
     # For each year dict item
@@ -657,23 +657,23 @@ def build_mesh(papers):
 
         total += len(mesh_papers_major[this_mesh])
 
-    print "MeSH Second Level Found: " + str(second_found) + "/" + str(total)
-    print "Unique MeSH Second Level: " + str(len(mesh_second_level_headings))
-    print "MeSH Top Level Found: " + str(top_found) + "/" + str(total)
-    print "Unique MeSH Top Level: " + str(len(mesh_top_level_headings))
+    # print "MeSH Second Level Found: " + str(second_found) + "/" + str(total)
+    # print "Unique MeSH Second Level: " + str(len(mesh_second_level_headings))
+    # print "MeSH Top Level Found: " + str(top_found) + "/" + str(total)
+    # print "Unique MeSH Top Level: " + str(len(mesh_top_level_headings))
 
-    print "\n" + str(mesh_top_level_headings)
-    print "\n" + str(mesh_second_level_headings)
+    # print "\n" + str(mesh_top_level_headings)
+    # print "\n" + str(mesh_second_level_headings)
 
-    print "Second Level MeSH"
-    for mesh in mesh_second_level_headings:
-        print mesh + "\t" + str(mesh_second_level_headings[mesh])
+    # print "Second Level MeSH"
+    # for mesh in mesh_second_level_headings:
+        # print mesh + "\t" + str(mesh_second_level_headings[mesh])
 
-    print "\n\n"
+    # print "\n\n"
 
-    print "Top Level MeSH"
-    for mesh in mesh_top_level_headings:
-        print mesh + "\t" + str(mesh_top_level_headings[mesh])
+    # print "Top Level MeSH"
+    # for mesh in mesh_top_level_headings:
+        # print mesh + "\t" + str(mesh_top_level_headings[mesh])
 
     # Print mesh_papers
     # Make a JSON file for each mesh term, in it put all the PMIDs for this term
@@ -1387,7 +1387,7 @@ def build_word_cloud(papers, list, data_from_count):
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
-    temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
+    #temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
     shutil.copyfile(config.template_dir + '/d3wordcloud.js', config.html_dir + '/wordcloud/d3wordcloud.js')
     shutil.copyfile(config.template_dir + '/d3.layout.cloud.js', config.html_dir + '/wordcloud/d3.layout.cloud.js')
@@ -1458,7 +1458,7 @@ def build_abstract_word_cloud(papers, data_from_count):
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
-    temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
+    #temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
     shutil.copyfile(config.template_dir + '/d3wordcloud.js', config.html_dir + '/abstractwordcloud/d3wordcloud.js')
     shutil.copyfile(config.template_dir + '/d3.layout.cloud.js', config.html_dir + '/abstractwordcloud/d3.layout.cloud.js')
