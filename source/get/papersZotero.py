@@ -31,21 +31,21 @@ class zotPaper (zotero.Zotero):
 
   #populate self.papers list with all papers in self.collection
   def getPapersList(self, *args, **kwargs):
-    if self.collection is None:
-      self.papers = super(zotPaper, self).items(*args, **kwargs)
+    self.papers = []
+    #get num items in collection
+    if self.collection_key is not None:
+      num_items = self.num_collectionitems(self.collection_key)
     else:
+      num_items = self.num_items()
+    #TEMP SOLUTION todo use collection_items(format="keys") to get list of keys from collection and then call item() on each new
+    #as collection_items returns a limit of 100 items we need make several requests to get all the items in the collection
+    for i in range(0, num_items, 100):
       if self.collection_key is not None:
-        self.papers = []
-        #get num items in collection
-        num_items = self.num_collectionitems(self.collection_key)
-        #TEMP SOLUTION todo use collection_items(format="keys") to get list of keys from collection and then call item() on each new
-        #as collection_items returns a limit of 100 items we need make several requests to get all the items in the collection
-        for i in range(0, num_items, 100):
-          subset = super(zotPaper, self).collection_items(self.collection_key, start=i, *args, **kwargs)
-          self.papers = self.papers + subset
+        subset = super(zotPaper, self).collection_items(self.collection_key, start=i, *args, **kwargs)
       else:
-        self.papers = []
-        raise ValueError('(zotPaper::getPapersList) The current collection does not have a valid collection_key')
+        subset = super(zotPaper, self).items(start=i, *args, **kwargs)
+
+      self.papers = self.papers + subset
     return self.papers
 
   def mapFields(self, paper, item_type = 'journalArticle', creator_type = 'author', src_type = 'doi'):
