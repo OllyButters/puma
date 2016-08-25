@@ -71,14 +71,14 @@ papers = []
 # get.get.get(pmids, papers)
 
 # Get list of files in merged directory
-merged_files_list = listdir(root_dir + '/cache/processed/merged/')
+merged_files_list = listdir(config.cache_dir + '/processed/merged/')
 merged_files_list.sort()
 # merged_files_list = merged_files_list[0:10]
 print str(len(merged_files_list))+' merged papers to load'
 
 # Open each one and add to papers object
 for this_merged_file in merged_files_list:
-    with open(root_dir + '/cache/processed/merged/'+this_merged_file) as fo:
+    with open(config.cache_dir + '/processed/merged/' + this_merged_file) as fo:
         # Will be a dictionary
         this_paper = json.load(fo)
         this_paper['filename'] = this_merged_file
@@ -90,7 +90,7 @@ for this_merged_file in merged_files_list:
 #     papers = json.load(fo)
 
 
-print str(len(papers))+' papers to process'
+print str(len(papers)) + ' papers to process'
 
 # exit()
 

@@ -408,9 +408,12 @@ def build_papers(papers):
             html += '<tr><th colspan="4">Citation Counts</th></tr>'
             html += '<tr>'
             try:
-                html += '<td>Scopus: ' + str(this_paper['Extras']['Citations']) + '<td>'
+                html += '<td>Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + str(this_paper['Extras']['eid']) + '&origin=inward&txGid=0">' + str(this_paper['Extras']['Citations']) + '</a><td>'
             except:
-                html += '<td>Scopus: -<td>'
+                try:
+                    html += '<td>Scopus: ' + str(this_paper['Extras']['Citations']) + '<td>'
+                except:
+                    html += '<td>Scopus: -<td>'
 
             try:
                 html += '<td>Europe PMC: ' + str(this_paper['Extras']['Citations-EuropePMC']) + '<td>'
@@ -448,7 +451,7 @@ def build_papers(papers):
         if len(yearly_papers[this_year]) == 0:
             continue
 
-        main += '<a href="' + this_year + '/index.html">' + this_year + '</a> '
+        main += '<a href="' + this_year + '/index.html">' + this_year + '</a><br/> '
 
         if not os.path.exists(config.html_dir + '/papers/' + this_year):
             os.mkdir(config.html_dir + '/papers/' + this_year)
@@ -714,8 +717,9 @@ def build_mesh(papers):
                 max_val = len(mesh_papers_all_temp[this_mesh])
                 max_mesh = this_mesh
 
-        ordered_mesh_papers_all[max_mesh] = mesh_papers_all_temp[max_mesh]
-        mesh_papers_all_temp.pop(max_mesh, None)
+        if max_mesh is not None:
+            ordered_mesh_papers_all[max_mesh] = mesh_papers_all_temp[max_mesh]
+            mesh_papers_all_temp.pop(max_mesh, None)
 
     # Make papers list for headings pages
     for this_mesh in ordered_mesh_papers_all:
@@ -948,14 +952,17 @@ def build_mesh(papers):
                     html += '<tr><th colspan="4">Citation Counts</th></tr>'
                     html += '<tr>'
                     try:
-                        html += '<td>Scopus: ' + this_paper['Extras']['Citations'] + '<td>'
+                        html += '<td>Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + str(this_paper['Extras']['eid']) + '&origin=inward&txGid=0">' + str(this_paper['Extras']['Citations']) + '</a><td>'
                     except:
-                        pass
+                        try:
+                            html += '<td>Scopus: ' + str(this_paper['Extras']['Citations']) + '<td>'
+                        except:
+                            html += '<td>Scopus: -<td>'
 
                     try:
                         html += '<td>Europe PMC: ' + this_paper['Extras']['Citations-EuropePMC'] + '<td>'
                     except:
-                        pass
+                        html += '<td>Europe PMC: -<td>'
 
                     html += '</tr>'
                     html += "</table>"
