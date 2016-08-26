@@ -33,7 +33,7 @@ loglevel: DEBUG
 
 [metrics]
 metrics_study_start_year: 1958
-metrics_study_current_year: 2014
+metrics_study_current_year: 2015
 
 [pages]
 page_show_author_network = False

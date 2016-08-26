@@ -12,12 +12,12 @@ import config.config as config
 # Copy all the raw data to the processed directory, this means we are only
 # ever working on the processed stuff and we never touch the raw data. This
 # makes it easier to rerun as we don't have to rebuild the raw cache each time.
-def pre_clean(papers):
+def pre_clean(papers, error_log):
     print 'precleaning'
 
     for this_paper in papers:
 
-        print this_paper['title']
+        # print this_paper['title']
         # Add IDs section
         this_paper['IDs'] = {}
 
@@ -66,6 +66,46 @@ def pre_clean(papers):
         except:
             pass
 
+        # Generate a clean date
+        # There are a lot of different dates in the paper data object.
+        # These need to be convered into 1 date field so that it is consistently accessible throughout.
+        # Relying on just this clean date will potentially cause some data lose so in situations where
+        # you need a particular data, e.g. online publication date not paper publish date, then you
+        # should make sure you are using the correct one.
+
+        # CleanDate format = {'day':'00','month':'00','year':'0000'}
+        this_paper['Extras']['CleanDate'] = {}
+
+        try:
+
+            if str(this_paper['PubmedData']['History'][0]['Day']) == "" or str(this_paper['PubmedData']['History'][0]['Month']) == "" or str(this_paper['PubmedData']['History'][0]['Year']) == "":
+                raise Exception('Invalid Date')
+
+            this_paper['Extras']['CleanDate']['day'] = str(this_paper['PubmedData']['History'][0]['Day'])
+            this_paper['Extras']['CleanDate']['month'] = str(this_paper['PubmedData']['History'][0]['Month'])
+            this_paper['Extras']['CleanDate']['year'] = str(this_paper['PubmedData']['History'][0]['Year'])
+
+        except:
+            try:
+                if str(this_paper['issued']['date-parts'][0][2]) == "" or str(this_paper['issued']['date-parts'][0][1]) == "" or str(this_paper['issued']['date-parts'][0][0]) == "":
+                    raise Exception('Invalid Date')
+
+                this_paper['Extras']['CleanDate']['day'] = str(this_paper['issued']['date-parts'][0][2])
+                this_paper['Extras']['CleanDate']['month'] = str(this_paper['issued']['date-parts'][0][1])
+                this_paper['Extras']['CleanDate']['year'] = str(this_paper['issued']['date-parts'][0][0])
+
+            except:
+                try:
+                    if str(this_paper['created']['date-parts'][0][2]) == "" or str(this_paper['created']['date-parts'][0][1]) == "" or str(this_paper['created']['date-parts'][0][0]) == "":
+                        raise Exception('Invalid Date')
+
+                    this_paper['Extras']['CleanDate']['day'] = str(this_paper['created']['date-parts'][0][2])
+                    this_paper['Extras']['CleanDate']['month'] = str(this_paper['created']['date-parts'][0][1])
+                    this_paper['Extras']['CleanDate']['year'] = str(this_paper['created']['date-parts'][0][0])
+
+                except:
+                    error_log.logErrorPaper("Cannot Create Clean Date", this_paper)
+
 
 # Have a go at tidying up the mess that is first author institution.
 # Essentially go through each institution and see if it matches a patten
@@ -104,8 +144,8 @@ def clean_institution(papers):
     for this_paper in papers:
 
         try:
-            print '============='
-            print this_paper['author'][0]['affiliation'][0]['name']
+            # print '============='
+            # print this_paper['author'][0]['affiliation'][0]['name']
             institute = this_paper['author'][0]['affiliation'][0]['name']
 
         except:
