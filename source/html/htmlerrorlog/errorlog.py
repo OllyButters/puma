@@ -10,12 +10,14 @@ class ErrorLog:
     warningArray = []
     index = 0
 
+    # Used for logging errors and warnings related to the pipeline
     def logError(self, txt):
         self.errorArray.append("[ERROR] " + txt)
 
     def logWarning(self, txt):
         self.warningArray.append("[WARNING] " + txt)
 
+    # Used for logging errors and warnings relating to a paper
     def logErrorPaper(self, txt, this_paper):
         string = ""
 
