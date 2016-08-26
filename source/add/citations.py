@@ -231,7 +231,6 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
     # Get Citation Data
     counter = 1
     for this_paper in papers:
-        print this_paper['IDs']['hash']
         try:
             this_paper['Extras']['Citations-EuropePMC'] = cached_citations[this_paper['IDs']['hash']]['citation_count']
             logging.info(str(this_paper['IDs']['hash'])+" in EuropePMC citation cache (" + str(counter) + "/" + str(len(papers)) + ")")
