@@ -6,6 +6,7 @@ import os.path
 import json
 import urllib2
 import requests
+import logging
 
 import config.config as config
 
@@ -31,12 +32,14 @@ def geocode(papers, error_log, api_key):
     locations_found = 0
     number_done = 1
     for this_paper in papers:
+
         found_coords = False
 
         try:
 
             # === Check if the location is already cached ===
             clean = this_paper['Extras']['CleanInstitute']
+            logging.info(str(this_paper['IDs']['hash']) + " geocode " + clean + " (" + str(number_done) + "/" + str(len(papers)) + ")")
             if os.path.isfile(config.cache_dir + "/geodata/" + clean):
                 # Load cached data
 
@@ -97,9 +100,10 @@ def geocode(papers, error_log, api_key):
 
                             except:
                                 print 'Unable to get geo-data (No HQ P625 Or P625) ' + this_paper['Extras']['CleanInstitute'] + " " + item_id + " (" + str(number_done) + "/" + str(len(papers)) + ")"
+                                error_log.logWarningPaper('Unable to get geo-data (No HQ P625 Or P625) ' + this_paper['Extras']['CleanInstitute'] + " " + item_id + " (" + str(number_done) + "/" + str(len(papers)) + ")", this_paper)
 
                     except:
-                        # === No On Wikidata Check Backup File ===
+                        # === Not On Wikidata Check Backup File ===
                         try:
                             backup_coords = institute_coordinates_backup[this_paper['Extras']['CleanInstitute']]
                             print 'Using Institute coordinates backup to get coordinates for ' + this_paper['Extras']['CleanInstitute']
@@ -108,7 +112,7 @@ def geocode(papers, error_log, api_key):
 
                         except:
                             # The intitiue could not be found on wikidata or in the backup file
-                            print 'Unable to get geo-data (Probably not on Wikidata) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
+                            print 'Unable to get geo-data (Probably not on Wikidata) (Consider using backup file) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
                             error_log.logWarningPaper("Insititue " + this_paper['Extras']['CleanInstitute'] + " not on Wikidata (Consider using backup file)", this_paper)
 
                 except:
@@ -116,7 +120,7 @@ def geocode(papers, error_log, api_key):
                     error_log.logWarningPaper("Wikidata query failed for " + this_paper['Extras']['CleanInstitute'], this_paper)
 
         except:
-            print 'No Clean Institute for ' + this_paper['IDs']['hash'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
+            logging.info('No Clean Institute for ' + this_paper['IDs']['hash'] + " (" + str(number_done) + "/" + str(len(papers)) + ")")
             error_log.logErrorPaper(" Clean Institute Missing for " + this_paper['IDs']['hash'] + " <a href='https://www.zotero.org/groups/300320/items/itemKey/" + this_paper['IDs']['zotero'] + "'>Zotero</a>", this_paper)
 
         # The coordinates have been found from either wikidata or the backup file

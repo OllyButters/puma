@@ -96,7 +96,7 @@ print str(len(papers)) + ' papers to process'
 
 ###########################################################
 # Clean the data - e.g. tidy institute names
-clean.pre_clean(papers)
+clean.pre_clean(papers, error_log)
 clean.clean_institution(papers)
 # clean.clean.do_deltas(papers)
 
@@ -140,7 +140,7 @@ html.build_htmlv2.build_google_map(papers)
 html.build_htmlv2.build_country_map(papers, config.google_maps_api_key)
 html.build_htmlv2.build_metrics(papers, cohort_rating, cohort_rating_data_from, config.metrics_study_start_year, config.metrics_study_current_year)
 html.build_htmlv2.build_abstract_word_cloud(papers, abstract_data_from_count)
-html.build_htmlv2.build_author_network(papers, network)
+html.build_htmlv2.build_author_network(papers, network, error_log)
 html.build_htmlv2.build_error_log(papers, error_log)
 html.build_htmlv2.build_help()
 

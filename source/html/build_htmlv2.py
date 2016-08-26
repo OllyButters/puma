@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 import json
-import sys
+# import sys
 import shutil
 import os.path
 import csv
@@ -145,7 +145,8 @@ def build_home(papers, error_log):
     # Calculate the number of papers for each year
     for this_paper in papers:
         try:
-            this_year = this_paper['PubmedData']['History'][0]['Year']
+            this_year = this_paper['Extras']['CleanDate']['year']
+
             # Make sure there is a dict item for this year
             if this_year not in summary:
                 summary[this_year] = {'num_papers': 0, 'cumulative': 0, 'uob': 0, 'citations': 0, 'cumulative_citations': 0}
@@ -168,9 +169,8 @@ def build_home(papers, error_log):
 
         except:
             try:
-                this_paper['PubmedData']['History'][0]['Year']
+                this_paper['Extras']['CleanDate']['year']
             except:
-                error_log.logErrorPaper("Date Missing for " + this_paper['IDs']['hash'], this_paper)
                 missing_year['num_papers'] += 1
                 try:
                     missing_year['citations'] += int(this_paper['Extras']['Citations'])
@@ -264,7 +264,7 @@ def build_home(papers, error_log):
         print >>html_file, temp
     print >>html_file, '</table>'
 
-    temp = "<p>Known publication year for " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications</p>"
+    temp = "<p>Publication year known for " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications</p>"
     temp += "<p>* Citation data from Scopus.</p>"
 
     temp += build_common_foot()
@@ -309,8 +309,8 @@ def draw_paper(this_paper, exec_list):
                         exec_end = time.mktime(datetime.datetime.strptime(x[1], "%d/%m/%Y").timetuple())
 
                     # Convert issued date into a timestamp
-                    issued_date = this_paper['issued']['date-parts']
-                    date = str(issued_date[0][2]) + "/" + str(issued_date[0][1]) + "/" + str(issued_date[0][0])
+                    clean_date = this_paper['Extras']['CleanDate']
+                    date = str(clean_date['day']) + "/" + str(clean_date['month']) + "/" + str(clean_date['year'])
                     issued_timestamp = time.mktime(datetime.datetime.strptime(date, "%d/%m/%Y").timetuple())
 
                     # If publication is issued between exec_start and exec_end then flag
@@ -435,13 +435,12 @@ def build_papers(papers):
 
     # Build the text needed for each paper
     for this_paper in papers:
-
         try:
             # Call draw paper function
             html = draw_paper(this_paper, exec_list)
 
             # Append this paper to the list indexed by the year
-            this_year = this_paper['PubmedData']['History'][0]['Year']
+            this_year = this_paper['Extras']['CleanDate']['year']
 
             # Make sure there is a dict item for this year
             if this_year not in yearly_papers:
@@ -546,7 +545,7 @@ def build_papers(papers):
     html = ""
     for this_paper in papers:
         try:
-            this_paper['PubmedData']['History'][0]['Year']
+            this_paper['Extras']['CleanDate']['year']
         except:
             html += draw_paper(this_paper, exec_list)
             n += 1
@@ -853,7 +852,7 @@ def build_mesh(papers):
                 if paper_obj is not None:
                     this_paper = paper_obj
                     try:
-                        this_year = this_paper['PubmedData']['History'][0]['Year']
+                        this_year = this_paper['Extras']['CleanDate']['year']
                         # Make sure there is a dict item for this year
                         if this_year not in summary:
                             summary[this_year] = {'num_papers': 0, 'citations': 0}
@@ -1387,7 +1386,7 @@ def build_word_cloud(papers, list, data_from_count):
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
-    #temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
+    # temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
     shutil.copyfile(config.template_dir + '/d3wordcloud.js', config.html_dir + '/wordcloud/d3wordcloud.js')
     shutil.copyfile(config.template_dir + '/d3.layout.cloud.js', config.html_dir + '/wordcloud/d3.layout.cloud.js')
@@ -1458,7 +1457,7 @@ def build_abstract_word_cloud(papers, data_from_count):
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
-    #temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
+    # temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
     shutil.copyfile(config.template_dir + '/d3wordcloud.js', config.html_dir + '/abstractwordcloud/d3wordcloud.js')
     shutil.copyfile(config.template_dir + '/d3.layout.cloud.js', config.html_dir + '/abstractwordcloud/d3.layout.cloud.js')
@@ -1495,7 +1494,7 @@ def get_author_string_from_hash(hash_string, network):
             return network['authors'][author]['clean']
 
 
-def build_author_network(papers, network):
+def build_author_network(papers, network, error_log):
 
     print "\n###HTML - Author Network###"
 
@@ -1546,7 +1545,12 @@ def build_author_network(papers, network):
     html_file = open(config.html_dir + '/authornetwork/index.html', 'w')
 
     shutil.copyfile(config.template_dir + '/network.js', config.html_dir + '/authornetwork/network.js')
-    shutil.copyfile(config.template_dir + '/author_network.png', config.html_dir + '/authornetwork/author_network.png')
+
+    if config.page_show_author_network:
+        try:
+            shutil.copyfile(config.config_dir + '/' + config.project_details['short_name'] + '_author_network.png', config.html_dir + '/authornetwork/author_network.png')
+        except:
+            error_log.logWarning("Not Author Network Image")
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -1597,7 +1601,9 @@ def build_author_network(papers, network):
             pass
         n += 1
 
-    temp += '<a href="author_network.png"><img src="author_network.png" alt="author network"></a>'
+    temp += '<a id="network" href="author_network.png"><img src="author_network.png" alt="Author Network"></a>'
+    temp += '<p style="display:none;" id="no_network">No Author Network Image.</p>'
+    temp += "<script>var xmlhttp = new XMLHttpRequest();xmlhttp.onreadystatechange = function() {if (xmlhttp.readyState == 4 && xmlhttp.status == 404) {document.getElementById('network').style.display = 'none';document.getElementById('no_network').style.display = 'block';}};xmlhttp.open('GET', 'author_network.png', true);xmlhttp.send();</script>"
 
     print >>html_file, temp
 
