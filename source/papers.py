@@ -43,11 +43,8 @@ setup.build_file_tree(root_dir)
 start_time = time.time()
 print "Start Time: " + str(start_time)
 
-
-# Error log for displaying data input problems to user
+# Error log for displaying data input problems to user on the errorlog html page
 error_log = html.htmlerrorlog.errorlog.ErrorLog()
-# error_log.logError("Test Error")
-# error_log.logWarning("Test Warning")
 
 # Set up the logging. Level can be DEBUG|.....
 logging.basicConfig(filename=root_dir + '/logs/papers.log',
@@ -95,7 +92,7 @@ print str(len(papers)) + ' papers to process'
 # exit()
 
 ###########################################################
-# Clean the data - e.g. tidy institute names
+# Clean the data - e.g. tidy dates and institute names
 clean.clean_notes(papers, error_log)
 clean.pre_clean(papers, error_log)
 clean.clean_institution(papers)
@@ -113,7 +110,6 @@ fo = open(file_name, 'wb')
 fo.write(json.dumps(papers, indent=4))
 fo.close()
 
-
 bibliography.bibtex.bibtex(papers)
 
 ###########################################################
@@ -121,15 +117,12 @@ bibliography.bibtex.bibtex(papers)
 # some CSV type files that can be analysed.
 analyse.journals(papers)
 
-# pp.pprint(papers)
-
 abstract_data_from_count = analyse.abstracts(papers)
 network = analyse.authors(papers)
 analyse.first_authors(papers)
 analyse.inst(papers)
 analyse.mesh(papers)
 analyse.output_csv(papers)
-
 
 ###########################################################
 # Make some web pages
@@ -149,4 +142,4 @@ html.build_htmlv2.build_help()
 end_time = time.time()
 elapsed_time = end_time - start_time
 print "End Time: " + str(end_time)
-print "Elapsed Time: " + str(elapsed_time)
+print "Elapsed Time - " + str(int(elapsed_time) / 60) + ":" + str(int(elapsed_time) % 60)

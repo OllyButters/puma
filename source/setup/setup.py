@@ -9,68 +9,32 @@ import config.config as config
 # Everything in the cache is grabbed from elsewhere, or built on the fly,
 # so it should all be considerd ready to be deleted at any point!
 def build_file_tree(root_dir):
-    # Cache first
-    # if (os.path.exists(root_dir + '/cache') is False):
-    #    os.mkdir(root_dir + '/cache')
-
+    # = Cache directory =
     if not os.path.exists(config.cache_dir):
         os.mkdir(config.cache_dir)
 
     if not os.path.exists(config.cache_dir + '/geodata'):
         os.mkdir(config.cache_dir + '/geodata')
 
+    # = Data directory =
     if not os.path.exists(root_dir + '/data'):
         os.mkdir(root_dir + '/data')
 
-    # Log directory
+    # = Log directory =
     if not os.path.exists(root_dir + '/logs'):
         os.mkdir(root_dir + '/logs')
 
-    # Output html
+    # = Output html directory =
+    # Html dir
     if not os.path.exists(root_dir + "/html"):
         os.mkdir(root_dir + "/html")
 
+    # Study html dir. This one is inside the previous one.
     if not os.path.exists(config.html_dir):
         os.mkdir(config.html_dir)
 
-    if not os.path.exists(config.html_dir + '/mesh'):
-        os.mkdir(config.html_dir + '/mesh')
+    html_directories = {"/mesh", "/css", "/papers", "/all_keywords", "/major_keywords", "/map", "/country", "/city", "/metrics", "/wordcloud", "/abstractwordcloud", "/authornetwork", "/errorlog", "/help"}
 
-    if not os.path.exists(config.html_dir + '/css'):
-        os.mkdir(config.html_dir + '/css')
-
-    if not os.path.exists(config.html_dir + '/papers'):
-        os.mkdir(config.html_dir + '/papers')
-
-    if not os.path.exists(config.html_dir + '/all_keywords'):
-        os.mkdir(config.html_dir + '/all_keywords')
-
-    if not os.path.exists(config.html_dir + '/major_keywords'):
-        os.mkdir(config.html_dir + '/major_keywords')
-
-    if not os.path.exists(config.html_dir + '/map'):
-        os.mkdir(config.html_dir + '/map')
-
-    if not os.path.exists(config.html_dir + '/country'):
-        os.mkdir(config.html_dir + '/country')
-
-    if not os.path.exists(config.html_dir + '/city'):
-        os.mkdir(config.html_dir + '/city')
-
-    if not os.path.exists(config.html_dir + '/metrics'):
-        os.mkdir(config.html_dir + '/metrics')
-
-    if not os.path.exists(config.html_dir + '/wordcloud'):
-        os.mkdir(config.html_dir + '/wordcloud')
-
-    if not os.path.exists(config.html_dir + '/abstractwordcloud'):
-        os.mkdir(config.html_dir + '/abstractwordcloud')
-
-    if not os.path.exists(config.html_dir + '/authornetwork'):
-        os.mkdir(config.html_dir + '/authornetwork')
-
-    if not os.path.exists(config.html_dir + '/errorlog'):
-        os.mkdir(config.html_dir + '/errorlog')
-
-    if not os.path.exists(config.html_dir + '/help'):
-        os.mkdir(config.html_dir + '/help')
+    for direct in html_directories:
+        if not os.path.exists(config.html_dir + direct):
+            os.mkdir(config.html_dir + direct)

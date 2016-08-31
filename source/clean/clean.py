@@ -10,7 +10,7 @@ import config.config as config
 
 
 # Some data will be missing. To deal with this missing data will be put into the
-# Zotero notes field in a formatted structure. That data will then be parsed by
+# Zotero notes field in a formatted structure "<key>=<value>\\<key>=<value>". That data will then be parsed by
 # this function.
 def clean_notes(papers, error_log):
     for this_paper in papers:
@@ -83,16 +83,19 @@ def pre_clean(papers, error_log):
         except:
             pass
 
-        # Generate a clean date
+        # Generate a Clean Date
         # There are a lot of different dates in the paper data object.
-        # These need to be convered into 1 date field so that it is consistently accessible throughout.
+        # These need to be converted into 1 date field so that it is consistently accessible throughout.
         # Relying on just this clean date will potentially cause some data lose so in situations where
-        # you need a particular data, e.g. online publication date not paper publish date, then you
-        # should make sure you are using the correct one. However, the CleanDate field gives you the best chance of getting a relevant date.
+        # you need a particular date, e.g. online publication date not paper publish date, then you
+        # should make sure you are using the correct one. However, the CleanDate field gives you the
+        # best chance of getting a relevant date that is at least correct for something.
 
         # CleanDate format = {'day':'00','month':'00','year':'0000'}
         this_paper['Extras']['CleanDate'] = {}
 
+        # Try the different date fields. If we don't get a full day, month and year for the CleanDate
+        # then try the next possible field. Finally if none of the fields work then try the Zotero notes field.
         try:
             # First check for pubmed date
             if str(this_paper['PubmedData']['History'][0]['Day']) == "" or str(this_paper['PubmedData']['History'][0]['Month']) == "" or str(this_paper['PubmedData']['History'][0]['Year']) == "":
@@ -206,7 +209,7 @@ def clean_institution(papers):
                 pass
 
     print 'Cleaning institutions'
-    print str(len(papers)-number_not_matched)+'/'+str(len(papers))+' cleaned'
+    print str(len(papers)-number_not_matched) + '/' + str(len(papers)) + ' cleaned'
 
     return number_not_matched
 
