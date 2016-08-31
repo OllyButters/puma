@@ -15,7 +15,7 @@ import os
 
 import config.config as config
 
-# Version 2 of the html pages (New site that matches bristol's ALSPAC site)
+# Version 2 of the html pages. The new site that matches bristol's ALSPAC pages. It is also semi customisable.
 
 ############################################################
 # Have all the data now, so do something with it
