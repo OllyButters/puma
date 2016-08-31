@@ -1,6 +1,7 @@
 from pyzotero import zotero
 import json
 import config.config as config
+import re
 
 class zotPaper (zotero.Zotero):
 
@@ -48,6 +49,55 @@ class zotPaper (zotero.Zotero):
       self.papers = self.papers + subset
     return self.papers
 
+  def notesToFields(self, notes):
+    entries = notes.split("\n");
+    data = {}
+    for entry in entries:
+      datum = re.search(r'^(.+?)="(.+?)"$', entry)
+      if datum is not None:
+        data[datum.group(1)] = datum.group(2)
+      else:
+        raise ValueError('datum is not formatted correctly')
+    return data
+
+  def fieldsToNotes(self, paper, fields):
+    notes = ''
+    for field in fields:
+      value = ''
+      if field in paper:
+        value = paper[field]
+      notes += '%s="%s"\n' % (field, paper[field])
+    return notes
+      
+  def uploadNotes(self, paper):
+    notes = paper['notes']
+    notes_dict = self.notesToFields(notes)
+    key = paper['key']
+    try:
+      #get the current data
+      zot_paper = self.item(key)
+      zot_notes_dict = {}
+      if 'notes' in zot_paper['data']:
+        zot_notes_dict = self.notesToFields(zot_paper['data']['notes'])
+    except:
+      #do logging here
+      print "Error getting paper %s from Zotero" % (key)
+    
+    #compare values and update zot_notes_dict only if key not present
+    for k,v in notes_dict.iteritems():
+      if k not in zot_notes_dict.keys():
+        zot_notes_dict[k] = v
+
+    #now flatten zot_notes_dict ready for upload
+    zot_notes = ''
+    for k,v in zot_notes_dict.iteritems():
+      zot_notes += '%s="%s"\n' % (k,v)
+
+    zot_paper['data']['notes'] = zot_notes
+
+    self.update_item(zot_paper)
+    return zot_paper
+      
   def mapFields(self, paper, item_type = 'journalArticle', creator_type = 'author', src_type = 'doi'):
     fields = self.item_type_fields(item_type)
     creator_types = self.item_creator_types(item_type)
