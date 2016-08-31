@@ -71,14 +71,14 @@ get.collate.collate()
 # get.get.get(pmids, papers)
 
 # Get list of files in merged directory
-merged_files_list = listdir(root_dir + '/cache/processed/merged/')
+merged_files_list = listdir(config.cache_dir + '/processed/merged/')
 merged_files_list.sort()
 # merged_files_list = merged_files_list[0:10]
 print str(len(merged_files_list))+' merged papers to load'
 
 # Open each one and add to papers object
 for this_merged_file in merged_files_list:
-    with open(root_dir + '/cache/processed/merged/'+this_merged_file) as fo:
+    with open(config.cache_dir + '/processed/merged/' + this_merged_file) as fo:
         # Will be a dictionary
         this_paper = json.load(fo)
         this_paper['filename'] = this_merged_file
@@ -90,13 +90,13 @@ for this_merged_file in merged_files_list:
 #     papers = json.load(fo)
 
 
-print str(len(papers))+' papers to process'
+print str(len(papers)) + ' papers to process'
 
 # exit()
 
 ###########################################################
 # Clean the data - e.g. tidy institute names
-clean.pre_clean(papers)
+clean.pre_clean(papers, error_log)
 clean.clean_institution(papers)
 # clean.clean.do_deltas(papers)
 
@@ -140,7 +140,7 @@ html.build_htmlv2.build_google_map(papers)
 html.build_htmlv2.build_country_map(papers, config.google_maps_api_key)
 html.build_htmlv2.build_metrics(papers, cohort_rating, cohort_rating_data_from, config.metrics_study_start_year, config.metrics_study_current_year)
 html.build_htmlv2.build_abstract_word_cloud(papers, abstract_data_from_count)
-html.build_htmlv2.build_author_network(papers, network)
+html.build_htmlv2.build_author_network(papers, network, error_log)
 html.build_htmlv2.build_error_log(papers, error_log)
 html.build_htmlv2.build_help()
 

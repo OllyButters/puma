@@ -320,7 +320,7 @@ def mesh(papers):
 # output a csv file with some info in
 def output_csv(papers):
 
-    print '\n###Outputting CSV file###\n'
+    print '\n###Outputting CSV file###'
     with open(config.data_dir + '/all.csv', 'wb') as csvfile:
         all_file = csv.writer(csvfile)
         for this_paper in papers:
@@ -339,16 +339,6 @@ def output_csv(papers):
             except:
                 journal = '???'
 
-            # try:
-            #    year         = papers[0]['Year']
-            # except:
-            #    year = '???'
-
-            # try:
-            #    month        = papers[0]['Month']
-            # except:
-            #    month = '???'
-
             try:
                 citations = this_paper['Extras']['Citations']
             except:
@@ -357,4 +347,5 @@ def output_csv(papers):
             try:
                 all_file.writerow([title, first_author, journal, citations, this_paper])
             except:
-                print 'Failing on '+str(this_paper['IDs']['hash'])
+                # print 'Failing on '+str(this_paper['IDs']['hash'])
+                pass
