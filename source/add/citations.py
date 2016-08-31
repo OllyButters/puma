@@ -18,6 +18,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
 
     url = 'http://api.elsevier.com/content/search/scopus'
 
+    # === Scopus ===
     print 'Doing Scopus Citations'
 
     # open the citation cache file
@@ -55,9 +56,6 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
     for this_paper in papers:
         counter = counter + 1
         logging.info('on # ' + str(counter) + ' of ' + str(number_papers_to_process))
-
-        # print this_paper['IDs']
-        # exit()
 
         # read the cache
         try:
