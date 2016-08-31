@@ -9,6 +9,23 @@ import os
 import config.config as config
 
 
+# Some data will be missing. To deal with this missing data will be put into the
+# Zotero notes field in a formatted structure. That data will then be parsed by
+# this function.
+def clean_notes(papers, error_log):
+    for this_paper in papers:
+        try:
+            notes = this_paper['notes']
+            this_paper['notes'] = {}
+            # split the notes data into key/value pairs
+            fields = notes.split("\\")
+            for this_field in fields:
+                components = this_field.split("=")
+                this_paper['notes'][components[0]] = components[1]
+        except:
+            pass
+
+
 # Copy all the raw data to the processed directory, this means we are only
 # ever working on the processed stuff and we never touch the raw data. This
 # makes it easier to rerun as we don't have to rebuild the raw cache each time.
@@ -71,13 +88,13 @@ def pre_clean(papers, error_log):
         # These need to be convered into 1 date field so that it is consistently accessible throughout.
         # Relying on just this clean date will potentially cause some data lose so in situations where
         # you need a particular data, e.g. online publication date not paper publish date, then you
-        # should make sure you are using the correct one.
+        # should make sure you are using the correct one. However, the CleanDate field gives you the best chance of getting a relevant date.
 
         # CleanDate format = {'day':'00','month':'00','year':'0000'}
         this_paper['Extras']['CleanDate'] = {}
 
         try:
-
+            # First check for pubmed date
             if str(this_paper['PubmedData']['History'][0]['Day']) == "" or str(this_paper['PubmedData']['History'][0]['Month']) == "" or str(this_paper['PubmedData']['History'][0]['Year']) == "":
                 raise Exception('Invalid Date')
 
@@ -87,6 +104,7 @@ def pre_clean(papers, error_log):
 
         except:
             try:
+                # Check for an issue date
                 if str(this_paper['issued']['date-parts'][0][2]) == "" or str(this_paper['issued']['date-parts'][0][1]) == "" or str(this_paper['issued']['date-parts'][0][0]) == "":
                     raise Exception('Invalid Date')
 
@@ -96,6 +114,7 @@ def pre_clean(papers, error_log):
 
             except:
                 try:
+                    # Check for a created date
                     if str(this_paper['created']['date-parts'][0][2]) == "" or str(this_paper['created']['date-parts'][0][1]) == "" or str(this_paper['created']['date-parts'][0][0]) == "":
                         raise Exception('Invalid Date')
 
@@ -104,7 +123,15 @@ def pre_clean(papers, error_log):
                     this_paper['Extras']['CleanDate']['year'] = str(this_paper['created']['date-parts'][0][0])
 
                 except:
-                    error_log.logErrorPaper("Cannot Create Clean Date", this_paper)
+                    try:
+                        # Zotero Notes Date
+                        date_parts = this_paper['notes']['date'].split("/")
+                        this_paper['Extras']['CleanDate']['day'] = str(date_parts[0])
+                        this_paper['Extras']['CleanDate']['month'] = str(date_parts[1])
+                        this_paper['Extras']['CleanDate']['year'] = str(date_parts[2])
+                    except:
+                        # A date has not been found. Put this in the error log.
+                        error_log.logErrorPaper("Cannot Create Clean Date", this_paper)
 
 
 # Have a go at tidying up the mess that is first author institution.
@@ -119,7 +146,7 @@ def clean_institution(papers):
     pattern = []
     replacements = []
     with open(config.config_dir + '/institute_cleaning.csv', 'rb') as csvfile:
-        f = unicodecsv.reader(csvfile,  encoding='utf-8')
+        f = unicodecsv.reader(csvfile,  encoding='utf-8')  # Handle extra unicode characters
         for row in f:
             try:
                 # Check it is not a comment string first.
@@ -143,29 +170,40 @@ def clean_institution(papers):
     number_not_matched = 0
     for this_paper in papers:
 
+        hasAffiliation = True
         try:
             # print '============='
             # print this_paper['author'][0]['affiliation'][0]['name']
             institute = this_paper['author'][0]['affiliation'][0]['name']
-
         except:
             logging.warn('Could not find an affiliation for %s', this_paper)
-            continue
+            hasAffiliation = False
 
-        for y in range(0, len(pattern)):
-            # logging.debug('%s %s %s', institute, pattern[y], replacements[y])
-            temp = re.search(pattern[y], institute, re.IGNORECASE)
-            if temp > 0:
-                logging.info(
-                    'ID:%s. %s MATCHES %s REPLACEDBY %s',
-                    this_paper, institute, pattern[y], replacements[y])
-                this_paper['Extras']['CleanInstitute'] = replacements[y]
-                break
+        if hasAffiliation:
+            for y in range(0, len(pattern)):
+                # logging.debug('%s %s %s', institute, pattern[y], replacements[y])
+                temp = re.search(pattern[y], institute, re.IGNORECASE)
+                if temp > 0:
+                    logging.info(
+                        'ID:%s. %s MATCHES %s REPLACEDBY %s',
+                        this_paper, institute, pattern[y], replacements[y])
+                    this_paper['Extras']['CleanInstitute'] = replacements[y]
 
-            if y == len(pattern)-1:
-                logging.info('No match for %s. ID:%s', institute, this_paper)
-                logging.warn('No match for %s. ID:%s', institute, this_paper)
-                number_not_matched += 1
+                    break
+
+                if y == len(pattern)-1:
+                    logging.info('No match for %s. ID:%s', institute, this_paper)
+                    logging.warn('No match for %s. ID:%s', institute, this_paper)
+                    number_not_matched += 1
+
+        try:
+            this_paper['Extras']['CleanInstitute']
+        except:
+            # Check for Zotero note institution
+            try:
+                this_paper['Extras']['CleanInstitute'] = this_paper['notes']['institution']
+            except:
+                pass
 
     print 'Cleaning institutions'
     print str(len(papers)-number_not_matched)+'/'+str(len(papers))+' cleaned'

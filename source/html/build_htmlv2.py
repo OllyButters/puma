@@ -26,6 +26,7 @@ site_second_title = " Data Set Publications"
 
 # === Common Page Features ===
 def build_common_body(breadcrumb, nav_path, body):
+    # This function builds the common header and nav bar for all pages.
     # nav_path used for changes to relative pathing depending on the page (ie Home does not need anything but next level down needs leading ../)
     html = "<body " + body + ">"
 
@@ -76,7 +77,9 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li id="error_page_li" style="display:none;"><a href="' + nav_path + 'errorlog/index.html">Error Log</a></li>'
     html += '</ul>'
 
-    # Cookie errorlog display
+    # = Cookie errorlog display =
+    # Once a user has gone to the errorlog page a cookie called show_error_page is set.
+    # If this cookie is set then we show the user the errorlog page on the navigation menu.
     html += '<script>function getCookie(cname) {var name = cname + "=";var ca = document.cookie.split(";");for(var i = 0; i <ca.length; i++) { var c = ca[i]; while (c.charAt(0)==" ") {c = c.substring(1);}if (c.indexOf(name) == 0) {return c.substring(name.length,c.length);}}return "";}</script>'
     html += '<script>if ( getCookie("show_error_page") != "" ){ document.getElementById("error_page_li").style.display = "block";}</script>'
 
@@ -97,7 +100,7 @@ def build_common_body(breadcrumb, nav_path, body):
 
 
 def build_common_foot():
-
+    # This function builds the common footer for all pages.
     html = '</div>'
     html += '</div>'
 

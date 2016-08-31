@@ -96,6 +96,7 @@ print str(len(papers)) + ' papers to process'
 
 ###########################################################
 # Clean the data - e.g. tidy institute names
+clean.clean_notes(papers, error_log)
 clean.pre_clean(papers, error_log)
 clean.clean_institution(papers)
 # clean.clean.do_deltas(papers)
