@@ -133,7 +133,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
                 # try querying with the DOI first - there might not be a DOI
                 if 'Citations' not in this_paper['Extras'] and this_paper['IDs']['DOI'] != "":
                     # request_string = url+'?apiKey='+api_key+'&field=citedby-count&query=DOI('+this_paper['IDs']['DOI']+')'
-                    request_string = url+'?apiKey='+api_key+'&query=DOI('+this_paper['IDs']['DOI']+')'
+                    request_string = url + '?apiKey=' + api_key + '&query=DOI(' + this_paper['IDs']['DOI'] + ')'
                     logging.info(request_string)
                     try:
                         response = urllib2.urlopen(request_string).read()
@@ -145,19 +145,30 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
 
                     try:
                         if len(t['search-results']['entry']) > 1:
-                            error_log.logErrorPaper("Multiple Papers Found for DOI", this_paper)
-                        citations = t['search-results']['entry'][0]['citedby-count']
-                        this_paper['Extras']['Citations'] = citations
+                            error_log.logWarningPaper("Multiple Papers Found for DOI", this_paper)
+                            # Add up citations for DOIs that exactly match
+                            citations = 0
+                            title = ""
+                            # Loops through all returned results looking for matching DOIs
+                            for n in range(0, len(t['search-results']['entry'])):
+                                if t['search-results']['entry'][n]['prism:doi'] == this_paper['IDs']['DOI'] and (title == "" or title == t['search-results']['entry'][n]['dc:title']):
+                                    citations = citations + int(t['search-results']['entry'][n]['citedby-count'])
+                                    this_paper['Extras']['eid'] = t['search-results']['entry'][n]['eid']
+                                    title = t['search-results']['entry'][n]['dc:title']
+                            this_paper['Extras']['Citations'] = citations
 
-                        if len(t['search-results']['entry']) == 1:  # Do not cache if multiple results returned
+                        elif len(t['search-results']['entry']) == 1:
+                            citations = t['search-results']['entry'][0]['citedby-count']
+                            this_paper['Extras']['Citations'] = citations
+                            scopus_id = t['search-results']['entry'][0]['eid']
+                            this_paper['Extras']['eid'] = scopus_id
+
+                            # Do not cache if multiple results returned
                             cached_citations[this_paper['IDs']['hash']] = {}
                             cached_citations[this_paper['IDs']['hash']]['citation_count'] = citations
                             cached_citations[this_paper['IDs']['hash']]['date_downloaded'] = datetime.datetime.now()
-                            try:
-                                cached_citations[this_paper['IDs']['hash']]['eid'] = t['search-results']['entry'][0]['eid']
-                                this_paper['Extras']['eid'] = t['search-results']['entry'][0]['eid']
-                            except:
-                                pass
+                            cached_citations[this_paper['IDs']['hash']]['eid'] = scopus_id
+
                         logging.info('Citation added via DOI')
                     except:
                         # there wasnt a number of citations returned, so see if we can catch this.

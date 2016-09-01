@@ -56,6 +56,7 @@ def build_common_body(breadcrumb, nav_path, body):
 
     html += '<ul class="navgroup">'
     html += '<li><a href="' + nav_path + 'index.html">Home</a></li>'
+    html += '<li><a href="' + nav_path + 'search/index.html">Search</a></li>'
     html += '<li><a href="' + nav_path + 'help/index.html">Information</a></li>'
     # html += '<li><a href="' + nav_path + 'papers/index.html">Papers List</a></li>'
     html += '<li><a href="' + nav_path + 'all_keywords/index.html">All Keywords</a></li>'
@@ -1699,6 +1700,53 @@ def build_help():
     temp += '<p>The data used for the statistics are gathered from databases which only collect data from particular journals.'
     temp += ' This problem is most obvious for citation data from Scopus and Europe PMC. Although they have a particular publication on record,'
     temp += ' there may be citations for this publication from a journal that they do not index and therefore these will not be in the citation count. This is why citiation counts from different sources are not always the same.</p>'
+
+    print >>html_file, temp
+
+    temp = build_common_foot()
+    print >>html_file, temp
+
+
+###########################################################
+# Search Page
+###########################################################
+def build_search(papers):
+
+    print "\n###HTML - Search page###"
+
+    html_file = open(config.html_dir + '/search/index.html', 'w')
+    shutil.copyfile(config.template_dir + '/search.js', config.html_dir + '/search/search.js')
+
+    # Put html together for this page
+    temp = '<!DOCTYPE html><html lang="en-GB">'
+
+    # html head
+    temp += '<head>'
+    temp += '<title>' + site_second_title + '</title>'
+    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
+    temp += '<link rel="stylesheet" href="../css/style_main.css">'
+    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
+    temp += '<link rel="stylesheet" href="../css/map.css">'
+    temp += '<script>var primary_colour = "' + config.project_details['colour_hex_primary'] + '";</script>'
+    temp += '<script>var secondary_colour = "' + config.project_details['colour_hex_secondary'] + '";</script>'
+    temp += '<script>var name = "' + config.project_details['name'] + '";</script>'
+    temp += '<script src="search.js"></script>'
+
+    temp += '<style> button { height:2em; font-size:1em; margin-left:5px; } input#search { width:50%; }</style>'
+
+    temp += '</head>'
+
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Information</p>', "../", "")
+
+    temp += '<h1 id="pagetitle">Search</h1>'
+
+    temp += '<p><input type="text" id="search"><button onclick="search();">Search</button></p>'
+
+    temp += '<div style="display:none;" id="searching">Searching...</div>'
+    temp += '<h2 id="num_search_results"></h2>'
+    temp += '<div id="search_results"></div>'
+
+    temp += '<div style="display:none" id="search_data">' + str(json.dumps(papers)).replace("<", "&lt;").replace(">", "&gt;") + '</div>'
 
     print >>html_file, temp
 

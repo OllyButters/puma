@@ -105,6 +105,7 @@ add.geocode.geocode(papers, error_log, config.google_maps_api_key)
 if config.scopus_run_citation:
     add.citations.citations(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update, error_log)
 
+# Write papers to summary file
 file_name = root_dir + '/data/summary_added_to'
 fo = open(file_name, 'wb')
 fo.write(json.dumps(papers, indent=4))
@@ -137,6 +138,7 @@ html.build_htmlv2.build_abstract_word_cloud(papers, abstract_data_from_count)
 html.build_htmlv2.build_author_network(papers, network, error_log)
 html.build_htmlv2.build_error_log(papers, error_log)
 html.build_htmlv2.build_help()
+html.build_htmlv2.build_search(papers)
 
 # Time Log
 end_time = time.time()
