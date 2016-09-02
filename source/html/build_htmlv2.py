@@ -1748,6 +1748,20 @@ def build_search(papers):
 
     temp += '<div style="display:none" id="search_data">' + str(json.dumps(papers)).replace("<", "&lt;").replace(">", "&gt;") + '</div>'
 
+    exec_list = []
+    f = open(config.config_dir + "/" + config.project_details['short_name'] + '_exec_members.csv', 'rt')
+    try:
+        reader = csv.reader(f)
+        n = 0
+        for row in reader:
+            if n > 0:
+                exec_list.append(row)
+            n += 1
+    finally:
+        f.close()
+
+    temp += '<div style="display:none" id="exec_list">' + str(json.dumps(exec_list)).replace("<", "&lt;").replace(">", "&gt;") + '</div>'
+
     print >>html_file, temp
 
     temp = build_common_foot()

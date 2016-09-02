@@ -8,6 +8,8 @@ function search(){
 
   var raw_data = document.getElementById("search_data").innerHTML;
   var data = JSON.parse(raw_data);
+  var raw_exec = document.getElementById("exec_list").innerHTML;
+  var exec_list = JSON.parse(raw_exec);
 
   var query = document.getElementById("search").value;
   var results = "";
@@ -17,15 +19,19 @@ function search(){
 
   for( i = 0 ; i < data.length; i++ ){
 
-    var match = false;
-
+    var components_match = 0
     for( j = 0 ; j < query_components.length; j++ ){
+      var match = false;
 
       if( data[i].title.contains( query_components[j] ) ){
         match = true;
-      }/* else if ( data[i].subject.contains( query_components[j] ) ){
-        match = true;
-      }*/
+      }
+
+      try{
+        if(data[i].MedlineCitation.Article.Abstract.AbstractText[0].contains(query_components[j])){
+          match = true;
+        }
+      } catch(err){}
 
       try {
         for( n = 0; n < data[i].subject.length ; n++ ){
@@ -51,9 +57,12 @@ function search(){
         }
       } catch (err){}
 
+      if( match ){
+        components_match += 1;
+      }
     }
 
-    if( match ){
+    if( components_match == query_components.length ){
       results += "<div class='paper'>";
 
       // altmetric data
@@ -70,35 +79,36 @@ function search(){
           authors = [];
           author_on_exec = false;
           for( a = 0 ; a < data[i].author.length; a++ ){
-          //for this_author in this_paper['author'] {
-              // Some author lists have a collective name. Ignore this.
-              // Some people don't actually have initials. eg wraight in pmid:18454148
-              /*try:
-                  // Check if an author was on the exec Comittee
-                  for x in exec_list:
-                      // Check if authors name matches
-                      if x[2] == this_author['clean']:
-                          // Get start and end date of exec membership
-                          exec_start = time.mktime(datetime.datetime.strptime(x[0], "%d/%m/%Y").timetuple())
-                          exec_end = int(time.time())
-                          if not x[1] == "":
-                              exec_end = time.mktime(datetime.datetime.strptime(x[1], "%d/%m/%Y").timetuple())
+            //Check if an author was on the exec Comittee
+              for ( x = 0; x < exec_list.length; x++ ){
+                //Check if authors name matches
+                if (exec_list[x][2] == data[i].author[a].clean){
+                  // Get start and end date of exec membership
+                  var start_split = exec_list[x][0].split("/");
+                  var end_split = exec_list[x][1].split("/");
 
-                          // Convert issued date into a timestamp
-                          clean_date = this_paper['Extras']['CleanDate']
-                          date = str(clean_date['day']) + "/" + str(clean_date['month']) + "/" + str(clean_date['year'])
-                          issued_timestamp = time.mktime(datetime.datetime.strptime(date, "%d/%m/%Y").timetuple())
+                  var exec_start = new Date( start_split[2], start_split[1], start_split[0] ).getTime()/1000;
+                  var exec_end = Date.now()/1000;
+                  if( exec_list[x][1] != ""){
+                    exec_end = new Date(end_split[2], end_split[1], end_split[0]).getTime()/1000;
+                  }
 
-                          // If publication is issued between exec_start and exec_end then flag
-                          if issued_timestamp > exec_start and issued_timestamp < exec_end:
-                              author_on_exec = True
-                              break
+                  // Convert issued date into a timestamp
+                  var clean_date = data[i].Extras.CleanDate;
+                  var issued_timestamp = new Date(clean_date.year,clean_date.month,clean_date.day).getTime()/1000;
 
-                  authors.append(this_author['family'] + ', ' + this_author['given'])
-              except:
-                  pass
-                  */
-              results += data[i].author[a].family + ', ' + data[i].author[a].given + '; ';
+                  // If publication is issued between exec_start and exec_end then flag
+                  if (issued_timestamp > exec_start && issued_timestamp < exec_end){
+                    author_on_exec = true;
+                    break;
+                  }
+                }
+              }
+
+              if( a > 0 ){
+                results += "; ";
+              }
+              results += data[i].author[a].family + ', ' + data[i].author[a].given;
           }
           results += '<br/>'
 
@@ -109,15 +119,21 @@ function search(){
 
         // Journal, volume and issue
         try{
-            results += data[i].MedlineCitation.Article.Journal.ISOAbbreviation;
+            if( "ISOAbbreviation" in data[i].MedlineCitation.Article.Journal ){
+              results += data[i].MedlineCitation.Article.Journal.ISOAbbreviation;
+            }
         } catch (err){}
 
         try{
-            results += ', Volume ' + data[i].volume;
+            if( "volume" in data[i] ){
+              results += ', Volume ' + data[i].volume;
+            }
         } catch (err){}
 
         try{
-            results += ', Issue ' + data[i].MedlineCitation.Article.Journal.JournalIssue.Issue;
+            if( "Issue" in data[i].MedlineCitation.Article.Journal.JournalIssue ){
+              results += ', Issue ' + data[i].MedlineCitation.Article.Journal.JournalIssue.Issue;
+            }
         } catch (err){}
 
         results += '<br/>';
