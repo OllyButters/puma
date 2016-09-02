@@ -10,7 +10,8 @@ import config.config as config
 
 
 ############################################################
-# Build a list of all journals and count frequencies of each
+# Build a list of all journals and count frequencies of each.
+# output this to a csv file so it can be analysed by someone else.
 def journals(papers):
     print "\n###Journals###"
 
@@ -18,14 +19,13 @@ def journals(papers):
 
     journals = []
     for this_paper in papers:
-        # journals.append(this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'])
         try:
             journals.append(this_paper['journalAbbreviation'])
         except:
             logging.warn('No journalAbbreviation for '+this_paper['IDs']['hash'])
 
-    print str(len(journals))+'/'+str(num_papers)
-    print str(len(set(journals)))+' different journals'
+    print str(len(journals)) + '/' + str(num_papers)
+    print str(len(set(journals))) + ' different journals'
 
     # calculate the frequency of each journal
     freq = dict((x, journals.count(x)) for x in set(journals))
@@ -39,12 +39,12 @@ def journals(papers):
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
                 print w, freq[w]
-                i = i+1
+                i = i + 1
             journals_file.writerow([w.encode('utf-8'), freq[w]])
 
 
 ############################################################
-# Build a list of Abstracts
+# Build a list of words used in Abstracts
 def abstracts(papers):
     print "\n###Abstracts###"
 
@@ -98,7 +98,6 @@ def abstracts(papers):
 
     i = 0
     print 'Top 5'
-
     # print a list of sorted frequencies
     with open(config.data_dir + '/abstracts.csv', 'wb') as csvfile:
         abstracts_file = csv.writer(csvfile)
@@ -119,7 +118,6 @@ def authors(papers):
 
     authors = []
     for this_paper in papers:
-        # print papers[this_pmid]
         # Some pmid files dont actually have an authorlist! e.g. 2587412
         # This probably needs to be resolved with pubmed!
         try:
@@ -127,12 +125,13 @@ def authors(papers):
                 # There are some entries in the author list that are not actually authors e.g. 21379325 last author
                 try:
                     authors.append(this_author['family'])
+                    # Create a clean author field. This is the Surname followed by first initial.
                     this_author.update({'clean': this_author['family'] + " " + this_author['given'][0]})
                 except:
                     pass
 
         except:
-            logging.warn('No AuthorList for '+this_paper['IDs']['hash'])
+            logging.warn('No AuthorList for ' + this_paper['IDs']['hash'])
 
     # print authors
     freq = dict((x, authors.count(x)) for x in set(authors))
@@ -149,7 +148,7 @@ def authors(papers):
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
                 print w, freq[w]
-                i = i+1
+                i = i + 1
         # Need to utf-8 encode
             authors_file.writerow([w.encode('utf-8'), freq[w]])
 
@@ -159,6 +158,7 @@ def authors(papers):
     author_network['connections'] = {}
     for this_paper in papers:
         try:
+            # CREATE NODES
             for this_author in this_paper['author']:
                 # Create author hash
                 hash_object = hashlib.sha256(this_author['clean'])
@@ -176,7 +176,7 @@ def authors(papers):
                 except:
                     author_network['authors'][author_hash]['num_papers'] = 1
 
-                # Create edges
+                # CREATE EDGES
                 for con_author in this_paper['author']:
 
                     if not this_author == con_author:
@@ -257,14 +257,11 @@ def inst(papers):
         except:
             pass
 
-    # print authors
     freq = dict((x, first_authors_inst.count(x)) for x in set(first_authors_inst))
     print "\n###First authors institute###"
 
     print str(len(first_authors_inst))+'/'+str(num_papers)
     print str(len(set(first_authors_inst)))+' different first author institutes'
-    # print str(not_matched)+' institutes not matched with lookup'
-    # print freq
 
     i = 0
     print 'Top 5'
@@ -347,5 +344,4 @@ def output_csv(papers):
             try:
                 all_file.writerow([title, first_author, journal, citations, this_paper])
             except:
-                # print 'Failing on '+str(this_paper['IDs']['hash'])
                 pass
