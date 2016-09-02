@@ -2,37 +2,52 @@ String.prototype.contains = function(it) { return this.toLowerCase().indexOf(it.
 
 function search(){
 
+  if( document.getElementById("search").value == "" ){
+    return;
+  }
+
   document.getElementById("searching").style.display="block";
   document.getElementById("search_results").style.display="none";
   document.getElementById("num_search_results").innerHTML = "";
 
+  // Get the papers and exec data
   var raw_data = document.getElementById("search_data").innerHTML;
   var data = JSON.parse(raw_data);
   var raw_exec = document.getElementById("exec_list").innerHTML;
   var exec_list = JSON.parse(raw_exec);
 
+  // Get the input search query
   var query = document.getElementById("search").value;
   var results = "";
   var num_results = 0;
 
+  // Split the search query up into an array of the words
   var query_components = query.split(" ");
 
+  // Check each paper object
   for( i = 0 ; i < data.length; i++ ){
 
+    // Count the number of matched elements
+    // If the number of matched elements equals the number of query_components
+    // then the paper is a match
     var components_match = 0
+
     for( j = 0 ; j < query_components.length; j++ ){
       var match = false;
 
+      // Check title
       if( data[i].title.contains( query_components[j] ) ){
         match = true;
       }
 
+      // Check abstract
       try{
         if(data[i].MedlineCitation.Article.Abstract.AbstractText[0].contains(query_components[j])){
           match = true;
         }
       } catch(err){}
 
+      // Check subject text
       try {
         for( n = 0; n < data[i].subject.length ; n++ ){
           if( data[i].subject[n].contains( query_components[j] ) ){
@@ -41,6 +56,7 @@ function search(){
         }
       } catch (err){}
 
+      // Check keywords
       try {
         for( n = 0; n < data[i].MedlineCitation.MeshHeadingList.length ; n++ ){
           if( data[i].MedlineCitation.MeshHeadingList[n].DescriptorName.contains( query_components[j] ) ){
@@ -49,6 +65,7 @@ function search(){
         }
       } catch (err){}
 
+      // Check author names
       try {
         for( n = 0; n < data[i].author.length ; n++ ){
           if( data[i].author[n].family.contains( query_components[j] ) || data[i].author[n].given.contains( query_components[j] ) ){
@@ -63,9 +80,11 @@ function search(){
     }
 
     if( components_match == query_components.length ){
+      // This is a match write the paper to page
+
       results += "<div class='paper'>";
 
-      // altmetric data
+        // altmetric data
         try{
             if ( data[i].IDs.DOI ) {
               results += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>';
