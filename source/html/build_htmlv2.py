@@ -1739,7 +1739,7 @@ def build_search(papers):
 
     temp += '<h1 id="pagetitle">Search</h1>'
 
-    temp += '<p>Search for the fields titles, abstracts, keywords, MeSH, and authors.<br/>You can search for multiple fields at once to narrow down the results.</p>'
+    temp += '<p>Search for the fields titles, abstracts, keywords, MeSH, and authors.<br/>To narrow down the results search for multiple fields at once.</p>'
     temp += '<p><input type="text" id="search"><button onclick="search();">Search</button></p>'
 
     temp += '<div style="display:none;" id="searching">Searching...</div>'
@@ -1772,6 +1772,10 @@ def build_search(papers):
 # CSS colour scheme
 ###########################################################
 def build_css_colour_scheme():
+
+    # This function generates the CSS used for the colour scheme for the whole site.
+    # This is includes the images for the top bar and naviagation bar.
+    # The colours and image data is taken from the config file.
 
     html_file = open(config.html_dir + '/css/colour_scheme.css', 'w')
 

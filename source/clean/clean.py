@@ -9,9 +9,9 @@ import os
 import config.config as config
 
 
-# Some data will be missing. To deal with this missing data will be put into the
+# Some data will be missing. To deal with this, missing data will be put into the
 # Zotero notes field in a formatted structure "<key>=<value>\\<key>=<value>". That data will then be parsed by
-# this function.
+# this function and put into the paper object so that it can be access throughout the analysis and html functions.
 def clean_notes(papers, error_log):
     for this_paper in papers:
         try:

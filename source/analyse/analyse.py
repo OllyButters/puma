@@ -7,9 +7,9 @@ import config.config as config
 
 ############################################################
 # Have all the data now, so do something with it
-
-
 ############################################################
+
+
 # Build a list of all journals and count frequencies of each.
 # output this to a csv file so it can be analysed by someone else.
 def journals(papers):
@@ -45,6 +45,7 @@ def journals(papers):
 
 ############################################################
 # Build a list of words used in Abstracts
+############################################################
 def abstracts(papers):
     print "\n###Abstracts###"
 
@@ -112,6 +113,7 @@ def abstracts(papers):
 
 ############################################################
 # Try with the authors - these are in a nested dict
+############################################################
 def authors(papers):
 
     import hashlib
@@ -216,6 +218,7 @@ def authors(papers):
 
 ############################################################
 # Try with the FIRST authors - these are in a nested dict
+############################################################
 def first_authors(papers):
 
     num_papers = len(papers)
@@ -247,6 +250,7 @@ def first_authors(papers):
 
 ############################################################
 # Try with the FIRST authors INSTITUTE- these are in a nested dict
+############################################################
 def inst(papers):
     num_papers = len(papers)
 
@@ -278,6 +282,7 @@ def inst(papers):
 
 ############################################################
 # Try with the mesh headings - these are in a nested dict
+############################################################
 def mesh(papers):
     num_papers = len(papers)
 
