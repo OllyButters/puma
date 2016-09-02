@@ -9,9 +9,9 @@ import os
 import config.config as config
 
 
-# Some data will be missing. To deal with this missing data will be put into the
+# Some data will be missing. To deal with this, missing data will be put into the
 # Zotero notes field in a formatted structure "<key>=<value>\\<key>=<value>". That data will then be parsed by
-# this function.
+# this function and put into the paper object so that it can be access throughout the analysis and html functions.
 def clean_notes(papers, error_log):
     for this_paper in papers:
         try:
@@ -97,7 +97,7 @@ def pre_clean(papers, error_log):
         # Try the different date fields. If we don't get a full day, month and year for the CleanDate
         # then try the next possible field. Finally if none of the fields work then try the Zotero notes field.
         try:
-            # First check for pubmed date
+            # First check for Pubmed date
             if str(this_paper['PubmedData']['History'][0]['Day']) == "" or str(this_paper['PubmedData']['History'][0]['Month']) == "" or str(this_paper['PubmedData']['History'][0]['Year']) == "":
                 raise Exception('Invalid Date')
 
@@ -127,14 +127,14 @@ def pre_clean(papers, error_log):
 
                 except:
                     try:
-                        # Zotero Notes Date
+                        # Zotero Notes overide date
                         date_parts = this_paper['notes']['date'].split("/")
                         this_paper['Extras']['CleanDate']['day'] = str(date_parts[0])
                         this_paper['Extras']['CleanDate']['month'] = str(date_parts[1])
                         this_paper['Extras']['CleanDate']['year'] = str(date_parts[2])
                     except:
                         # A date has not been found. Put this in the error log.
-                        error_log.logErrorPaper("Cannot Create Clean Date", this_paper)
+                        error_log.logErrorPaper("Cannot Create Clean Date (Consider using Zotero notes)", this_paper)
 
 
 # Have a go at tidying up the mess that is first author institution.

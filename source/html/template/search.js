@@ -1,11 +1,15 @@
 String.prototype.contains = function(it) { return this.toLowerCase().indexOf(it.toLowerCase()) != -1; };
 
 function search(){
+  // This function searches the papers data object for text matching the query.
+  // It is called when the user clicks the search button.
 
+  // If the input is blank then do not search because this will return all papers
   if( document.getElementById("search").value == "" ){
     return;
   }
 
+  // Hide results and display message to show that the search is being carried out.
   document.getElementById("searching").style.display="block";
   document.getElementById("search_results").style.display="none";
   document.getElementById("num_search_results").innerHTML = "";
@@ -205,6 +209,7 @@ function search(){
 
   }
 
+  // Write results to screen and display them and the papers matching count. Also hide the searching message.
   document.getElementById("search_results").innerHTML = results;
   document.getElementById("searching").style.display="none";
   document.getElementById("search_results").style.display="block";

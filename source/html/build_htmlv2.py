@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 
 import json
-# import sys
 import shutil
 import os.path
 import csv
@@ -12,22 +11,23 @@ import math
 import codecs
 import os
 
-
 import config.config as config
 
-# Version 2 of the html pages. The new site that matches bristol's ALSPAC pages. It is also semi customisable.
-
-############################################################
-# Have all the data now, so do something with it
-############################################################
+# Version 2 of the html pages. The new site that matches bristol's ALSPAC pages.
+# The colour scheme is automatic. The colours from the config are automatically put into the pages.
+# This .py file also handles the generation of some CSS files.
 
 site_second_title = " Data Set Publications"
 
 
-# === Common Page Features ===
+############################################################
+# Common Page Features
+############################################################
 def build_common_body(breadcrumb, nav_path, body):
     # This function builds the common header and nav bar for all pages.
-    # nav_path used for changes to relative pathing depending on the page (ie Home does not need anything but next level down needs leading ../)
+    # nav_path used for changes to relative pathing depending on the page (i.e. Home does not need anything but next level down needs leading ../)
+    # body is used for putting extra attributes into the body tag (e.g. onload="function();")
+
     html = "<body " + body + ">"
 
     html += "<div class='uob-header-container'>"
@@ -58,7 +58,6 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'index.html">Home</a></li>'
     html += '<li><a href="' + nav_path + 'search/index.html">Search</a></li>'
     html += '<li><a href="' + nav_path + 'help/index.html">Information</a></li>'
-    # html += '<li><a href="' + nav_path + 'papers/index.html">Papers List</a></li>'
     html += '<li><a href="' + nav_path + 'all_keywords/index.html">All Keywords</a></li>'
     html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords (MeSH)</a></li>'
 
@@ -1736,10 +1735,11 @@ def build_search(papers):
 
     temp += '</head>'
 
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Information</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Search</p>', "../", "")
 
     temp += '<h1 id="pagetitle">Search</h1>'
 
+    temp += '<p>Search for the fields titles, abstracts, keywords, MeSH, and authors.<br/>To narrow down the results search for multiple fields at once.</p>'
     temp += '<p><input type="text" id="search"><button onclick="search();">Search</button></p>'
 
     temp += '<div style="display:none;" id="searching">Searching...</div>'
@@ -1772,6 +1772,10 @@ def build_search(papers):
 # CSS colour scheme
 ###########################################################
 def build_css_colour_scheme():
+
+    # This function generates the CSS used for the colour scheme for the whole site.
+    # This is includes the images for the top bar and naviagation bar.
+    # The colours and image data is taken from the config file.
 
     html_file = open(config.html_dir + '/css/colour_scheme.css', 'w')
 

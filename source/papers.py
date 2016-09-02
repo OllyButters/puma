@@ -144,4 +144,4 @@ html.build_htmlv2.build_search(papers)
 end_time = time.time()
 elapsed_time = end_time - start_time
 print "End Time: " + str(end_time)
-print "Elapsed Time - " + str(int(elapsed_time) / 60) + ":" + str(int(elapsed_time) % 60)
+print "Elapsed Time - " + str(int(elapsed_time) / 60) + ":" + str(int(elapsed_time) % 60).zfill(2)
