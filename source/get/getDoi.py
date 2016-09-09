@@ -12,7 +12,7 @@ def getDoi(doi):
     doi = re.sub(r'^http://dx\.doi\.org/', '', doi)
   else:
     url = 'http://dx.doi.org/'+doi
-  request = urllib2.Request(url, headers={"accept": "application/json"})
+  request = urllib2.Request(url, headers={"Accept": "application/vnd.citationstyles.csl+json"})
   try:
     response = urllib2.urlopen(request)
     html_raw = response.read();
@@ -23,5 +23,8 @@ def getDoi(doi):
     return json_data
   except urllib2.HTTPError, e:
     print "DOI: "+doi+" error: "+str(e.code)
+    return None
+  except ValueError, e:
+    print "DOI: "+doi+" error: "+str(e)
     return None
 

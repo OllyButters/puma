@@ -57,11 +57,14 @@ class zotPaper (zotero.Zotero):
       if datum is not None:
         data[datum.group(1)] = datum.group(2)
       else:
-        raise ValueError('datum is not formatted correctly')
+        data['notes'] += entry+"\n"
+        #don't raise an error, this will cause any other unformatted notes
+        #to vanish
+        #raise ValueError('datum is not formatted correctly')
     return data
 
   def fieldsToNotes(self, paper, fields):
-    notes = ''
+    notes = paper['notes']
     for field in fields:
       value = ''
       if field in paper:
@@ -125,6 +128,7 @@ class zotPaper (zotero.Zotero):
         'pages': 'page',
         'URL': 'url',
         'issue': 'issue',
+        'notes': 'notes',
       }
     }
 
@@ -143,7 +147,7 @@ class zotPaper (zotero.Zotero):
     zot_paper['itemType'] = item_type
     
     for field in paper:
-      if field in field_map:
+      if field in field_map.keys():
         zot_paper[field_map[field]] = paper[field]
       elif field == creator_field:
         authors = paper[field]
@@ -152,7 +156,7 @@ class zotPaper (zotero.Zotero):
           creator = {}
           creator['creatorType'] = 'author'
           for a_field in creator_map:
-            if a_field in author:
+            if a_field in author.keys():
               creator[creator_map[a_field]] = author[a_field]
           creators.append(creator)
         zot_paper['creators'] = creators
