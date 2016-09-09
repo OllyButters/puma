@@ -4,8 +4,6 @@ import json
 
 class ErrorLog:
 
-    # import json
-
     errorArray = []
     warningArray = []
     index = 0
@@ -19,6 +17,7 @@ class ErrorLog:
 
     # Used for logging errors and warnings relating to a paper
     def logErrorPaper(self, txt, this_paper):
+        # Create the text for logging an error
         string = ""
 
         string += "[ERROR] " + txt + " <strong><a onclick=' var obj = document.getElementById(\"error_extra_info_" + str(self.index) + "\"); if (obj.style.display == \"none\") obj.style.display = \"block\"; else obj.style.display = \"none\";'>Details</a></strong>"
@@ -56,7 +55,7 @@ class ErrorLog:
         self.index += 1
 
     def logWarningPaper(self, txt, this_paper):
-        # import json
+        # Create the text for logging a warning
 
         string = ""
 
@@ -94,6 +93,7 @@ class ErrorLog:
         self.warningArray.append(string)
         self.index += 1
 
+    # Called at the end of the papers.py script. It returns the html error log that is directly written to the page.
     def printLog(self):
         log = ""
 
