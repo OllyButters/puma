@@ -16,6 +16,27 @@ def build_file_tree(root_dir):
     if not os.path.exists(config.cache_dir):
         os.mkdir(config.cache_dir)
 
+    if not os.path.exists(config.cache_dir + '/raw'):
+        os.mkdir(config.cache_dir + '/raw')
+
+    if not os.path.exists(config.cache_dir + '/raw/doi'):
+        os.mkdir(config.cache_dir + '/raw/doi')
+
+    if not os.path.exists(config.cache_dir + '/raw/pubmed'):
+        os.mkdir(config.cache_dir + '/raw/pubmed')
+
+    if not os.path.exists(config.cache_dir + '/raw/pubmed/xml'):
+        os.mkdir(config.cache_dir + '/raw/pubmed/xml')
+
+    if not os.path.exists(config.cache_dir + '/raw/zotero'):
+        os.mkdir(config.cache_dir + '/raw/zotero')
+
+    if not os.path.exists(config.cache_dir + '/processed'):
+        os.mkdir(config.cache_dir + '/processed')
+
+    if not os.path.exists(config.cache_dir + '/processed/merged'):
+        os.mkdir(config.cache_dir + '/processed/merged')
+
     if not os.path.exists(config.cache_dir + '/geodata'):
         os.mkdir(config.cache_dir + '/geodata')
 
