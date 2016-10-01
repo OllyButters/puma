@@ -16,30 +16,39 @@ def collate():
   zot = pz.zotPaper()
 
   #get list from cache
-  zot_cache = pc.getCacheList(filetype='raw/zotero')
-  doi_cache = pc.getCacheList(filetype='raw/doi')
-  pm_cache = pc.getCacheList(filetype='raw/pubmed')
+  zot_cache = pc.getCacheList(filetype='/raw/zotero')
+  doi_cache = pc.getCacheList(filetype='/raw/doi')
+  pm_cache = pc.getCacheList(filetype='/raw/pubmed')
 
   zot.collection = config.zotero_collection
 
-  zot.getPapersList()
-
+  #get list of all keys in this zotero instance
+  zot.getPapersKeys()
+  
+  new_keys = []
   new_papers = []
 
-  for num, paper in enumerate(zot.papers):
-    if paper['key'] not in zot_cache:
-      #cache zotero data
-      pc.dumpJson(paper['key'], paper, 'raw/zotero')
-      #add to new_papers for later doi/pubmed data retrieval
-      #check itemType - if it's 'note', we can ignore
-      if paper['data']['itemType'] != 'note':
-        new_papers.append(paper['data'])
+  for num, paper_key in enumerate(zot.papers_keys):
+    if paper_key not in zot_cache:
+      new_keys.append(paper_key)
     else:
       #just for testing ONLY otherwise we'll end up getting new data all the time
-      new_paper = pc.getCacheData(filetype='zotero', filenames=[paper['key']])[paper['key']]
+      new_paper = pc.getCacheData(filetype='/raw/zotero', filenames=[paper_key])[paper_key]
       #check itemType - if it's 'note', we can ignore
       if new_paper['data']['itemType'] != 'note':
         new_papers.append(new_paper['data'])
+  
+  #get all new papers
+  zot.getPapersList(key_list = new_keys)
+
+  #cache the new papers
+  for num, paper in enumerate(zot.papers):
+    #cache zotero data
+    pc.dumpJson(paper['key'], paper, 'raw/zotero')
+    #add to new_papers for later doi/pubmed data retrieval
+    #check itemType - if it's 'note', we can ignore
+    if paper['data']['itemType'] != 'note':
+      new_papers.append(paper['data'])
 
   #now check new_papers for doi or pubmed id and retrieve if required
   for paper in new_papers:
@@ -60,7 +69,7 @@ def collate():
         paper['doi_data'] = doi_paper
         #data is automatically cached by getDoi
       else:
-        paper['doi_data'] = pc.getCacheData(filetype='raw/doi', filenames=[doi_filename])[doi_filename]
+        paper['doi_data'] = pc.getCacheData(filetype='/raw/doi', filenames=[doi_filename])[doi_filename]
 
     #get pubmed data
     if 'extra' in paper:
@@ -73,7 +82,7 @@ def collate():
           paper['pmid_data'] = pm_paper
           #data is automatically cached by getPubmed
         else:
-          paper['pmid_data'] = pc.getCacheData(filetype='raw/pubmed', filenames=[paper['pmid']])[paper['pmid']]
+          paper['pmid_data'] = pc.getCacheData(filetype='/raw/pubmed', filenames=[paper['pmid']])[paper['pmid']]
       
   #now do merge data
   merged_papers = {}

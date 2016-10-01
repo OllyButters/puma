@@ -29,24 +29,32 @@ class zotPaper (zotero.Zotero):
     else:
       self.collection_key = None
 
+  #get a list of item keys for this instance
+  def getPapersKeys(self, *args, **kwargs):
+    #get all keys
+    if self.collection_key is not None:
+      zot_keys = self.collection_items(format='keys', limit=999999)
+    else:
+      zot_keys = self.items(format='keys', limit=999999)
+    self.papers_keys = zot_keys.split('\n')
+    return self.papers_keys
 
   #populate self.papers list with all papers in self.collection
-  def getPapersList(self, *args, **kwargs):
+  def getPapersList(self, key_list = None, *args, **kwargs):
     self.papers = []
-    #get num items in collection
-    if self.collection_key is not None:
-      num_items = self.num_collectionitems(self.collection_key)
-    else:
-      num_items = self.num_items()
-    #TEMP SOLUTION todo use collection_items(format="keys") to get list of keys from collection and then call item() on each new
-    #as collection_items returns a limit of 100 items we need make several requests to get all the items in the collection
-    for i in range(0, num_items, 100):
-      if self.collection_key is not None:
-        subset = super(zotPaper, self).collection_items(self.collection_key, start=i, *args, **kwargs)
-      else:
-        subset = super(zotPaper, self).items(start=i, *args, **kwargs)
 
-      self.papers = self.papers + subset
+    if key_list is None:
+      #get all keys
+      key_list = self.getPapersKeys()
+
+    #get items one by one
+    #if we just use the items() method, the not all data is retrived
+    #we therefore request individually by key
+    for key in key_list:
+      if key != '':
+        print 'Getting zotero item '+key
+        item = super(zotPaper, self).item(key, *args, **kwargs)
+        self.papers.append(item)
     return self.papers
 
   def notesToFields(self, notes):
