@@ -66,8 +66,9 @@ def build_config_variables(root_dir):
         # Mages
         page_show_author_network = config.get('pages', 'page_show_author_network')
 
-    except:
+    except Exception as e:
         print 'Problem with the settings file'
+        print str(e)
         exit(0)
 
     # Define the file tree names
