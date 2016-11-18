@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 import ConfigParser
-import os
-import sys
+
 
 # Parse all the config in the settings.ini file and put them into a global variable
 # these will be accessible via config.scopus_api_key in all the other modules
@@ -44,13 +43,13 @@ def build_config_variables(root_dir):
         scopus_run_citation = config.get('scopus', 'scopus_run_citation')
         scopus_api_key = config.get('scopus', 'scopus_api_key')
 
-        #Zotero settings
+        # Zotero settings
         zotero_id = config.get('zotero_api', 'zotero_id')
         zotero_type = config.get('zotero_api', 'zotero_type')
         zotero_api_key = config.get('zotero_api', 'zotero_api_key')
         zotero_collection = config.get('zotero_api', 'zotero_collection')
 
-        #Pubmed
+        # Pubmed
         pubmed_email = config.get('pubmed_api', 'pubmed_email')
 
         # logging
