@@ -9,57 +9,46 @@ import copy
 import pprint
 import json
 import os
+import config.config as config
 
 def collate():
-  if (os.path.exists('../../cache/raw') is False):
-      os.mkdir('../../cache/raw')
-
-  if (os.path.exists('../../cache/raw/pubmed') is False):
-      os.mkdir('../../cache/raw/pubmed')
-
-  if (os.path.exists('../../cache/raw/pubmed/xml') is False):
-      os.mkdir('../../cache/raw/pubmed/xml')
-
-  if (os.path.exists('../../cache/raw/zotero') is False):
-      os.mkdir('../../cache/raw/zotero')
-
-  if (os.path.exists('../../cache/raw/doi') is False):
-      os.mkdir('../../cache/raw/doi')
-
-  if (os.path.exists('../../cache/processed') is False):
-      os.mkdir('../../cache/processed')
-
-  if (os.path.exists('../../cache/processed/merged') is False):
-      os.mkdir('../../cache/processed/merged')
-
   #first, check for new papers from zotero repo
   zot = pz.zotPaper()
 
   #get list from cache
-  zot_cache = pc.getCacheList(filetype='raw/zotero')
-  doi_cache = pc.getCacheList(filetype='raw/doi')
-  pm_cache = pc.getCacheList(filetype='raw/pubmed')
+  zot_cache = pc.getCacheList(filetype='/raw/zotero')
+  doi_cache = pc.getCacheList(filetype='/raw/doi')
+  pm_cache = pc.getCacheList(filetype='/raw/pubmed')
 
-  zot.collection = 'ALSPAC_PAPERS_ALL'
+  zot.collection = config.zotero_collection
 
-  zot.getPapersList()
-
+  #get list of all keys in this zotero instance
+  zot.getPapersKeys()
+  
+  new_keys = []
   new_papers = []
 
-  for num, paper in enumerate(zot.papers):
-    if paper['key'] not in zot_cache:
-      #cache zotero data
-      pc.dumpJson(paper['key'], paper, 'raw/zotero')
-      #add to new_papers for later doi/pubmed data retrieval
-      #check itemType - if it's 'note', we can ignore
-      if paper['data']['itemType'] != 'note':
-        new_papers.append(paper['data'])
+  for num, paper_key in enumerate(zot.papers_keys):
+    if paper_key not in zot_cache:
+      new_keys.append(paper_key)
     else:
       #just for testing ONLY otherwise we'll end up getting new data all the time
-      new_paper = pc.getCacheData(filetype='zotero', filenames=[paper['key']])[paper['key']]
+      new_paper = pc.getCacheData(filetype='/raw/zotero', filenames=[paper_key])[paper_key]
       #check itemType - if it's 'note', we can ignore
       if new_paper['data']['itemType'] != 'note':
         new_papers.append(new_paper['data'])
+  
+  #get all new papers
+  zot.getPapersList(key_list = new_keys)
+
+  #cache the new papers
+  for num, paper in enumerate(zot.papers):
+    #cache zotero data
+    pc.dumpJson(paper['key'], paper, 'raw/zotero')
+    #add to new_papers for later doi/pubmed data retrieval
+    #check itemType - if it's 'note', we can ignore
+    if paper['data']['itemType'] != 'note':
+      new_papers.append(paper['data'])
 
   #now check new_papers for doi or pubmed id and retrieve if required
   for paper in new_papers:
@@ -80,7 +69,7 @@ def collate():
         paper['doi_data'] = doi_paper
         #data is automatically cached by getDoi
       else:
-        paper['doi_data'] = pc.getCacheData(filetype='raw/doi', filenames=[doi_filename])[doi_filename]
+        paper['doi_data'] = pc.getCacheData(filetype='/raw/doi', filenames=[doi_filename])[doi_filename]
 
     #get pubmed data
     if 'extra' in paper:
@@ -93,12 +82,12 @@ def collate():
           paper['pmid_data'] = pm_paper
           #data is automatically cached by getPubmed
         else:
-          paper['pmid_data'] = pc.getCacheData(filetype='raw/pubmed', filenames=[paper['pmid']])[paper['pmid']]
+          paper['pmid_data'] = pc.getCacheData(filetype='/raw/pubmed', filenames=[paper['pmid']])[paper['pmid']]
       
   #now do merge data
   merged_papers = {}
   #merged_papers = []
-  template_file = open('config/data-doi-template', 'r')
+  template_file = open(config.config_dir+'/data-doi-template', 'r')
   template = json.load(template_file)
   template_file.close()
   #template = pc.getCacheData(filenames=['data-doi-template'])['data-doi-template']
@@ -114,7 +103,7 @@ def collate():
     print "Merging to filename: "+filename
 
     mgr = pMerge.Merge()
-    map_file = open('config/data-pubmed-doi-jsonpath', 'r')
+    map_file = open(config.config_dir+'/data-pubmed-doi-jsonpath', 'r')
     mgr.mapping = json.load(map_file)
     map_file.close()
 
@@ -125,7 +114,7 @@ def collate():
     merged_paper['pmid_data'] = copy.deepcopy(mgr.dest)
 
     #now do zotero data
-    map_file = open('config/data-zotero-doi-jsonpath', 'r')
+    map_file = open(config.config_dir+'/data-zotero-doi-jsonpath', 'r')
     mgr.mapping = json.load(map_file)
     map_file.close()
     #mgr.mapping = pc.getCacheData(filenames=['data-zotero-doi-jsonpath'])['data-zotero-doi-jsonpath']
@@ -163,5 +152,6 @@ def collate():
 
 if __name__ == "__main__":
   print "Collate data"
+  
   collate()
 

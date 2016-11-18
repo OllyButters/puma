@@ -21,7 +21,7 @@ import analyse.analyse as analyse
 import html.htmlerrorlog.errorlog
 import html.build_htmlv2
 import bibliography.bibtex
-# import get.collate
+import get.collate
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton"
 __date__ = 5/8/16
@@ -58,7 +58,7 @@ logging.basicConfig(filename=root_dir + '/logs/papers.log',
 # papers will be the giant LIST that has all the papers in it, each as a dictionary
 papers = []
 
-# temp = get.collate.collate()
+get.collate.collate()
 # print temp
 # exit(1)
 

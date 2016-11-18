@@ -4,12 +4,13 @@ import json
 import sys
 import os
 import time
+import config.config as config
 
 #dump dict data to filename (cache[/filetype]/filename
 #if process is true adds '[' & ']' to start and end otherwise json will not parse correctly
 def dumpJson(filename, data, filetype='', process=False):
   try:
-    location = '/'.join(filter(None, ['../../cache', filetype, filename]))
+    location = '/'.join(filter(None, [config.cache_dir, filetype, filename]))
     f = open(location, 'wa')
     if process:
       f.write('[')
@@ -31,7 +32,7 @@ def dumpJson(filename, data, filetype='', process=False):
 #dump dict data to filename (cache[/filetype]/filename
 def dumpFile(filename, data, filetype=''):
   try:
-    location = '/'.join(filter(None, ['../../cache', filetype, filename]))
+    location = '/'.join(filter(None, [config.cache_dir, filetype, filename]))
     f = open(location, 'wa')
     f.write(data)
     f.close()
@@ -44,7 +45,7 @@ def dumpFile(filename, data, filetype=''):
 def getCacheList(filetype = ''):
   cachefiles = []
   filetype = re.sub('[\.]{2,}', '', filetype)
-  for root, dirs, files in os.walk('../../cache/'+filetype):
+  for root, dirs, files in os.walk(config.cache_dir+filetype):
     for name in files:
       cachefiles.append(name)
   return cachefiles
@@ -54,8 +55,8 @@ def getCacheList(filetype = ''):
 #returns a dict of [filename]->[filedata]
 def getCacheData(output_type='json', filetype='', filenames=[]):
   cache_files = []
-  location = '/'.join(filter(None, ['../../cache', filetype]))
-  for root, dirs, files in os.walk('../../cache/'+filetype):
+  location = '/'.join(filter(None, [config.cache_dir, filetype]))
+  for root, dirs, files in os.walk(config.cache_dir+'/'+filetype):
     for name in files:
       if (len(filenames) == 0):
         if re.search('^WHAT GOES HERE?$', name) != None:
@@ -67,7 +68,7 @@ def getCacheData(output_type='json', filetype='', filenames=[]):
   papers = {}
 
   for cache_filename in cache_files:
-    location = '/'.join(filter(None, ['../../cache', filetype, cache_filename]))
+    location = '/'.join(filter(None, [config.cache_dir, filetype, cache_filename]))
     cache_file = open(location, 'r')
     #cache_file_str = ''.join(cache_file.read().split())
     #print cache_file_str
