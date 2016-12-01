@@ -11,7 +11,7 @@ import config.config as config
 def dumpJson(filename, data, filetype='', process=False):
   try:
     location = '/'.join(filter(None, [config.cache_dir, filetype, filename]))
-    f = open(location, 'wa')
+    f = open(location, 'w')
     if process:
       f.write('[')
       for datum in data:
@@ -33,7 +33,7 @@ def dumpJson(filename, data, filetype='', process=False):
 def dumpFile(filename, data, filetype=''):
   try:
     location = '/'.join(filter(None, [config.cache_dir, filetype, filename]))
-    f = open(location, 'wa')
+    f = open(location, 'w')
     f.write(data)
     f.close()
     return location
