@@ -84,7 +84,7 @@ def collate():
       if pmid_matches is not None:
         paper['pmid'] = pmid_matches.group(1)
         #check if paper data in pm cache (only if config.use_doi_pubmed_cache is not 1)
-        if paper['pmid'] not in pm_cache and config.use_doi_pubmed_cache != 1:
+        if paper['pmid'] not in pm_cache or config.use_doi_pubmed_cache != 1:
           pm_paper = pm.getPubmed(paper['pmid'])
           paper['pmid_data'] = pm_paper
           #data is automatically cached by getPubmed
