@@ -58,8 +58,8 @@ def build_config_variables(root_dir):
 
         #collate settings
         zotero_get_all = config.getint('collate', 'zotero_get_all')
-        zotero_get_all = config.getint('collate', 'use_doi_pubmed_cache')
-        zotero_get_all = config.getint('collate', 'use_zotero_cache')
+        use_doi_pubmed_cache = config.getint('collate', 'use_doi_pubmed_cache')
+        use_zotero_cache = config.getint('collate', 'use_zotero_cache')
         merge_all = config.getint('collate', 'merge_all')
 
         #Pubmed
