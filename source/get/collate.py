@@ -38,7 +38,7 @@ def collate():
         new_keys.append(paper_key)
       else:
         if config.use_zotero_cache == 1:
-          #if the use_zotero_cache flag is set, we want to retrieve zotero data again, so get required zotero files from cache
+          #if the use_zotero_cache flag is set, we want to retrieve doi/pubmed data again, so get required zotero files from cache
           new_paper = pc.getCacheData(filetype='/raw/zotero', filenames=[paper_key])[paper_key]
           #check itemType - if it's 'note', we can ignore
           if new_paper['data']['itemType'] != 'note':
@@ -114,6 +114,7 @@ def collate():
     if config.merge_all != 1:
       if filename in merged_list:
         print "Merged file: "+filename+" already exists. Ignoring as merge_all not set to 1 in config.ini"
+        paper = pc.getCacheData(filetype='/processed/merged', filenames=[filename])[filename]
         continue
 
     print "Merging to filename: "+filename
