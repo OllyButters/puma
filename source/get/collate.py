@@ -29,7 +29,7 @@ def collate():
   new_papers = []
 
   #we may want to re-download the data from zotero
-  #if config has the 'get_all_papers' flag set to '1', make sure we get all papers not just new ones (i.e. load from cached file)
+  #if config has the 'zotero_get_all' flag set to '1', make sure we get all papers not just new ones (i.e. load from cached file)
   if config.zotero_get_all == 1:
     new_keys = zot.papers_keys
   else:
@@ -37,12 +37,11 @@ def collate():
       if paper_key not in zot_cache:
         new_keys.append(paper_key)
       else:
-        if config.use_zotero_cache == 1:
-          #if the use_zotero_cache flag is set, we want to retrieve doi/pubmed data again, so get required zotero files from cache
-          new_paper = pc.getCacheData(filetype='/raw/zotero', filenames=[paper_key])[paper_key]
-          #check itemType - if it's 'note', we can ignore
-          if new_paper['data']['itemType'] != 'note':
-            new_papers.append(new_paper['data'])
+        #get the previously downloaded papers from the cache
+        new_paper = pc.getCacheData(filetype='/raw/zotero', filenames=[paper_key])[paper_key]
+        #check itemType - if it's 'note', we can ignore
+        if new_paper['data']['itemType'] != 'note':
+          new_papers.append(new_paper['data'])
   
   #get all new papers
   zot.getPapersList(key_list = new_keys)
