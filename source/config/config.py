@@ -1,5 +1,8 @@
 #! /usr/bin/env python
 import ConfigParser
+import sys
+import argparse
+import os.path
 
 
 # Parse all the config in the settings.ini file and put them into a global variable
@@ -31,8 +34,27 @@ def build_config_variables(root_dir):
 
     global page_show_author_network
 
+    # See if there is a config file specified from the command line, if not then
+    # use the default config file name.
+    config_file_name = 'config.ini'
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--config", help="Specify a config file. Just want the name not the path.")
+    args = parser.parse_args()
+    if args.config:
+        print 'Config file set to: '+args.config
+        config_file_name = args.config
+
+    # Check config file exists
+    config_file_path = root_dir + "/config/" + config_file_name
+    if os.path.isfile(config_file_path):
+        print 'Config file ok!: ' + config_file_path
+    else:
+        print 'Config file doesnt exist!: ' + config_file_path
+        sys.exit()
+
     config = ConfigParser.ConfigParser()
-    config.read(root_dir + "/config/config.ini")
+    config.read(config_file_path)
     try:
         # Project Details
         project_details = {'name': config.get('project_details', 'name'), 'short_name': config.get('project_details', 'short_name'), 'colour_hex_primary': config.get('project_details', 'colour_hex_primary'), 'colour_hex_secondary': config.get('project_details', 'colour_hex_secondary'), 'header_image_url': config.get('project_details', 'header_image_url'), 'header_institution': config.get('project_details', 'header_institution'), 'header_institution_url': config.get('project_details', 'header_institution_url'), 'side_image_url': config.get('project_details', 'side_image_url'), 'side_image_link': config.get('project_details', 'side_image_link')}
