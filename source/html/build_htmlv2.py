@@ -10,6 +10,7 @@ import datetime
 import math
 import codecs
 import os
+import logging
 
 import config.config as config
 
@@ -301,6 +302,11 @@ def draw_paper(this_paper, exec_list):
         # Some author lists have a collective name. Ignore this.
         # Some people don't actually have initials. eg wraight in pmid:18454148
         try:
+            authors.append(this_author['family'] + ', ' + this_author['given'])
+        except:
+            logging.debug('This author dropped from author list on webpage for some reason: ' + str(this_author))
+
+        try:
             # Check if an author was on the exec Comittee
             for x in exec_list:
                 # Check if authors name matches
@@ -321,10 +327,9 @@ def draw_paper(this_paper, exec_list):
                         author_on_exec = True
                         break
 
-            authors.append(this_author['family'] + ', ' + this_author['given'])
+            # authors.append(this_author['family'] + ', ' + this_author['given'])
         except:
             pass
-
     html += htmlentities.encode('; '.join(authors))
     html += '<br/>'
 

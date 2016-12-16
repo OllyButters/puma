@@ -42,7 +42,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
                         cached_citations[row[0]]['citation_count'] = row[1]
                         cached_citations[row[0]]['date_downloaded'] = row[2]
                         cached_citations[row[0]]['eid'] = row[3]
-                        logging.debug('Cache ok for: ' + row[0] + ' ' + row[1] + '' + row[2])
+                        logging.debug('Cache ok for: ' + row[0] + ' ' + row[1] + ' ' + row[2])
                     else:
                         logging.debug('Cache too old for: ' + row[0] + ' ' + row[1] + '' + row[2])
             csvfile.close()
