@@ -56,13 +56,21 @@ def pre_clean(papers, error_log):
         # Delete the empty authors.
         # There must be a more elegant way than this.
         authors_to_keep = []
-        for i in range(0, len(this_paper['author'])-1):
-            # print this_paper['author'][i]['family']
+        for this_author in this_paper['author']:
             try:
-                if this_paper['author'][i]['family'] != "":
-                    authors_to_keep.append(this_paper['author'][i])
+                if this_author['family'] != "":
+                    authors_to_keep.append(this_author)
             except:
                 pass
+
+        # for i in range(0, len(this_paper['author'])-1):
+            # print this_paper['author'][i]['family']
+        #     try:
+        #         if this_paper['author'][i]['family'] != "":
+        #            authors_to_keep.append(this_paper['author'][i])
+        #    except:
+        #        pass
+
         this_paper['author'] = authors_to_keep
 
         # Try sticking in the DOI

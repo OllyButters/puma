@@ -42,7 +42,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
                         cached_citations[row[0]]['citation_count'] = row[1]
                         cached_citations[row[0]]['date_downloaded'] = row[2]
                         cached_citations[row[0]]['eid'] = row[3]
-                        logging.debug('Cache ok for: ' + row[0] + ' ' + row[1] + '' + row[2])
+                        logging.debug('Cache ok for: ' + row[0] + ' ' + row[1] + ' ' + row[2])
                     else:
                         logging.debug('Cache too old for: ' + row[0] + ' ' + row[1] + '' + row[2])
             csvfile.close()
@@ -86,7 +86,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
                     # sometimes this returns multiple entries e.g. 22935244
                     try:
                         if len(t['search-results']['entry']) > 1:
-                            error_log.logErrorPaper("Multiple Papers Found for PMID", this_paper)
+                            error_log.logErrorPaper("Multiple different citaton counts found for PMID", this_paper)
                         citations = t['search-results']['entry'][0]['citedby-count']
                         this_paper['Extras']['Citations'] = citations
 
@@ -128,7 +128,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
             # ==================================================
 
             # ==================================================
-            # The above could have failed a couple of points - no DOI or nothing returned from a DOI query
+            # The above could have failed a couple of points - no PMID or nothing returned from a PMID query
             try:
                 # try querying with the DOI first - there might not be a DOI
                 if 'Citations' not in this_paper['Extras'] and this_paper['IDs']['DOI'] != "":
@@ -145,7 +145,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
 
                     try:
                         if len(t['search-results']['entry']) > 1:
-                            error_log.logWarningPaper("Multiple Papers Found for DOI", this_paper)
+                            error_log.logWarningPaper("Multiple different citation counts found for DOI", this_paper)
                             # Add up citations for DOIs that exactly match
                             citations = 0
                             title = ""

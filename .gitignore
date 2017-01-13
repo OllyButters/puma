@@ -6,3 +6,6 @@
 source/tools.pyc
 *.pyc
 *.*~
+
+#Where a real config sits
+/config/config.ini

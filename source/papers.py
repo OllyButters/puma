@@ -24,8 +24,8 @@ import bibliography.bibtex
 import get.collate
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton"
-__date__ = 5/8/16
-__version__ = '0.2.7'
+__date__ = 16/12/16
+__version__ = '0.2.8'
 
 # Lets figure out some paths that everything is relative to
 # global root_dir
@@ -47,7 +47,8 @@ print "Start Time: " + str(start_time)
 error_log = html.htmlerrorlog.errorlog.ErrorLog()
 
 # Set up the logging. Level can be DEBUG|.....
-logging.basicConfig(filename=root_dir + '/logs/papers.log',
+log_file = root_dir + '/logs/'+config.project_details['short_name']+'.log'
+logging.basicConfig(filename=log_file,
                     filemode='w',
                     level=config.logging_loglevel)
 
@@ -61,11 +62,6 @@ papers = []
 get.collate.collate()
 # print temp
 # exit(1)
-
-
-# commenting out the get stuff as my assumption is that hughs work
-# will join this up
-# get.get.get(pmids, papers)
 
 # Get list of files in merged directory
 merged_files_list = listdir(config.cache_dir + '/processed/merged/')

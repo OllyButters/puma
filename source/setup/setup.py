@@ -11,7 +11,7 @@ import config.config as config
 def build_file_tree(root_dir):
     # = Cache directory =
     if not os.path.exists(config.cache_dir):
-        os.mkdir(config.cache_dir)
+        os.makedirs(config.cache_dir)
 
     if not os.path.exists(config.cache_dir + '/raw'):
         os.mkdir(config.cache_dir + '/raw')
