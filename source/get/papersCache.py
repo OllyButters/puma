@@ -59,8 +59,7 @@ def getCacheData(output_type='json', filetype='', filenames=[]):
   for root, dirs, files in os.walk(config.cache_dir+'/'+filetype):
     for name in files:
       if (len(filenames) == 0):
-        if re.search('^WHAT GOES HERE?$', name) != None:
-          cache_files.append(name)
+        cache_files.append(name)
       else:
         if name in filenames:
           cache_files.append(name)
