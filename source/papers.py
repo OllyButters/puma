@@ -1,5 +1,13 @@
 #! /usr/bin/env python
 
+################################################################################
+# The publications metadata augmentor!
+# This is the starting point of a pipeline that tries to augment a list of
+# publications with metadata from places like PubMed and DOI.org to build a
+# reporting tool and some pretty web pages.
+# Go read the docs: https://github.com/OllyButters/papers/wiki
+################################################################################
+
 # core packages
 import json
 import os.path
