@@ -107,6 +107,7 @@ def build_common_foot():
 
     html += '<div class="feedback-container width-master clear"><div class="page-feedback small"></div></div>'
     html += '<div class="foot clearfix"></div>'
+    html += 'Stats last updated on ' + str(time.time())
     html += '</body>'
     html += '</html>'
 

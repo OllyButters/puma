@@ -32,8 +32,8 @@ import bibliography.bibtex
 import get.collate
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton"
-__date__ = 16/12/16
-__version__ = '0.2.8'
+__date__ = 14/2/17
+__version__ = '0.2.9'
 
 # Lets figure out some paths that everything is relative to
 # global root_dir
@@ -59,6 +59,9 @@ log_file = root_dir + '/logs/'+config.project_details['short_name']+'.log'
 logging.basicConfig(filename=log_file,
                     filemode='w',
                     level=config.logging_loglevel)
+
+print 'Log file: ' + log_file
+print 'Run something like: tail -f ' + log_file
 
 # Output some info to the log file to help with debugging
 logging.info('Running version: ' + __version__)
