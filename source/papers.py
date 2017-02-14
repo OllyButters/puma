@@ -52,6 +52,9 @@ logging.basicConfig(filename=log_file,
                     filemode='w',
                     level=config.logging_loglevel)
 
+# Output some info to the log file to help with debugging
+logging.info('Running version: ' + __version__)
+logging.info('Started at: ' + str(start_time))
 
 ###########################################################
 # Get the papers. This will get all the metadata and store
@@ -139,5 +142,9 @@ html.build_htmlv2.build_search(papers)
 # Time Log
 end_time = time.time()
 elapsed_time = end_time - start_time
+elapsed_time_string = str(int(elapsed_time) / 60) + ":" + str(int(elapsed_time) % 60).zfill(2)
 print "End Time: " + str(end_time)
-print "Elapsed Time - " + str(int(elapsed_time) / 60) + ":" + str(int(elapsed_time) % 60).zfill(2)
+print "Elapsed Time - " + elapsed_time_string
+
+logging.info('Finished at: ' + str(end_time))
+logging.info('Elapsed time: ' + elapsed_time_string)
