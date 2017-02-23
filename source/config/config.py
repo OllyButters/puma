@@ -33,8 +33,8 @@ def build_config_variables(root_dir):
     #collation settings
     global zotero_get_all
     global use_doi_pubmed_cache
-    global use_zotero_cache
     global merge_all
+    global use_cached_merge_only
 
     global pubmed_email
 
@@ -80,8 +80,8 @@ def build_config_variables(root_dir):
         #collate settings
         zotero_get_all = config.getint('collate', 'zotero_get_all')
         use_doi_pubmed_cache = config.getint('collate', 'use_doi_pubmed_cache')
-        use_zotero_cache = config.getint('collate', 'use_zotero_cache')
         merge_all = config.getint('collate', 'merge_all')
+        use_cached_merge_only = config.getint('collate', 'use_cached_merge_only')
 
         #Pubmed
         pubmed_email = config.get('pubmed_api', 'pubmed_email')

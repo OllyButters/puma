@@ -12,6 +12,19 @@ import os
 import config.config as config
 
 def collate():
+  #first, check if config.use_cached_merged_only is set to 1
+  #if so, just load these and return
+  if config.use_cached_merge_only == 1:
+    #get list of currently merged papers
+    merged_list = pc.getCacheList(filetype='/processed/merged')
+    merged_papers = []
+    print "use_cached_merge_only set to 1 so loading papers straight from processed/merged"
+    for merged_paper in merged_list:
+      print "Loading cached merged paper: "+merged_paper+"."
+      merged_papers.append(pc.getCacheData(filetype='/processed/merged', filenames=[merged_paper])[merged_paper])
+
+    return merged_papers
+
   #first, check for new papers from zotero repo
   zot = pz.zotPaper()
 
@@ -112,7 +125,7 @@ def collate():
     #if we aren't set to merge all papers, ignore existing files
     if config.merge_all != 1:
       if filename in merged_list:
-        print "Merged file: "+filename+" already exists. Ignoring as merge_all not set to 1 in config.ini"
+        print "Merged file: "+filename+" already exists. Ignoring as merge_all not set to 1 in config.ini. File being loaded from cache."
         paper = pc.getCacheData(filetype='/processed/merged', filenames=[filename])[filename]
         continue
 
