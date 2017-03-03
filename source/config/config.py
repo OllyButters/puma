@@ -30,6 +30,12 @@ def build_config_variables(root_dir):
     global zotero_api_key
     global zotero_collection
 
+    #collation settings
+    global zotero_get_all
+    global use_doi_pubmed_cache
+    global merge_all
+    global use_cached_merge_only
+
     global pubmed_email
 
     global page_show_author_network
@@ -71,7 +77,13 @@ def build_config_variables(root_dir):
         zotero_api_key = config.get('zotero_api', 'zotero_api_key')
         zotero_collection = config.get('zotero_api', 'zotero_collection')
 
-        # Pubmed
+        #collate settings
+        zotero_get_all = config.getint('collate', 'zotero_get_all')
+        use_doi_pubmed_cache = config.getint('collate', 'use_doi_pubmed_cache')
+        merge_all = config.getint('collate', 'merge_all')
+        use_cached_merge_only = config.getint('collate', 'use_cached_merge_only')
+
+        #Pubmed
         pubmed_email = config.get('pubmed_api', 'pubmed_email')
 
         # logging

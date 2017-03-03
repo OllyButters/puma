@@ -18,10 +18,10 @@ def clean_notes(papers, error_log):
             notes = this_paper['notes']
             this_paper['notes'] = {}
             # split the notes data into key/value pairs
-            fields = notes.split("\\")
+            fields = notes.split(";\n")
             for this_field in fields:
-                components = this_field.split("=")
-                this_paper['notes'][components[0]] = components[1]
+                components = this_field.split(":")
+                this_paper['notes'][components[0].strip()] = components[1].strip()
         except:
             pass
 
@@ -141,8 +141,13 @@ def pre_clean(papers, error_log):
                         this_paper['Extras']['CleanDate']['month'] = str(date_parts[1])
                         this_paper['Extras']['CleanDate']['year'] = str(date_parts[2])
                     except:
-                        # A date has not been found. Put this in the error log.
-                        error_log.logErrorPaper("Cannot Create Clean Date (Consider using Zotero notes)", this_paper)
+                        try:
+                            #zotero 'date' field (only contains numerical year, word month)
+                            date_parts = this_paper['date'].split(" ")
+                            this_paper['Extras']['CleanDate']['year'] = str(date_parts[-1])
+                        except:
+                            # A date has not been found. Put this in the error log.
+                            error_log.logErrorPaper("Cannot Create Clean Date (Consider using Zotero notes)", this_paper)
 
 
 # Have a go at tidying up the mess that is first author institution.

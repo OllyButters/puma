@@ -26,7 +26,7 @@ def getPubmed(this_pmid):
 
   try:
     xml_file = open(xml_file_loc, 'r')
-    pmid_data = Entrez.read(xml_file)[0]
+    pmid_data = Entrez.read(xml_file)
     xml_file.close()
 
     ###
@@ -35,8 +35,11 @@ def getPubmed(this_pmid):
     ###
 
     #add asterisk to major mesh headings
-    for this_mesh_heading in pmid_data['MedlineCitation']['MeshHeadingList']:
-      this_mesh_heading['MajorTopicYN'] = this_mesh_heading['DescriptorName'].attributes['MajorTopicYN']
+    try:
+      for this_mesh_heading in pmid_data['MedlineCitation']['MeshHeadingList']:
+        this_mesh_heading['MajorTopicYN'] = this_mesh_heading['DescriptorName'].attributes['MajorTopicYN']
+    except KeyError:
+      pass
 
     ###
     #

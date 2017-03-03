@@ -124,7 +124,7 @@ def geocode(papers, error_log, api_key):
         except:
             # There is no clean institute for the paper object. Log this as an error so that it can be fixed in the Zotero file.
             logging.info('No Clean Institute for ' + this_paper['IDs']['hash'] + " (" + str(number_done) + "/" + str(len(papers)) + ")")
-            error_log.logErrorPaper(" Clean Institute Missing for " + this_paper['IDs']['hash'] + " <a href='https://www.zotero.org/groups/300320/items/itemKey/" + this_paper['IDs']['zotero'] + "'>Zotero</a>", this_paper)
+            error_log.logErrorPaper(" Clean Institute Missing for " + this_paper['IDs']['hash'] + " <a href='https://www.zotero.org/groups/" + config.zotero_id + "/items/itemKey/" + this_paper['IDs']['zotero'] + "'>Zotero</a>", this_paper)
 
         if found_coords:
             # The coordinates have been found from either wikidata or the backup file
