@@ -142,7 +142,7 @@ def pre_clean(papers, error_log):
                         this_paper['Extras']['CleanDate']['year'] = str(date_parts[2])
                     except:
                         try:
-                            #zotero 'date' field (only contains numerical year, word month)
+                            # zotero 'date' field (only contains numerical year, word month)
                             date_parts = this_paper['date'].split(" ")
                             this_paper['Extras']['CleanDate']['year'] = str(date_parts[-1])
                         except:
