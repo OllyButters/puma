@@ -55,7 +55,7 @@ def abstracts(papers):
     for this_paper in papers:
         try:
             # Get abstract text
-            abstracts = str(this_paper['MedlineCitation']['Article']['Abstract']['AbstractText'])
+            abstracts = str(this_paper['PubmedArticle'][0]['MedlineCitation']['Article']['Abstract']['AbstractText'])
 
             # Remove punctuation and esacpe characters that will cause a problem
             abstracts = abstracts.lower()
