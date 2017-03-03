@@ -130,6 +130,7 @@ analyse.journals(papers)
 
 abstract_data_from_count = analyse.abstracts(papers)
 network = analyse.authors(papers)
+analyse.completeness_report(papers)
 analyse.first_authors(papers)
 analyse.inst(papers)
 analyse.mesh(papers)

@@ -217,6 +217,24 @@ def authors(papers):
 
 
 ############################################################
+# Output a report on how complete the data is
+############################################################
+def completeness_report(papers):
+
+    num_papers = len(papers)
+    first_authors_count = 0
+    for this_paper in papers:
+        try:
+            if this_paper['author'][0]['family']:
+                first_authors_count = first_authors_count + 1
+        except:
+            next
+
+    print 'Total papers = ' + str(num_papers)
+    print 'First authors count = ' + str(first_authors_count)
+
+
+############################################################
 # Try with the FIRST authors - these are in a nested dict
 ############################################################
 def first_authors(papers):
