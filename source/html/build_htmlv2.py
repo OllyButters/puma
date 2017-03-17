@@ -344,7 +344,10 @@ def draw_paper(this_paper, exec_list):
     try:
         html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
     except:
-        pass
+        try: 
+            html += this_paper['container-title']
+        except:
+            pass
 
     try:
         html += ', Volume ' + this_paper['volume']

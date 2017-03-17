@@ -27,6 +27,14 @@ def getPubmed(this_pmid):
   try:
     xml_file = open(xml_file_loc, 'r')
     pmid_data = Entrez.read(xml_file)
+    if isinstance(pmid_data, list):
+      pmid_data = pmid_data[0]
+    print pmid_data
+    if 'MedlineCitation' not in pmid_data.keys():
+      if 'PubmedArticle' in pmid_data.keys() and 'MedlineCitation' in pmid_data['PubmedArticle'][0].keys():
+        pmid_data = pmid_data['PubmedArticle'][0]
+      else:
+        raise ValueError("Can't find MedlineCitation for paper "+this_pmid)
     xml_file.close()
 
     ###
@@ -49,8 +57,9 @@ def getPubmed(this_pmid):
 
     pc.dumpJson(this_pmid, pmid_data, 'raw/pubmed')
     return pmid_data
-  except:
+  except Exception as e:
     logging.warn('Unable to read pmid %s', this_pmid)
+    print str(e)
     return None
   
 
