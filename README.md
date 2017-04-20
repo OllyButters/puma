@@ -1,1 +1,1 @@
-Look at the wiki
+See: [Documentation](https://github.com/OllyButters/papers/wiki)
