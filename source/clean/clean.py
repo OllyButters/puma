@@ -11,7 +11,7 @@ import config.config as config
 
 # Some data will be missing. To deal with this, missing data will be put into the
 # Zotero notes field in a formatted structure "<key>:<value>\n<key>:<value>\n". That data will then be parsed by
-# this function and put into the paper object so that it can be access throughout the analysis and html functions.
+# this function and put into the paper object so that it can be accessed throughout the analysis and html functions.
 def clean_notes(papers, error_log):
     for this_paper in papers:
         try:
@@ -72,6 +72,9 @@ def pre_clean(papers, error_log):
         #        pass
 
         this_paper['author'] = authors_to_keep
+
+        # add in a cleaned journal title
+        clean_journal(this_paper)
 
         # Try sticking in the DOI
         try:
@@ -226,6 +229,20 @@ def clean_institution(papers):
 
     return number_not_matched
 
+# Clean journal title for paper
+# Journal title /should/ be in this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'] but is sometimes missing. Look elsewhere (this_paper['container-title'] in addition.
+# return this_paper with this_paper['cleaned-journal'] set
+def clean_journal(this_paper):
+    if 'cleaned_journal' in this_paper.keys() && this_paper['cleaned-journal'] is not None:
+        this_paper['cleaned-journal'] = None
+        try:
+            this_paper['cleaned-journal'] = this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
+        except:
+            try: 
+                this_paper['cleaned-journal'] = this_paper['container-title']
+            except:
+                pass
+    return this_paper
 
 # Go through the deltas directory and apply any changes that are needed
 def do_deltas(papers):

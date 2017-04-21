@@ -1,7 +1,9 @@
 #! /usr/bin/env python
+import get.papersCache as pc
 
-
-def bibtex(papers):
+def bibtex(papers, error_log):
+  
+    articles = []
 
     for this_paper in papers:
 
@@ -24,7 +26,8 @@ def bibtex(papers):
 
             # Journal
             this_article += 'journal = "'
-            this_article += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
+            # this_artice['cleaned-journal'] set by clean.clean_journal
+            this_article += this_paper['cleaned-journal']
             this_article += '",\n'
 
             # Journal volume
@@ -40,5 +43,11 @@ def bibtex(papers):
             # Close this one.
             this_article += '}\n'
 
+            articles.append(this_article)
+
         except:
+            error_log.logErrorPaper("Cannot create bibtex output", this_paper)
             pass
+
+    #output to file in processed
+    pc.dumpFile(filename='bibtex_list.bib', data=articles, filetype='processed')
