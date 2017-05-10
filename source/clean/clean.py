@@ -233,7 +233,7 @@ def clean_institution(papers):
 # Journal title /should/ be in this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'] but is sometimes missing. Look elsewhere (this_paper['container-title'] in addition.
 # return this_paper with this_paper['cleaned-journal'] set
 def clean_journal(this_paper):
-    if 'cleaned_journal' in this_paper.keys() && this_paper['cleaned-journal'] is not None:
+    if not('cleaned-journal' in this_paper.keys() and this_paper['cleaned-journal'] is not None):
         this_paper['cleaned-journal'] = None
         try:
             this_paper['cleaned-journal'] = this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']

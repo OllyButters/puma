@@ -107,7 +107,7 @@ fo = open(file_name, 'wb')
 fo.write(json.dumps(papers, indent=4))
 fo.close()
 
-bibliography.bibtex.bibtex(papers)
+bibliography.bibtex.bibtex(papers, error_log)
 
 ###########################################################
 # Do some actual analysis on the data. This will result in

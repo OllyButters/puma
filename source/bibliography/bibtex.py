@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 import get.papersCache as pc
+import config.config as config
 
 def bibtex(papers, error_log):
   
@@ -37,7 +38,7 @@ def bibtex(papers, error_log):
 
             # Year
             this_article += 'year = "'
-            this_article += this_paper['PubmedData']['History'][0]['Year']
+            this_article += this_paper['Extras']['CleanDate']['year']
             this_article += '",\n'
 
             # Close this one.
@@ -49,5 +50,8 @@ def bibtex(papers, error_log):
             error_log.logErrorPaper("Cannot create bibtex output", this_paper)
             pass
 
-    #output to file in processed
-    pc.dumpFile(filename='bibtex_list.bib', data=articles, filetype='processed')
+    #output to file in data_dir
+    with open(config.data_dir + '/bibtex_list.csv', 'wb') as bibfile:
+        for a in articles:
+            bibfile.write(a.encode('utf-8'))
+            bibfile.write('\n')
