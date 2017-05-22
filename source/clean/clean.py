@@ -193,7 +193,9 @@ def clean_institution(papers):
         try:
             # print '============='
             # print this_paper['author'][0]['affiliation'][0]['name']
+            # institute = this_paper['PubmedArticle'][0]['MedlineCitation']['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
             institute = this_paper['author'][0]['affiliation'][0]['name']
+            # institute = this_paper['PubmedArticle'][0]['MedlineCitation']['Article']['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
         except:
             logging.warn('Could not find an affiliation for %s', this_paper)
             hasAffiliation = False
@@ -229,6 +231,7 @@ def clean_institution(papers):
 
     return number_not_matched
 
+
 # Clean journal title for paper
 # Journal title /should/ be in this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation'] but is sometimes missing. Look elsewhere (this_paper['container-title'] in addition.
 # return this_paper with this_paper['cleaned-journal'] set
@@ -238,11 +241,12 @@ def clean_journal(this_paper):
         try:
             this_paper['cleaned-journal'] = this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
         except:
-            try: 
+            try:
                 this_paper['cleaned-journal'] = this_paper['container-title']
             except:
                 pass
     return this_paper
+
 
 # Go through the deltas directory and apply any changes that are needed
 def do_deltas(papers):
