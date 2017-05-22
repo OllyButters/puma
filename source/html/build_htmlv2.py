@@ -342,10 +342,10 @@ def draw_paper(this_paper, exec_list):
         this_paper['Extras']['author_on_exec'] = False
 
     # Journal, volume and issue
-    #try:
+    # try:
     #    html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
-    #except:
-    #    try: 
+    # except:
+    #    try:
     #        html += this_paper['container-title']
     #    except:
     #        pass
@@ -592,7 +592,9 @@ def build_mesh(papers):
     for this_paper in papers:
         try:
             # Look at all the mesh headings for this paper
-            for this_mesh in this_paper['PubmedArticle'][0]['MedlineCitation']['MeshHeadingList']:
+            # for this_mesh in this_paper['PubmedArticle'][0]['MedlineCitation']['MeshHeadingList']:
+            for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
+
                 # If this mesh term is not already in the dict then add it
                 if this_mesh['DescriptorName'] not in mesh_papers_all:
                     mesh_papers_all[this_mesh['DescriptorName']] = list()
@@ -605,7 +607,8 @@ def build_mesh(papers):
     for this_paper in papers:
         try:
             # Look at all the mesh headings for this paper
-            for this_mesh in this_paper['PubmedArticle'][0]['MedlineCitation']['MeshHeadingList']:
+            # for this_mesh in this_paper['PubmedArticle'][0]['MedlineCitation']['MeshHeadingList']:
+            for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
                 # Only interested in majoy topics
                 if this_mesh['MajorTopicYN'] == 'Y':
                     # If this mesh term is not in the dict then add it
