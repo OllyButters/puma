@@ -1,7 +1,10 @@
 #! /usr/bin/env python
+import get.papersCache as pc
+import config.config as config
 
-
-def bibtex(papers):
+def bibtex(papers, error_log):
+  
+    articles = []
 
     for this_paper in papers:
 
@@ -24,7 +27,8 @@ def bibtex(papers):
 
             # Journal
             this_article += 'journal = "'
-            this_article += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
+            # this_artice['cleaned-journal'] set by clean.clean_journal
+            this_article += this_paper['cleaned-journal']
             this_article += '",\n'
 
             # Journal volume
@@ -34,11 +38,20 @@ def bibtex(papers):
 
             # Year
             this_article += 'year = "'
-            this_article += this_paper['PubmedData']['History'][0]['Year']
+            this_article += this_paper['Extras']['CleanDate']['year']
             this_article += '",\n'
 
             # Close this one.
             this_article += '}\n'
 
+            articles.append(this_article)
+
         except:
+            error_log.logErrorPaper("Cannot create bibtex output", this_paper)
             pass
+
+    #output to file in data_dir
+    with open(config.data_dir + '/bibtex_list.csv', 'wb') as bibfile:
+        for a in articles:
+            bibfile.write(a.encode('utf-8'))
+            bibfile.write('\n')

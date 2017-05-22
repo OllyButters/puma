@@ -38,7 +38,7 @@ def dumpFile(filename, data, filetype=''):
     f.close()
     return location
   except:
-    print "(papersCache.dumpJson) Unexpected error:", sys.exc_info()[1]
+    print "(papersCache.dumpFile) Unexpected error:", sys.exc_info()[1]
     pass
 
 #get a list of all filenames in directory cache[/filetype]

@@ -342,11 +342,15 @@ def draw_paper(this_paper, exec_list):
         this_paper['Extras']['author_on_exec'] = False
 
     # Journal, volume and issue
-    try:
-        # html += this_paper['Article']['Journal']['ISOAbbreviation']
-        html += this_paper['PubmedArticle'][0]['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
-    except:
-        pass
+    #try:
+    #    html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
+    #except:
+    #    try: 
+    #        html += this_paper['container-title']
+    #    except:
+    #        pass
+    # this is generated from a series of possibilities. see clean.clean_journal
+    html += this_paper['cleaned-journal']
 
     try:
         # html += ', Volume ' + this_paper['volume']
