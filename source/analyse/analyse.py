@@ -55,7 +55,7 @@ def abstracts(papers):
     for this_paper in papers:
         try:
             # Get abstract text
-            abstracts = str(this_paper['MedlineCitation']['Article']['Abstract']['AbstractText'])
+            abstracts = str(this_paper['PubmedArticle'][0]['MedlineCitation']['Article']['Abstract']['AbstractText'])
 
             # Remove punctuation and esacpe characters that will cause a problem
             abstracts = abstracts.lower()
@@ -214,6 +214,24 @@ def authors(papers):
     print str(len(author_network['authors'])) + " Authors"
     print str(len(author_network['connections'])) + " Connections"
     return author_network
+
+
+############################################################
+# Output a report on how complete the data is
+############################################################
+def completeness_report(papers):
+
+    num_papers = len(papers)
+    first_authors_count = 0
+    for this_paper in papers:
+        try:
+            if this_paper['author'][0]['family']:
+                first_authors_count = first_authors_count + 1
+        except:
+            next
+
+    print 'Total papers = ' + str(num_papers)
+    print 'First authors count = ' + str(first_authors_count)
 
 
 ############################################################

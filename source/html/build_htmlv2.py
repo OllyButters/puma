@@ -107,6 +107,7 @@ def build_common_foot():
 
     html += '<div class="feedback-container width-master clear"><div class="page-feedback small"></div></div>'
     html += '<div class="foot clearfix"></div>'
+    html += 'Stats last updated on ' + str(time.time())
     html += '</body>'
     html += '</html>'
 
@@ -352,12 +353,13 @@ def draw_paper(this_paper, exec_list):
     html += this_paper['cleaned-journal']
 
     try:
-        html += ', Volume ' + this_paper['volume']
+        # html += ', Volume ' + this_paper['volume']
+        html += ', Volume ' + this_paper['PubmedArticle'][0]['MedlineCitation']['Article']['Journal']['JournalIssue']['Volume']
     except:
         pass
 
     try:
-        html += ', Issue ' + this_paper['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue']
+        html += ', Issue ' + this_paper['PubmedArticle'][0]['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue']
     except:
         pass
     html += '<br/>'
@@ -586,11 +588,11 @@ def build_mesh(papers):
     html_file_all = open(config.html_dir + '/all_keywords/index.html', 'w')
     html_file_major = open(config.html_dir + '/major_keywords/index.html', 'w')
 
-    # Build a dict of ALL mesh headings with a list of each pmid in each
+    # Build a dict of ALL mesh headings with a list of each hash in each
     for this_paper in papers:
         try:
             # Look at all the mesh headings for this paper
-            for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
+            for this_mesh in this_paper['PubmedArticle'][0]['MedlineCitation']['MeshHeadingList']:
                 # If this mesh term is not already in the dict then add it
                 if this_mesh['DescriptorName'] not in mesh_papers_all:
                     mesh_papers_all[this_mesh['DescriptorName']] = list()
@@ -603,7 +605,7 @@ def build_mesh(papers):
     for this_paper in papers:
         try:
             # Look at all the mesh headings for this paper
-            for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
+            for this_mesh in this_paper['PubmedArticle'][0]['MedlineCitation']['MeshHeadingList']:
                 # Only interested in majoy topics
                 if this_mesh['MajorTopicYN'] == 'Y':
                     # If this mesh term is not in the dict then add it

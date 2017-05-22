@@ -55,7 +55,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
     counter = 0
     for this_paper in papers:
         counter = counter + 1
-        logging.info('on # ' + str(counter) + ' of ' + str(number_papers_to_process))
+        logging.info('\non # ' + str(counter) + ' of ' + str(number_papers_to_process))
 
         # read the cache
         try:
@@ -186,7 +186,8 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
                             print t
                             print t['search-results']['entry'][0]['error']
                 else:
-                    logging.info('No DOI for = '+this_paper['IDs']['hash'])
+                    if this_paper['IDs']['DOI'] == "":
+                        logging.info('No DOI for = '+this_paper['IDs']['hash'])
 
                 error_number = 0
             except:

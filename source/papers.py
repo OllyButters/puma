@@ -1,5 +1,13 @@
 #! /usr/bin/env python
 
+################################################################################
+# The publications metadata augmentor!
+# This is the starting point of a pipeline that tries to augment a list of
+# publications with metadata from places like PubMed and DOI.org to build a
+# reporting tool and some pretty web pages.
+# Go read the docs: https://github.com/OllyButters/papers/wiki
+################################################################################
+
 # core packages
 import json
 import os.path
@@ -24,8 +32,8 @@ import bibliography.bibtex
 import get.collate
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton"
-__date__ = 16/12/16
-__version__ = '0.2.8'
+__date__ = 14/2/17
+__version__ = '0.2.9'
 
 # Lets figure out some paths that everything is relative to
 # global root_dir
@@ -52,6 +60,12 @@ logging.basicConfig(filename=log_file,
                     filemode='w',
                     level=config.logging_loglevel)
 
+print 'Log file: ' + log_file
+print 'Run something like: tail -f ' + log_file
+
+# Output some info to the log file to help with debugging
+logging.info('Running version: ' + __version__)
+logging.info('Started at: ' + str(start_time))
 
 ###########################################################
 # Get the papers. This will get all the metadata and store
@@ -116,6 +130,7 @@ analyse.journals(papers)
 
 abstract_data_from_count = analyse.abstracts(papers)
 network = analyse.authors(papers)
+analyse.completeness_report(papers)
 analyse.first_authors(papers)
 analyse.inst(papers)
 analyse.mesh(papers)
@@ -139,5 +154,9 @@ html.build_htmlv2.build_search(papers)
 # Time Log
 end_time = time.time()
 elapsed_time = end_time - start_time
+elapsed_time_string = str(int(elapsed_time) / 60) + ":" + str(int(elapsed_time) % 60).zfill(2)
 print "End Time: " + str(end_time)
-print "Elapsed Time - " + str(int(elapsed_time) / 60) + ":" + str(int(elapsed_time) % 60).zfill(2)
+print "Elapsed Time - " + elapsed_time_string
+
+logging.info('Finished at: ' + str(end_time))
+logging.info('Elapsed time: ' + elapsed_time_string)
