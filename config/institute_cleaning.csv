@@ -1,5 +1,6 @@
 #Do email addresses first - my guess is that people are more likely to ,
 #have only one email address than multiple institution addresses...,
+bthft.nhs.uk,Bradford Royal Infirmary
 bbk.ac.uk,"Birkbeck, University of London"
 bristol.ac.uk,University of Bristol
 bris.ac.uk,University of Bristol
@@ -39,6 +40,7 @@ sghms.ac.uk,St George's Hospital
 sgul.ac.uk,St George's Hospital
 ucl.ac.uk,University College London
 uwe.ac.uk,University of the West of England
+uw.edu,University of Washington
 vumc.nl,VU University Medical Center
 wustl.edu,Washington University in St. Louis
 University of Virginia,University of Virginia
@@ -54,7 +56,6 @@ University of Birmingham,University of Birmingham
 Birmingham University,University of Birmingham
 Blackpool Royal Victoria Hospital,Blackpool Victoria Hospital
 University of Brighton,University of Brighton
-University of Bristol,University of Bristol
 University of Bristol,University of Bristol
 Brunel University,Brunel University London
 University of Cambridge,University of Cambridge
@@ -72,7 +73,7 @@ University of Glasgow,University of Glasgow
 Goldsmiths College,"Goldsmiths, University of London"
 Imperial,Imperial College London
 Institute of Education,UCL Institute of Education
-King\'?s College,King's College London
+King'?s College,King's College London
 Institute of Psychiary,King's College London
 Kingston University,Kingston University
 Lancaster University,Lancaster University
@@ -80,6 +81,8 @@ University of Leeds,University of Leeds
 University of Leicester,University of Leicester
 University of Liverpool,University of Liverpool
 London Metropolitan University,London Metropolitan University
+Loughborough University,Loughborough University
+Manchester Metropolitan University,Manchester Metropolitan University
 University of Manchester,University of Manchester
 Medical Research Council Epidemiology Unit,Medical Research Council Centre Cambridge
 MRC Epidemiology Unit,Medical Research Council Centre Cambridge
@@ -92,9 +95,10 @@ University of Oxford,University of Oxford
 Peninsula,Peninsula College of Medicine and Dentistry
 Plymouth,Plymouth University
 "Institute of Psychiatry, London","Institute of Psychiatry"
-Queen\'s University,Queens University
+Queen's University,Queens University
 University of Sheffield,University of Sheffield
 University of Southampton,University of Southampton
+University of St Andrews,University of St Andrews
 University of Strathclyde,University of Strathclyde
 University of Stirling,University of Stirling
 University of Surrey,University of Surrey
@@ -125,6 +129,7 @@ Northlands R & D Unit,Northlands R & D Unit
 University Hospital of Nottingham,Queen's Medical Centre
 "Park Hospital, Headington, Oxford, UK.","Park Hospital for Children"
 Royal United Hospital,Royal United Hospital
+Southampton General Hospital,Southampton General Hospital
 Southmead Hospital,Southmead Hospital
 St George's Hospital,St George's Hospital
 "Severn Deanery, Deanery House Unit D, Vantage Office Park Hambrook, Bristol, United Kingdom.","Severn Deanery"
@@ -148,32 +153,44 @@ University of Chicago,University of Chicago
 Christchurch School of Medicine,University of Otago Christchurch School of Medicine
 "Centres for Disease Control Prevention, Atlanta","Centers for Disease Control and Prevention"
 "Centers for Disease Control and Prevention, Atlanta","Centers for Disease Control and Prevention"
+Columbia University,Columbia University
 University of Copenhagen,University of Copenhagen
+Cork University Maternity Hospital,Cork University Maternity Hospital
 TX 75231,"Retina Foundation of the Southwest"
 Deakin University,Deakin University
 Deodoro,Deodoro
+Duke-National University of Singapore,Duke-National University of Singapore
+East Tennessee State University,East Tennessee State University
 Emory University,Emory University
 Erasmus Medical Center,Erasmus MC
 Eunice Kennedy Shriver National Institute of Child Health and Human Development,Eunice Kennedy Shriver National Institute of Child Health and Human Development
 eurac.edu,European Academy of Bozen
 iGE3,University of Geneva
+German Research Center for Environmental Health,German Research Center for Environmental Health
 GlaxoSmithKline R&D,GlaxoSmithKline R&D
 University of Groningen,University of Groningen
+umcg.nl,University of Groningen
 University of Hong Kong,The University of Hong Kong
+Hadassah-Hebrew University,Hadassah-Hebrew University
 Hong Kong Polytechnic University,Hong Kong Polytechnic University
 Harokopio University,Harokopio University
 Harvard University,Harvard University
 Harvard School of Public Health,Harvard School of Public Health
 FIMM,University of Helsinki
 University of Helsinki,University of Helsinki
-uniklinik-saarland.de,"Saarland University Hospital"
-"Saarland University Hospital","Saarland University Hospital"
+The Generation R Study Group,Erasmus University Rotterdam
+uniklinik-saarland.de,Saarland University Hospital
+Saarland University Hospital,Saarland University Hospital
+University of Illinois,University of Illinois
 Indiana University,Indiana University
 University of Iowa,University of Iowa
+NUI Galway,NUI Galway
 Johns Hopkins University,Johns Hopkins University
 "Hunter Genetics, Hunter New England Health Service, NSW, Australia.","John Hunter Hospital"
 Hospital for Sick Children,Hospital for Sick Children
 Karolinska Institutet,Karolinska Institutet
+University of Lausanne,University of Lausanne
+Max-Delbrück-Center (MDC) for Molecular Medicine,Max-Delbrück-Center (MDC) for Molecular Medicine
 Mayo clinic,"Mayo Medical School"
 McGill University,McGill University
 University of Michigan,University of Michigan
@@ -189,14 +206,18 @@ University of North Carolina,University of North Carolina
 NYU,New York University
 University of Oregon,University of Oregon
 Oregon Health & Science University,Oregon Health & Science University
-Gairdner,"Sir Charles Gairdner Hospital"
+Gairdner,Sir Charles Gairdner Hospital
 Federal University of Pelotas,Federal University of Pelotas
-"Abramson Research Center, The Children's Hospital of Philadelphia","Abramson Research Center, The Children's Hospital of Philadelphia"
+The Children's Hospital of Philadelphia,The Children's Hospital of Philadelphia
+Abramson Research Center, The Children's Hospital of Philadelphia
+University of Porto,University of Porto
 University of Queensland,University of Queensland
 Queensland Institute of Medical Research,"Queensland Institute of Medical Research"
+QIMR Berghofer Medical Research Institute,QIMR Berghofer Medical Research Institute
 Queensland University of Technology,Queensland University of Technology
 Regensburg University Medical Center,University Hospital Regensburg
 University of Rochester,University of Rochester
+Rotman Research Institute, Baycrest,Rotman Research Institute, Baycrest
 Erasmus University Medical Center,Erasmus MC
 Erasmus University Rotterdam,Erasmus University Rotterdam
 Dialectical Behavior Therapy Center of Seattle,Dialectical Behavior Therapy Center of Seattle
@@ -206,6 +227,7 @@ University of South Carolina,University of South Carolina
 University of Sydney,University of Sydney
 Syracuse University,Syracuse University
 University of Toronto,University of Toronto
+University of Trieste,University of Trieste
 Virginia Commonwealth University,Virginia Commonwealth University
 Yale University,Yale University
 VU University,Vrije Universiteit
@@ -220,6 +242,8 @@ University Medical Centre Utrecht,University Medical Center Utrecht
 University of Seville,University of Seville
 University of Texas Health Science Center,University of Texas Health Science Center at San Antonio
 "Montefiore Medical Center/Albert Einstein College of Medicine","Montefiore Medical Center/Albert Einstein College of Medicine"
+uwa.edu.au,University of Western Australia
+Yongin University,Yongin University
 ,
 #Some special ALSPAC munging,
 Oakfield Grove,University of Bristol
