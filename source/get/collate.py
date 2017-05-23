@@ -37,7 +37,7 @@ def collate():
 
   #get list of all keys in this zotero instance
   zot.getPapersKeys()
-  
+
   new_keys = []
   new_papers = []
 
@@ -53,9 +53,10 @@ def collate():
         #get the previously downloaded papers from the cache
         new_paper = pc.getCacheData(filetype='/raw/zotero', filenames=[paper_key])[paper_key]
         #check itemType - if it's 'note', we can ignore
-        if new_paper['data']['itemType'] != 'note':
+        # if new_paper['data']['itemType'] != 'note':
+        if new_paper['data']['itemType'] not in ('attachment', 'note'):
           new_papers.append(new_paper['data'])
-  
+
   #get all new papers
   zot.getPapersList(key_list = new_keys)
 
@@ -102,7 +103,7 @@ def collate():
           #data is automatically cached by getPubmed
         else:
           paper['pmid_data'] = pc.getCacheData(filetype='/raw/pubmed', filenames=[paper['pmid']])[paper['pmid']]
-      
+
   #now do merge data
   merged_papers = {}
   #get list of currently merged papers
@@ -177,10 +178,9 @@ def collate():
     #merged_papers.append(copy.deepcopy(mgr.dest))
     pc.dumpJson(filename, merged_papers[filename], 'processed/merged')
 
-  return merged_papers 
+  return merged_papers
 
 if __name__ == "__main__":
   print "Collate data"
-  
-  collate()
 
+  collate()
