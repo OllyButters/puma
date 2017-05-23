@@ -32,8 +32,8 @@ import bibliography.bibtex
 import get.collate
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton"
-__date__ = 14/2/17
-__version__ = '0.2.9'
+__date__ = 23/5/17
+__version__ = '0.2.10'
 
 # Lets figure out some paths that everything is relative to
 # global root_dir
@@ -43,6 +43,9 @@ print 'Root directory = ' + root_dir
 
 # Get all the config - these will be a global vars available like config.varname
 config.build_config_variables(root_dir)
+
+# Delete any unneeded data hanging around in the cache
+setup.tidy_existing_file_tree(root_dir)
 
 # Build the file tree relative to the root_dir
 setup.build_file_tree(root_dir)

@@ -1,7 +1,34 @@
 #! /usr/bin/env python
 
 import os.path
+import shutil
 import config.config as config
+
+
+###########################################################
+# Some of the config settings want to trample cached data,
+# this needs to be done elegantly otherwise old data is
+# left behind and can get picked up unnecessarily.
+def tidy_existing_file_tree(root_dir):
+
+    # Raw zotero files. Orphans get left here if deleted from e.g. zotero
+    if config.zotero_get_all == 1:
+        if os.path.exists(config.cache_dir + '/raw/zotero'):
+            shutil.rmtree(config.cache_dir + '/raw/zotero')
+
+    # Raw pubmed and DOI files. Orphans get left here if deleted from e.g. zotero
+    if config.use_doi_pubmed_cache == 0:
+        if os.path.exists(config.cache_dir + '/raw/doi'):
+            shutil.rmtree(config.cache_dir + '/raw/doi')
+
+        if os.path.exists(config.cache_dir + '/raw/pubmed'):
+            shutil.rmtree(config.cache_dir + '/raw/pubmed')
+
+    # Merged files. Orphans get left here if deleted from e.g. zotero or
+    # the raw cache folder.
+    if config.merge_all == 1:
+        if os.path.exists(config.cache_dir + '/processed/merged'):
+            shutil.rmtree(config.cache_dir + '/processed/merged')
 
 
 ###########################################################
