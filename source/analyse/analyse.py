@@ -535,9 +535,11 @@ def coverage_report(papers):
                     <th>Scopus<br/>Citations</th>
                 </tr>'''
 
+    number_of_papers = len(papers)
+
     # Actual values
     status_table += '<tr>'
-    status_table += '<td>Number</td>'
+    status_table += '<td>Number (out of ' + number_of_papers + ')</td>'
     status_table += '<td>' + str(status['hash']) + '</td>'
     status_table += '<td>' + str(status['zotero']) + '</td>'
     status_table += '<td>' + str(status['doi']) + '</td>'
@@ -550,20 +552,18 @@ def coverage_report(papers):
     status_table += '<td>' + str(status['scopus']) + '</td>'
     status_table += '</tr>'
 
-    number_of_papers = len(papers)
-
     # Percentages
     status_table += '<tr>'
     status_table += '<td>Percentage</td>'
-    status_table += '<td>' + str(round(100*status['hash']/number_of_papers)) + '</td>'
-    status_table += '<td>' + str(round(100*status['zotero']/number_of_papers)) + '</td>'
-    status_table += '<td>' + str(round(100*status['doi']/number_of_papers)) + '</td>'
-    status_table += '<td>' + str(round(100*status['pmid']/number_of_papers)) + '</td>'
-    status_table += '<td>' + str(round(100*status['title']/number_of_papers)) + '</td>'
-    status_table += '<td>' + str(round(100*status['first_author']/number_of_papers)) + '</td>'
-    status_table += '<td>' + str(round(100*status['first_author_affiliation']/number_of_papers)) + '</td>'
-    status_table += '<td>' + str(round(100*status['clean_institution']/number_of_papers)) + '</td>'
-    status_table += '<td>' + str(round(100*status['clean_date']/number_of_papers)) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['hash']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['zotero']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['doi']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['pmid']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['title']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['first_author']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['first_author_affiliation']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['clean_institution']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['clean_date']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['scopus']/number_of_papers))) + '</td>'
     status_table += '</tr></table>'
 
