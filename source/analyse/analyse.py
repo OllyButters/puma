@@ -2,7 +2,6 @@
 
 import csv
 import logging
-
 import config.config as config
 
 ############################################################
@@ -369,3 +368,205 @@ def output_csv(papers):
                 all_file.writerow([title, first_author, journal, citations, this_paper])
             except:
                 pass
+
+
+###########################################################
+# Build an HTML report of the status of the importat fields
+###########################################################
+def coverage_report(papers):
+
+    cov_css = '''
+                .missing_required {background-color: red;}
+                .missing_good_to_have {background-color: orange;}
+                tr:nth-child(even) {background-color: #f2f2f2}
+                th {background-color: #4CAF50; color: white;}
+                td, th {padding: 0.2em;}
+    '''
+
+    cov_html = '<table>'
+    cov_html += '''<tr>
+                    <th>Hash</th>
+                    <th>Zotero</th>
+                    <th>DOI</th>
+                    <th>PMID</th>
+                    <th>Title</th>
+                    <th>First<br/>Author</th>
+                    <th>First<br/>Author<br/>affil</th>
+                    <th>Clean<br/>Inst</th>
+                    <th>Clean<br/>Date</th>
+                    <th>Scopus<br/>Citations</th>
+                </tr>'''
+
+    status = {}
+    status['hash'] = 0
+    status['zotero'] = 0
+    status['doi'] = 0
+    status['pmid'] = 0
+    status['title'] = 0
+    status['first_author'] = 0
+    status['first_author_affiliation'] = 0
+    status['clean_institution'] = 0
+    status['clean_date'] = 0
+    status['scopus'] = 0
+
+    for this_paper in papers:
+        cov_html += '<tr>'
+
+        # Filename hash - this has to be prsent!
+        try:
+            fn_hash = this_paper['IDs']['hash']
+            status['hash'] = status['hash'] + 1
+        except:
+            fn_hash = '???'
+        cov_html += '<td>' + fn_hash + '</td>'
+
+        # Zotero ID - this has to be present!
+        try:
+            zotero = this_paper['IDs']['zotero']
+            cov_html += '<td><a href = "http://www.zotero.org/groups/' + config.zotero_id + '/items/itemKey/' + zotero + '" target="_blank">' + zotero + '</a></td>'
+            status['zotero'] = status['zotero'] + 1
+        except:
+            cov_html += '<td class="missing_required">???</td>'
+
+        # DOI - Not required, but REALLY useful
+        try:
+            doi = this_paper['IDs']['DOI']
+            if doi != '':
+                cov_html += '<td><a href="https://doi.org/' + doi + '" target="_blank">' + doi + '</a></td>'
+                status['doi'] = status['doi'] + 1
+            else:
+                raise Exception()
+        except:
+            cov_html += '<td class="missing_good_to_have">???</td>'
+
+        # PMID - Not required, but REALLY useful
+        try:
+            pmid = this_paper['IDs']['PMID']
+            if pmid != '':
+                cov_html += '<td><a href="https://www.ncbi.nlm.nih.gov/pubmed/' + pmid + '" target="_blank">' + pmid + '</a></td>'
+                status['pmid'] = status['pmid'] + 1
+            else:
+                raise Exception()
+        except:
+            cov_html += '<td class="missing_good_to_have">???</td>'
+
+        # Paper title
+        try:
+            title = this_paper['title']
+            if title != '':
+                cov_html += '<td>OK</td>'
+                status['title'] = status['title'] + 1
+            else:
+                raise Exception()
+        except:
+            cov_html += '<td class="missing_good_to_have">???</td>'
+
+        # First author - Not required, but REALLY useful
+        try:
+            first_author = this_paper['author'][0]['family']
+            if first_author != '':
+                cov_html += '<td>OK</td>'
+                status['first_author'] = status['first_author'] + 1
+            else:
+                raise Exception()
+        except:
+            cov_html += '<td class="missing_good_to_have">???</td>'
+
+        # First author affiliation - Not required, but REALLY useful
+        try:
+            first_author_affiliation = this_paper['author'][0]['affiliation'][0]['name']
+            if first_author_affiliation != '':
+                cov_html += '<td>OK</td>'
+                status['first_author_affiliation'] = status['first_author_affiliation'] + 1
+            else:
+                raise Exception()
+        except:
+            cov_html += '<td class="missing_good_to_have">???</td>'
+
+        # CLEAN first author affiliation - Not required, but REALLY useful
+        try:
+            clean_institution = this_paper['Extras']['CleanInstitute']
+            if clean_institution != '':
+                cov_html += '<td>OK</td>'
+                status['clean_institution'] = status['clean_institution'] + 1
+            else:
+                raise Exception()
+        except:
+            cov_html += '<td class="missing_good_to_have">???</td>'
+
+        # Clean date
+        try:
+            clean_date = this_paper['Extras']['CleanDate']['year']
+            if clean_date != '':
+                cov_html += '<td>OK</td>'
+                status['clean_date'] = status['clean_date'] + 1
+            else:
+                raise Exception()
+        except:
+            cov_html += '<td class="missing_required">???</td>'
+
+        # Clean date
+        try:
+            scopus = this_paper['Extras']['Citations']
+            if scopus != '':
+                cov_html += '<td>OK</td>'
+                status['scopus'] = status['scopus'] + 1
+            else:
+                raise Exception()
+        except:
+            cov_html += '<td class="missing_good_to_have">???</td>'
+
+        cov_html += '</tr>'
+    cov_html += '</table>'
+
+    # Build a status table
+    status_table = '<table>'
+    status_table += '''<tr>
+                    <th></th>
+                    <th>Hash</th>
+                    <th>Zotero</th>
+                    <th>DOI</th>
+                    <th>PMID</th>
+                    <th>Title</th>
+                    <th>First<br/>Author</th>
+                    <th>First<br/>Author<br/>affil</th>
+                    <th>Clean<br/>Inst</th>
+                    <th>Clean<br/>Date</th>
+                    <th>Scopus<br/>Citations</th>
+                </tr>'''
+
+    # Actual values
+    status_table += '<tr>'
+    status_table += '<td>Number</td>'
+    status_table += '<td>' + str(status['hash']) + '</td>'
+    status_table += '<td>' + str(status['zotero']) + '</td>'
+    status_table += '<td>' + str(status['doi']) + '</td>'
+    status_table += '<td>' + str(status['pmid']) + '</td>'
+    status_table += '<td>' + str(status['title']) + '</td>'
+    status_table += '<td>' + str(status['first_author']) + '</td>'
+    status_table += '<td>' + str(status['first_author_affiliation']) + '</td>'
+    status_table += '<td>' + str(status['clean_institution']) + '</td>'
+    status_table += '<td>' + str(status['clean_date']) + '</td>'
+    status_table += '<td>' + str(status['scopus']) + '</td>'
+    status_table += '</tr>'
+
+    number_of_papers = len(papers)
+
+    # Percentages
+    status_table += '<tr>'
+    status_table += '<td>Percentage</td>'
+    status_table += '<td>' + str(round(100*status['hash']/number_of_papers)) + '</td>'
+    status_table += '<td>' + str(round(100*status['zotero']/number_of_papers)) + '</td>'
+    status_table += '<td>' + str(round(100*status['doi']/number_of_papers)) + '</td>'
+    status_table += '<td>' + str(round(100*status['pmid']/number_of_papers)) + '</td>'
+    status_table += '<td>' + str(round(100*status['title']/number_of_papers)) + '</td>'
+    status_table += '<td>' + str(round(100*status['first_author']/number_of_papers)) + '</td>'
+    status_table += '<td>' + str(round(100*status['first_author_affiliation']/number_of_papers)) + '</td>'
+    status_table += '<td>' + str(round(100*status['clean_institution']/number_of_papers)) + '</td>'
+    status_table += '<td>' + str(round(100*status['clean_date']/number_of_papers)) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['scopus']/number_of_papers))) + '</td>'
+    status_table += '</tr></table>'
+
+    output_text = '<html><head><style>' + cov_css + '</style></head><body>' + status_table + '<br/><br/>' + cov_html + '</body></html>'
+    coverage_file = open(config.data_dir + '/coverage_report.html', 'w')
+    print >> coverage_file, output_text

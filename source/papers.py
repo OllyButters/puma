@@ -124,6 +124,9 @@ fo = open(file_name, 'wb')
 fo.write(json.dumps(papers, indent=4))
 fo.close()
 
+# Generate the coverage report
+analyse.coverage_report(papers)
+
 bibliography.bibtex.bibtex(papers, error_log)
 
 ###########################################################
