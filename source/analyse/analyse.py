@@ -539,7 +539,7 @@ def coverage_report(papers):
 
     # Actual values
     status_table += '<tr>'
-    status_table += '<td>Number (out of ' + number_of_papers + ')</td>'
+    status_table += '<td>Number (out of ' + str(number_of_papers) + ')</td>'
     status_table += '<td>' + str(status['hash']) + '</td>'
     status_table += '<td>' + str(status['zotero']) + '</td>'
     status_table += '<td>' + str(status['doi']) + '</td>'
