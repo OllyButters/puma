@@ -4,6 +4,7 @@ import papersCache as pc
 import re
 import hashlib
 
+
 def getDoi(doi):
   print "Getting DOI: "+doi
   check_doi = re.match(r'^http://dx\.doi\.org/', doi)
@@ -17,7 +18,7 @@ def getDoi(doi):
     response = urllib2.urlopen(request)
     html_raw = response.read();
     json_data = json.loads(html_raw)
-    #as doi's use '/' chars, we do an md5 of the doi as the filename
+    # as doi's use '/' chars, we do an md5 of the doi as the filename
     filename = hashlib.md5(doi).hexdigest()
     pc.dumpJson(filename, json_data, filetype='raw/doi')
     return json_data
@@ -27,4 +28,3 @@ def getDoi(doi):
   except ValueError, e:
     print "DOI: "+doi+" error: "+str(e)
     return None
-

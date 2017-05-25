@@ -3,6 +3,7 @@ import json
 import config.config as config
 import re
 
+
 class zotPaper (zotero.Zotero):
 
   def __init__(self, **kwargs):
@@ -11,7 +12,7 @@ class zotPaper (zotero.Zotero):
     self.papers = []
     super(zotPaper, self).__init__(config.zotero_id, config.zotero_type, config.zotero_api_key, **kwargs)
 
-  @property 
+  @property
   def collection(self):
     return self.__collection
 
@@ -29,9 +30,9 @@ class zotPaper (zotero.Zotero):
     else:
       self.collection_key = None
 
-  #get a list of item keys for this instance
+  # get a list of item keys for this instance
   def getPapersKeys(self, *args, **kwargs):
-    #get all keys
+    # get all keys
     if self.collection_key is not None:
       zot_keys = self.collection_items(format='keys', limit=999999)
     else:
@@ -39,23 +40,24 @@ class zotPaper (zotero.Zotero):
     self.papers_keys = zot_keys.split('\n')
     return self.papers_keys
 
-  #populate self.papers list with all papers in self.collection
+  # populate self.papers list with all papers in self.collection
   def getPapersList(self, key_list = None, *args, **kwargs):
     self.papers = []
 
     if key_list is None:
-      #get all keys
+      # get all keys
       key_list = self.getPapersKeys()
 
-    #get items one by one
-    #if we just use the items() method, the not all data is retrived
-    #we therefore request individually by key
+    # get items one by one
+    # if we just use the items() method, the not all data is retrived
+    # we therefore request individually by key
     for key in key_list:
       if key != '':
         print 'Getting zotero item '+key
         item = super(zotPaper, self).item(key, *args, **kwargs)
         self.papers.append(item)
     return self.papers
+
 
   def notesToFields(self, notes):
     entries = notes.split("\n");
@@ -66,10 +68,11 @@ class zotPaper (zotero.Zotero):
         data[datum.group(1)] = datum.group(2)
       else:
         data['notes'] += entry+"\n"
-        #don't raise an error, this will cause any other unformatted notes
-        #to vanish
-        #raise ValueError('datum is not formatted correctly')
+        # don't raise an error, this will cause any other unformatted notes
+        # to vanish
+        # raise ValueError('datum is not formatted correctly')
     return data
+
 
   def fieldsToNotes(self, paper, fields):
     notes = paper['notes']
@@ -79,27 +82,28 @@ class zotPaper (zotero.Zotero):
         value = paper[field]
       notes += '%s="%s"\n' % (field, paper[field])
     return notes
-      
+
+
   def uploadNotes(self, paper):
     notes = paper['notes']
     notes_dict = self.notesToFields(notes)
     key = paper['key']
     try:
-      #get the current data
+      # get the current data
       zot_paper = self.item(key)
       zot_notes_dict = {}
       if 'notes' in zot_paper['data']:
         zot_notes_dict = self.notesToFields(zot_paper['data']['notes'])
     except:
-      #do logging here
+      # do logging here
       print "Error getting paper %s from Zotero" % (key)
-    
-    #compare values and update zot_notes_dict only if key not present
+
+    # compare values and update zot_notes_dict only if key not present
     for k,v in notes_dict.iteritems():
       if k not in zot_notes_dict.keys():
         zot_notes_dict[k] = v
 
-    #now flatten zot_notes_dict ready for upload
+    # now flatten zot_notes_dict ready for upload
     zot_notes = ''
     for k,v in zot_notes_dict.iteritems():
       zot_notes += '%s="%s"\n' % (k,v)
@@ -108,7 +112,8 @@ class zotPaper (zotero.Zotero):
 
     self.update_item(zot_paper)
     return zot_paper
-      
+
+
   def mapFields(self, paper, item_type = 'journalArticle', creator_type = 'author', src_type = 'doi'):
     fields = self.item_type_fields(item_type)
     creator_types = self.item_creator_types(item_type)
@@ -153,7 +158,7 @@ class zotPaper (zotero.Zotero):
 
     zot_paper = {}
     zot_paper['itemType'] = item_type
-    
+
     for field in paper:
       if field in field_map.keys():
         zot_paper[field_map[field]] = paper[field]
@@ -170,11 +175,3 @@ class zotPaper (zotero.Zotero):
         zot_paper['creators'] = creators
 
     return zot_paper
-
-  
-
-
-        
-        
-  
-  

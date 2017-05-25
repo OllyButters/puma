@@ -8,6 +8,7 @@ import config.config as config
 
 from Bio import Entrez
 
+
 def getPubmed(this_pmid):
   print 'Working on '+this_pmid
   logging.info('Working on %s',this_pmid)
@@ -15,7 +16,7 @@ def getPubmed(this_pmid):
   logging.info('Downloading %s', this_pmid)
   Entrez.email = config.pubmed_email     # Always tell NCBI who you are
 
-  #Look at the PubModel. See http://www.nlm.nih.gov/bsd/licensee/elements_article_source.html
+  # Look at the PubModel. See http://www.nlm.nih.gov/bsd/licensee/elements_article_source.html
   override_pubmodel=False
   handle = Entrez.efetch(db="pubmed", id=this_pmid, retmode="xml")
 
@@ -42,7 +43,7 @@ def getPubmed(this_pmid):
     # some dp is required as Entrez.read returns a subclassed Dict type with additonal xml data as attributes. These are not serialised by the json dump so we need to include them in another way.
     ###
 
-    #add asterisk to major mesh headings
+    # add asterisk to major mesh headings
     try:
       for this_mesh_heading in pmid_data['MedlineCitation']['MeshHeadingList']:
         this_mesh_heading['MajorTopicYN'] = this_mesh_heading['DescriptorName'].attributes['MajorTopicYN']
@@ -61,5 +62,3 @@ def getPubmed(this_pmid):
     logging.warn('Unable to read pmid %s', this_pmid)
     print str(e)
     return None
-  
-

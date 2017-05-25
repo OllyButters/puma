@@ -6,8 +6,9 @@ import os
 import time
 import config.config as config
 
-#dump dict data to filename (cache[/filetype]/filename
-#if process is true adds '[' & ']' to start and end otherwise json will not parse correctly
+
+# dump dict data to filename (cache[/filetype]/filename
+# if process is true adds '[' & ']' to start and end otherwise json will not parse correctly
 def dumpJson(filename, data, filetype='', process=False):
   try:
     location = '/'.join(filter(None, [config.cache_dir, filetype, filename]))
@@ -29,7 +30,8 @@ def dumpJson(filename, data, filetype='', process=False):
     print "(papersCache.dumpJson) Unexpected error:", sys.exc_info()[1]
     pass
 
-#dump dict data to filename (cache[/filetype]/filename
+
+# dump dict data to filename (cache[/filetype]/filename
 def dumpFile(filename, data, filetype=''):
   try:
     location = '/'.join(filter(None, [config.cache_dir, filetype, filename]))
@@ -41,7 +43,7 @@ def dumpFile(filename, data, filetype=''):
     print "(papersCache.dumpFile) Unexpected error:", sys.exc_info()[1]
     pass
 
-#get a list of all filenames in directory cache[/filetype]
+# get a list of all filenames in directory cache[/filetype]
 def getCacheList(filetype = ''):
   cachefiles = []
   filetype = re.sub('[\.]{2,}', '', filetype)
@@ -50,9 +52,10 @@ def getCacheList(filetype = ''):
       cachefiles.append(name)
   return cachefiles
 
-#get all [filenames] from cache[/filetype]
-#processes to output_type (def. json)
-#returns a dict of [filename]->[filedata]
+
+# get all [filenames] from cache[/filetype]
+# processes to output_type (def. json)
+# returns a dict of [filename]->[filedata]
 def getCacheData(output_type='json', filetype='', filenames=[]):
   cache_files = []
   location = '/'.join(filter(None, [config.cache_dir, filetype]))
@@ -63,19 +66,19 @@ def getCacheData(output_type='json', filetype='', filenames=[]):
       else:
         if name in filenames:
           cache_files.append(name)
-   
+
   papers = {}
 
   for cache_filename in cache_files:
     location = '/'.join(filter(None, [config.cache_dir, filetype, cache_filename]))
     cache_file = open(location, 'r')
-    #cache_file_str = ''.join(cache_file.read().split())
-    #print cache_file_str
-    #paper = json.loads(cache_file_str)
+    # cache_file_str = ''.join(cache_file.read().split())
+    # print cache_file_str
+    # paper = json.loads(cache_file_str)
     if (output_type == 'json'):
       papers[cache_filename] = json.load(cache_file)
       cache_file.close()
     else:
       raise ValueError('(papersCache.getCacheData) Error, unrecognised output_type')
 
-  return papers    
+  return papers
