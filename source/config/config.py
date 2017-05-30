@@ -114,7 +114,7 @@ def build_config_variables(root_dir):
 
     cache_dir = root_dir + '/cache/' + project_details['short_name']
     config_dir = root_dir + '/config'
-    data_dir = root_dir + '/data' + project_details['short_name']
+    data_dir = root_dir + '/data/' + project_details['short_name']
     html_dir = root_dir + '/html/' + project_details['short_name']
     template_dir = root_dir + '/source/html/template'
     log_dir = root_dir + '/logs'

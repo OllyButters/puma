@@ -65,8 +65,8 @@ def build_file_tree(root_dir):
         os.mkdir(config.cache_dir + '/geodata')
 
     # = Data directory =
-    if not os.path.exists(root_dir + '/data'):
-        os.mkdir(root_dir + '/data')
+    if not os.path.exists(config.data_dir):
+        os.mkdir(config.data_dir)
 
     # = Log directory =
     if not os.path.exists(root_dir + '/logs'):
