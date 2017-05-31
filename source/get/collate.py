@@ -133,6 +133,10 @@ def collate():
 
     print "Merging to filename: "+filename
 
+    # the merge process uses the merge class and jsonpath mappings (see config dir)
+    # data is merged separately from each source to the blank template (data-doi-template in config)
+    # these separate 'doi-formatted' datasets are then merged together (pubmed into zotero, doi into pubmed/zotero) 
+    
     mgr = pMerge.Merge()
     map_file = open(config.config_dir+'/data-pubmed-doi-jsonpath', 'r')
     mgr.mapping = json.load(map_file)

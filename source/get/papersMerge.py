@@ -31,7 +31,7 @@ class Merge():
 
   # iterate over all fields in src_data (nested dict/list) and append to dest if it doesn't currently exist
   # recursively called for sub- lists/dicts
-  # todo needs rationalising to remove searches for matches. data can just be added by matching dest path or src path if not exist
+  # todo this would be much faster using a functional approach i.e. map functions
   def iterFields(self, src_data, path_mapping, full_src_path, dest, src_path = None, dest_parent_path = None):
 
     # if src_path is None, set it to full_src_path
@@ -131,9 +131,6 @@ class Merge():
         if isinstance(src_data, list):
           while len(dest) < len(src_data):
             dest.append(copy.deepcopy(dest[0]))
-        #elif isinstance(src_data, dict):
-        #  while len(dest) < len(src_data.keys()):
-        #    dest.append(copy.deepcopy(dest[0]))
 
       if isinstance(src_data, list):
         for key, item in enumerate(src_data):
@@ -141,30 +138,13 @@ class Merge():
           sub_src_path = full_src_path + ('['+str(key)+']',)
           src_path = ['$', '['+str(key)+']']
           # now we call iterfields again, setting dest as the found match, or created entry and the src_data, src_path and dest_path as required
-          # if dest is a list, we need to copy the last sub-element if present and we're not on the last element of src_data
-          # if isinstance(dest, list):
-          #  if len(dest) > 0:
-          #    #if key < len(src_data) - 1:
-          #    dest_field = len(dest) - 1
-          #    dest.append(copy.deepcopy(dest[0]))
-          #      #print "dest is list"
-          #    #else:
-          #    if key == len(src_data) - 1:
-          #      dest.pop(0)
-          #    #  if len(dest) > 1:
-          #    #    dest.pop(0)
-          #    #  dest_field = len(dest) - 1
           self.iterFields(item, path_subfields, sub_src_path, dest, src_path, new_dest_parent_path)
-          # if isinstance(dest, list):
-          #  dest.pop(0)
       elif isinstance(src_data, dict):
         for fieldname, item in src_data.items():
           # again, the sub_src_path is effectively an id for this particular entry in data (source data)
           sub_src_path = full_src_path + (fieldname,)
           src_path = ['$', fieldname]
           # now we call iterfields again, setting dest as the found match, or created entry and the src_data, src_path and dest_path as required
-          # self.log.info('--end iterFields-----------------------------------------')
-          # self.iterFields(item, path_subfields, sub_src_path, dest, src_path, dest_path)
           self.iterFields(item, path_subfields, sub_src_path, dest, src_path, new_dest_parent_path)
     else:
       # data is str, int, etc (n.b. this ignores sets, tuples as they don't currently exist in data, but may be a future issue)
@@ -210,8 +190,9 @@ class Merge():
     return mapping_output
 
 
+  # parse the path as json
+  # return list of matches (DatumInContext objects)
   def getPath(self, target_data, path):
-    # parse the path as json
     json_path = jsonp.parse(path)
     # create a list of matches
     matches = [match for match in json_path.find(target_data)]
@@ -221,6 +202,7 @@ class Merge():
 
 
   # insert path into destination
+  # return dict of destination object and destination field
   def insertNewDestLocation(self, path, dest = None):
     if dest is None:
       dest = self.dest

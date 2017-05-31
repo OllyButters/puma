@@ -4,7 +4,9 @@ import papersCache as pc
 import re
 import hashlib
 
-
+# retrieve the metadata available at doi.org
+# store retrieved json data in cache
+# return json data
 def getDoi(doi):
   print "Getting DOI: "+doi
   check_doi = re.match(r'^http://dx\.doi\.org/', doi)
