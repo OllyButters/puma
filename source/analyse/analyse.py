@@ -567,6 +567,9 @@ def coverage_report(papers):
     status_table += '<td>' + str(int(round(100*status['scopus']/number_of_papers))) + '</td>'
     status_table += '</tr></table>'
 
-    output_text = '<html><head><style>' + cov_css + '</style></head><body>' + status_table + '<br/><br/>' + cov_html + '</body></html>'
+    # Title
+    title = '<h1>' + config.project_details['short_name'] + '</h1>'
+
+    output_text = '<html><head><style>' + cov_css + '</style></head><body>' + title + status_table + '<br/><br/>' + cov_html + '</body></html>'
     coverage_file = open(config.data_dir + '/coverage_report.html', 'w')
     print >> coverage_file, output_text
