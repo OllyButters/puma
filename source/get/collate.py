@@ -141,7 +141,7 @@ def collate():
 
     #temporarily remove the IDs dict (for later replacement)
     ids = paper['IDs']
-    delete paper['IDs']
+    del paper['IDs']
 
     # create new filename (md5 of title)
     filename = hashlib.md5(paper['title'].encode('ascii', 'ignore')).hexdigest()
