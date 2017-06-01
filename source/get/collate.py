@@ -72,6 +72,16 @@ def collate():
 
   # now check new_papers for doi or pubmed id and retrieve if required
   for paper in new_papers:
+    # add an IDs key to paper and populate with zotero key
+    # plus empty keys for doi, pmid and hash
+    paper['IDs'] = {
+      'zotero': paper['key'],
+      'DOI': '',
+      'DOI_filename': '',
+      'PMID': '',
+      'hash': '',
+    }
+
     print 'Getting doi/pubmed data for paper: '+paper['title']+' (zotero key: '+paper['key']+')'
     paper['doi_data'] = {}
     paper['pmid_data'] = {}
@@ -83,6 +93,10 @@ def collate():
         doi = re.sub(r'^http://dx\.doi\.org/', '', doi)
       # as doi's use '/' chars, we do an md5 of the doi as the filename
       doi_filename = hashlib.md5(paper['DOI']).hexdigest()
+      
+      # add these ids to the IDs dict
+      paper['IDs']['DOI'] = doi
+      paper['IDs']['DOI_filename'] = doi_filename
 
       # check if paper data in doi cache (only if config.use_pubmed_doi_cache is not 1
       if doi_filename not in doi_cache or config.use_doi_pubmed_cache != 1:
@@ -97,7 +111,10 @@ def collate():
       pmid_matches = re.search(r'PMID: ([0-9]{1,8})', paper['extra'])
       if pmid_matches is not None:
         paper['pmid'] = pmid_matches.group(1)
-        #check if paper data in pm cache (only if config.use_doi_pubmed_cache is not 1)
+        # add the pmid to the IDs dict
+        paper['IDs']['pmid'] = paper['pmid']
+
+        # check if paper data in pm cache (only if config.use_doi_pubmed_cache is not 1)
         if paper['pmid'] not in pm_cache or config.use_doi_pubmed_cache != 1:
           pm_paper = pm.getPubmed(paper['pmid'])
           paper['pmid_data'] = pm_paper
@@ -121,8 +138,15 @@ def collate():
     # delete these from paper
     del paper['doi_data']
     del paper['pmid_data']
-    # create new filename
-    filename = hashlib.md5(paper['title'].encode('ascii', 'ignore')).hexdigest() #md5 of title
+
+    #temporarily remove the IDs dict (for later replacement)
+    ids = paper['IDs']
+    delete paper['IDs']
+
+    # create new filename (md5 of title)
+    filename = hashlib.md5(paper['title'].encode('ascii', 'ignore')).hexdigest()
+    # make sure we add the filename to ids
+    ids['hash'] = filename
 
     # if we aren't set to merge all papers, ignore existing files
     if config.merge_all != 1:
@@ -179,8 +203,18 @@ def collate():
     mgr.src = merged_paper['pmid_zotero_data']
     mgr.mapSrc()
 
-    merged_papers[filename] = copy.deepcopy(mgr.dest)
-    # merged_papers.append(copy.deepcopy(mgr.dest))
+    # now do some restructuring do make sure we dump data in the correct
+    # object format for later processing - 
+    # {
+    #   'IDs': [dict of all ids],
+    #   'merged': [the final merged object (copy of mgr.dest)]
+    # }
+    merged_paper = {
+      'IDs': ids,
+      'merged': copy.deepcopy(mgr.dest)
+    }
+    merged_papers[filename] = merged_paper
+    #merged_papers[filename] = copy.deepcopy(mgr.dest)
     pc.dumpJson(filename, merged_papers[filename], 'processed/merged')
 
   return merged_papers
