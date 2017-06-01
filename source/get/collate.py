@@ -95,7 +95,7 @@ def collate():
       doi_filename = hashlib.md5(paper['DOI']).hexdigest()
       
       # add these ids to the IDs dict
-      paper['IDs']['DOI'] = doi
+      paper['IDs']['DOI'] = paper['DOI']
       paper['IDs']['DOI_filename'] = doi_filename
 
       # check if paper data in doi cache (only if config.use_pubmed_doi_cache is not 1
