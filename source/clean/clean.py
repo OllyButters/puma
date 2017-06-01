@@ -10,18 +10,18 @@ import config.config as config
 
 
 # Some data will be missing. To deal with this, missing data will be put into the
-# Zotero notes field in a formatted structure "<key>:<value>\n<key>:<value>\n". That data will then be parsed by
+# Zotero notes field ('extra') in a formatted structure "<key>:<value>\n<key>:<value>\n". That data will then be parsed by
 # this function and put into the paper object so that it can be accessed throughout the analysis and html functions.
 def clean_notes(papers, error_log):
     for this_paper in papers:
         try:
-            notes = this_paper['notes']
-            this_paper['notes'] = {}
+            notes = this_paper['merged']['extra']
+            this_paper['merged']['extra'] = {}
             # split the notes data into key/value pairs
             fields = notes.split("\n")
             for this_field in fields:
                 components = this_field.split(":")
-                this_paper['notes'][components[0].strip()] = components[1].strip()
+                this_paper['extra'][components[0].strip()] = components[1].strip()
         except:
             pass
 
