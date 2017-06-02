@@ -78,10 +78,10 @@ def build_config_variables(root_dir):
         zotero_collection = config.get('zotero_api', 'zotero_collection')
 
         # collate settings
-        zotero_get_all = config.getint('collate', 'zotero_get_all')
-        use_doi_pubmed_cache = config.getint('collate', 'use_doi_pubmed_cache')
-        merge_all = config.getint('collate', 'merge_all')
-        use_cached_merge_only = config.getint('collate', 'use_cached_merge_only')
+        zotero_get_all = config.getboolean('collate', 'zotero_get_all')
+        use_doi_pubmed_cache = config.getboolean('collate', 'use_doi_pubmed_cache')
+        merge_all = config.getboolean('collate', 'merge_all')
+        use_cached_merge_only = config.getboolean('collate', 'use_cached_merge_only')
 
         # Pubmed
         pubmed_email = config.get('pubmed_api', 'pubmed_email')
