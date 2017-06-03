@@ -6,14 +6,20 @@ import datetime
 import time
 import csv
 import logging
-import sys
 
 import config.config as config
 
 
-# Use the elsevier API to get the number of citations a paper has bsed on its PMID.
+# Use the elsevier API to get the number of citations a paper has.
+# Try using the PMID first, if nothing returned then try using the DOI.
 # Ultimately need to build a GET string like
 # http://api.elsevier.com/content/search/scopus?query=PMID(18562177)&apiKey=8024d746590aade6be6856a22a734783&field=citedby-count
+# After scopus try pubmedcentral for a citation count.
+# There does seem to be a fair bit of repatition between the DOI and PMID code,
+# this is because the DOI returned data sometimes has multiple results, so needs
+# a bit of extra parsing.
+# Note: eid is the ID scopus assigns to each paper it knows about, this is useful
+#     for linking to it on the HTML pages later on.
 def citations(papers, api_key, citation_max_life, force_update, error_log):
 
     url = 'http://api.elsevier.com/content/search/scopus'
@@ -29,7 +35,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
     if force_update is not True:
         logging.info('Reading citation cache in.')
         try:
-            with open(config.cache_dir + '/citations.csv', 'rb') as csvfile:
+            with open(config.cache_dir + '/citations_scopus.csv', 'rb') as csvfile:
                 f = csv.reader(csvfile)
                 for row in f:
                     # Parse the date the citation was cached
@@ -48,8 +54,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
             csvfile.close()
             logging.info('Citation cache file read in')
         except:
-            print("Unexpected error:", sys.exc_info()[0])
-            print 'make file'
+            logging.info('No scopus citation cache file present. Will build a new one.')
 
     number_papers_to_process = len(papers)
     counter = 0
@@ -59,9 +64,10 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
 
         # read the cache
         try:
-            this_paper['Extras']['Citations'] = cached_citations[this_paper['IDs']['hash']]['citation_count']
+            this_paper['clean']['citations']['scopus']['count'] = cached_citations[this_paper['IDs']['hash']]['citation_count']
+            this_paper['clean']['citations']['scopus']['date_downloaded'] = cached_citations[this_paper['IDs']['hash']]['date_downloaded']
             try:
-                this_paper['Extras']['eid'] = cached_citations[this_paper['IDs']['hash']]['eid']
+                this_paper['IDs']['scopus'] = cached_citations[this_paper['IDs']['hash']]['eid']
             except:
                 pass
             logging.info(str(this_paper['IDs']['hash']) + ' in citation cache')
@@ -72,8 +78,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
             # Handle Max Quota Reached
             error_number = 0
 
-            # ==================================================
-            # shoud wrap the above up as a fn and run it with doi and pmid separately
+            # query scopus with a pmid
             if this_paper['IDs']['PMID'] != "":
                 try:
                     # Now try with a PMID
@@ -88,7 +93,8 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
                         if len(t['search-results']['entry']) > 1:
                             error_log.logErrorPaper("Multiple different citaton counts found for PMID", this_paper)
                         citations = t['search-results']['entry'][0]['citedby-count']
-                        this_paper['Extras']['Citations'] = citations
+                        this_paper['clean']['citations']['scopus']['count'] = citations
+                        this_paper['clean']['citations']['scopus']['date_downloaded'] = datetime.datetime.now()
 
                         if len(t['search-results']['entry']) == 1:  # Do not cache if multiple results returned
                             cached_citations[this_paper['IDs']['hash']] = {}
@@ -96,7 +102,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
                             cached_citations[this_paper['IDs']['hash']]['date_downloaded'] = datetime.datetime.now()
                             try:
                                 cached_citations[this_paper['IDs']['hash']]['eid'] = t['search-results']['entry'][0]['eid']
-                                this_paper['Extras']['eid'] = t['search-results']['entry'][0]['eid']
+                                this_paper['IDs']['scopus'] = t['search-results']['entry'][0]['eid']
                             except:
                                 pass
                         logging.info('Citation added via PMID')
@@ -121,7 +127,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
                     print 'An unexpected error happened getting the citations via PMID!'
 
             try:
-                this_paper['Extras']['Citations']
+                this_paper['clean']['citations']['scopus']['count']
             except:
                 # If we get here then there is no citation.
                 logging.warn('No citations found for %s.', str(this_paper['IDs']['hash']))
@@ -131,7 +137,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
             # The above could have failed a couple of points - no PMID or nothing returned from a PMID query
             try:
                 # try querying with the DOI first - there might not be a DOI
-                if 'Citations' not in this_paper['Extras'] and this_paper['IDs']['DOI'] != "":
+                if 'count' not in this_paper['clean']['citations']['scopus'] and this_paper['IDs']['DOI'] != "":
                     # request_string = url+'?apiKey='+api_key+'&field=citedby-count&query=DOI('+this_paper['IDs']['DOI']+')'
                     request_string = url + '?apiKey=' + api_key + '&query=DOI(' + this_paper['IDs']['DOI'] + ')'
                     logging.info(request_string)
@@ -153,15 +159,16 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
                             for n in range(0, len(t['search-results']['entry'])):
                                 if t['search-results']['entry'][n]['prism:doi'] == this_paper['IDs']['DOI'] and (title == "" or title == t['search-results']['entry'][n]['dc:title']):
                                     citations = citations + int(t['search-results']['entry'][n]['citedby-count'])
-                                    this_paper['Extras']['eid'] = t['search-results']['entry'][n]['eid']
+                                    this_paper['IDs']['scopus'] = t['search-results']['entry'][n]['eid']
                                     title = t['search-results']['entry'][n]['dc:title']
-                            this_paper['Extras']['Citations'] = citations
+                            this_paper['clean']['citations']['scopus']['count'] = citations
 
                         elif len(t['search-results']['entry']) == 1:
                             citations = t['search-results']['entry'][0]['citedby-count']
-                            this_paper['Extras']['Citations'] = citations
+                            this_paper['clean']['citations']['scopus']['count'] = citations
+                            this_paper['clean']['citations']['scopus']['date_downloaded'] = datetime.datetime.now()
                             scopus_id = t['search-results']['entry'][0]['eid']
-                            this_paper['Extras']['eid'] = scopus_id
+                            this_paper['IDs']['scopus'] = scopus_id
 
                             # Do not cache if multiple results returned
                             cached_citations[this_paper['IDs']['hash']] = {}
@@ -198,7 +205,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
 
             # ==================================================
 
-    csvfile = open(config.cache_dir + '/citations.csv', 'wb')
+    csvfile = open(config.cache_dir + '/citations_scopus.csv', 'wb')
     citation_file = csv.writer(csvfile)
     for this_citation in cached_citations:
         temp_citation_count = cached_citations[this_citation]['citation_count']
@@ -208,6 +215,8 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
         except:
             temp_eid = ""
         citation_file.writerow([this_citation, str(temp_citation_count), temp_date_downloaded, temp_eid])
+
+    ############################################################################
 
     # === Europe PMC ===
     print 'Doing Europe PMC Citations'
@@ -235,14 +244,13 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
             csvfile.close()
             logging.info('Citation cache file read in')
         except:
-            print 'No EuropePMC Citation Cache Found.'
-            print 'make file'
+            logging.info('No PMC citation cache file present. Will build a new one.')
 
     # Get Citation Data
     counter = 1
     for this_paper in papers:
         try:
-            this_paper['Extras']['Citations-EuropePMC'] = cached_citations[this_paper['IDs']['hash']]['citation_count']
+            this_paper['clean']['citations']['PMC']['count'] = cached_citations[this_paper['IDs']['hash']]['citation_count']
             logging.info(str(this_paper['IDs']['hash'])+" in EuropePMC citation cache (" + str(counter) + "/" + str(len(papers)) + ")")
         except:
             try:
@@ -253,7 +261,8 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
                 time.sleep(0.4)
 
                 citations = t["resultList"]["result"][0]["citedByCount"]
-                this_paper['Extras']['Citations-EuropePMC'] = citations
+                this_paper['clean']['citations']['PMC']['count'] = citations
+                this_paper['clean']['citations']['PMC']['date_downloaded'] = datetime.datetime.now()
 
                 cached_citations[this_paper['IDs']['hash']] = {}
                 cached_citations[this_paper['IDs']['hash']]['citation_count'] = citations
