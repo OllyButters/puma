@@ -18,10 +18,8 @@ def journals(papers):
 
     journals = []
     for this_paper in papers:
-        try:
-            journals.append(this_paper['journalAbbreviation'])
-        except:
-            logging.warn('No journalAbbreviation for '+this_paper['IDs']['hash'])
+        if this_paper['clean']['journal']['journal_name'] != '':
+            journals.append(this_paper['clean']['journal']['journal_name'])
 
     print str(len(journals)) + '/' + str(num_papers)
     print str(len(set(journals))) + ' different journals'
@@ -54,8 +52,8 @@ def abstracts(papers):
     for this_paper in papers:
         try:
             # Get abstract text
-            # abstracts = str(this_paper['PubmedArticle'][0]['MedlineCitation']['Article']['Abstract']['AbstractText'])
-            abstracts = str(this_paper['MedlineCitation']['Article']['Abstract']['AbstractText'])
+            # abstracts = str(this_paper['merged']['PubmedArticle'][0]['MedlineCitation']['Article']['Abstract']['AbstractText'])
+            abstracts = str(this_paper['merged']['MedlineCitation']['Article']['Abstract']['AbstractText'])
 
             # Remove punctuation and esacpe characters that will cause a problem
             abstracts = abstracts.lower()
@@ -120,20 +118,11 @@ def authors(papers):
 
     authors = []
     for this_paper in papers:
-        # Some pmid files dont actually have an authorlist! e.g. 2587412
-        # This probably needs to be resolved with pubmed!
         try:
-            for this_author in this_paper['author']:
-                # There are some entries in the author list that are not actually authors e.g. 21379325 last author
-                try:
-                    authors.append(this_author['family'])
-                    # Create a clean author field. This is the Surname followed by first initial.
-                    this_author.update({'clean': this_author['family'] + " " + this_author['given'][0]})
-                except:
-                    pass
-
+            for this_author in this_paper['clean']['full_author_list']:
+              authors.append(this_author['clean'])
         except:
-            logging.warn('No AuthorList for ' + this_paper['IDs']['hash'])
+            pass
 
     # print authors
     freq = dict((x, authors.count(x)) for x in set(authors))
@@ -161,9 +150,9 @@ def authors(papers):
     for this_paper in papers:
         try:
             # CREATE NODES
-            for this_author in this_paper['author']:
+            for this_author in this_paper['clean']['full_author_list']:
                 # Create author hash
-                hash_object = hashlib.sha256(this_author['clean'])
+                hash_object = hashlib.sha256(this_author)
                 author_hash = hash_object.hexdigest()
 
                 # Store author details
@@ -179,10 +168,10 @@ def authors(papers):
                     author_network['authors'][author_hash]['num_papers'] = 1
 
                 # CREATE EDGES
-                for con_author in this_paper['author']:
+                for con_author in this_paper['clean']['full_author_list']:
 
                     if not this_author == con_author:
-                        con_hash_object = hashlib.sha256(con_author['clean'])
+                        con_hash_object = hashlib.sha256(con_author)
                         con_author_hash = con_hash_object.hexdigest()
 
                         con_id = ""
@@ -225,7 +214,7 @@ def completeness_report(papers):
     first_authors_count = 0
     for this_paper in papers:
         try:
-            if this_paper['author'][0]['family']:
+            if this_paper['merged']['author'][0]['family']:
                 first_authors_count = first_authors_count + 1
         except:
             next
@@ -243,7 +232,7 @@ def first_authors(papers):
     first_authors = []
     for this_paper in papers:
         try:
-            first_authors.append(this_paper['author'][0]['family'])
+            first_authors.append(this_paper['clean']['full_author_list'][0]['family'])
         except:
             next
 
@@ -275,7 +264,7 @@ def inst(papers):
     first_authors_inst = []
     for this_paper in papers:
         try:
-            first_authors_inst.append(this_paper['Extras']['CleanInstitute'])
+            first_authors_inst.append(this_paper['clean']['location']['institute'])
         except:
             pass
 
@@ -309,11 +298,11 @@ def mesh(papers):
     for this_paper in papers:
 
         if 'MedlineCitation' in this_paper:
-            if 'MeshHeadingList' in this_paper['MedlineCitation']:
+            if 'MeshHeadingList' in this_paper['merged']['MedlineCitation']:
                 coverage = coverage + 1
 
                 try:
-                    for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
+                    for this_mesh in this_paper['merged']['MedlineCitation']['MeshHeadingList']:
                         mesh.append(this_mesh['DescriptorName'])
                 except:
                     pass
@@ -345,22 +334,22 @@ def output_csv(papers):
         all_file = csv.writer(csvfile)
         for this_paper in papers:
             try:
-                title = this_paper['title']
+                title = this_paper['clean']['title']
             except:
                 title = '???'
 
             try:
-                first_author = this_paper['author'][0]['family']
+                first_author = this_paper['clean']['full_author_list'][0]['family']
             except:
                 first_author = '???'
 
             try:
-                journal = this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
+                journal = this_paper['clean']['journal']['journal_name']
             except:
                 journal = '???'
 
             try:
-                citations = this_paper['Extras']['Citations']
+                citations = this_paper['clean']['Citations']
             except:
                 citations = '???'
 
@@ -452,7 +441,7 @@ def coverage_report(papers):
 
         # Paper title
         try:
-            title = this_paper['title']
+            title = this_paper['merged']['title']
             if title != '':
                 cov_html += '<td>OK</td>'
                 status['title'] = status['title'] + 1
@@ -463,7 +452,7 @@ def coverage_report(papers):
 
         # First author - Not required, but REALLY useful
         try:
-            first_author = this_paper['author'][0]['family']
+            first_author = this_paper['merged']['author'][0]['family']
             if first_author != '':
                 cov_html += '<td>OK</td>'
                 status['first_author'] = status['first_author'] + 1
@@ -485,7 +474,7 @@ def coverage_report(papers):
 
         # CLEAN first author affiliation - Not required, but REALLY useful
         try:
-            clean_institution = this_paper['Extras']['CleanInstitute']
+            clean_institution = this_paper['clean']['location']['institute']
             if clean_institution != '':
                 cov_html += '<td>OK</td>'
                 status['clean_institution'] = status['clean_institution'] + 1
@@ -496,7 +485,7 @@ def coverage_report(papers):
 
         # Clean date
         try:
-            clean_date = this_paper['Extras']['CleanDate']['year']
+            clean_date = this_paper['clean']['clean_date']['year']
             if clean_date != '':
                 cov_html += '<td>OK</td>'
                 status['clean_date'] = status['clean_date'] + 1
@@ -507,7 +496,7 @@ def coverage_report(papers):
 
         # Clean date
         try:
-            scopus = this_paper['Extras']['Citations']
+            scopus = this_paper['clean']['Citations']
             if scopus != '':
                 cov_html += '<td>OK</td>'
                 status['scopus'] = status['scopus'] + 1

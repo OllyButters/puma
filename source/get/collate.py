@@ -112,7 +112,7 @@ def collate():
       if pmid_matches is not None:
         paper['pmid'] = pmid_matches.group(1)
         # add the pmid to the IDs dict
-        paper['IDs']['pmid'] = paper['pmid']
+        paper['IDs']['PMID'] = paper['pmid']
 
         # check if paper data in pm cache (only if config.use_doi_pubmed_cache is not 1)
         if paper['pmid'] not in pm_cache or config.use_doi_pubmed_cache != 1:
