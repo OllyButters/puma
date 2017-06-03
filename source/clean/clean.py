@@ -60,7 +60,7 @@ def pre_clean(papers, error_log):
 
         # get a cleaned date
         # then insert year_published into clean['year_published'] if present
-        clean_date(this_paper)
+        clean_date(this_paper, error_log)
         try:
             this_paper['clean']['year_published'] = this_paper['clean']['cleaned_date']['year']
         except:
@@ -74,7 +74,7 @@ def clean_abstract(this_paper):
     except:
         logging.warn('No abstract for ' + this_paper['IDs']['hash'])
 
-def clean_date(this_paper):
+def clean_date(this_paper, error_log):
     # Generate a Clean Date
     # There are a lot of different dates in the paper data object.
     # These need to be converted into 1 date field so that it is consistently accessible throughout.
@@ -139,8 +139,8 @@ def clean_date(this_paper):
 # returns string of cleaned name
 def clean_author_name(this_author):
     # Create a clean author field. This is the Surname followed by first initial
-    clean_author_name = this_author['family'] + " " + this_author['given'][0]
-    return clean_author_name
+    cleaned_author_name = this_author['family'] + " " + this_author['given'][0]
+    return cleaned_author_name
       
 # Clean up the author list
 # Copies cleaned entry into this_paper['clean']['full_author_list']
@@ -174,13 +174,14 @@ def clean_authors(this_paper):
                 authors.append(this_author['family'])
                 # Create a clean author field. This is the Surname followed by first initial.
                 #clean_author_name = this_author['family'] + " " + this_author['given'][0]
-                clean_author_name = clean_author(this_author)
-                this_author.update({'clean': clean_author_name})
+                cleaned_author_name = clean_author_name(this_author)
+                this_author.update({'clean': cleaned_author_name})
                 this_paper['clean']['full_author_list'].append(this_author)
             except:
                 pass
 
-    except:
+    except Exception as e:
+        print str(e)
         logging.warn('No AuthorList for ' + this_paper['IDs']['hash'])
 
     # do we need to return anything here? currently returns list of authors, probably should just be 0 or error code
@@ -245,7 +246,7 @@ def clean_institution(papers):
                     logging.info(
                         'ID:%s. %s MATCHES %s REPLACEDBY %s',
                         this_paper, institute, pattern[y], replacements[y])
-                    this_paper['clean']['location']['institute'] = replacements[y]
+                    this_paper['clean']['location']['clean_institute'] = replacements[y]
 
                     break
 
@@ -255,11 +256,11 @@ def clean_institution(papers):
                     number_not_matched += 1
 
         try:
-            this_paper['clean']['location']['institute']
+            this_paper['clean']['location']['clean_institute']
         except:
             # Check for Zotero note institution
             try:
-                this_paper['clean']['location']['institute'] = this_paper['merged']['extra']['institution']
+                this_paper['clean']['location']['clean_institute'] = this_paper['merged']['extra']['institution']
             except:
                 pass
 
@@ -312,13 +313,13 @@ def clean_keywords(this_paper):
 
 # clean mesh headings for this_paper
 def clean_mesh(this_paper):
-    if 'MedlineCitation' in this_paper:
+    if 'MedlineCitation' in this_paper['merged'].keys():
         try:
             this_paper['clean']['keywords']
         except KeyError:
             this_paper['clean']['keywords'] = {}
 
-        if 'MeshHeadingList' in this_paper['merged']['MedlineCitation']:
+        if 'MeshHeadingList' in this_paper['merged']['MedlineCitation'].keys():
             try:
                 this_paper['clean']['keywords']['mesh']
             except KeyError:
@@ -332,7 +333,8 @@ def clean_mesh(this_paper):
                         'major': this_mesh['MajorTopicYN']
                         }
                     )
-            except:
+            except Exception as e:
+                print str(e)
                 pass
 
 # Go through the deltas directory and apply any changes that are needed

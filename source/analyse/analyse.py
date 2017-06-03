@@ -231,7 +231,17 @@ def first_authors(papers):
     first_authors = []
     for this_paper in papers:
         try:
-            first_authors.append(this_paper['clean']['full_author_list'][0]['family'])
+            
+            first_author_name = this_paper['clean']['full_author_list'][0]['clean']
+            # stick the first author cleaned name in clean['first_author']['name']
+            try:
+                this_paper['clean']['first_author']
+            except KeyError:
+                this_paper['clean']['first_author'] = {}
+
+            this_paper['clean']['first_author']['name'] = first_author_name
+            first_authors.append(first_author_name)
+
         except:
             next
 
@@ -263,7 +273,7 @@ def inst(papers):
     first_authors_inst = []
     for this_paper in papers:
         try:
-            first_authors_inst.append(this_paper['clean']['location']['institute'])
+            first_authors_inst.append(this_paper['clean']['location']['clean_institute'])
         except:
             pass
 
@@ -296,13 +306,13 @@ def mesh(papers):
     coverage = 0
     for this_paper in papers:
 
-        if 'MedlineCitation' in this_paper:
-            if 'MeshHeadingList' in this_paper['merged']['MedlineCitation']:
+        if 'keywords' in this_paper['clean']['keywords'].keys():
+            if 'mesh' in this_paper['clean']['keywords'].keys():
                 coverage = coverage + 1
 
                 try:
-                    for this_mesh in this_paper['merged']['MedlineCitation']['MeshHeadingList']:
-                        mesh.append(this_mesh['DescriptorName'])
+                    for this_mesh in this_paper['clean']['keywords']['mesh']:
+                        mesh.append(this_mesh['term'])
                 except:
                     pass
 
