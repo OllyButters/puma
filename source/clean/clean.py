@@ -55,63 +55,83 @@ def pre_clean(papers, error_log):
         # add in a cleaned journal title
         clean_journal(this_paper)
 
-        # Generate a Clean Date
-        # There are a lot of different dates in the paper data object.
-        # These need to be converted into 1 date field so that it is consistently accessible throughout.
-        # Relying on just this clean date will potentially cause some data lose so in situations where
-        # you need a particular date, e.g. online publication date not paper publish date, then you
-        # should make sure you are using the correct one. However, the clean_date field gives you the
-        # best chance of getting a relevant date that is at least correct for something.
+        # add in cleaned abstract
+        clean_abstract(this_paper)
 
-        # clean_date format = {'day':'00','month':'00','year':'0000'}
-        this_paper['clean']['clean_date'] = {}
-
-        # Try the different date fields. If we don't get a full day, month and year for the clean_date
-        # then try the next possible field. Finally if none of the fields work then try the Zotero notes field.
+        # get a cleaned date
+        # then insert year_published into clean['year_published'] if present
+        clean_date(this_paper)
         try:
-            # First check for Pubmed date
-            if str(this_paper['merged']['PubmedData']['History'][0]['Day']) == "" or str(this_paper['merged']['PubmedData']['History'][0]['Month']) == "" or str(this_paper['merged']['PubmedData']['History'][0]['Year']) == "":
+            this_paper['clean']['year_published'] = this_paper['clean']['cleaned_date']['year']
+        except:
+            pass
+
+# get the abstract from MedlineCitation if present and add to clean['abstract']
+def clean_abstract(this_paper):
+    try:
+        # Get abstract text
+        this_paper['clean']['abstract'] = str(this_paper['merged']['MedlineCitation']['Article']['Abstract']['AbstractText'])
+    except:
+        logging.warn('No abstract for ' + this_paper['IDs']['hash'])
+
+def clean_date(this_paper):
+    # Generate a Clean Date
+    # There are a lot of different dates in the paper data object.
+    # These need to be converted into 1 date field so that it is consistently accessible throughout.
+    # Relying on just this clean date will potentially cause some data lose so in situations where
+    # you need a particular date, e.g. online publication date not paper publish date, then you
+    # should make sure you are using the correct one. However, the clean_date field gives you the
+    # best chance of getting a relevant date that is at least correct for something.
+
+    # clean_date format = {'day':'00','month':'00','year':'0000'}
+    this_paper['clean']['clean_date'] = {}
+
+    # Try the different date fields. If we don't get a full day, month and year for the clean_date
+    # then try the next possible field. Finally if none of the fields work then try the Zotero notes field.
+    try:
+        # First check for Pubmed date
+        if str(this_paper['merged']['PubmedData']['History'][0]['Day']) == "" or str(this_paper['merged']['PubmedData']['History'][0]['Month']) == "" or str(this_paper['merged']['PubmedData']['History'][0]['Year']) == "":
+            raise Exception('Invalid Date')
+
+        this_paper['clean']['clean_date']['day'] = str(this_paper['merged']['PubmedData']['History'][0]['Day'])
+        this_paper['clean']['clean_date']['month'] = str(this_paper['merged']['PubmedData']['History'][0]['Month'])
+        this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['PubmedData']['History'][0]['Year'])
+
+    except:
+        try:
+            # Check for an issue date
+            if str(this_paper['merged']['issued']['date-parts'][0][2]) == "" or str(this_paper['merged']['issued']['date-parts'][0][1]) == "" or str(this_paper['merged']['issued']['date-parts'][0][0]) == "":
                 raise Exception('Invalid Date')
 
-            this_paper['clean']['clean_date']['day'] = str(this_paper['merged']['PubmedData']['History'][0]['Day'])
-            this_paper['clean']['clean_date']['month'] = str(this_paper['merged']['PubmedData']['History'][0]['Month'])
-            this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['PubmedData']['History'][0]['Year'])
+            this_paper['clean']['clean_date']['day'] = str(this_paper['merged']['issued']['date-parts'][0][2])
+            this_paper['clean']['clean_date']['month'] = str(this_paper['merged']['issued']['date-parts'][0][1])
+            this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['issued']['date-parts'][0][0])
 
         except:
             try:
-                # Check for an issue date
-                if str(this_paper['merged']['issued']['date-parts'][0][2]) == "" or str(this_paper['merged']['issued']['date-parts'][0][1]) == "" or str(this_paper['merged']['issued']['date-parts'][0][0]) == "":
+                # Check for a created date
+                if str(this_paper['merged']['created']['date-parts'][0][2]) == "" or str(this_paper['merged']['created']['date-parts'][0][1]) == "" or str(this_paper['merged']['created']['date-parts'][0][0]) == "":
                     raise Exception('Invalid Date')
 
-                this_paper['clean']['clean_date']['day'] = str(this_paper['merged']['issued']['date-parts'][0][2])
-                this_paper['clean']['clean_date']['month'] = str(this_paper['merged']['issued']['date-parts'][0][1])
-                this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['issued']['date-parts'][0][0])
+                this_paper['clean']['clean_date']['day'] = str(this_paper['merged']['created']['date-parts'][0][2])
+                this_paper['clean']['clean_date']['month'] = str(this_paper['merged']['created']['date-parts'][0][1])
+                this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['created']['date-parts'][0][0])
 
             except:
                 try:
-                    # Check for a created date
-                    if str(this_paper['merged']['created']['date-parts'][0][2]) == "" or str(this_paper['merged']['created']['date-parts'][0][1]) == "" or str(this_paper['merged']['created']['date-parts'][0][0]) == "":
-                        raise Exception('Invalid Date')
-
-                    this_paper['clean']['clean_date']['day'] = str(this_paper['merged']['created']['date-parts'][0][2])
-                    this_paper['clean']['clean_date']['month'] = str(this_paper['merged']['created']['date-parts'][0][1])
-                    this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['created']['date-parts'][0][0])
-
+                    # Zotero Notes overide date
+                    date_parts = this_paper['merged']['notes']['date'].split("/")
+                    this_paper['clean']['clean_date']['day'] = str(date_parts[0])
+                    this_paper['clean']['clean_date']['month'] = str(date_parts[1])
+                    this_paper['clean']['clean_date']['year'] = str(date_parts[2])
                 except:
                     try:
-                        # Zotero Notes overide date
-                        date_parts = this_paper['merged']['notes']['date'].split("/")
-                        this_paper['clean']['clean_date']['day'] = str(date_parts[0])
-                        this_paper['clean']['clean_date']['month'] = str(date_parts[1])
-                        this_paper['clean']['clean_date']['year'] = str(date_parts[2])
+                        # zotero 'date' field (only contains numerical year, word month)
+                        date_parts = this_paper['merged']['date'].split(" ")
+                        this_paper['clean']['clean_date']['year'] = str(date_parts[-1])
                     except:
-                        try:
-                            # zotero 'date' field (only contains numerical year, word month)
-                            date_parts = this_paper['merged']['date'].split(" ")
-                            this_paper['clean']['clean_date']['year'] = str(date_parts[-1])
-                        except:
-                            # A date has not been found. Put this in the error log.
-                            error_log.logErrorPaper("Cannot Create Clean Date (Consider using Zotero notes)", this_paper)
+                        # A date has not been found. Put this in the error log.
+                        error_log.logErrorPaper("Cannot Create Clean Date (Consider using Zotero notes)", this_paper)
 
 # Clean author name
 # param author dict doi-style author object (at least 'family' and 'given' as keys)
@@ -162,6 +182,8 @@ def clean_authors(this_paper):
 
     except:
         logging.warn('No AuthorList for ' + this_paper['IDs']['hash'])
+
+    # do we need to return anything here? currently returns list of authors, probably should just be 0 or error code
     return authors
 
 # Have a go at tidying up the mess that is first author institution.
