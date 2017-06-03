@@ -12,12 +12,12 @@ import config.config as config
 def tidy_existing_file_tree(root_dir):
 
     # Raw zotero files. Orphans get left here if deleted from e.g. zotero
-    if config.zotero_get_all == 1:
+    if config.zotero_get_all is True:
         if os.path.exists(config.cache_dir + '/raw/zotero'):
             shutil.rmtree(config.cache_dir + '/raw/zotero')
 
     # Raw pubmed and DOI files. Orphans get left here if deleted from e.g. zotero
-    if config.use_doi_pubmed_cache == 0:
+    if config.use_doi_pubmed_cache is False:
         if os.path.exists(config.cache_dir + '/raw/doi'):
             shutil.rmtree(config.cache_dir + '/raw/doi')
 
@@ -26,7 +26,7 @@ def tidy_existing_file_tree(root_dir):
 
     # Merged files. Orphans get left here if deleted from e.g. zotero or
     # the raw cache folder.
-    if config.merge_all == 1:
+    if config.merge_all is True:
         if os.path.exists(config.cache_dir + '/processed/merged'):
             shutil.rmtree(config.cache_dir + '/processed/merged')
 
