@@ -150,7 +150,7 @@ def build_home(papers, error_log):
     # Calculate the number of papers for each year
     for this_paper in papers:
         try:
-            this_year = this_paper['Extras']['CleanDate']['year']
+            this_year = this_paper['clean']['year_published']
 
             # Make sure there is a dict item for this year
             if this_year not in summary:
@@ -161,28 +161,28 @@ def build_home(papers, error_log):
 
             # add the citations for this paper to the year running total
             try:
-                summary[this_year]['citations'] += int(this_paper['Extras']['Citations'])
+                summary[this_year]['citations'] += int(this_paper['clean']['citations']['scopus']['count'])
             except:
                 pass
 
             # Get number of UoB papers published this year
             try:
-                if this_paper['Extras']['CleanInstitute'] == 'University of Bristol':
+                if this_paper['clean']['location']['clean_institute'] == 'University of Bristol':
                     summary[this_year]['uob'] += 1
             except:
                 pass
 
         except:
             try:
-                this_paper['Extras']['CleanDate']['year']
+                this_paper['clean']['year_published']
             except:
                 missing_year['num_papers'] += 1
                 try:
-                    missing_year['citations'] += int(this_paper['Extras']['Citations'])
+                    missing_year['citations'] += int(this_paper['clean']['citations']['scopus']['count'])
                 except:
                     pass
                     try:
-                        if this_paper['Extras']['CleanInstitute'] == 'University of Bristol':
+                        if this_paper['clean']['location']['clean_institute'] == 'University of Bristol':
                             missing_year['uob'] += 1
                     except:
                         pass
@@ -283,7 +283,8 @@ def build_home(papers, error_log):
 # Draw Paper Function
 ############################################################
 # This function is used in the different paper lists to display a consistently formatted list.
-def draw_paper(this_paper, exec_list):
+# def draw_paper(this_paper, exec_list):
+def draw_paper(this_paper):
     html = '<div class="paper">'
 
     # altmetric data
@@ -294,7 +295,7 @@ def draw_paper(this_paper, exec_list):
         pass
 
     # Paper title
-    html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['title'] + '</span><br/>'
+    html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['clean']['title'] + '</span><br/>'
 
     # Authors
     authors = []
@@ -307,39 +308,39 @@ def draw_paper(this_paper, exec_list):
         except:
             logging.debug('This author dropped from author list on webpage for some reason: ' + str(this_author))
 
-        try:
+        # try:
             # Check if an author was on the exec Comittee
-            for x in exec_list:
+            # for x in exec_list:
                 # Check if authors name matches
-                if x[2] == this_author['clean']:
+            #    if x[2] == this_author['clean']:
                     # Get start and end date of exec membership
-                    exec_start = time.mktime(datetime.datetime.strptime(x[0], "%d/%m/%Y").timetuple())
-                    exec_end = int(time.time())
-                    if not x[1] == "":
-                        exec_end = time.mktime(datetime.datetime.strptime(x[1], "%d/%m/%Y").timetuple())
+            #        exec_start = time.mktime(datetime.datetime.strptime(x[0], "%d/%m/%Y").timetuple())
+            #        exec_end = int(time.time())
+            #        if not x[1] == "":
+            #            exec_end = time.mktime(datetime.datetime.strptime(x[1], "%d/%m/%Y").timetuple())
 
                     # Convert issued date into a timestamp
-                    clean_date = this_paper['Extras']['CleanDate']
-                    date = str(clean_date['day']) + "/" + str(clean_date['month']) + "/" + str(clean_date['year'])
-                    issued_timestamp = time.mktime(datetime.datetime.strptime(date, "%d/%m/%Y").timetuple())
+            #        clean_date = this_paper['Extras']['CleanDate']
+            #        date = str(clean_date['day']) + "/" + str(clean_date['month']) + "/" + str(clean_date['year'])
+            #        issued_timestamp = time.mktime(datetime.datetime.strptime(date, "%d/%m/%Y").timetuple())
 
                     # If publication is issued between exec_start and exec_end then flag
-                    if issued_timestamp > exec_start and issued_timestamp < exec_end:
-                        author_on_exec = True
-                        break
+            #        if issued_timestamp > exec_start and issued_timestamp < exec_end:
+            #            author_on_exec = True
+            #            break
 
             # authors.append(this_author['family'] + ', ' + this_author['given'])
-        except:
-            pass
+        # except:
+        #    pass
     html += htmlentities.encode('; '.join(authors))
     html += '<br/>'
 
     # IF the author is on exec committee display a message
-    if author_on_exec:
-        html += '<div style="text-align:center;font-size:14px;background:#' + config.project_details['colour_hex_secondary'] + ';color:#' + config.project_details['colour_hex_primary'] + ';padding:2px 4px;box-shadow: 0px 0px 1px #4e4e4e inset;">At least one author was a member of the ' + config.project_details['name'] + ' Executive Committee.</div>'
-        this_paper['Extras']['author_on_exec'] = True
-    else:
-        this_paper['Extras']['author_on_exec'] = False
+#    if author_on_exec:
+#        html += '<div style="text-align:center;font-size:14px;background:#' + config.project_details['colour_hex_secondary'] + ';color:#' + config.project_details['colour_hex_primary'] + ';padding:2px 4px;box-shadow: 0px 0px 1px #4e4e4e inset;">At least one author was a member of the ' + config.project_details['name'] + ' Executive Committee.</div>'
+#        this_paper['Extras']['author_on_exec'] = True
+#    else:
+#        this_paper['Extras']['author_on_exec'] = False
 
     # Journal, volume and issue
     # try:
@@ -350,16 +351,16 @@ def draw_paper(this_paper, exec_list):
     #    except:
     #        pass
     # this is generated from a series of possibilities. see clean.clean_journal
-    html += this_paper['cleaned-journal']
+    html += this_paper['clean']['journal']
 
     try:
         # html += ', Volume ' + this_paper['volume']
-        html += ', Volume ' + this_paper['PubmedArticle'][0]['MedlineCitation']['Article']['Journal']['JournalIssue']['Volume']
+        html += ', Volume ' + this_paper['clean']['journal']['volume']
     except:
         pass
 
     try:
-        html += ', Issue ' + this_paper['PubmedArticle'][0]['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue']
+        html += ', Issue ' + this_paper['clean']['journal']['issue']
     except:
         pass
     html += '<br/>'
@@ -389,12 +390,12 @@ def draw_paper(this_paper, exec_list):
         html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + str(this_paper['Extras']['eid']) + '&origin=inward&txGid=0">' + str(this_paper['Extras']['Citations']) + '</a></td>'
     except:
         try:
-            html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: ' + str(this_paper['Extras']['Citations']) + '</td>'
+            html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: ' + str(this_paper['clean']['citations']['scopus']['count']) + '</td>'
         except:
             html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: -</td>'
 
     try:
-        html += '<td style="width:' + str(citations_counts_width) + '%;">Europe PMC: ' + str(this_paper['Extras']['Citations-EuropePMC']) + '</td>'
+        html += '<td style="width:' + str(citations_counts_width) + '%;">Europe PMC: ' + str(this_paper['clean']['citations']['PMC']['count']) + '</td>'
     except:
         html += '<td style="width:' + str(citations_counts_width) + '%;">Europe PMC: -</td>'
         pass
@@ -417,17 +418,17 @@ def build_papers(papers):
     html_file = open(config.html_dir + '/papers/index.html', 'w')
 
     # Read in exec csv
-    exec_list = []
-    f = open(config.config_dir + "/" + config.project_details['short_name'] + '_exec_members.csv', 'rt')
-    try:
-        reader = csv.reader(f)
-        n = 0
-        for row in reader:
-            if n > 0:
-                exec_list.append(row)
-            n += 1
-    finally:
-        f.close()
+    #exec_list = []
+    #f = open(config.config_dir + "/" + config.project_details['short_name'] + '_exec_members.csv', 'rt')
+    #try:
+    #    reader = csv.reader(f)
+    #    n = 0
+    #    for row in reader:
+    #        if n > 0:
+    #            exec_list.append(row)
+    #        n += 1
+    #finally:
+    #    f.close()
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -452,10 +453,11 @@ def build_papers(papers):
     for this_paper in papers:
         try:
             # Call draw paper function
-            html = draw_paper(this_paper, exec_list)
+            #html = draw_paper(this_paper, exec_list)
+            html = draw_paper(this_paper)
 
             # Append this paper to the list indexed by the year
-            this_year = this_paper['Extras']['CleanDate']['year']
+            this_year = this_paper['clean']['year_published']
 
             # Make sure there is a dict item for this year
             if this_year not in yearly_papers:
@@ -472,8 +474,8 @@ def build_papers(papers):
     # Output the info into an HTML file
     # For each year dict item
     # for this_year in sorted(yearly_papers, key=yearly_papers.get, reverse=True):
-    exec_data = {}
-    exec_data_string = "year,papers with author on executive committee,total papers"
+    #exec_data = {}
+    #exec_data_string = "year,papers with author on executive committee,total papers"
     for this_year in sorted(yearly_papers, reverse=True):
         # Check there is some data for this year - not all do
         if len(yearly_papers[this_year]) == 0:
@@ -504,36 +506,36 @@ def build_papers(papers):
         temp += '<h2>' + str(len(yearly_papers[this_year])) + ' Publications From ' + this_year + '</h2>'
         print >>year_file, temp
         # This is a list
-        for this_item in yearly_papers[this_year]:
-            temp = this_item.values()
-            print >>year_file, temp[0].encode('utf-8')
-            for this_paper in papers:
-                if this_paper['IDs']['hash'] == this_item.keys()[0]:
-                    if this_paper['Extras']['author_on_exec']:
-                        try:
-                            exec_data[this_year] += 1
-                        except:
-                            exec_data[this_year] = 1
+        #for this_item in yearly_papers[this_year]:
+        #    temp = this_item.values()
+        #    print >>year_file, temp[0].encode('utf-8')
+        #    for this_paper in papers:
+        #        if this_paper['IDs']['hash'] == this_item.keys()[0]:
+                    #if this_paper['Extras']['author_on_exec']:
+                    #    try:
+                    #        exec_data[this_year] += 1
+                    #    except:
+                    #        exec_data[this_year] = 1
 
-                    break
+        #            break
 
-            try:
-                exec_data[this_year]
-            except:
-                exec_data[this_year] = 0
+        #    try:
+        #        exec_data[this_year]
+        #    except:
+        #        exec_data[this_year] = 0
 
         temp = build_common_foot()
         print >>year_file, temp
-        try:
-            exec_data_string += "\n" + str(this_year) + "," + str(exec_data[this_year]) + "," + str(len(yearly_papers[this_year]))
-        except:
-            pass
+        #try:
+        #    exec_data_string += "\n" + str(this_year) + "," + str(exec_data[this_year]) + "," + str(len(yearly_papers[this_year]))
+        #except:
+        #    pass
 
     main += "</p>" + build_common_foot()
     print >>html_file, main
 
-    exec_csv = open(config.data_dir + '/exec_publications.csv', 'w')
-    print >>exec_csv, exec_data_string
+    #exec_csv = open(config.data_dir + '/exec_publications.csv', 'w')
+    #print >>exec_csv, exec_data_string
 
     # == Publications from unknown years ==
     if not os.path.exists(config.html_dir + '/papers/unknown'):
@@ -560,9 +562,10 @@ def build_papers(papers):
     html = ""
     for this_paper in papers:
         try:
-            this_paper['Extras']['CleanDate']['year']
+            this_paper['clean']['year_published']
         except:
-            html += draw_paper(this_paper, exec_list)
+#            html += draw_paper(this_paper, exec_list)
+            html += draw_paper(this_paper)
             n += 1
 
     temp += '<h2>' + str(n) + ' Publications From Unknown Years</h2>'
@@ -960,7 +963,7 @@ def build_google_map(papers):
     number_of_points = 0
     for this_paper in papers:
         try:
-            this_place = {'lat': this_paper['Extras']['LatLong']['lat'], 'long': this_paper['Extras']['LatLong']['long'], 'name': this_paper['Extras']['CleanInstitute']}
+            this_place = {'lat': this_paper['clean']['location']['latitude'], 'long': this_paper['clean']['location']['longitude'], 'name': this_paper['clean']['location']['clean_institute']}
             info.append(this_place)
             number_of_points += 1
         except:
@@ -1025,10 +1028,10 @@ def build_country_map(papers, api_key):
     for this_paper in papers:
         try:
 
-            if this_paper['Extras']['country_code'] in countries:
-                countries[this_paper['Extras']['country_code']] += 1
+            if this_paper['clean']['location']['country_code'] in countries:
+                countries[this_paper['clean']['location']['country_code']] += 1
             else:
-                countries[this_paper['Extras']['country_code']] = 1
+                countries[this_paper['clean']['location']['country_code']] = 1
             number_of_points += 1
         except:
             pass
@@ -1087,11 +1090,11 @@ def build_city_map(papers):
     for this_paper in papers:
 
         try:
-            if this_paper['Extras']['postal_town'] != "":
-                if this_paper['Extras']['postal_town'] in cities:
-                    cities[this_paper['Extras']['postal_town']] += 1
+            if this_paper['clean']['location']['postal_town'] != "":
+                if this_paper['clean']['location']['postal_town'] in cities:
+                    cities[this_paper['clean']['location']['postal_town']] += 1
                 else:
-                    cities[this_paper['Extras']['postal_town']] = 1
+                    cities[this_paper['clean']['location']['postal_town']] = 1
                 number_of_points += 1
         except:
             pass
@@ -1135,7 +1138,7 @@ def build_city_map(papers):
 
 
 ###########################################################
-# Build metrics page
+# Util to stick in commas between 1000s in big integers
 ###########################################################
 def intWithCommas(x):
     if type(x) not in [type(0), type(0L)]:
@@ -1149,6 +1152,9 @@ def intWithCommas(x):
     return "%d%s" % (x, result)
 
 
+###########################################################
+# Build metrics page
+###########################################################
 def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_year, study_current_year):
 
     print "\n###HTML - Metrics###"
@@ -1162,8 +1168,6 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     paper_citations = []
     c20_index = 0
 
-    # study_start_year = 1991
-    # study_current_year = 2016
     study_duration = study_current_year - study_start_year
 
     c_index_bound = 100
@@ -1171,8 +1175,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     for this_paper in papers:
         # add the citations for paper to total
         try:
-
-            cit = int(this_paper['Extras']['Citations'])
+            cit = int(this_paper['clean']['citations']['scopus']['count'])
             total_citations += cit
             total_citations_data_from_count += 1
             paper_citations.append(cit)
@@ -1218,7 +1221,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     # Get the max number of citations
     for this_paper in papers:
         try:
-            n_cits = int(this_paper['Extras']['Citations'])
+            n_cits = int(this_paper['clean']['citations']['scopus']['count'])
             if n_cits > max_citations:
                 max_citations = n_cits
         except:
@@ -1231,7 +1234,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     # Count citations into array
     for this_paper in papers:
         try:
-            n_cits = int(this_paper['Extras']['Citations'])
+            n_cits = int(this_paper['clean']['citations']['scopus']['count'])
             list_of_citation_counts.append(n_cits)
             num_papers_citations[n_cits] += 1
         except:

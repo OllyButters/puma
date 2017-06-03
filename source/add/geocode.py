@@ -40,7 +40,7 @@ def geocode(papers, error_log, api_key):
 
             # === Check if the location data is already cached ===
             # Each cached location is held in a seperate file
-            clean = this_paper['Extras']['CleanInstitute']
+            clean = this_paper['clean']['location']['clean_institute']
             logging.info(str(this_paper['IDs']['hash']) + " geocode " + clean + " (" + str(number_done) + "/" + str(len(papers)) + ")")
             if os.path.isfile(config.cache_dir + "/geodata/" + clean):
                 # The location has a cache file. load cached data.
@@ -48,9 +48,10 @@ def geocode(papers, error_log, api_key):
                 data = cache_file.read()
                 split = data.split("#")
 
-                this_paper['Extras']['LatLong'] = {'lat': split[0], 'long': split[1]}
-                this_paper['Extras']['country_code'] = split[2]
-                this_paper['Extras']['postal_town'] = split[3]
+                this_paper['clean']['location']['latitude'] = split[0]
+                this_paper['clean']['location']['longitude'] = split[1]
+                this_paper['clean']['location']['country_code'] = split[2]
+                this_paper['clean']['location']['postal_town'] = split[3]
 
                 locations_found += 1
 
@@ -60,7 +61,7 @@ def geocode(papers, error_log, api_key):
 
                 # First we need to get the wikidata ID
                 # Form query to get the wikidata item by english label
-                query = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?item WHERE { ?item rdfs:label "' + this_paper['Extras']['CleanInstitute'] + '"@en }'
+                query = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?item WHERE { ?item rdfs:label "' + this_paper['clean']['location']['clean_institute'] + '"@en }'
                 url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql'
 
                 try:
@@ -84,7 +85,8 @@ def geocode(papers, error_log, api_key):
                             p_lat = retur['entities'][item_id]['claims']['P625'][0]['mainsnak']['datavalue']['value']['latitude']
 
                             locations_found += 1
-                            this_paper['Extras']['LatLong'] = {'lat': str(p_lat), 'long': str(p_lon)}
+                            this_paper['clean']['location']['latitude'] = str(p_lat)
+                            this_paper['clean']['location']['longitude'] = str(p_lon)
 
                             found_coords = True
 
@@ -96,30 +98,33 @@ def geocode(papers, error_log, api_key):
                                 p_lat = retur['entities'][item_id]['claims']['P159'][0]['qualifiers']['P625'][0]['datavalue']['value']['latitude']
 
                                 locations_found += 1
-                                this_paper['Extras']['LatLong'] = {'lat': str(p_lat), 'long': str(p_lon)}
+                                this_paper['clean']['location']['latitude'] = str(p_lat)
+                                this_paper['clean']['location']['longitude'] = str(p_lon)
 
                                 found_coords = True
 
                             except:
                                 # No coordinate location or HQ coordinate location was found.
-                                error_log.logWarningPaper('Unable to get geo-data (No HQ P625 Or P625) ' + this_paper['Extras']['CleanInstitute'] + " " + item_id + " (" + str(number_done) + "/" + str(len(papers)) + ")", this_paper)
+                                error_log.logWarningPaper('Unable to get geo-data (No HQ P625 Or P625) ' + this_paper['clean']['location']['clean_institute'] + " " + item_id + " (" + str(number_done) + "/" + str(len(papers)) + ")", this_paper)
 
                     except:
                         # === Not On Wikidata Check Backup File ===
                         # The item is not on wikidata. Check if the institute is in the backup coordinates file and get coordinates from there is possible.
                         try:
-                            backup_coords = institute_coordinates_backup[this_paper['Extras']['CleanInstitute']]
+                            backup_coords = institute_coordinates_backup[this_paper['clean']['location']['clean_institute']]
                             # print 'Using Institute coordinates backup to get coordinates for ' + this_paper['Extras']['CleanInstitute']
-                            this_paper['Extras']['LatLong'] = {'lat': str(backup_coords['lat']), 'long': str(backup_coords['long'])}
+                            this_paper['clean']['location']['latitude'] = str(backup_coords['lat'])
+                            this_paper['clean']['location']['longitude'] = str(backup_coords['long'])
+
                             found_coords = True
 
                         except:
                             # The intitiue could not be found on wikidata or in the backup file
-                            error_log.logWarningPaper("Insititue " + this_paper['Extras']['CleanInstitute'] + " not on Wikidata (Consider using backup file)", this_paper)
+                            error_log.logWarningPaper("Insititue " + this_paper['clean']['location']['clean_institute'] + " not on Wikidata (Consider using backup file)", this_paper)
 
                 except:
                     # Problem with the wikidata query
-                    error_log.logWarningPaper("Wikidata query failed for " + this_paper['Extras']['CleanInstitute'], this_paper)
+                    error_log.logWarningPaper("Wikidata query failed for " + this_paper['clean']['location']['clean_institute'], this_paper)
 
         except:
             # There is no clean institute for the paper object. Log this as an error so that it can be fixed in the Zotero file.
@@ -130,7 +135,7 @@ def geocode(papers, error_log, api_key):
             # The coordinates have been found from either wikidata or the backup file
             # Now using the google maps api to get the country and city data for use in the charts
             # Make API request.
-            retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['Extras']['LatLong']['lat'] + ',' + this_paper['Extras']['LatLong']['long'] + '&key=' + api_key))
+            retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['clean']['location']['latitude'] + ',' + this_paper['clean']['location']['longitude'] + '&key=' + api_key))
 
             try:
                 comps = retur['results'][0]['address_components']
@@ -140,21 +145,21 @@ def geocode(papers, error_log, api_key):
                     # Search through the returned address components for the country and city names
                     if comp['types'][0] == "country":
                         country_short = comp['long_name']
-                        this_paper['Extras']['country_code'] = country_short
+                        this_paper['clean']['location']['country_code'] = country_short
 
                     if comp['types'][0] == "postal_town":
                         postal_town = comp['long_name']
-                        this_paper['Extras']['postal_town'] = postal_town
+                        this_paper['clean']['location']['postal_town'] = postal_town
 
                 clean = clean.replace("/", "#")
 
                 # Cache the data that has just been collected
                 cache_file = open(config.cache_dir + "/geodata/" + clean, "w")
-                cache_file.write(this_paper['Extras']['LatLong']['lat'] + "#" + this_paper['Extras']['LatLong']['long'] + "#" + country_short + "#" + postal_town)
+                cache_file.write(this_paper['clean']['location']['latitude'] + "#" + this_paper['clean']['location']['longitude'] + "#" + country_short + "#" + postal_town)
                 cache_file.close()
             except:
-                print 'Unable to get geo-data (Maybe Google API Quota Reached?) ' + this_paper['Extras']['CleanInstitute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
-                error_log.logErrorPaper(this_paper['Extras']['CleanInstitute'] + " Maybe Google API Quota Reached!", this_paper)
+                print 'Unable to get geo-data (Maybe Google API Quota Reached?) ' + this_paper['clean']['location']['clean_institute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")"
+                error_log.logErrorPaper(this_paper['clean']['location']['clean_institute'] + " Maybe Google API Quota Reached!", this_paper)
 
         number_done += 1
 
