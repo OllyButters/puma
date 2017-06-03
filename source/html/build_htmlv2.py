@@ -149,8 +149,9 @@ def build_home(papers, error_log):
 
     # Calculate the number of papers for each year
     for this_paper in papers:
+        print this_paper['clean']
         try:
-            this_year = this_paper['clean']['year_published']
+            this_year = this_paper['clean']['clean_date']['year']
 
             # Make sure there is a dict item for this year
             if this_year not in summary:
@@ -174,7 +175,8 @@ def build_home(papers, error_log):
 
         except:
             try:
-                this_paper['clean']['year_published']
+                this_paper['clean']['clean_date']['year']
+                # this_paper['clean']['year_published']
             except:
                 missing_year['num_papers'] += 1
                 try:
@@ -299,8 +301,8 @@ def draw_paper(this_paper):
 
     # Authors
     authors = []
-    author_on_exec = False
-    for this_author in this_paper['author']:
+    # author_on_exec = False
+    for this_author in this_paper['clean']['full_author_list']:
         # Some author lists have a collective name. Ignore this.
         # Some people don't actually have initials. eg wraight in pmid:18454148
         try:
@@ -351,7 +353,7 @@ def draw_paper(this_paper):
     #    except:
     #        pass
     # this is generated from a series of possibilities. see clean.clean_journal
-    html += this_paper['clean']['journal']
+    html += this_paper['clean']['journal']['journal_name']
 
     try:
         # html += ', Volume ' + this_paper['volume']
@@ -457,7 +459,7 @@ def build_papers(papers):
             html = draw_paper(this_paper)
 
             # Append this paper to the list indexed by the year
-            this_year = this_paper['clean']['year_published']
+            this_year = this_paper['clean']['clean_date']['year']
 
             # Make sure there is a dict item for this year
             if this_year not in yearly_papers:
@@ -506,9 +508,9 @@ def build_papers(papers):
         temp += '<h2>' + str(len(yearly_papers[this_year])) + ' Publications From ' + this_year + '</h2>'
         print >>year_file, temp
         # This is a list
-        #for this_item in yearly_papers[this_year]:
-        #    temp = this_item.values()
-        #    print >>year_file, temp[0].encode('utf-8')
+        for this_item in yearly_papers[this_year]:
+            temp = this_item.values()
+            print >>year_file, temp[0].encode('utf-8')
         #    for this_paper in papers:
         #        if this_paper['IDs']['hash'] == this_item.keys()[0]:
                     #if this_paper['Extras']['author_on_exec']:
@@ -1204,7 +1206,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     g_index = 0
     cits_so_far = 0
 
-    for x in range(1, total_publications):
+    for x in range(0, total_publications - 1):
         cits_so_far += paper_citations[x]
         if cits_so_far < x * x:
             break

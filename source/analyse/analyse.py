@@ -231,7 +231,7 @@ def first_authors(papers):
     first_authors = []
     for this_paper in papers:
         try:
-            
+
             first_author_name = this_paper['clean']['full_author_list'][0]['clean']
             # stick the first author cleaned name in clean['first_author']['name']
             try:
@@ -373,6 +373,8 @@ def output_csv(papers):
 ###########################################################
 def coverage_report(papers):
 
+    print 'Building coverage report'
+
     cov_css = '''
                 .missing_required {background-color: red;}
                 .missing_good_to_have {background-color: orange;}
@@ -416,6 +418,7 @@ def coverage_report(papers):
             status['hash'] = status['hash'] + 1
         except:
             fn_hash = '???'
+
         cov_html += '<td>' + fn_hash + '</td>'
 
         # Zotero ID - this has to be present!
@@ -450,7 +453,7 @@ def coverage_report(papers):
 
         # Paper title
         try:
-            title = this_paper['merged']['title']
+            title = this_paper['clean']['title']
             if title != '':
                 cov_html += '<td>OK</td>'
                 status['title'] = status['title'] + 1
@@ -461,7 +464,7 @@ def coverage_report(papers):
 
         # First author - Not required, but REALLY useful
         try:
-            first_author = this_paper['merged']['author'][0]['family']
+            first_author = this_paper['clean']['first_author']['name']
             if first_author != '':
                 cov_html += '<td>OK</td>'
                 status['first_author'] = status['first_author'] + 1
@@ -472,7 +475,7 @@ def coverage_report(papers):
 
         # First author affiliation - Not required, but REALLY useful
         try:
-            first_author_affiliation = this_paper['author'][0]['affiliation'][0]['name']
+            first_author_affiliation = this_paper['clean']['first_author']['institute']
             if first_author_affiliation != '':
                 cov_html += '<td>OK</td>'
                 status['first_author_affiliation'] = status['first_author_affiliation'] + 1
@@ -483,7 +486,7 @@ def coverage_report(papers):
 
         # CLEAN first author affiliation - Not required, but REALLY useful
         try:
-            clean_institution = this_paper['clean']['location']['institute']
+            clean_institution = this_paper['clean']['location']['clean_institute']
             if clean_institution != '':
                 cov_html += '<td>OK</td>'
                 status['clean_institution'] = status['clean_institution'] + 1
@@ -503,9 +506,9 @@ def coverage_report(papers):
         except:
             cov_html += '<td class="missing_required">???</td>'
 
-        # Clean date
+        # Scopus citations
         try:
-            scopus = this_paper['clean']['Citations']
+            scopus = this_paper['clean']['citations']['scopus']['count']
             if scopus != '':
                 cov_html += '<td>OK</td>'
                 status['scopus'] = status['scopus'] + 1

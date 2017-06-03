@@ -144,7 +144,7 @@ network = analyse.authors(papers)
 analyse.completeness_report(papers)
 analyse.first_authors(papers)
 analyse.inst(papers)
-analyse.mesh(papers)
+# analyse.mesh(papers)
 analyse.output_csv(papers)
 
 ###########################################################
