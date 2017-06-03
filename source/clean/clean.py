@@ -46,6 +46,11 @@ def pre_clean(papers, error_log):
         # clean up the authors and add to 'clean'
         clean_authors(this_paper)
 
+        # clean mesh headings into 'clean'
+        clean_mesh(this_paper)
+
+        # clean keywords into 'clean'
+        clean_keywords(this_paper)
 
         # add in a cleaned journal title
         clean_journal(this_paper)
@@ -135,29 +140,28 @@ def clean_authors(this_paper):
 
     # now go through authors and clean name then append to clean full_author_list
     authors = []
-    for this_paper in papers:
-        # Some pmid files dont actually have an authorlist! e.g. 2587412
-        # This probably needs to be resolved with pubmed!
-        try:
-            # generate the relevant structure in clean
-            this_paper['clean']['full_author_list'] = []
-            
-            for this_author in this_paper['merged']['author']:
-                # There are some entries in the author list that are not actually authors e.g. 21379325 last author
-                # note that any authors with an empty 'family' key have been
-                # removed by clean.clean()
-                try:
-                    authors.append(this_author['family'])
-                    # Create a clean author field. This is the Surname followed by first initial.
-                    #clean_author_name = this_author['family'] + " " + this_author['given'][0]
-                    clean_author_name = clean_author(this_author)
-                    this_author.update({'clean': clean_author_name})
-                    this_paper['clean']['full_author_list'].append(this_author)
-                except:
-                    pass
+    # Some pmid files dont actually have an authorlist! e.g. 2587412
+    # This probably needs to be resolved with pubmed!
+    try:
+        # generate the relevant structure in clean
+        this_paper['clean']['full_author_list'] = []
+        
+        for this_author in this_paper['merged']['author']:
+            # There are some entries in the author list that are not actually authors e.g. 21379325 last author
+            # note that any authors with an empty 'family' key have been
+            # removed by clean.clean()
+            try:
+                authors.append(this_author['family'])
+                # Create a clean author field. This is the Surname followed by first initial.
+                #clean_author_name = this_author['family'] + " " + this_author['given'][0]
+                clean_author_name = clean_author(this_author)
+                this_author.update({'clean': clean_author_name})
+                this_paper['clean']['full_author_list'].append(this_author)
+            except:
+                pass
 
-        except:
-            logging.warn('No AuthorList for ' + this_paper['IDs']['hash'])
+    except:
+        logging.warn('No AuthorList for ' + this_paper['IDs']['hash'])
     return authors
 
 # Have a go at tidying up the mess that is first author institution.
@@ -263,6 +267,51 @@ def clean_journal(this_paper):
                 pass
     return this_paper
 
+# clean keywords (tags) for this_paper
+def clean_keywords(this_paper):
+    if 'tags' in this_paper['merged']:
+        try:
+            this_paper['clean']['keywords']
+        except KeyError:
+            this_paper['clean']['keywords'] = {}
+
+        try:
+            this_paper['clean']['keywords']['other']
+        except KeyError:
+            this_paper['clean']['keywords']['other'] = []
+
+        try:
+            for this_tag in this_paper['merged']['tags']:
+                this_paper['clean']['keywords']['other'].append(
+                    this_tag['tag'],
+                )
+        except:
+            pass
+
+# clean mesh headings for this_paper
+def clean_mesh(this_paper):
+    if 'MedlineCitation' in this_paper:
+        try:
+            this_paper['clean']['keywords']
+        except KeyError:
+            this_paper['clean']['keywords'] = {}
+
+        if 'MeshHeadingList' in this_paper['merged']['MedlineCitation']:
+            try:
+                this_paper['clean']['keywords']['mesh']
+            except KeyError:
+                this_paper['clean']['keywords']['mesh'] = []
+
+            try:
+                for this_mesh in this_paper['merged']['MedlineCitation']['MeshHeadingList']:
+                    this_paper['clean']['keywords']['mesh'].append(
+                        {
+                        'term': this_mesh['DescriptorName'],
+                        'major': this_mesh['MajorTopicYN']
+                        }
+                    )
+            except:
+                pass
 
 # Go through the deltas directory and apply any changes that are needed
 def do_deltas(papers):
