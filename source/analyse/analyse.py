@@ -119,7 +119,7 @@ def authors(papers):
     for this_paper in papers:
         try:
             for this_author in this_paper['clean']['full_author_list']:
-              authors.append(this_author['clean'])
+                authors.append(this_author['clean'])
         except:
             pass
 
@@ -205,24 +205,6 @@ def authors(papers):
 
 
 ############################################################
-# Output a report on how complete the data is
-############################################################
-def completeness_report(papers):
-
-    num_papers = len(papers)
-    first_authors_count = 0
-    for this_paper in papers:
-        try:
-            if this_paper['merged']['author'][0]['family']:
-                first_authors_count = first_authors_count + 1
-        except:
-            next
-
-    print 'Total papers = ' + str(num_papers)
-    print 'First authors count = ' + str(first_authors_count)
-
-
-############################################################
 # Try with the FIRST authors - these are in a nested dict
 ############################################################
 def first_authors(papers):
@@ -234,12 +216,12 @@ def first_authors(papers):
 
             first_author_name = this_paper['clean']['full_author_list'][0]['clean']
             # stick the first author cleaned name in clean['first_author']['name']
-            try:
-                this_paper['clean']['first_author']
-            except KeyError:
-                this_paper['clean']['first_author'] = {}
+            # try:
+            #     this_paper['clean']['first_author']
+            # except KeyError:
+            #    this_paper['clean']['first_author'] = {}
 
-            this_paper['clean']['first_author']['name'] = first_author_name
+            # this_paper['clean']['first_author']['name'] = first_author_name
             first_authors.append(first_author_name)
 
         except:
@@ -464,7 +446,7 @@ def coverage_report(papers):
 
         # First author - Not required, but REALLY useful
         try:
-            first_author = this_paper['clean']['first_author']['name']
+            first_author = this_paper['clean']['full_author_list'][0]['clean']
             if first_author != '':
                 cov_html += '<td>OK</td>'
                 status['first_author'] = status['first_author'] + 1
@@ -475,7 +457,7 @@ def coverage_report(papers):
 
         # First author affiliation - Not required, but REALLY useful
         try:
-            first_author_affiliation = this_paper['clean']['first_author']['institute']
+            first_author_affiliation = this_paper['clean']['full_author_list'][0]['affiliation'][0]['name']
             if first_author_affiliation != '':
                 cov_html += '<td>OK</td>'
                 status['first_author_affiliation'] = status['first_author_affiliation'] + 1

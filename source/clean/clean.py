@@ -40,7 +40,7 @@ def pre_clean(papers, error_log):
         # citations etc
         this_paper['clean'] = {}
 
-        #add clean title
+        # add clean title
         this_paper['clean']['title'] = this_paper['merged']['title']
 
         # clean up the authors and add to 'clean'
@@ -66,6 +66,7 @@ def pre_clean(papers, error_log):
         except:
             pass
 
+
 # get the abstract from MedlineCitation if present and add to clean['abstract']
 def clean_abstract(this_paper):
     try:
@@ -73,6 +74,7 @@ def clean_abstract(this_paper):
         this_paper['clean']['abstract'] = str(this_paper['merged']['MedlineCitation']['Article']['Abstract']['AbstractText'])
     except:
         logging.warn('No abstract for ' + this_paper['IDs']['hash'])
+
 
 def clean_date(this_paper, error_log):
     # Generate a Clean Date
@@ -133,6 +135,7 @@ def clean_date(this_paper, error_log):
                         # A date has not been found. Put this in the error log.
                         error_log.logErrorPaper("Cannot Create Clean Date (Consider using Zotero notes)", this_paper)
 
+
 # Clean author name
 # param author dict doi-style author object (at least 'family' and 'given' as keys)
 # Author's cleaned name is lastname (family) followed by first initial
@@ -141,7 +144,8 @@ def clean_author_name(this_author):
     # Create a clean author field. This is the Surname followed by first initial
     cleaned_author_name = this_author['family'] + " " + this_author['given'][0]
     return cleaned_author_name
-      
+
+
 # Clean up the author list
 # Copies cleaned entry into this_paper['clean']['full_author_list']
 # returns list of cleaned authors
@@ -165,7 +169,7 @@ def clean_authors(this_paper):
     try:
         # generate the relevant structure in clean
         this_paper['clean']['full_author_list'] = []
-        
+
         for this_author in this_paper['merged']['author']:
             # There are some entries in the author list that are not actually authors e.g. 21379325 last author
             # note that any authors with an empty 'family' key have been
@@ -173,7 +177,7 @@ def clean_authors(this_paper):
             try:
                 authors.append(this_author['family'])
                 # Create a clean author field. This is the Surname followed by first initial.
-                #clean_author_name = this_author['family'] + " " + this_author['given'][0]
+                # clean_author_name = this_author['family'] + " " + this_author['given'][0]
                 cleaned_author_name = clean_author_name(this_author)
                 this_author.update({'clean': cleaned_author_name})
                 this_paper['clean']['full_author_list'].append(this_author)
@@ -186,6 +190,7 @@ def clean_authors(this_paper):
 
     # do we need to return anything here? currently returns list of authors, probably should just be 0 or error code
     return authors
+
 
 # Have a go at tidying up the mess that is first author institution.
 # Essentially go through each institution and see if it matches a patten
@@ -223,9 +228,9 @@ def clean_institution(papers):
     number_not_matched = 0
     for this_paper in papers:
 
-        #add location key in clean if not present
+        # add location key in clean if not present
         if 'location' not in this_paper['clean'].keys():
-          this_paper['clean']['location'] = {}
+            this_paper['clean']['location'] = {}
 
         hasAffiliation = True
         try:
@@ -290,6 +295,7 @@ def clean_journal(this_paper):
                 pass
     return this_paper
 
+
 # clean keywords (tags) for this_paper
 def clean_keywords(this_paper):
     if 'tags' in this_paper['merged']:
@@ -310,6 +316,7 @@ def clean_keywords(this_paper):
                 )
         except:
             pass
+
 
 # clean mesh headings for this_paper
 def clean_mesh(this_paper):
@@ -336,26 +343,3 @@ def clean_mesh(this_paper):
             except Exception as e:
                 print str(e)
                 pass
-
-# Go through the deltas directory and apply any changes that are needed
-def do_deltas(papers):
-
-    delta_dir = config.config_dir + '/deltas/'
-
-    deltas = os.listdir(delta_dir)
-
-    print deltas
-
-    for this_delta in deltas:
-        # delta_file = '8680184'
-
-        delta_path = delta_dir+this_delta
-
-        fo = open(delta_path, 'r')
-        record = json.loads(fo.read())
-        fo.close()
-
-        try:
-            papers[this_delta]['clean']['year_published'] = record['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Year']
-        except:
-            print 'FAIL'

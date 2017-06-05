@@ -274,7 +274,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
 
                 citations = t["resultList"]["result"][0]["citedByCount"]
                 this_paper['clean']['citations']['PMC']['count'] = citations
-                this_paper['clean']['citations']['PMC']['date_downloaded'] = datetime.datetime.now()
+                this_paper['clean']['citations']['PMC']['date_downloaded'] = str(datetime.datetime.now())
 
                 cached_citations[this_paper['IDs']['hash']] = {}
                 cached_citations[this_paper['IDs']['hash']]['citation_count'] = citations
