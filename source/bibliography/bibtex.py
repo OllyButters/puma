@@ -17,18 +17,18 @@ def bibtex(papers, error_log):
 
             # Author
             this_article += 'author = "'
-            this_article += this_paper['author'][0]['family']
+            this_article += this_paper['cleaned']['author'][0]['family']
             this_article += '",\n'
 
             # Title
             this_article += 'title = "'
-            this_article += this_paper['title']
+            this_article += this_paper['cleaned']['title']
             this_article += '",\n'
 
             # Journal
             this_article += 'journal = "'
             # this_artice['cleaned-journal'] set by clean.clean_journal
-            this_article += this_paper['cleaned-journal']
+            this_article += this_paper['cleaned']['journal']['journal_name']
             this_article += '",\n'
 
             # Journal volume
@@ -38,7 +38,7 @@ def bibtex(papers, error_log):
 
             # Year
             this_article += 'year = "'
-            this_article += this_paper['Extras']['CleanDate']['year']
+            this_article += this_paper['cleaned']['clean_date']['year']
             this_article += '",\n'
 
             # Close this one.
