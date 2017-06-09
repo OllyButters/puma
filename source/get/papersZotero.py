@@ -70,12 +70,15 @@ class zotPaper (zotero.Zotero):
     for entry in entries:
       datum = re.search(r'^(.+?):(.+?)$', entry)
       if datum is not None:
-        data[datum.group(1)] = datum.group(2)
+        try:
+          data[datum.group(1)] = datum.group(2)
+        except IndexError:
+          #if either value is missing just add to the 'extra' value as text
+          data['extra'] += entry+"\n"
       else:
         data['extra'] += entry+"\n"
         # don't raise an error, this will cause any other unformatted extra
         # to vanish
-        # raise ValueError('datum is not formatted correctly')
     return data
 
 
@@ -85,7 +88,7 @@ class zotPaper (zotero.Zotero):
       value = ''
       if field in paper:
         value = paper[field]
-      extra += '%s="%s"\n' % (field, paper[field])
+      extra += '%s:%s\n' % (field, paper[field])
     return extra
 
 
