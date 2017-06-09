@@ -149,8 +149,9 @@ def build_home(papers, error_log):
 
     # Calculate the number of papers for each year
     for this_paper in papers:
+        print this_paper['clean']
         try:
-            this_year = this_paper['clean']['year_published']
+            this_year = this_paper['clean']['clean_date']['year']
 
             # Make sure there is a dict item for this year
             if this_year not in summary:
@@ -174,7 +175,8 @@ def build_home(papers, error_log):
 
         except:
             try:
-                this_paper['clean']['year_published']
+                this_paper['clean']['clean_date']['year']
+                # this_paper['clean']['year_published']
             except:
                 missing_year['num_papers'] += 1
                 try:
@@ -299,8 +301,8 @@ def draw_paper(this_paper):
 
     # Authors
     authors = []
-    author_on_exec = False
-    for this_author in this_paper['author']:
+    # author_on_exec = False
+    for this_author in this_paper['clean']['full_author_list']:
         # Some author lists have a collective name. Ignore this.
         # Some people don't actually have initials. eg wraight in pmid:18454148
         try:
@@ -351,7 +353,7 @@ def draw_paper(this_paper):
     #    except:
     #        pass
     # this is generated from a series of possibilities. see clean.clean_journal
-    html += this_paper['clean']['journal']
+    html += this_paper['clean']['journal']['journal_name']
 
     try:
         # html += ', Volume ' + this_paper['volume']
@@ -387,7 +389,7 @@ def draw_paper(this_paper):
     html += '<tr>'
     try:
         # Try to display citation count with link to scopus page
-        html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + str(this_paper['Extras']['eid']) + '&origin=inward&txGid=0">' + str(this_paper['Extras']['Citations']) + '</a></td>'
+        html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + str(this_paper['IDs']['scopus']) + '&origin=inward&txGid=0">' + str(this_paper['clean']['citations']['scopus']['count']) + '</a></td>'
     except:
         try:
             html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: ' + str(this_paper['clean']['citations']['scopus']['count']) + '</td>'
@@ -457,7 +459,7 @@ def build_papers(papers):
             html = draw_paper(this_paper)
 
             # Append this paper to the list indexed by the year
-            this_year = this_paper['clean']['year_published']
+            this_year = this_paper['clean']['clean_date']['year']
 
             # Make sure there is a dict item for this year
             if this_year not in yearly_papers:
@@ -506,9 +508,9 @@ def build_papers(papers):
         temp += '<h2>' + str(len(yearly_papers[this_year])) + ' Publications From ' + this_year + '</h2>'
         print >>year_file, temp
         # This is a list
-        #for this_item in yearly_papers[this_year]:
-        #    temp = this_item.values()
-        #    print >>year_file, temp[0].encode('utf-8')
+        for this_item in yearly_papers[this_year]:
+            temp = this_item.values()
+            print >>year_file, temp[0].encode('utf-8')
         #    for this_paper in papers:
         #        if this_paper['IDs']['hash'] == this_item.keys()[0]:
                     #if this_paper['Extras']['author_on_exec']:
@@ -591,17 +593,17 @@ def build_mesh(papers):
     html_file_all = open(config.html_dir + '/all_keywords/index.html', 'w')
     html_file_major = open(config.html_dir + '/major_keywords/index.html', 'w')
 
-    # Build a dict of ALL mesh headings with a list of each hash in each
+    # Build a dict of ALL mesh headings with a list of each hash (paper) that has this mesh term
     for this_paper in papers:
         try:
             # Look at all the mesh headings for this paper
             # for this_mesh in this_paper['PubmedArticle'][0]['MedlineCitation']['MeshHeadingList']:
-            for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
-
+            # for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
+            for this_mesh in this_paper['clean']['keywords']['mesh']:
                 # If this mesh term is not already in the dict then add it
-                if this_mesh['DescriptorName'] not in mesh_papers_all:
-                    mesh_papers_all[this_mesh['DescriptorName']] = list()
-                mesh_papers_all[this_mesh['DescriptorName']].append(this_paper['IDs']['hash'])
+                if this_mesh['term'] not in mesh_papers_all:
+                    mesh_papers_all[this_mesh['term']] = list()
+                mesh_papers_all[this_mesh['term']].append(this_paper['IDs']['hash'])
         except:
             pass
 
@@ -611,13 +613,14 @@ def build_mesh(papers):
         try:
             # Look at all the mesh headings for this paper
             # for this_mesh in this_paper['PubmedArticle'][0]['MedlineCitation']['MeshHeadingList']:
-            for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
+            # for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
+            for this_mesh in this_paper['clean']['keywords']['mesh']:
                 # Only interested in majoy topics
-                if this_mesh['MajorTopicYN'] == 'Y':
+                if this_mesh['major'] == 'Y':
                     # If this mesh term is not in the dict then add it
-                    if this_mesh['DescriptorName'] not in mesh_papers_major:
-                        mesh_papers_major[this_mesh['DescriptorName']] = list()
-                    mesh_papers_major[this_mesh['DescriptorName']].append(this_paper['IDs']['hash'])
+                    if this_mesh['term'] not in mesh_papers_major:
+                        mesh_papers_major[this_mesh['term']] = list()
+                    mesh_papers_major[this_mesh['term']].append(this_paper['IDs']['hash'])
 
             data_from_count += 1
         except:
@@ -873,7 +876,7 @@ def build_mesh(papers):
                 if paper_obj is not None:
                     this_paper = paper_obj
                     try:
-                        this_year = this_paper['Extras']['CleanDate']['year']
+                        this_year = this_paper['clean']['clean_date']['year']
                         # Make sure there is a dict item for this year
                         if this_year not in summary:
                             summary[this_year] = {'num_papers': 0, 'citations': 0}
@@ -883,7 +886,7 @@ def build_mesh(papers):
 
                         # add the citations for this paper to the year running total
                         try:
-                            summary[this_year]['citations'] += int(this_paper['Extras']['Citations'])
+                            summary[this_year]['citations'] += int(this_paper['clean']['citations']['scopus']['count'])
                         except:
                             pass
 
@@ -1204,7 +1207,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     g_index = 0
     cits_so_far = 0
 
-    for x in range(1, total_publications):
+    for x in range(0, total_publications - 1):
         cits_so_far += paper_citations[x]
         if cits_so_far < x * x:
             break
@@ -1505,9 +1508,6 @@ def build_abstract_word_cloud(papers, data_from_count):
     print >>html_file, temp
 
 
-###########################################################
-# Build Author Network
-###########################################################
 def get_author_string_from_hash(hash_string, network):
 
     for author in network['authors']:
@@ -1515,6 +1515,9 @@ def get_author_string_from_hash(hash_string, network):
             return network['authors'][author]['clean']
 
 
+###########################################################
+# Build Author Network
+###########################################################
 def build_author_network(papers, network, error_log):
 
     print "\n###HTML - Author Network###"

@@ -62,7 +62,12 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
         counter = counter + 1
         logging.info('\non # ' + str(counter) + ' of ' + str(number_papers_to_process))
 
-        # read the cache
+        # Do i really need this?
+        this_paper['clean']['citations'] = {}
+        this_paper['clean']['citations']['scopus'] = {}
+        this_paper['clean']['citations']['PMC'] = {}
+
+        # try the cache
         try:
             this_paper['clean']['citations']['scopus']['count'] = cached_citations[this_paper['IDs']['hash']]['citation_count']
             this_paper['clean']['citations']['scopus']['date_downloaded'] = cached_citations[this_paper['IDs']['hash']]['date_downloaded']
@@ -94,7 +99,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
                             error_log.logErrorPaper("Multiple different citaton counts found for PMID", this_paper)
                         citations = t['search-results']['entry'][0]['citedby-count']
                         this_paper['clean']['citations']['scopus']['count'] = citations
-                        this_paper['clean']['citations']['scopus']['date_downloaded'] = datetime.datetime.now()
+                        this_paper['clean']['citations']['scopus']['date_downloaded'] = str(datetime.datetime.now())
 
                         if len(t['search-results']['entry']) == 1:  # Do not cache if multiple results returned
                             cached_citations[this_paper['IDs']['hash']] = {}
@@ -137,7 +142,14 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
             # The above could have failed a couple of points - no PMID or nothing returned from a PMID query
             try:
                 # try querying with the DOI first - there might not be a DOI
-                if 'count' not in this_paper['clean']['citations']['scopus'] and this_paper['IDs']['DOI'] != "":
+                try:
+                    temp = this_paper['clean']['citations']['scopus']['count']
+                    pmid_query_worked = True
+                except:
+                    pmid_query_worked = False
+                    pass
+
+                if pmid_query_worked is False and this_paper['IDs']['DOI'] != "":
                     # request_string = url+'?apiKey='+api_key+'&field=citedby-count&query=DOI('+this_paper['IDs']['DOI']+')'
                     request_string = url + '?apiKey=' + api_key + '&query=DOI(' + this_paper['IDs']['DOI'] + ')'
                     logging.info(request_string)
@@ -166,7 +178,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
                         elif len(t['search-results']['entry']) == 1:
                             citations = t['search-results']['entry'][0]['citedby-count']
                             this_paper['clean']['citations']['scopus']['count'] = citations
-                            this_paper['clean']['citations']['scopus']['date_downloaded'] = datetime.datetime.now()
+                            this_paper['clean']['citations']['scopus']['date_downloaded'] = str(datetime.datetime.now())
                             scopus_id = t['search-results']['entry'][0]['eid']
                             this_paper['IDs']['scopus'] = scopus_id
 
@@ -262,7 +274,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
 
                 citations = t["resultList"]["result"][0]["citedByCount"]
                 this_paper['clean']['citations']['PMC']['count'] = citations
-                this_paper['clean']['citations']['PMC']['date_downloaded'] = datetime.datetime.now()
+                this_paper['clean']['citations']['PMC']['date_downloaded'] = str(datetime.datetime.now())
 
                 cached_citations[this_paper['IDs']['hash']] = {}
                 cached_citations[this_paper['IDs']['hash']]['citation_count'] = citations

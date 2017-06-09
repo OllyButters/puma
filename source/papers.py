@@ -108,12 +108,10 @@ print str(len(papers)) + ' papers to process'
 # Clean the data - e.g. tidy dates and institute names
 clean.clean_notes(papers, error_log)
 clean.pre_clean(papers, error_log)
-#should probably move clean_institution into clean directly
+# should probably move clean_institution into clean directly
 clean.clean_institution(papers)
-# clean.clean.do_deltas(papers)
-#for this_paper in papers:
+# for this_paper in papers:
 #    pprint(this_paper)
-
 
 
 ###########################################################
@@ -141,10 +139,9 @@ analyse.journals(papers)
 
 abstract_data_from_count = analyse.abstracts(papers)
 network = analyse.authors(papers)
-analyse.completeness_report(papers)
 analyse.first_authors(papers)
 analyse.inst(papers)
-analyse.mesh(papers)
+# analyse.mesh(papers)
 analyse.output_csv(papers)
 
 ###########################################################
