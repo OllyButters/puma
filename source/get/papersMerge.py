@@ -7,6 +7,24 @@ import copy
 import logging
 import config.config as config
 
+##
+# Merge class
+# _Overview_
+# Provided with two json formatted documents, merge one (src) into the second
+# (dest) using jsonpath mappings defined in mapping to match src paths to dest.
+#
+# iterFields is the primary means by which data is mapped from one structure 
+# to another.
+# It works through each element of src from the root downwards,
+# checking for matches of the current src jsonpath to dest jsonpath.
+# If a dest jsonpath is found, we search the dest json for this and specify as
+# the target. If not found or there is no dest jsonpath mapping, add to the 
+# dest json and specify as the target.
+# On encountering any list or dictionary, iterFields calls itself recursively,
+# setting the src to be the list/dict and specifying the current src and dest
+# paths.
+#
+##
 
 class Merge():
   def __init__(self):
@@ -56,6 +74,10 @@ class Merge():
 
       matches = self.getPath(dest, dest_path)
 
+      # check if the last element of the src_path is pointing
+      # to a specific index of a list
+      # if so, we set the dest_loc (i.e. index of the destination to 
+      # the relevant value (otherwise default dest_loc to -1, i.e. last element)
       src_loc_type = re.match(r'\[([0-9]+)\]', src_path[-1])
 
       dest_loc = -1
