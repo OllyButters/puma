@@ -31,9 +31,9 @@ import html.build_htmlv2
 import bibliography.bibtex
 import get.collate
 
-__author__ = "Olly Butters, Hugh Garner, Tom Burton"
-__date__ = 23/5/17
-__version__ = '0.2.10'
+__author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
+__date__ = 15/6/17
+__version__ = '0.3.0'
 
 # Lets figure out some paths that everything is relative to
 # global root_dir

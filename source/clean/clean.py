@@ -1,11 +1,7 @@
 #! /usr/bin/env python
 
-import json
 import re
 import logging
-import os
-import hashlib
-
 import config.config as config
 
 
@@ -122,7 +118,7 @@ def clean_date(this_paper, error_log):
             except:
                 try:
                     # Zotero Notes overide date
-                    date_parts = this_paper['merged']['notes']['date'].split("/")
+                    date_parts = this_paper['merged']['extra']['date'].split("/")
                     this_paper['clean']['clean_date']['day'] = str(date_parts[0])
                     this_paper['clean']['clean_date']['month'] = str(date_parts[1])
                     this_paper['clean']['clean_date']['year'] = str(date_parts[2])
@@ -265,7 +261,7 @@ def clean_institution(papers):
         except:
             # Check for Zotero note institution
             try:
-                this_paper['clean']['location']['clean_institute'] = this_paper['merged']['extra']['institution']
+                this_paper['clean']['location']['clean_institute'] = this_paper['merged']['extra']['clean_institute']
             except:
                 pass
 
