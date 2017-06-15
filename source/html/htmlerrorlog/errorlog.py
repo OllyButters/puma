@@ -29,7 +29,7 @@ class ErrorLog:
         string += "</tr>"
         string += "<tr>"
         try:
-            string += "<td>Title</td><td>" + str(this_paper['title']) + "</td>"
+            string += "<td>Title</td><td>" + str(this_paper['clean']['title']) + "</td>"
         except:
             string += "<td>Title</td><td>Problem with title</td>"
         string += "</tr>"
@@ -68,7 +68,7 @@ class ErrorLog:
         string += "</tr>"
         string += "<tr>"
         try:
-            string += "<td>Title</td><td>" + str(this_paper['title']) + "</td>"
+            string += "<td>Title</td><td>" + str(this_paper['clean']['title']) + "</td>"
         except:
             string += "<td>Title</td><td>Problem with title</td>"
         string += "</tr>"

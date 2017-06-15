@@ -26,7 +26,7 @@ def tidy_existing_file_tree(root_dir):
 
     # Merged files. Orphans get left here if deleted from e.g. zotero or
     # the raw cache folder.
-    if config.merge_all == 1:
+    if config.merge_all == 1 and config.use_cached_merge_only == 0:
         if os.path.exists(config.cache_dir + '/processed/merged'):
             shutil.rmtree(config.cache_dir + '/processed/merged')
 
@@ -65,6 +65,9 @@ def build_file_tree(root_dir):
         os.mkdir(config.cache_dir + '/geodata')
 
     # = Data directory =
+    if not os.path.exists(root_dir + '/data'):
+        os.mkdir(root_dir + '/data')
+
     if not os.path.exists(config.data_dir):
         os.mkdir(config.data_dir)
 
