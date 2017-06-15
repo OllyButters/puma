@@ -13,9 +13,9 @@ import config.config as config
 
 
 def collate():
-  # first, check if config.use_cached_merged_only is set to 1
+  # first, check if config.use_cached_merged_only is set to True
   # if so, just load these and return
-  if config.use_cached_merge_only == 1:
+  if config.use_cached_merge_only is True:
     # get list of currently merged papers
     merged_list = pc.getCacheList(filetype='/processed/merged')
     merged_papers = []
@@ -43,8 +43,8 @@ def collate():
   new_papers = []
 
   # we may want to re-download the data from zotero
-  # if config has the 'zotero_get_all' flag set to '1', make sure we get all papers not just new ones (i.e. load from cached file)
-  if config.zotero_get_all == 1:
+  # if config has the 'zotero_get_all' flag set to True, make sure we get all papers not just new ones (i.e. load from cached file)
+  if config.zotero_get_all is True:
     new_keys = zot.papers_keys
   else:
     for num, paper_key in enumerate(zot.papers_keys):
@@ -98,8 +98,8 @@ def collate():
       paper['IDs']['DOI'] = paper['DOI']
       paper['IDs']['DOI_filename'] = doi_filename
 
-      # check if paper data in doi cache (only if config.use_pubmed_doi_cache is not 1
-      if doi_filename not in doi_cache or config.use_doi_pubmed_cache != 1:
+      # check if paper data in doi cache (only if config.use_pubmed_doi_cache is not True
+      if doi_filename not in doi_cache or config.use_doi_pubmed_cache is not True:
         doi_paper = pd.getDoi(paper['DOI'])
         paper['doi_data'] = doi_paper
         # data is automatically cached by getDoi
@@ -114,8 +114,8 @@ def collate():
         # add the pmid to the IDs dict
         paper['IDs']['PMID'] = paper['pmid']
 
-        # check if paper data in pm cache (only if config.use_doi_pubmed_cache is not 1)
-        if paper['pmid'] not in pm_cache or config.use_doi_pubmed_cache != 1:
+        #check if paper data in pm cache (only if config.use_doi_pubmed_cache is not True)
+        if paper['pmid'] not in pm_cache or config.use_doi_pubmed_cache is not True:
           pm_paper = pm.getPubmed(paper['pmid'])
           paper['pmid_data'] = pm_paper
           # data is automatically cached by getPubmed
@@ -149,7 +149,7 @@ def collate():
     ids['hash'] = filename
 
     # if we aren't set to merge all papers, ignore existing files
-    if config.merge_all != 1:
+    if config.merge_all is False:
       if filename in merged_list:
         print "Merged file: "+filename+" already exists. Ignoring as merge_all not set to 1 in config.ini. File being loaded from cache."
         paper = pc.getCacheData(filetype='/processed/merged', filenames=[filename])[filename]
