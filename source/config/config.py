@@ -63,7 +63,7 @@ def build_config_variables(root_dir):
     config.read(config_file_path)
     try:
         # Project Details
-        project_details = {'name': config.get('project_details', 'name'), 'short_name': config.get('project_details', 'short_name'), 'colour_hex_primary': config.get('project_details', 'colour_hex_primary'), 'colour_hex_secondary': config.get('project_details', 'colour_hex_secondary'), 'header_image_url': config.get('project_details', 'header_image_url'), 'header_institution': config.get('project_details', 'header_institution'), 'header_institution_url': config.get('project_details', 'header_institution_url'), 'side_image_url': config.get('project_details', 'side_image_url'), 'side_image_link': config.get('project_details', 'side_image_link')}
+        project_details = {'name': config.get('project_details', 'name'), 'short_name': config.get('project_details', 'short_name'), 'colour_hex_primary': config.get('project_details', 'colour_hex_primary'), 'colour_hex_secondary': config.get('project_details', 'colour_hex_secondary'), 'header_image_url': config.get('project_details', 'header_image_url'), 'header_institution': config.get('project_details', 'header_institution'), 'header_institution_url': config.get('project_details', 'header_institution_url'), 'side_image_filename': config.get('project_details', 'side_image_filename'), 'side_image_link': config.get('project_details', 'side_image_link')}
 
         # Scopus settings
         scopus_force_citation_update = config.get('scopus', 'scopus_force_citation_update')

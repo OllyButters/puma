@@ -44,15 +44,15 @@ def build_common_body(breadcrumb, nav_path, body):
 
     html += '<div id="uobcms-wrapper" class="width-master">'
     html += '<div id="uobcms-col1" role="navigation">'
-    html += '<!--htdig_noindex-->'
-    html += '<h4 class="navtitle">'
-    html += '<!-- navigation object : navigation title -->'
-    html += '<a href="http://www.bristol.ac.uk/alspac/">Avon Longitudinal Study of Parents and Children</a>'
-    html += '</h4>'
-    html += '<div class="before-navgroup">'
-    html += '<!-- navigation object : navigation top -->'
+    # html += '<!--htdig_noindex-->'
+    # html += '<h4 class="navtitle">'
+    # html += '<!-- navigation object : navigation title -->'
+    # html += '<a href="http://www.bristol.ac.uk/alspac/">Avon Longitudinal Study of Parents and Children</a>'
+    # html += '</h4>'
+    # html += '<div class="before-navgroup">'
+    # html += '<!-- navigation object : navigation top -->'
 
-    html += '</div>'
+    # html += '</div>'
     html += '<!-- navigation object : navigation -->'
 
     html += '<ul class="navgroup">'
@@ -87,9 +87,15 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<div class="after-navgroup">'
     html += '<!-- navigation object : navigation bottom -->'
     html += '<!-- start navigation : additional logo -->'
-    html += '<div class="logo-additional">'
-    html += '<a href="' + config.project_details['side_image_link'] + '"><img src="' + config.project_details['side_image_url'] + '" alt="" width="279" height="375" /></a>&zwnj;'
-    html += '</div>'
+
+    # Add the side logo to the actual project if it has been set
+    print config.config_dir + '/' + config.project_details['side_image_filename']
+    if os.path.isfile(config.config_dir + '/' + config.project_details['side_image_filename']):
+        shutil.copy(config.config_dir + '/' + config.project_details['side_image_filename'], config.html_dir + '/' + config.project_details['side_image_filename'])
+        html += '<div class="logo-additional">'
+        html += '<a href="' + config.project_details['side_image_link'] + '"><img src="' + config.project_details['side_image_filename'] + '" alt="" width="279" height="375" /></a>&zwnj;'
+        html += '</div>'
+
     html += '</div>'
     html += '</div>'
 
@@ -100,6 +106,9 @@ def build_common_body(breadcrumb, nav_path, body):
     return html
 
 
+###########################################################
+# Build a common footer for all the pages.
+###########################################################
 def build_common_foot():
     # This function builds the common footer for all pages.
     html = '</div>'
@@ -1195,19 +1204,19 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     # cal h-index
     paper_citations.sort(reverse=True)
     h_index = 0
-    cits_so_far = 0
+    # cits_so_far = 0
 
-    for x in range(1, total_publications):
+    for x in range(0, len(paper_citations)):
         if x > paper_citations[x]:
             break
         h_index = x
-        cits_so_far += paper_citations[x]
+        # cits_so_far += paper_citations[x]
 
     # cal g-index
     g_index = 0
     cits_so_far = 0
 
-    for x in range(0, total_publications - 1):
+    for x in range(0, len(paper_citations)):
         cits_so_far += paper_citations[x]
         if cits_so_far < x * x:
             break
