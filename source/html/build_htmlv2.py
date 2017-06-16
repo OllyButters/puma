@@ -87,9 +87,15 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<div class="after-navgroup">'
     html += '<!-- navigation object : navigation bottom -->'
     html += '<!-- start navigation : additional logo -->'
-    html += '<div class="logo-additional">'
-    html += '<a href="' + config.project_details['side_image_link'] + '"><img src="' + config.project_details['side_image_url'] + '" alt="" width="279" height="375" /></a>&zwnj;'
-    html += '</div>'
+
+    # Add the side logo to the actual project if it has been set
+    print config.config_dir + '/' + config.project_details['side_image_filename']
+    if os.path.isfile(config.config_dir + '/' + config.project_details['side_image_filename']):
+        shutil.copy(config.config_dir + '/' + config.project_details['side_image_filename'], config.html_dir + '/' + config.project_details['side_image_filename'])
+        html += '<div class="logo-additional">'
+        html += '<a href="' + config.project_details['side_image_link'] + '"><img src="' + config.project_details['side_image_filename'] + '" alt="" width="279" height="375" /></a>&zwnj;'
+        html += '</div>'
+
     html += '</div>'
     html += '</div>'
 
@@ -100,6 +106,9 @@ def build_common_body(breadcrumb, nav_path, body):
     return html
 
 
+###########################################################
+# Build a common footer for all the pages.
+###########################################################
 def build_common_foot():
     # This function builds the common footer for all pages.
     html = '</div>'
