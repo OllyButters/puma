@@ -24,7 +24,7 @@ def main(argv):
     pprint(str(e))
     sys.exit(2)
   # only pass config arg to config.ini
-  sys.argv = [sys.argv[0]] + [[v, sys.argv[i+1]] for i,v in enumerate(sys.argv) if v == 'config']
+  sys.argv = [sys.argv[0]] + [[v, sys.argv[i+1]] for i,v in enumerate(sys.argv) if v == 'config' or v == 'c']
 
   config.build_config_variables(root_dir)
 
