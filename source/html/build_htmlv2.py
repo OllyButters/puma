@@ -1195,19 +1195,19 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     # cal h-index
     paper_citations.sort(reverse=True)
     h_index = 0
-    cits_so_far = 0
+    # cits_so_far = 0
 
-    for x in range(1, total_publications):
+    for x in range(0, len(paper_citations)):
         if x > paper_citations[x]:
             break
         h_index = x
-        cits_so_far += paper_citations[x]
+        # cits_so_far += paper_citations[x]
 
     # cal g-index
     g_index = 0
     cits_so_far = 0
 
-    for x in range(0, total_publications - 1):
+    for x in range(0, len(paper_citations)):
         cits_so_far += paper_citations[x]
         if cits_so_far < x * x:
             break
