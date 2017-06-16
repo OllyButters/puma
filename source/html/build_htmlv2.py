@@ -44,15 +44,15 @@ def build_common_body(breadcrumb, nav_path, body):
 
     html += '<div id="uobcms-wrapper" class="width-master">'
     html += '<div id="uobcms-col1" role="navigation">'
-    html += '<!--htdig_noindex-->'
-    html += '<h4 class="navtitle">'
-    html += '<!-- navigation object : navigation title -->'
-    html += '<a href="http://www.bristol.ac.uk/alspac/">Avon Longitudinal Study of Parents and Children</a>'
-    html += '</h4>'
-    html += '<div class="before-navgroup">'
-    html += '<!-- navigation object : navigation top -->'
+    # html += '<!--htdig_noindex-->'
+    # html += '<h4 class="navtitle">'
+    # html += '<!-- navigation object : navigation title -->'
+    # html += '<a href="http://www.bristol.ac.uk/alspac/">Avon Longitudinal Study of Parents and Children</a>'
+    # html += '</h4>'
+    # html += '<div class="before-navgroup">'
+    # html += '<!-- navigation object : navigation top -->'
 
-    html += '</div>'
+    # html += '</div>'
     html += '<!-- navigation object : navigation -->'
 
     html += '<ul class="navgroup">'
