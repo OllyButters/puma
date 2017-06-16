@@ -18,13 +18,17 @@ def main(argv):
   path_to_papers_py = os.path.abspath(sys.argv[0])
   root_dir = os.path.dirname(os.path.dirname(path_to_papers_py))
   print 'Root directory = ' + root_dir
+  try:
+    opts, args = getopt.getopt(argv, "i:t:g:", ["input=", "type=", "collection="])
+  except Exception as e:
+    pprint(str(e))
+    sys.exit(2)
+  # only pass config arg to config.ini
+  sys.argv = [sys.argv[0]] + [[v, sys.argv[i+1]] for i,v in enumerate(sys.argv) if v == 'config']
+
   config.build_config_variables(root_dir)
 
-  try:
-    opts, args = getopt.getopt(argv, "ifc", ["input=", "type=", "collection="])
-  except:
-    sys.exit(2)
-
+  pprint('Cache dir set to: '+config.cache_dir)
   cache_file = None
   src_type = None
   collection = None
