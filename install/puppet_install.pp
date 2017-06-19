@@ -9,7 +9,7 @@
 #todo
 ##Do group membership better - users are hardcoded in here.
 
-node 'pubs-alspac-p0' {
+node 'd2k-puma' {
 
 	#Root path everything done wrt
 	$root_path = '/var/local/projects/puma/'
