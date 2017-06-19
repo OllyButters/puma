@@ -172,6 +172,9 @@ class zotPaper (zotero.Zotero):
 
     for field in paper:
       if field in field_map.keys():
+        #hacky fix for issn
+        if field == 'issn' and isinstance(paper[field], list):
+          zot_paper[field_map[field]] = ','.join(paper[field])
         zot_paper[field_map[field]] = paper[field]
       elif field == creator_field:
         authors = paper[field]

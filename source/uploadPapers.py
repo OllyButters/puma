@@ -49,7 +49,7 @@ def main(argv):
     sys.exit(2)
 
   zot = pz.zotPaper()
-  zot.collection = collection
+  #zot.collection = collection
 
   zot_papers = []
 
@@ -148,7 +148,7 @@ def main(argv):
 
     #now try uploading and dump zotero output
     try:
-      print "Uploading paper "+str(n)+" to collection "+zot.collection
+      print "Uploading paper "+str(n)+" to collection "+str(zot.collection)
       created = zot.create_items([zot_papers[-1]])
       pprint(created)
       pc.dumpJson(filename=cache_file+'-'+str(n)+'-zotero-upload-response', data=created, filetype='processed/upload', process=False)
