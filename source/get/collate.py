@@ -169,6 +169,7 @@ def collate():
     # mgr.mapping = pc.getCacheData(filenames=['data-pubmed-doi-jsonpath'])['data-pubmed-doi-jsonpath']
     mgr.src = pmid_data
     mgr.dest = copy.deepcopy(template)
+    print 'Merging pubmed'
     mgr.mapSrc()
     merged_paper['pmid_data'] = copy.deepcopy(mgr.dest)
 
@@ -179,6 +180,7 @@ def collate():
     # mgr.mapping = pc.getCacheData(filenames=['data-zotero-doi-jsonpath'])['data-zotero-doi-jsonpath']
     mgr.src = paper
     mgr.dest = copy.deepcopy(template)
+    print 'Merging zotero'
     mgr.mapSrc()
     merged_paper['zotero_data'] = copy.deepcopy(mgr.dest)
 
@@ -187,6 +189,7 @@ def collate():
     mgr.mapping = {}
     mgr.src = merged_paper['pmid_data']
     mgr.dest = merged_paper['zotero_data']
+    print 'Merging pubmed into zotero'
     mgr.mapSrc()
     merged_paper['pmid_zotero_data'] = copy.deepcopy(mgr.dest)
 
@@ -194,6 +197,7 @@ def collate():
     mgr.mapping = {}
     mgr.src = doi_data
     mgr.dest = copy.deepcopy(template)
+    print 'Merging doi'
     mgr.mapSrc()
     merged_paper['doi_data'] = copy.deepcopy(mgr.dest)
 
@@ -201,6 +205,7 @@ def collate():
     mgr.mapping = {"$.DOI": "$.DOI", "$.title": "$.title"}
     mgr.dest = merged_paper['doi_data']
     mgr.src = merged_paper['pmid_zotero_data']
+    print 'Merging doi into pubmed/zotero'
     mgr.mapSrc()
 
     # now do some restructuring do make sure we dump data in the correct
