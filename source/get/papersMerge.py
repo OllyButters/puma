@@ -53,74 +53,49 @@ class Merge():
       # trim off the destination_parent_path
       if dest_parent_path is not None and dest_parent_path != '' and dest_path.startswith(dest_parent_path):
         dest_path = '$'+dest_path[len(dest_parent_path):]
+      
+      dest_data = self.searchDest(dest, dest_path, src_path)
 
-      matches = self.getPath(dest, dest_path)
-
-      src_loc_type = re.match(r'\[([0-9]+)\]', src_path[-1])
-
-      dest_loc = -1
-      if src_loc_type is not None:
-        dest_loc = int(src_loc_type.group(1))
-
-      if len(matches) > 0:
-        # we've found some matches
-        # self.log.info('Some matches found in dest: '+str(matches))
-        # what type is the match?
-        if isinstance(matches[dest_loc].value, dict):
-          # if it's a dict, we can just set it to value
-          dest = matches[dest_loc].value
-          if isinstance(matches[dest_loc].path, jsonp.Root):
-            dest_field = None
-          else:
-            dest_field = str(matches[dest_loc].path)
-        elif isinstance(matches[dest_loc].value, list):
-          dest = matches[dest_loc].value
-          if len(dest) == 0:
-            dest.append('')
-          dest_field = len(matches[dest_loc].value) - 1
-        else:
-          # it's a str or int (ignore tuples/sets/etc)
-          dest = matches[dest_loc].context.value
-          dest_field = matches[dest_loc].path
+      if dest_data['dest'] is not None:
+        # we've found some matches in dest
+        dest = dest_data['dest']
+        dest_field = dest_data['dest_field']
       else:
         # if no matches found, test to see if in self.dest as opposed to dest. if not there either, insert new location and set as dest
         # note that new_dest_parent_path is dest_path before trimming of dest_parent_path
-        # todo rationalise this into single function
-        matches = self.getPath(self.dest, new_dest_parent_path)
+        dest_data = self.searchDest(self.dest, new_dest_parent_path, src_path)
 
-        if len(matches) > 0:
-          # we've found some matches
-          # self.log.info('Some matches found in self.dest: '+str(matches))
-          # what type is the match?
-          if isinstance(matches[-1].value, dict):
-            # if it's a dict, we can just set it to value
-            dest = matches[-1].value
-            if isinstance(matches[-1].path, jsonp.Root):
-              dest_field = None
-            else:
-              dest_field = str(matches[-1].path)
-          elif isinstance(matches[-1].value, list):
-            dest = matches[-1].value
-            if len(dest) == 0:
-              dest.append('')
-            dest_field = len(matches[-1].value) - 1
-          else:
-            # it's a str or int (ignore tuples/sets/etc)
-            dest = matches[-1].context.value
-            dest_field = matches[-1].path
+        if dest_data['dest'] is not None:
+          # we've found some matches in self.dest (i.e. after looking in
+          # the whole dest object not just a subsection
+          dest_data = self.searchDest(self.dest, new_dest_parent_path, src_path)
+          dest = dest_data['dest']
+          dest_field = dest_data['dest_field']
+
         else:
           # no matches found, so go on to add full_src_path to self.dest
-          pprint('full_src_path: ')
-          pprint(full_src_path)
-          dest_data = self.insertNewDestLocation(full_src_path)
+          #pprint('full_src_path: ')
+          #pprint(full_src_path)
+          src_object_type = 'dict'
+          if isinstance(src_data, list):
+            src_object_type = 'list'
+          dest_data = self.insertNewDestLocation(full_src_path, object_type = src_object_type)
           dest = dest_data['dest']
           dest_field = dest_data['dest_field']
           dest_path = '.'.join(src_path)
     elif dest_path == '':
       # if the destination path doesn't exist, insert new location as above and set as dest
-      pprint('full_src_path: ')
-      pprint(full_src_path)
-      dest_data = self.insertNewDestLocation(full_src_path)
+      #pprint('full_src_path: ')
+      #pprint(full_src_path)
+
+      # get the type of the object we want to add (dict or list) 
+      src_object_type = 'dict'
+      if isinstance(src_data, list):
+        src_object_type = 'list'
+
+      # insert the path as a new location and set dest to be the created
+      # object and dest_field to be the field or index to use
+      dest_data = self.insertNewDestLocation(full_src_path, object_type = src_object_type)
       dest = dest_data['dest']
       dest_field = dest_data['dest_field']
       dest_path = '.'.join(src_path)
@@ -169,6 +144,52 @@ class Merge():
     full_path = ('$',)
     self.iterFields(self.src, self.mapping, full_path, self.dest)
 
+  # search dest for dest_path
+  # dest is target object
+  # dest_path - jsonpath to search for
+  # src_path - jsonpath elements split into list
+  # returns object {'dest': [dest object if found], 'dest_path': [destination field in destination objec]}
+  # dest and dest path in returned object set to None if nothing found
+  def searchDest(self, dest, dest_path, src_path):
+    matches = self.getPath(dest, dest_path)
+
+    src_loc_type = re.match(r'\[([0-9]+)\]', src_path[-1])
+
+    dest_loc = -1
+    if src_loc_type is not None:
+      dest_loc = int(src_loc_type.group(1))
+
+    new_dest = None
+    dest_field = None
+
+    if len(matches) > 0:
+      # we've found some matches
+      # self.log.info('Some matches found in dest: '+str(matches))
+      # what type is the match?
+      if isinstance(matches[dest_loc].value, dict):
+        # if it's a dict, we can just set it to value
+        new_dest = matches[dest_loc].value
+        if isinstance(matches[dest_loc].path, jsonp.Root):
+          dest_field = None
+        else:
+          dest_field = str(matches[dest_loc].path)
+      elif isinstance(matches[dest_loc].value, list):
+        new_dest = matches[dest_loc].value
+        if len(new_dest) == 0:
+          new_dest.append('')
+        dest_field = len(matches[dest_loc].value) - 1
+      else:
+        # it's a str or int (ignore tuples/sets/etc)
+        new_dest = matches[dest_loc].context.value
+        dest_field = matches[dest_loc].path
+
+    dest_return = {
+      'dest': new_dest,
+      'dest_field': dest_field
+    }
+    return dest_return
+
+
 
   # try to find path in path_mapping, return a dict of the path (if found) and any sub-paths
   def findDestPath(self, path_mapping, path):
@@ -206,8 +227,10 @@ class Merge():
 
 
   # insert path into destination
+  # object_type - 'list' or 'dict', specifies the type of object to add to dest
+  # and point at with dest_field return value
   # return dict of destination object and destination field
-  def insertNewDestLocation(self, path, dest = None):
+  def insertNewDestLocation(self, path, dest = None, object_type = 'dict'):
     if dest is None:
       dest = self.dest
     current_path = dest
@@ -228,8 +251,8 @@ class Merge():
       else:
         new_path.append(loc)
 
-    pprint('new_path: ')
-    pprint(new_path)
+    #pprint('new_path: ')
+    #pprint(new_path)
     # we now have a new path constructed of strings and list elements (e.g. ['foo', 'bar', [], '0', 'car'])
     dest_field = new_path[-1]
     # if the last elements are a list and then an index, we need to drop the index from the end otherwise we end up pointing at the wrong place
@@ -252,20 +275,20 @@ class Merge():
       else:
         next_element = {}
 
-      pprint('Current_path: ')
-      pprint(current_path)
-      pprint('loc: ')
-      pprint(loc)
-      pprint('-----------')
+      #pprint('Current_path: ')
+      #pprint(current_path)
+      #pprint('loc: ')
+      #pprint(loc)
+      #pprint('-----------')
       if loc is not None:
         if isinstance(current_path, list):
-          # if current_path is a list, next_loc will be an index value
-          # we therefore need to look further ahead to check what type
-          # (if any) is coming next, so we'll set next_next_loc
-          if i + 2 > len(new_path) - 1:
-            next_next_loc = None
-          else:
-            next_next_loc = new_path[i+2]
+          ## if current_path is a list, next_loc will be an index value
+          ## we therefore need to look further ahead to check what type
+          ## (if any) is coming next, so we'll set next_next_loc
+          #if i + 2 > len(new_path) - 1:
+          #  next_next_loc = None
+          #else:
+          #  next_next_loc = new_path[i+2]
 
           # we don't need to test for loc being a list here as it must always be an int (type str) (see splitting path above)
           if len(current_path) <= int(next_loc):
@@ -277,15 +300,15 @@ class Merge():
             # there is an element with the relevant index in the list, so
             # we need to point at it
 
-            # when a path is being created, if a list contains another list at a
-            # particular index, earlier calls will have created an empty dict
-            # at this index as they don't know what's coming next.
-            # therefore we need to check if next_next_loc is a list 
-            # (next loc will be an index) and if the target is 
-            # an empty dict we replace the empty dict with a list
-            if isinstance(next_next_loc, list):
-              if isinstance(current_path[int(next_loc)], dict) and len(current_path[int(next_loc)].keys()) == 0:
-                current_path[int(next_loc)] = []
+            ## when a path is being created, if a list contains another list at a
+            ## particular index, earlier calls will have created an empty dict
+            ## at this index as they don't know what's coming next.
+            ## therefore we need to check if next_next_loc is a list 
+            ## (next loc will be an index) and if the target is 
+            ## an empty dict we replace the empty dict with a list
+            #if isinstance(next_next_loc, list):
+            #  if isinstance(current_path[int(next_loc)], dict) and len(current_path[int(next_loc)].keys()) == 0:
+            #    current_path[int(next_loc)] = []
 
             # finally we can point at the index in current_path
             current_path = current_path[int(next_loc)]
@@ -302,14 +325,17 @@ class Merge():
 
     if isinstance(current_path, list):
       if len(current_path) <= int(dest_field):
-        current_path.append({})
+        if object_type == 'list':
+          current_path.append([])
+        else: 
+          current_path.append({})
 
-    pprint('=================')
-    pprint('dest: ')
-    pprint(current_path)
-    pprint('dest_field')
-    pprint(dest_field)
-    pprint('=================')
+    #pprint('=================')
+    #pprint('dest: ')
+    #pprint(current_path)
+    #pprint('dest_field')
+    #pprint(dest_field)
+    #pprint('=================')
 
     return {'dest': current_path, 'dest_field': dest_field}
 
