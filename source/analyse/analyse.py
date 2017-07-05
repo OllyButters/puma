@@ -316,8 +316,9 @@ def mesh(papers):
             # Need to utf-8 encode
             mesh_file.writerow([w.encode('utf-8'), freq[w]])
 
-
+################################################################################
 # output a csv file with some info in
+################################################################################
 def output_csv(papers):
 
     print '\n###Outputting CSV file###'
@@ -350,9 +351,9 @@ def output_csv(papers):
                 pass
 
 
-###########################################################
+################################################################################
 # Build an HTML report of the status of the importat fields
-###########################################################
+################################################################################
 def coverage_report(papers):
 
     print 'Building coverage report'
@@ -554,5 +555,5 @@ def coverage_report(papers):
     title = '<h1>' + config.project_details['short_name'] + '</h1>'
 
     output_text = '<html><head><style>' + cov_css + '</style></head><body>' + title + status_table + '<br/><br/>' + cov_html + '</body></html>'
-    coverage_file = open(config.data_dir + '/coverage_report.html', 'w')
+    coverage_file = open(config.html_dir + '/coverage_report.html', 'w')
     print >> coverage_file, output_text
