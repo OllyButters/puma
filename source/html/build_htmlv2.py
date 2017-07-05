@@ -76,6 +76,7 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'wordcloud/index.html">Major Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
     html += '<li id="error_page_li" style="display:none;"><a href="' + nav_path + 'errorlog/index.html">Error Log</a></li>'
+    html += '<li><a href="' + nav_path + 'coverage_report.html">Coverage report</a></li>'
     html += '</ul>'
 
     # = Cookie errorlog display =
@@ -89,7 +90,6 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<!-- start navigation : additional logo -->'
 
     # Add the side logo to the actual project if it has been set
-    print config.config_dir + '/' + config.project_details['side_image_filename']
     if os.path.isfile(config.config_dir + '/' + config.project_details['side_image_filename']):
         shutil.copy(config.config_dir + '/' + config.project_details['side_image_filename'], config.html_dir + '/' + config.project_details['side_image_filename'])
         html += '<div class="logo-additional">'
@@ -116,7 +116,8 @@ def build_common_foot():
 
     html += '<div class="feedback-container width-master clear"><div class="page-feedback small"></div></div>'
     html += '<div class="foot clearfix"></div>'
-    html += 'Stats last updated on ' + str(time.time())
+    # html += 'Stats last updated on ' + str(time.time())
+    html += 'Stats last updated on ' + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
     html += '</body>'
     html += '</html>'
 
