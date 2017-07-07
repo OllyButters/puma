@@ -1777,7 +1777,7 @@ def build_search(papers):
     temp += '<h2 id="num_search_results"></h2>'
     temp += '<div id="search_results"></div>'
 
-    temp += '<div style="display:none" id="search_data">' + str(json.dumps(papers)).replace("<", "&lt;").replace(">", "&gt;") + '</div>'
+    temp += '<script id="search_data">var papers = ' + str(json.dumps(papers)).replace("<", "&lt;").replace(">", "&gt;") + ';</script>'
 
     exec_list = []
     f = open(config.config_dir + "/" + config.project_details['short_name'] + '_exec_members.csv', 'rt')
