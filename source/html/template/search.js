@@ -15,8 +15,9 @@ function search(){
   document.getElementById("num_search_results").innerHTML = "";
 
   // Get the papers and exec data
-  var raw_data = document.getElementById("search_data").innerHTML;
-  var data = JSON.parse(raw_data);
+  //var raw_data = document.getElementById("search_data").innerHTML;
+  //var data = JSON.parse(raw_data);
+  var data = papers;
   var raw_exec = document.getElementById("exec_list").innerHTML;
   var exec_list = JSON.parse(raw_exec);
 
@@ -40,21 +41,21 @@ function search(){
       var match = false;
 
       // Check title
-      if( data[i].title.contains( query_components[j] ) ){
+      if( data[i].merged.title.contains( query_components[j] ) ){
         match = true;
       }
 
       // Check abstract
       try{
-        if(data[i].MedlineCitation.Article.Abstract.AbstractText[0].contains(query_components[j])){
+        if(data[i].merged.MedlineCitation.Article.Abstract.AbstractText[0].contains(query_components[j])){
           match = true;
         }
       } catch(err){}
 
       // Check subject text
       try {
-        for( n = 0; n < data[i].subject.length ; n++ ){
-          if( data[i].subject[n].contains( query_components[j] ) ){
+        for( n = 0; n < data[i].merged.subject.length ; n++ ){
+          if( data[i].merged.subject[n].contains( query_components[j] ) ){
             match = true;
           }
         }
@@ -62,8 +63,8 @@ function search(){
 
       // Check keywords
       try {
-        for( n = 0; n < data[i].MedlineCitation.MeshHeadingList.length ; n++ ){
-          if( data[i].MedlineCitation.MeshHeadingList[n].DescriptorName.contains( query_components[j] ) ){
+        for( n = 0; n < data[i].merged.MedlineCitation.MeshHeadingList.length ; n++ ){
+          if( data[i].merged.MedlineCitation.MeshHeadingList[n].DescriptorName.contains( query_components[j] ) ){
             match = true;
           }
         }
@@ -71,8 +72,8 @@ function search(){
 
       // Check author names
       try {
-        for( n = 0; n < data[i].author.length ; n++ ){
-          if( data[i].author[n].family.contains( query_components[j] ) || data[i].author[n].given.contains( query_components[j] ) ){
+        for( n = 0; n < data[i].merged.author.length ; n++ ){
+          if( data[i].merged.author[n].family.contains( query_components[j] ) || data[i].merged.author[n].given.contains( query_components[j] ) ){
             match = true;
           }
         }
@@ -96,16 +97,16 @@ function search(){
         } catch (err){}
 
         // Paper title
-        results += '<span style="text-decoration: underline; font-weight:bold;">' + data[i].title + '</span><br/>';
+        results += '<span style="text-decoration: underline; font-weight:bold;">' + data[i].merged.title + '</span><br/>';
 
         // Authors
           authors = [];
           author_on_exec = false;
-          for( a = 0 ; a < data[i].author.length; a++ ){
+          for( a = 0 ; a < data[i].merged.author.length; a++ ){
             //Check if an author was on the exec Comittee
               for ( x = 0; x < exec_list.length; x++ ){
                 //Check if authors name matches
-                if (exec_list[x][2] == data[i].author[a].clean){
+                if (exec_list[x][2] == data[i].merged.author[a].clean){
                   // Get start and end date of exec membership
                   var start_split = exec_list[x][0].split("/");
                   var end_split = exec_list[x][1].split("/");
@@ -117,7 +118,7 @@ function search(){
                   }
 
                   // Convert issued date into a timestamp
-                  var clean_date = data[i].Extras.CleanDate;
+                  var clean_date = data[i].clean.clean_date;
                   var issued_timestamp = new Date(clean_date.year,clean_date.month,clean_date.day).getTime()/1000;
 
                   // If publication is issued between exec_start and exec_end then flag
@@ -131,7 +132,7 @@ function search(){
               if( a > 0 ){
                 results += "; ";
               }
-              results += data[i].author[a].family + ', ' + data[i].author[a].given;
+              results += data[i].merged.author[a].family + ', ' + data[i].merged.author[a].given;
           }
           results += '<br/>'
 
@@ -142,20 +143,20 @@ function search(){
 
         // Journal, volume and issue
         try{
-            if( "ISOAbbreviation" in data[i].MedlineCitation.Article.Journal ){
-              results += data[i].MedlineCitation.Article.Journal.ISOAbbreviation;
+            if( "ISOAbbreviation" in data[i].merged.MedlineCitation.Article.Journal ){
+              results += data[i].merged.MedlineCitation.Article.Journal.ISOAbbreviation;
             }
         } catch (err){}
 
         try{
-            if( "volume" in data[i] ){
-              results += ', Volume ' + data[i].volume;
+            if( "volume" in data[i].merged ){
+              results += ', Volume ' + data[i].merged.volume;
             }
         } catch (err){}
 
         try{
-            if( "Issue" in data[i].MedlineCitation.Article.Journal.JournalIssue ){
-              results += ', Issue ' + data[i].MedlineCitation.Article.Journal.JournalIssue.Issue;
+            if( "Issue" in data[i].merged.MedlineCitation.Article.Journal.JournalIssue ){
+              results += ', Issue ' + data[i].merged.MedlineCitation.Article.Journal.JournalIssue.Issue;
             }
         } catch (err){}
 
@@ -183,17 +184,17 @@ function search(){
         results += '<tr>';
         try{
             // Try to display citation count with link to scopus page
-            results += '<td style="width:' + citations_counts_width + '%;">Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + data[i].Extras.eid + '&origin=inward&txGid=0">' + data[i].Extras.Citations + '</a></td>';
+            results += '<td style="width:' + citations_counts_width + '%;">Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + data[i].IDs.scopus + '&origin=inward&txGid=0">' + data[i].clean.citations.scopus + '</a></td>';
         } catch (err){
             try {
-                results += '<td style="width:' + citations_counts_width + '%;">Scopus: ' + data[i].Extras.Citations + '</td>';
+                results += '<td style="width:' + citations_counts_width + '%;">Scopus: ' + data[i].clean.citations + '</td>';
             } catch (err){
                 results += '<td style="width:' + citations_counts_width + '%;">Scopus: -</td>';
             }
         }
 
         try{
-            results += '<td style="width:' + citations_counts_width + '%;">Europe PMC: ' + data[i]["Extras"]["Citations-EuropePMC"] + '</td>';
+            results += '<td style="width:' + citations_counts_width + '%;">Europe PMC: ' + data[i].clean.citation.PMC.count + '</td>';
         } catch (err){
             results += '<td style="width:' + citations_counts_width + '%;">Europe PMC: -</td>';
         }
