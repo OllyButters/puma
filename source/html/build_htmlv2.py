@@ -132,7 +132,7 @@ def build_home(papers, error_log):
     print "\n###HTML - Home###"
 
     summary = {}
-    missing_year = {'num_papers': 0, 'uob': 0, 'citations': 0}
+    missing_year = {'num_papers': 0, 'citations': 0}
 
     html_file = open(config.html_dir + '/index.html', 'w')
     data_file = open(config.html_dir + '/data.js', 'w')
@@ -165,7 +165,7 @@ def build_home(papers, error_log):
 
             # Make sure there is a dict item for this year
             if this_year not in summary:
-                summary[this_year] = {'num_papers': 0, 'cumulative': 0, 'uob': 0, 'citations': 0, 'cumulative_citations': 0}
+                summary[this_year] = {'num_papers': 0, 'cumulative': 0, 'citations': 0, 'cumulative_citations': 0}
 
             # increment the number of citaitons by one
             summary[this_year]['num_papers'] += 1
@@ -173,13 +173,6 @@ def build_home(papers, error_log):
             # add the citations for this paper to the year running total
             try:
                 summary[this_year]['citations'] += int(this_paper['clean']['citations']['scopus']['count'])
-            except:
-                pass
-
-            # Get number of UoB papers published this year
-            try:
-                if this_paper['clean']['location']['clean_institute'] == 'University of Bristol':
-                    summary[this_year]['uob'] += 1
             except:
                 pass
 
@@ -193,11 +186,6 @@ def build_home(papers, error_log):
                     missing_year['citations'] += int(this_paper['clean']['citations']['scopus']['count'])
                 except:
                     pass
-                    try:
-                        if this_paper['clean']['location']['clean_institute'] == 'University of Bristol':
-                            missing_year['uob'] += 1
-                    except:
-                        pass
 
     # Add in some zeros when there is no papers for this year
     years = summary.keys()
@@ -207,7 +195,7 @@ def build_home(papers, error_log):
         try:
             summary[str(this_year)]['num_papers']
         except:
-            summary[str(this_year)] = {'num_papers': 0, 'cumulative': 0, 'uob': 0, 'citations': 0, 'cumulative_citations': 0}
+            summary[str(this_year)] = {'num_papers': 0, 'cumulative': 0, 'citations': 0, 'cumulative_citations': 0}
 
     # Calculate the cumulative number of papers published
     for this_year in sorted(summary, reverse=False):
@@ -244,7 +232,7 @@ def build_home(papers, error_log):
     # print summary
     # Make a page with the headings on it
     print >>html_file, '<table>'
-    print >>html_file, '<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>UoB #</th><th>UoB %</th><th>Citations* for papers published in this year</th><th>Cumulative citations* for papers published in this year</th></tr>'
+    print >>html_file, '<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>Citations* for papers published in this year</th><th>Cumulative citations* for papers published in this year</th></tr>'
     for this_year in sorted(summary, reverse=True):
         # Skip the years where nothing was published
         if summary[this_year]['num_papers'] == 0:
@@ -261,8 +249,6 @@ def build_home(papers, error_log):
         temp = '<tr><td><a href="papers/' + this_year + '/index.html">' + str(this_year) + '</a></td>'
         temp += '<td>' + intWithCommas(summary[this_year]['num_papers']) + '</td>'
         temp += '<td>' + str(summary[this_year]['cumulative']) + '</td>'
-        temp += '<td>' + intWithCommas(summary[this_year]['uob']) + '</td>'
-        temp += '<td>' + str(int(100*summary[this_year]['uob']/summary[this_year]['num_papers'])) + '</td>'
         temp += '<td>' + intWithCommas(summary[this_year]['citations']) + '</td>'
         temp += '<td>' + intWithCommas(summary[this_year]['cumulative_citations']) + '</td></tr>'
         print >>html_file, temp
@@ -273,8 +259,6 @@ def build_home(papers, error_log):
         temp += '<td style="font-size:12px;font-weight:bold;"><a href="papers/unknown/index.html">UNKNOWN</a></td>'
         temp += '<td>' + intWithCommas(missing_year['num_papers']) + '</td>'
         temp += '<td>-</td>'
-        temp += '<td>' + str(missing_year['uob']) + '</td>'
-        temp += '<td>' + str(int(100*missing_year['uob']/missing_year['num_papers'])) + '</td>'
         temp += '<td>' + intWithCommas(missing_year['citations']) + '</td>'
         temp += '<td>-</td>'
         temp += '</tr>'
