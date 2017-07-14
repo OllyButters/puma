@@ -8,7 +8,7 @@ from pprint import pprint
 from string import Template
 import shutil
 
-def copy_files(network_datafile, script_name, outputdir):
+def copy_network_files(network_datafile, script_name, outputdir):
   # Copy CSS files
   shutil.copyfile(config.template_dir + '/style_main.css', config.html_dir + '/css/style_main.css')
   shutil.copyfile(config.template_dir + '/uobcms_corporate.css', config.html_dir + '/css/uobcms_corporate.css')
@@ -21,7 +21,7 @@ def copy_files(network_datafile, script_name, outputdir):
 
 def build_network_page(network_title, network_datafile, script_name):
   #load the html template file
-  with open(os.path.join(root_dir, 'source/html/template/network.template.pixi.html'), 'r') as template_file:
+  with open(os.path.join(config.template_dir, 'network.template.pixi.html'), 'r') as template_file:
     template_text = template_file.read()
 
   template = Template(template_text)
@@ -43,6 +43,12 @@ if __name__ == '__main__':
   else:
     from ..config import config as config
     from ..html import build_htmlv2 as build_html
+else:
+  import html.build_htmlv2 as build_html
+  import config.config as config
+
+
+if __name__ == '__main__':
   # Lets figure out some paths that everything is relative to
   # global root_dir
   path_to_papers_py = os.path.abspath(sys.argv[0])

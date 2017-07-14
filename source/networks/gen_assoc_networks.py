@@ -10,7 +10,6 @@ from pprint import pprint
 
 if __name__ == '__main__':
   if __package__ is None:
-    print 'getcwd: '+os.getcwd()
     sys.path.append(os.getcwd())
     import config.config as config
     import analyse.genLinks as gl
