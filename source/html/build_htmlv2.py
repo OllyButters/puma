@@ -6,7 +6,7 @@ import os.path
 import csv
 import htmlentities
 import time
-import datetime
+# import datetime
 import math
 import codecs
 import os
@@ -34,8 +34,10 @@ def build_common_body(breadcrumb, nav_path, body):
     html += "<div class='uob-header-container'>"
     html += "<div class='uob-header width-master' role='banner'>"
 
-    html += "<div class='title_stop'></div>"
-    html += "<div id='uoblogo'><a accesskey='1' title='" + config.project_details['header_institution'] + "' href='" + config.project_details['header_institution_url'] + "'><span>" + config.project_details['header_institution'] + "</span></a></div>"
+    if os.path.isfile(config.config_dir + '/' + config.project_details['header_institution_logo_filename']):
+        shutil.copy(config.config_dir + '/' + config.project_details['header_institution_logo_filename'], config.html_dir + '/' + config.project_details['header_institution_logo_filename'])
+        html += '<div id="main-logo"><a accesskey="1" title="' + config.project_details['header_institution_name'] + '" href="' + config.project_details['header_institution_url'] + '"><img src="' + nav_path + config.project_details['header_institution_logo_filename'] + '"/></a></div>'
+
     html += "<div class='maintitle' id='maintitle1'>"
     html += "<span id='title1'><a href='" + nav_path + "index.html'>" + config.project_details['name'] + " - " + site_second_title + "</a></span>"
     html += "</div>"
@@ -44,15 +46,6 @@ def build_common_body(breadcrumb, nav_path, body):
 
     html += '<div id="uobcms-wrapper" class="width-master">'
     html += '<div id="uobcms-col1" role="navigation">'
-    # html += '<!--htdig_noindex-->'
-    # html += '<h4 class="navtitle">'
-    # html += '<!-- navigation object : navigation title -->'
-    # html += '<a href="http://www.bristol.ac.uk/alspac/">Avon Longitudinal Study of Parents and Children</a>'
-    # html += '</h4>'
-    # html += '<div class="before-navgroup">'
-    # html += '<!-- navigation object : navigation top -->'
-
-    # html += '</div>'
     html += '<!-- navigation object : navigation -->'
 
     html += '<ul class="navgroup">'
@@ -93,7 +86,7 @@ def build_common_body(breadcrumb, nav_path, body):
     if os.path.isfile(config.config_dir + '/' + config.project_details['side_image_filename']):
         shutil.copy(config.config_dir + '/' + config.project_details['side_image_filename'], config.html_dir + '/' + config.project_details['side_image_filename'])
         html += '<div class="logo-additional">'
-        html += '<a href="' + config.project_details['side_image_link'] + '"><img src="' + config.project_details['side_image_filename'] + '" alt="" width="279" height="375" /></a>&zwnj;'
+        html += '<a href="' + config.project_details['side_image_link'] + '"><img style="max-height:200px" src="' + nav_path + config.project_details['side_image_filename'] + '" alt=""/></a>'
         html += '</div>'
 
     html += '</div>'
@@ -114,10 +107,12 @@ def build_common_foot():
     html = '</div>'
     html += '</div>'
 
-    html += '<div class="feedback-container width-master clear"><div class="page-feedback small"></div></div>'
-    html += '<div class="foot clearfix"></div>'
+    # html += '<div class="feedback-container width-master clear"><div class="page-feedback small"></div></div>'
+    # html += '<div class="foot clearfix"></div>'
+    html += '<div class="foot">'
     # html += 'Stats last updated on ' + str(time.time())
     html += 'Stats last updated on ' + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
+    html += '</div>'
     html += '</body>'
     html += '</html>'
 
@@ -132,7 +127,7 @@ def build_home(papers, error_log):
     print "\n###HTML - Home###"
 
     summary = {}
-    missing_year = {'num_papers': 0, 'uob': 0, 'citations': 0}
+    missing_year = {'num_papers': 0, 'citations': 0}
 
     html_file = open(config.html_dir + '/index.html', 'w')
     data_file = open(config.html_dir + '/data.js', 'w')
@@ -165,7 +160,7 @@ def build_home(papers, error_log):
 
             # Make sure there is a dict item for this year
             if this_year not in summary:
-                summary[this_year] = {'num_papers': 0, 'cumulative': 0, 'uob': 0, 'citations': 0, 'cumulative_citations': 0}
+                summary[this_year] = {'num_papers': 0, 'cumulative': 0, 'citations': 0, 'cumulative_citations': 0}
 
             # increment the number of citaitons by one
             summary[this_year]['num_papers'] += 1
@@ -173,13 +168,6 @@ def build_home(papers, error_log):
             # add the citations for this paper to the year running total
             try:
                 summary[this_year]['citations'] += int(this_paper['clean']['citations']['scopus']['count'])
-            except:
-                pass
-
-            # Get number of UoB papers published this year
-            try:
-                if this_paper['clean']['location']['clean_institute'] == 'University of Bristol':
-                    summary[this_year]['uob'] += 1
             except:
                 pass
 
@@ -193,11 +181,6 @@ def build_home(papers, error_log):
                     missing_year['citations'] += int(this_paper['clean']['citations']['scopus']['count'])
                 except:
                     pass
-                    try:
-                        if this_paper['clean']['location']['clean_institute'] == 'University of Bristol':
-                            missing_year['uob'] += 1
-                    except:
-                        pass
 
     # Add in some zeros when there is no papers for this year
     years = summary.keys()
@@ -207,7 +190,7 @@ def build_home(papers, error_log):
         try:
             summary[str(this_year)]['num_papers']
         except:
-            summary[str(this_year)] = {'num_papers': 0, 'cumulative': 0, 'uob': 0, 'citations': 0, 'cumulative_citations': 0}
+            summary[str(this_year)] = {'num_papers': 0, 'cumulative': 0, 'citations': 0, 'cumulative_citations': 0}
 
     # Calculate the cumulative number of papers published
     for this_year in sorted(summary, reverse=False):
@@ -244,7 +227,7 @@ def build_home(papers, error_log):
     # print summary
     # Make a page with the headings on it
     print >>html_file, '<table>'
-    print >>html_file, '<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>UoB #</th><th>UoB %</th><th>Citations* for papers published in this year</th><th>Cumulative citations* for papers published in this year</th></tr>'
+    print >>html_file, '<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>Citations* for papers published in this year</th><th>Cumulative citations* for papers published in this year</th></tr>'
     for this_year in sorted(summary, reverse=True):
         # Skip the years where nothing was published
         if summary[this_year]['num_papers'] == 0:
@@ -261,8 +244,6 @@ def build_home(papers, error_log):
         temp = '<tr><td><a href="papers/' + this_year + '/index.html">' + str(this_year) + '</a></td>'
         temp += '<td>' + intWithCommas(summary[this_year]['num_papers']) + '</td>'
         temp += '<td>' + str(summary[this_year]['cumulative']) + '</td>'
-        temp += '<td>' + intWithCommas(summary[this_year]['uob']) + '</td>'
-        temp += '<td>' + str(int(100*summary[this_year]['uob']/summary[this_year]['num_papers'])) + '</td>'
         temp += '<td>' + intWithCommas(summary[this_year]['citations']) + '</td>'
         temp += '<td>' + intWithCommas(summary[this_year]['cumulative_citations']) + '</td></tr>'
         print >>html_file, temp
@@ -273,8 +254,6 @@ def build_home(papers, error_log):
         temp += '<td style="font-size:12px;font-weight:bold;"><a href="papers/unknown/index.html">UNKNOWN</a></td>'
         temp += '<td>' + intWithCommas(missing_year['num_papers']) + '</td>'
         temp += '<td>-</td>'
-        temp += '<td>' + str(missing_year['uob']) + '</td>'
-        temp += '<td>' + str(int(100*missing_year['uob']/missing_year['num_papers'])) + '</td>'
         temp += '<td>' + intWithCommas(missing_year['citations']) + '</td>'
         temp += '<td>-</td>'
         temp += '</tr>'
@@ -293,9 +272,9 @@ def build_home(papers, error_log):
 
 ############################################################
 # Draw Paper Function
+# This function is used in the different paper lists to
+# display a consistently formatted list.
 ############################################################
-# This function is used in the different paper lists to display a consistently formatted list.
-# def draw_paper(this_paper, exec_list):
 def draw_paper(this_paper):
     html = '<div class="paper">'
 
@@ -311,7 +290,6 @@ def draw_paper(this_paper):
 
     # Authors
     authors = []
-    # author_on_exec = False
     for this_author in this_paper['clean']['full_author_list']:
         # Some author lists have a collective name. Ignore this.
         # Some people don't actually have initials. eg wraight in pmid:18454148
@@ -320,49 +298,9 @@ def draw_paper(this_paper):
         except:
             logging.debug('This author dropped from author list on webpage for some reason: ' + str(this_author))
 
-        # try:
-            # Check if an author was on the exec Comittee
-            # for x in exec_list:
-                # Check if authors name matches
-            #    if x[2] == this_author['clean']:
-                    # Get start and end date of exec membership
-            #        exec_start = time.mktime(datetime.datetime.strptime(x[0], "%d/%m/%Y").timetuple())
-            #        exec_end = int(time.time())
-            #        if not x[1] == "":
-            #            exec_end = time.mktime(datetime.datetime.strptime(x[1], "%d/%m/%Y").timetuple())
-
-                    # Convert issued date into a timestamp
-            #        clean_date = this_paper['Extras']['CleanDate']
-            #        date = str(clean_date['day']) + "/" + str(clean_date['month']) + "/" + str(clean_date['year'])
-            #        issued_timestamp = time.mktime(datetime.datetime.strptime(date, "%d/%m/%Y").timetuple())
-
-                    # If publication is issued between exec_start and exec_end then flag
-            #        if issued_timestamp > exec_start and issued_timestamp < exec_end:
-            #            author_on_exec = True
-            #            break
-
-            # authors.append(this_author['family'] + ', ' + this_author['given'])
-        # except:
-        #    pass
     html += htmlentities.encode('; '.join(authors))
     html += '<br/>'
 
-    # IF the author is on exec committee display a message
-#    if author_on_exec:
-#        html += '<div style="text-align:center;font-size:14px;background:#' + config.project_details['colour_hex_secondary'] + ';color:#' + config.project_details['colour_hex_primary'] + ';padding:2px 4px;box-shadow: 0px 0px 1px #4e4e4e inset;">At least one author was a member of the ' + config.project_details['name'] + ' Executive Committee.</div>'
-#        this_paper['Extras']['author_on_exec'] = True
-#    else:
-#        this_paper['Extras']['author_on_exec'] = False
-
-    # Journal, volume and issue
-    # try:
-    #    html += this_paper['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
-    # except:
-    #    try:
-    #        html += this_paper['container-title']
-    #    except:
-    #        pass
-    # this is generated from a series of possibilities. see clean.clean_journal
     html += this_paper['clean']['journal']['journal_name']
 
     try:
@@ -429,19 +367,6 @@ def build_papers(papers):
     yearly_papers = {}
     html_file = open(config.html_dir + '/papers/index.html', 'w')
 
-    # Read in exec csv
-    #exec_list = []
-    #f = open(config.config_dir + "/" + config.project_details['short_name'] + '_exec_members.csv', 'rt')
-    #try:
-    #    reader = csv.reader(f)
-    #    n = 0
-    #    for row in reader:
-    #        if n > 0:
-    #            exec_list.append(row)
-    #        n += 1
-    #finally:
-    #    f.close()
-
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
 
@@ -465,7 +390,6 @@ def build_papers(papers):
     for this_paper in papers:
         try:
             # Call draw paper function
-            #html = draw_paper(this_paper, exec_list)
             html = draw_paper(this_paper)
 
             # Append this paper to the list indexed by the year
@@ -485,9 +409,6 @@ def build_papers(papers):
 
     # Output the info into an HTML file
     # For each year dict item
-    # for this_year in sorted(yearly_papers, key=yearly_papers.get, reverse=True):
-    #exec_data = {}
-    #exec_data_string = "year,papers with author on executive committee,total papers"
     for this_year in sorted(yearly_papers, reverse=True):
         # Check there is some data for this year - not all do
         if len(yearly_papers[this_year]) == 0:
@@ -521,33 +442,12 @@ def build_papers(papers):
         for this_item in yearly_papers[this_year]:
             temp = this_item.values()
             print >>year_file, temp[0].encode('utf-8')
-        #    for this_paper in papers:
-        #        if this_paper['IDs']['hash'] == this_item.keys()[0]:
-                    #if this_paper['Extras']['author_on_exec']:
-                    #    try:
-                    #        exec_data[this_year] += 1
-                    #    except:
-                    #        exec_data[this_year] = 1
-
-        #            break
-
-        #    try:
-        #        exec_data[this_year]
-        #    except:
-        #        exec_data[this_year] = 0
 
         temp = build_common_foot()
         print >>year_file, temp
-        #try:
-        #    exec_data_string += "\n" + str(this_year) + "," + str(exec_data[this_year]) + "," + str(len(yearly_papers[this_year]))
-        #except:
-        #    pass
 
     main += "</p>" + build_common_foot()
     print >>html_file, main
-
-    #exec_csv = open(config.data_dir + '/exec_publications.csv', 'w')
-    #print >>exec_csv, exec_data_string
 
     # == Publications from unknown years ==
     if not os.path.exists(config.html_dir + '/papers/unknown'):
@@ -576,7 +476,6 @@ def build_papers(papers):
         try:
             this_paper['clean']['year_published']
         except:
-#            html += draw_paper(this_paper, exec_list)
             html += draw_paper(this_paper)
             n += 1
 
@@ -607,8 +506,6 @@ def build_mesh(papers):
     for this_paper in papers:
         try:
             # Look at all the mesh headings for this paper
-            # for this_mesh in this_paper['PubmedArticle'][0]['MedlineCitation']['MeshHeadingList']:
-            # for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
             for this_mesh in this_paper['clean']['keywords']['mesh']:
                 # If this mesh term is not already in the dict then add it
                 if this_mesh['term'] not in mesh_papers_all:
@@ -622,8 +519,6 @@ def build_mesh(papers):
     for this_paper in papers:
         try:
             # Look at all the mesh headings for this paper
-            # for this_mesh in this_paper['PubmedArticle'][0]['MedlineCitation']['MeshHeadingList']:
-            # for this_mesh in this_paper['MedlineCitation']['MeshHeadingList']:
             for this_mesh in this_paper['clean']['keywords']['mesh']:
                 # Only interested in majoy topics
                 if this_mesh['major'] == 'Y':
@@ -824,20 +719,7 @@ def build_mesh(papers):
         for x in range(0, number):
             word_cloud_raw += " " + this_mesh
 
-    # Read in exec csv
-    exec_list = []
-    f = open(config.config_dir + "/" + config.project_details['short_name'] + '_exec_members.csv', 'rt')
-    try:
-        reader = csv.reader(f)
-        n = 0
-        for row in reader:
-            if n > 0:
-                exec_list.append(row)
-            n += 1
-    finally:
-        f.close()
-
-    # Print page
+    # Make an HTML page for each mesh term
     for this_mesh in mesh_papers_all:
 
         if not os.path.exists(config.html_dir + '/mesh/' + this_mesh):
@@ -949,7 +831,7 @@ def build_mesh(papers):
                         this_paper = paper_obj
 
                     # Call draw paper function
-                    html = draw_paper(this_paper, exec_list)
+                    html = draw_paper(this_paper)
 
                     fo.write(html)
 
@@ -1518,6 +1400,9 @@ def build_abstract_word_cloud(papers, data_from_count):
     print >>html_file, temp
 
 
+###########################################################
+#
+###########################################################
 def get_author_string_from_hash(hash_string, network):
 
     for author in network['authors']:
@@ -1779,19 +1664,7 @@ def build_search(papers):
 
     temp += '<script id="search_data">var papers = ' + str(json.dumps(papers)).replace("<", "&lt;").replace(">", "&gt;") + ';</script>'
 
-    exec_list = []
-    f = open(config.config_dir + "/" + config.project_details['short_name'] + '_exec_members.csv', 'rt')
-    try:
-        reader = csv.reader(f)
-        n = 0
-        for row in reader:
-            if n > 0:
-                exec_list.append(row)
-            n += 1
-    finally:
-        f.close()
-
-    temp += '<div style="display:none" id="exec_list">' + str(json.dumps(exec_list)).replace("<", "&lt;").replace(">", "&gt;") + '</div>'
+    # temp += '<div style="display:none" id="exec_list">' + str(json.dumps(exec_list)).replace("<", "&lt;").replace(">", "&gt;") + '</div>'
 
     print >>html_file, temp
 
@@ -1825,9 +1698,9 @@ def build_css_colour_scheme():
     temp += "border-left: 1px solid rgba(255, 255, 255, 0.2);"
     temp += "}"
 
-    temp += "#uoblogo span {"
-    temp += "background-image: url(" + config.project_details['header_image_url'] + ");"
-    temp += "}"
+    # temp += "#uoblogo span {"
+    # temp += "background-image: url(" + config.project_details['header_image_url'] + ");"
+    # temp += "}"
 
     temp += ".uob-header-container:before,"
     temp += ".uob-header-container:after {"
