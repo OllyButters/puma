@@ -52,16 +52,7 @@ else:
   import analyse.genLinks as gl
   import config.config as config
 
-if __name__ == '__main__':
-  # Lets figure out some paths that everything is relative to
-  # global root_dir
-  path_to_papers_py = os.path.abspath(sys.argv[0])
-  root_dir = os.path.dirname(os.path.dirname(os.path.dirname(path_to_papers_py)))
-  print 'Root directory = ' + root_dir
-
-  # Get all the config - these will be a global vars available like config.varname
-  config.build_config_variables(root_dir)
-
+def output_network():
   #setup a new instance of dataNetwork, specifying source of data
   dn = gl.dataNetwork(os.path.join(config.cache_dir, 'processed/merged'))
   loadCleaning()
@@ -73,4 +64,17 @@ if __name__ == '__main__':
   f = open(os.path.join(config.cache_dir, 'processed/authorlinks.cleaned.json'), 'w')
   json.dump(output, f, indent=2)
   f.close()
+
+if __name__ == '__main__':
+  # Lets figure out some paths that everything is relative to
+  # global root_dir
+  path_to_papers_py = os.path.abspath(sys.argv[0])
+  root_dir = os.path.dirname(os.path.dirname(os.path.dirname(path_to_papers_py)))
+  print 'Root directory = ' + root_dir
+
+  # Get all the config - these will be a global vars available like config.varname
+  config.build_config_variables(root_dir)
+
+  output_network()
+
 
