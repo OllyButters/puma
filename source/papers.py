@@ -30,7 +30,7 @@ import html.htmlerrorlog.errorlog
 import html.build_htmlv2
 import bibliography.bibtex
 import get.collate
-import networks.author_network
+import networks.author_network as author_network
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
 __date__ = 15/6/17
@@ -160,8 +160,9 @@ html.build_htmlv2.build_error_log(papers, error_log)
 html.build_htmlv2.build_help()
 html.build_htmlv2.build_search(papers)
 
-# generate and dump the html for author network
-author_network.build_network()
+if config.network_create_networks:
+  # generate and dump the html for author network
+  author_network.build_network()
 
 # Time Log
 end_time = time.time()

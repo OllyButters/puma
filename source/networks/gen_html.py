@@ -17,7 +17,7 @@ def copy_network_files(network_datafile, script_name, outputdir):
   shutil.copyfile(os.path.join(config.template_dir, script_name), os.path.join(config.html_dir, outputdir, script_name))
   
   #copy datafile
-  shutil.copyfile(os.path.join(root_dir, datafile), os.path.join(config.html_dir, outputdir, os.path.split(datafile)[1]))
+  shutil.copyfile(os.path.join(config.cache_dir, network_datafile), os.path.join(config.html_dir, outputdir, os.path.split(network_datafile)[1]))
 
 def build_network_page(network_title, network_datafile, script_name):
   #load the html template file

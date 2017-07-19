@@ -40,6 +40,8 @@ def build_config_variables(root_dir):
 
     global page_show_author_network
 
+    global network_create_networks
+
     # See if there is a config file specified from the command line, if not then
     # use the default config file name.
     config_file_name = 'config.ini'
@@ -106,6 +108,8 @@ def build_config_variables(root_dir):
 
         # Pages
         page_show_author_network = config.get('pages', 'page_show_author_network')
+        # Networks
+        network_create_networks = config.getboolean('networks', 'create_networks')
 
     except Exception as e:
         print 'Problem with the settings file'

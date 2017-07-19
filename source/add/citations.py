@@ -78,7 +78,7 @@ def citations(papers, api_key, citation_max_life, force_update, error_log):
             logging.info(str(this_paper['IDs']['hash']) + ' in citation cache')
         except:
             # Stick in a small nap so we arent hammering the api too much
-            time.sleep(1)
+            time.sleep(0.001)
 
             # Handle Max Quota Reached
             error_number = 0
