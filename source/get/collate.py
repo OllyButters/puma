@@ -10,6 +10,7 @@ import pprint
 import json
 import os
 import config.config as config
+import logging
 
 
 def collate():
@@ -143,6 +144,21 @@ def collate():
     ids = paper['IDs']
     del paper['IDs']
 
+    #check if title is empty
+    #if so, check doi_data and pmid_data for title (in that order)
+    #and use instead
+    if paper['title'] == '':
+      try:
+        if doi_data['title'] != '': 
+          paper['title'] = doi_data['title']
+      except KeyError:
+        try:
+          if pmid_data['MedlineCitation']['Article']['ArticleTitle'] != '':
+            paper['title'] = pmid_data['MedlineCitation']['Article']['ArticleTitle'] 
+        except KeyError:
+          logging.warn('No title for Zotero id: ' + paper['IDs']['zotero'])
+          pass
+        
     # create new filename (md5 of title)
     filename = hashlib.md5(paper['title'].encode('ascii', 'ignore')).hexdigest()
     # make sure we add the filename to ids

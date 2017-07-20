@@ -32,6 +32,7 @@ class dataNetwork:
     self.dataset = self.getCacheData() 
     self.target_path = ''
     self.search_across = self.search_across_types[0]
+    self.ignore_empty_nodes = True
     self.nodes = {}
     self.links = {}
     
@@ -123,6 +124,12 @@ class dataNetwork:
             processed_value = self.processFoundNode(match)
             #get a cleaned value (this is what we match with)
             clean_value = self.clean(processed_value)
+
+            #if we've got ignore_empty_nodes on, skip if empty string
+            if self.ignore_empty_nodes:
+              if clean_value == '':
+                continue
+
             node_id = hashlib.sha256(clean_value.encode('utf-8', 'ignore')).hexdigest()
             try:
               nodes[node_id]['count'] += 1
@@ -192,6 +199,12 @@ class dataNetwork:
       for match in node_matches:
         processed_value = self.processFoundNode(match)
         clean_value = self.clean(processed_value)
+
+        #if we've got ignore_empty_nodes on, skip if empty string
+        if self.ignore_empty_nodes:
+          if clean_value == '':
+            continue
+
         node_id = hashlib.sha256(clean_value.encode('utf-8', 'ignore')).hexdigest()
         try:
           nodes[node_id]['count'] += 1
@@ -239,6 +252,12 @@ class dataNetwork:
     for match in matches:
       processed_value = self.processFoundNode(match)
       clean_value = self.clean(processed_value)
+
+      #if we've got ignore_empty_nodes on, skip if empty string
+      if self.ignore_empty_nodes:
+        if clean_value == '':
+          continue
+
       node_id = hashlib.sha256(clean_value.encode('utf-8', 'ignore')).hexdigest()
       if node_id != linking_node_id:
         if node_id < linking_node_id:
