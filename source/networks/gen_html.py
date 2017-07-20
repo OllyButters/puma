@@ -15,6 +15,19 @@ def copy_network_files(network_datafile, script_name, outputdir):
 
   #copy js file
   shutil.copyfile(os.path.join(config.template_dir, script_name), os.path.join(config.html_dir, outputdir, script_name))
+
+  #copy images
+  imagefiles = (
+    'dot-highlight.png',
+    'vline3.png',
+    'point-40-1px.png',
+    'dot4.png',
+    'dot.png',
+  )
+  for imagefile in imagefiles:
+    shutil.copyfile(os.path.join(config.template_dir, imagefile), os.path.join(config.html_dir, outputdir, imagefile))
+
+
   
   #copy datafile
   shutil.copyfile(os.path.join(config.cache_dir, network_datafile), os.path.join(config.html_dir, outputdir, os.path.split(network_datafile)[1]))
