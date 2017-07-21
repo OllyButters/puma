@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python2
 
 ################################################################################
 # The publications metadata augmentor!
@@ -161,8 +161,8 @@ html.build_htmlv2.build_help()
 html.build_htmlv2.build_search(papers)
 
 if config.network_create_networks:
-  # generate and dump the html for author network
-  author_network.build_network()
+    # generate and dump the html for author network
+    author_network.build_network()
 
 # Time Log
 end_time = time.time()
