@@ -474,7 +474,7 @@ def build_papers(papers):
     html = ""
     for this_paper in papers:
         try:
-            this_paper['clean']['year_published']
+            this_paper['clean']['clean_date']['year']
         except:
             html += draw_paper(this_paper)
             n += 1
