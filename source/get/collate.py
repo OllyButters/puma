@@ -149,14 +149,14 @@ def collate():
     #and use instead
     if paper['title'] == '':
       try:
-        if doi_data['title'] != '': 
+        if doi_data['title'] != '' and doi_data['title'] is not None: 
           paper['title'] = doi_data['title']
-      except KeyError:
+      except (KeyError, TypeError):
         try:
-          if pmid_data['MedlineCitation']['Article']['ArticleTitle'] != '':
+          if pmid_data['MedlineCitation']['Article']['ArticleTitle'] != '' and pmid_data['MedlineCitation']['Article']['ArticleTitle'] is not None:
             paper['title'] = pmid_data['MedlineCitation']['Article']['ArticleTitle'] 
-        except KeyError:
-          logging.warn('No title for Zotero id: ' + paper['IDs']['zotero'])
+        except (KeyError, TypeError):
+          logging.warn('No title for Zotero id: ' + paper['key'])
           pass
         
     # create new filename (md5 of title)
