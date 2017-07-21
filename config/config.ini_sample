@@ -11,22 +11,44 @@ header_institution_url: http://bristol.ac.uk
 
 side_image_url: http://www.bristol.ac.uk/media-library/sites/alspac/images/alspac-25-logo.png
 side_image_link: http://www.bristol.ac.uk/alspac/25/
+side_image_filename:
+
+header_institution_name: 
+header_institution_logo_filename: 
 
 [zotero_api]
-url:
-api_key:
+zotero_api_key: 
+zotero_id: 
+zotero_type: group
+zotero_collection: 
+
+[collate]
+#settings specifying which (if any) old data to re-download and/or re-merge
+
+#zotero_get_all: get all zotero data regardless of cache contents. True = get all, False = only if not in cache
+zotero_get_all: False
+#use_doi_pubmed_cache: use the cached versions (if any) of pubmed/doi data. True = use cache, False = don't (i.e. re-download)
+use_doi_pubmed_cache: True
+#merge_all: merge all cached and new papers if set to True. only merge new papers if set to False (existing papers are loaded from cache)
+merge_all: True
+##
+# use_cached_merge_only: 1 = OVERRIDE all the above collate settings and just
+# load pre-existing cached papers, 0 = run collate process using the 
+# above settings
+##
+use_cached_merge_only: False
 
 [pubmed_api]
-email_address:
+pubmed_email:
 
 [scopus]
 scopus_force_citation_update: False
-scopus_api_key: 8024d746590aade6be6856a22a734783
+scopus_api_key: 
 scopus_citation_max_age_days: 30
 scopus_run_citation: True
 
 [google_apis]
-google_maps_api_key: AIzaSyA63o6tsqqAhAB_iPR7foPHEmAU5HMiLe4
+google_maps_api_key: 
 
 [logging]
 loglevel: DEBUG
@@ -37,3 +59,6 @@ metrics_study_current_year: 2015
 
 [pages]
 page_show_author_network = False
+
+[networks]
+create_networks: True
