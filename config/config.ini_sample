@@ -61,4 +61,7 @@ metrics_study_current_year: 2015
 page_show_author_network = False
 
 [networks]
-create_networks: True
+# generate networks using scripts in networks (plus analyse/genLinks)
+# currently produces author network json file
+# plus html/js visualisation (caution - potentially slow, requires decent machine to run)
+create_networks: False
