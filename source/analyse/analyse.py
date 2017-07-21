@@ -372,6 +372,7 @@ def coverage_report(papers):
                     <th>Zotero</th>
                     <th>DOI</th>
                     <th>PMID</th>
+                    <th>PMID DOI<br/>Lookup</th>
                     <th>Title</th>
                     <th>First<br/>Author</th>
                     <th>First<br/>Author<br/>affil</th>
@@ -433,6 +434,19 @@ def coverage_report(papers):
                 raise Exception()
         except:
             cov_html += '<td class="missing_good_to_have">???</td>'
+
+        # PMID lookup based on DOI
+        try:
+            doi = this_paper['IDs']['DOI']
+            if doi != '':
+                # Swap the / for the html encoded version
+                doi.replace('/', '%2F')
+                cov_html += '<td><a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=' + doi + '" target="_blank">Do lookup</a></td>'
+            else:
+                raise Exception()
+        except:
+            # Not bothered if not there
+            cov_html += '<td></td>'
 
         # Paper title
         try:
