@@ -93,7 +93,9 @@ def collate():
       if check_doi is not None:
         doi = re.sub(r'^http://dx\.doi\.org/', '', doi)
       # as doi's use '/' chars, we do an md5 of the doi as the filename
-      doi_filename = hashlib.md5(paper['DOI']).hexdigest()
+      print ((paper['DOI']).encode("ascii","ignore"))
+      doi_filename = hashlib.md5((paper['DOI']).encode("ascii","ignore")).hexdi$
+      # doi_filename = hashlib.md5(paper['DOI']).hexdigest()
       
       # add these ids to the IDs dict
       paper['IDs']['DOI'] = paper['DOI']
