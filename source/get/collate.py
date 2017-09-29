@@ -181,6 +181,8 @@ def collate():
         # make sure we add the filename to ids
         ids['hash'] = filename
 
+        logging.info('Merged filename: ' + filename)
+
         # if we aren't set to merge all papers, ignore existing files
         if config.merge_all is False:
             if filename in merged_list:
@@ -189,7 +191,6 @@ def collate():
                 paper = pc.getCacheData(filetype='/processed/merged', filenames=[filename])[filename]
                 continue
 
-        logging.info('Merged filename: ' + filename)
         print "Merging to filename: "+filename
 
         # the merge process uses the merge class and jsonpath mappings (see config dir)
