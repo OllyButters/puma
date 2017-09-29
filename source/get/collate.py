@@ -164,6 +164,7 @@ def collate():
         # if so, check doi_data and pmid_data for title (in that order)
         # and use instead
         if paper['title'] == '':
+            logging.info('title is blank, trying to hack something together.')
             try:
                 if doi_data['title'] != '' and doi_data['title'] is not None:
                     paper['title'] = doi_data['title']
@@ -183,6 +184,7 @@ def collate():
         # if we aren't set to merge all papers, ignore existing files
         if config.merge_all is False:
             if filename in merged_list:
+                logging.info("Merged file: "+filename+" already exists. Ignoring as merge_all not set to 1 in config.ini. File being loaded from cache.")
                 print "Merged file: "+filename+" already exists. Ignoring as merge_all not set to 1 in config.ini. File being loaded from cache."
                 paper = pc.getCacheData(filetype='/processed/merged', filenames=[filename])[filename]
                 continue
