@@ -18,8 +18,10 @@ def collate():
         # get list of currently merged papers
         merged_list = pc.getCacheList(filetype='/processed/merged')
         merged_papers = []
+        logging.info("COLLATE: use_cached_merge_only set to 1 so loading papers straight from processed/merged")
         print "use_cached_merge_only set to 1 so loading papers straight from processed/merged"
         for merged_paper in merged_list:
+            logging.info("Loading cached merged paper: "+merged_paper)
             print "Loading cached merged paper: "+merged_paper+"."
             merged_papers.append(pc.getCacheData(filetype='/processed/merged', filenames=[merged_paper])[merged_paper])
 
@@ -81,7 +83,10 @@ def collate():
           'hash': '',
         }
 
+        logging.info('\nWorking on '+paper['title']+' (zotero key: '+paper['key']+')')
+        logging.info('Getting doi/pubmed data.')
         print 'Getting doi/pubmed data for paper: '+paper['title']+' (zotero key: '+paper['key']+')'
+
         paper['doi_data'] = {}
         paper['pmid_data'] = {}
         if 'DOI' in paper and paper['DOI'] != "":
@@ -96,16 +101,21 @@ def collate():
             doi_filename = hashlib.md5((paper['DOI']).encode("ascii", "ignore")).hexdigest()
             # doi_filename = hashlib.md5(paper['DOI']).hexdigest()
 
+            logging.info('DOI: ' + paper['DOI'])
+            logging.info('DOI_filename:' + doi_filename)
+
             # add these ids to the IDs dict
             paper['IDs']['DOI'] = paper['DOI']
             paper['IDs']['DOI_filename'] = doi_filename
 
             # check if paper data in doi cache (only if config.use_pubmed_doi_cache is not True
             if doi_filename not in doi_cache or config.use_doi_pubmed_cache is not True:
+                logging.debug('Downloading (or redownloading) DOI data.')
                 doi_paper = pd.getDoi(paper['DOI'])
                 paper['doi_data'] = doi_paper
                 # data is automatically cached by getDoi
             else:
+                logging.debug('Getting cached DOI data.')
                 paper['doi_data'] = pc.getCacheData(filetype='/raw/doi', filenames=[doi_filename])[doi_filename]
 
         # get pubmed data
@@ -126,6 +136,7 @@ def collate():
 
     # now do merge data
     merged_papers = {}
+
     # get list of currently merged papers
     merged_list = pc.getCacheList(filetype='/processed/merged')
     # merged_papers = []
@@ -134,7 +145,10 @@ def collate():
     template_file.close()
     # template = pc.getCacheData(filenames=['data-doi-template'])['data-doi-template']
 
+    logging.info('Starting merging process.')
+
     for paper in new_papers:
+        logging.debug('Merging ' + paper['IDs']['zotero'])
         merged_paper = {}
         doi_data = paper['doi_data']
         pmid_data = paper['pmid_data']
@@ -173,6 +187,7 @@ def collate():
                 paper = pc.getCacheData(filetype='/processed/merged', filenames=[filename])[filename]
                 continue
 
+        logging.info('Merged filename: ' + filename)
         print "Merging to filename: "+filename
 
         # the merge process uses the merge class and jsonpath mappings (see config dir)
@@ -180,49 +195,62 @@ def collate():
         # these separate 'doi-formatted' datasets are then merged together (pubmed into zotero, doi into pubmed/zotero)
 
         mgr = pMerge.Merge()
+
+        ###############
+        # Pubmed first. This goes into 'pmid_data' section of merged_paper
         map_file = open(config.config_dir+'/data-pubmed-doi-jsonpath', 'r')
         mgr.mapping = json.load(map_file)
         map_file.close()
-
         # mgr.mapping = pc.getCacheData(filenames=['data-pubmed-doi-jsonpath'])['data-pubmed-doi-jsonpath']
         mgr.src = pmid_data
         mgr.dest = copy.deepcopy(template)
+        logging.info('Copying pubmed data.')
         print 'Merging pubmed'
         mgr.mapSrc()
         merged_paper['pmid_data'] = copy.deepcopy(mgr.dest)
 
-        # now do zotero data
+        #################
+        # now do zotero data. This goes into 'zotero_data' section of merged_paper
         map_file = open(config.config_dir+'/data-zotero-doi-jsonpath', 'r')
         mgr.mapping = json.load(map_file)
         map_file.close()
         # mgr.mapping = pc.getCacheData(filenames=['data-zotero-doi-jsonpath'])['data-zotero-doi-jsonpath']
         mgr.src = paper
         mgr.dest = copy.deepcopy(template)
+        logging.info('Copying zotero data.')
         print 'Merging zotero'
         mgr.mapSrc()
         merged_paper['zotero_data'] = copy.deepcopy(mgr.dest)
 
+        #################
         # now merge doi_data, merged_paper
         # starting with zotero_data, we merge using an empty mapping and setting the dest as zotero_data and src as pmid_data
+        # This will mean the pmid_data will overwrite zotero_data where there are overlapping fields.
+        # If there are gaps in the zotero data then this will hopefully fill them in.
         mgr.mapping = {}
         mgr.src = merged_paper['pmid_data']
         mgr.dest = merged_paper['zotero_data']
+        logging.info('Merging (overwriting) pubmed data onto zotero.')
         print 'Merging pubmed into zotero'
         mgr.mapSrc()
         merged_paper['pmid_zotero_data'] = copy.deepcopy(mgr.dest)
 
+        ##################
         # now set the src to be doi_data and merge to the template (otherwise the output data gets oddly formatted)
         mgr.mapping = {}
         mgr.src = doi_data
         mgr.dest = copy.deepcopy(template)
+        logging.info('Copying DOI data.')
         print 'Merging doi'
         mgr.mapSrc()
         merged_paper['doi_data'] = copy.deepcopy(mgr.dest)
 
+        #################
         # now set the src to be doi_data and merge to the dest (pmid/zotero data)
         mgr.mapping = {"$.DOI": "$.DOI", "$.title": "$.title"}
         mgr.dest = merged_paper['doi_data']
         mgr.src = merged_paper['pmid_zotero_data']
+        logging.info('Merging (overwriting) DOI data onto already merged zotero/pmid data.')
         print 'Merging doi into pubmed/zotero'
         mgr.mapSrc()
 
