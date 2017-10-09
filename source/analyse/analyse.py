@@ -455,7 +455,8 @@ def coverage_report(papers):
         try:
             title = this_paper['clean']['title']
             if title != '':
-                cov_html += '<td><a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=' + title + '" target="_blank">Do lookup</a></td>'
+                ascii_title = this_paper['clean']['title'].encode("ascii", "ignore")
+                cov_html += '<td><a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=' + ascii_title + '" target="_blank">Do lookup</a></td>'
             else:
                 raise Exception()
         except:
