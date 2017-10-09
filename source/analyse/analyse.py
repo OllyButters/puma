@@ -316,6 +316,7 @@ def mesh(papers):
             # Need to utf-8 encode
             mesh_file.writerow([w.encode('utf-8'), freq[w]])
 
+
 ################################################################################
 # output a csv file with some info in
 ################################################################################
@@ -364,6 +365,7 @@ def coverage_report(papers):
                 tr:nth-child(even) {background-color: #f2f2f2}
                 th {background-color: #4CAF50; color: white;}
                 td, th {padding: 0.2em;}
+                a:visited {color: red;}
     '''
 
     cov_html = '<table>'
@@ -373,6 +375,7 @@ def coverage_report(papers):
                     <th>DOI</th>
                     <th>PMID</th>
                     <th>PMID DOI<br/>Lookup</th>
+                    <th>PMID title<br/>Lookup</th>
                     <th>Title</th>
                     <th>First<br/>Author</th>
                     <th>First<br/>Author<br/>affil</th>
@@ -442,6 +445,17 @@ def coverage_report(papers):
                 # Swap the / for the html encoded version
                 doi.replace('/', '%2F')
                 cov_html += '<td><a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=' + doi + '" target="_blank">Do lookup</a></td>'
+            else:
+                raise Exception()
+        except:
+            # Not bothered if not there
+            cov_html += '<td></td>'
+
+        # PMID lookup based on title
+        try:
+            title = this_paper['clean']['title']
+            if title != '':
+                cov_html += '<td><a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=' + title + '" target="_blank">Do lookup</a></td>'
             else:
                 raise Exception()
         except:
