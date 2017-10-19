@@ -407,7 +407,7 @@ def coverage_report(papers):
         except:
             fn_hash = '???'
 
-        cov_html += '<td><a href="status/merged/' + fn_hash + '">' + fn_hash + '</a></td>'
+        cov_html += '<td><a href="status/merged/' + fn_hash + '" target="_blank">' + fn_hash + '</a></td>'
 
         # Zotero ID - this has to be present!
         try:
