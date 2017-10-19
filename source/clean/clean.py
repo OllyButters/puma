@@ -184,6 +184,13 @@ def clean_authors(this_paper):
         print str(e)
         logging.warn('No AuthorList for ' + this_paper['IDs']['hash'])
 
+    # Sanity check we have something here, if not then see if the extras from zotero has something
+    if len(this_paper['clean']['full_author_list']) == 0:
+        try:
+            this_paper['clean']['full_author_list'] = this_paper['merged']['extra']['clean_first_author']
+        except:
+            logging.warn('tried adding author from zotero extra, but failed. ')
+
     # do we need to return anything here? currently returns list of authors, probably should just be 0 or error code
     return authors
 
@@ -332,8 +339,8 @@ def clean_mesh(this_paper):
                 for this_mesh in this_paper['merged']['MedlineCitation']['MeshHeadingList']:
                     this_paper['clean']['keywords']['mesh'].append(
                         {
-                        'term': this_mesh['DescriptorName'],
-                        'major': this_mesh['MajorTopicYN']
+                            'term': this_mesh['DescriptorName'],
+                            'major': this_mesh['MajorTopicYN']
                         }
                     )
             except Exception as e:
