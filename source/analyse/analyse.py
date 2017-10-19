@@ -3,6 +3,7 @@
 import csv
 import logging
 import config.config as config
+import shutil
 
 ############################################################
 # Have all the data now, so do something with it
@@ -406,7 +407,7 @@ def coverage_report(papers):
         except:
             fn_hash = '???'
 
-        cov_html += '<td>' + fn_hash + '</td>'
+        cov_html += '<td><a href="status/merged/' + fn_hash + '">' + fn_hash + '</a></td>'
 
         # Zotero ID - this has to be present!
         try:
@@ -586,3 +587,6 @@ def coverage_report(papers):
     output_text = '<html><head><style>' + cov_css + '</style></head><body>' + title + status_table + '<br/><br/>' + cov_html + '</body></html>'
     coverage_file = open(config.html_dir + '/coverage_report.html', 'w')
     print >> coverage_file, output_text
+
+    # put a copy of all the processed files in the web tree
+    shutil.copytree(config.cache_dir + '/processed/merged', config.html_dir + '/status/merged')
