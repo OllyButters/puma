@@ -187,7 +187,7 @@ def clean_authors(this_paper):
     # Sanity check we have something here, if not then see if the extras from zotero has something
     if len(this_paper['clean']['full_author_list']) == 0:
         try:
-            this_paper['clean']['full_author_list'] = this_paper['merged']['extra']['clean_first_author']
+            this_paper['clean']['full_author_list'][0]['clean'] = this_paper['merged']['extra']['clean_first_author']
         except:
             logging.warn('tried adding author from zotero extra, but failed. ')
 
