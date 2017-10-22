@@ -188,9 +188,11 @@ def clean_authors(this_paper):
     if len(this_paper['clean']['full_author_list']) == 0:
         logging.info('No author found, going to try extra field.')
         try:
-            this_paper['clean']['full_author_list'][0] = {'clean': this_paper['merged']['extra']['clean_first_author']}
+            this_paper['clean']['full_author_list'].append({'clean1': this_paper['merged']['extra']['clean_first_author']})
+            this_paper['clean']['full_author_list'][0] = {'clean2': this_paper['merged']['extra']['clean_first_author']}
+            logging.debug('Author added via extra field.')
         except:
-            logging.warn('tried adding author from zotero extra, but failed. ')
+            logging.warn('Tried adding author from zotero extra, but failed. ')
 
     # do we need to return anything here? currently returns list of authors, probably should just be 0 or error code
     return authors
