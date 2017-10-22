@@ -407,7 +407,7 @@ def coverage_report(papers):
         except:
             fn_hash = '???'
 
-        cov_html += '<td><a href="status/merged/' + fn_hash + '" target="_blank">' + fn_hash + '</a></td>'
+        cov_html += '<td><a href="status/cleaned/' + fn_hash + '" target="_blank">' + fn_hash + '</a></td>'
 
         # Zotero ID - this has to be present!
         try:
@@ -589,4 +589,5 @@ def coverage_report(papers):
     print >> coverage_file, output_text
 
     # put a copy of all the processed files in the web tree
-    shutil.copytree(config.cache_dir + '/processed/merged', config.html_dir + '/status/merged')
+    shutil.rmtree(config.html_dir + '/status/cleaned')
+    shutil.copytree(config.cache_dir + '/processed/cleaned', config.html_dir + '/status/cleaned')
