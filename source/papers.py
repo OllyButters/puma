@@ -176,7 +176,7 @@ end_time = time.time()
 elapsed_time = end_time - start_time
 elapsed_time_string = str(int(elapsed_time) / 60) + ":" + str(int(elapsed_time) % 60).zfill(2)
 print "End Time: " + str(end_time)
-print "Elapsed Time - " + elapsed_time_string
+print "Elapsed Time (mm:ss) - " + elapsed_time_string
 
 logging.info('Finished at: ' + str(end_time))
-logging.info('Elapsed time: ' + elapsed_time_string)
+logging.info('Elapsed time (mm:ss) : ' + elapsed_time_string)
