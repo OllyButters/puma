@@ -128,6 +128,13 @@ fo = open(file_name, 'wb')
 fo.write(json.dumps(papers, indent=4))
 fo.close()
 
+# Write a copy of each paper to a separate file
+for this_paper in papers:
+    this_file_name = config.cache_dir + '/processed/cleaned/' + this_paper['IDs']['hash']
+    fo = open(this_file_name, 'wb')
+    fo.write(json.dumps(this_paper, indent=4))
+    fo.close()
+
 # Generate the coverage report
 analyse.coverage_report(papers)
 

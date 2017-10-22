@@ -61,6 +61,9 @@ def build_file_tree(root_dir):
     if not os.path.exists(config.cache_dir + '/processed/merged'):
         os.mkdir(config.cache_dir + '/processed/merged')
 
+    if not os.path.exists(config.cache_dir + '/processed/cleaned'):
+        os.mkdir(config.cache_dir + '/processed/cleaned')
+
     if not os.path.exists(config.cache_dir + '/geodata'):
         os.mkdir(config.cache_dir + '/geodata')
 
