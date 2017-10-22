@@ -154,7 +154,7 @@ def build_home(papers, error_log):
 
     # Calculate the number of papers for each year
     for this_paper in papers:
-        print this_paper['clean']
+        # print this_paper['clean']
         try:
             this_year = this_paper['clean']['clean_date']['year']
 
