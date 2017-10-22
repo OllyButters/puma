@@ -3,6 +3,7 @@
 import csv
 import logging
 import config.config as config
+import os
 import shutil
 
 ############################################################
@@ -589,5 +590,6 @@ def coverage_report(papers):
     print >> coverage_file, output_text
 
     # put a copy of all the processed files in the web tree
-    shutil.rmtree(config.html_dir + '/status/cleaned')
+    if os.path.exists(config.html_dir + '/status/cleaned'):
+        shutil.rmtree(config.html_dir + '/status/cleaned')
     shutil.copytree(config.cache_dir + '/processed/cleaned', config.html_dir + '/status/cleaned')
