@@ -379,6 +379,8 @@ def coverage_report(papers):
                     <th>PMID DOI<br/>Lookup</th>
                     <th>PMID title<br/>Lookup</th>
                     <th>Title</th>
+                    <th>Keywords</th>
+                    <th>Abstract</th>
                     <th>First<br/>Author</th>
                     <th>First<br/>Author<br/>affil</th>
                     <th>Clean<br/>Inst</th>
@@ -392,6 +394,8 @@ def coverage_report(papers):
     status['doi'] = 0
     status['pmid'] = 0
     status['title'] = 0
+    status['keywords'] = 0
+    status['abstract'] = 0
     status['first_author'] = 0
     status['first_author_affiliation'] = 0
     status['clean_institution'] = 0
@@ -476,6 +480,28 @@ def coverage_report(papers):
         except:
             cov_html += '<td class="missing_good_to_have">???</td>'
 
+        # Keywords
+        try:
+            keywords = this_paper['clean']['keywords']
+            if keywords != '':
+                cov_html += '<td>OK</td>'
+                status['keywords'] = status['keywords'] + 1
+            else:
+                raise Exception()
+        except:
+            cov_html += '<td class="missing_good_to_have">???</td>'
+
+        # Abstract
+        try:
+            abstract = this_paper['clean']['abstract']
+            if abstract != '':
+                cov_html += '<td>OK</td>'
+                status['abstract'] = status['abstract'] + 1
+            else:
+                raise Exception()
+        except:
+            cov_html += '<td class="missing_good_to_have">???</td>'
+
         # First author - Not required, but REALLY useful
         try:
             first_author = this_paper['clean']['full_author_list'][0]['clean']
@@ -543,6 +569,8 @@ def coverage_report(papers):
                     <th>DOI</th>
                     <th>PMID</th>
                     <th>Title</th>
+                    <th>Keywords</th>
+                    <th>Abstract</th>
                     <th>First<br/>Author</th>
                     <th>First<br/>Author<br/>affil</th>
                     <th>Clean<br/>Inst</th>
@@ -560,6 +588,8 @@ def coverage_report(papers):
     status_table += '<td>' + str(status['doi']) + '</td>'
     status_table += '<td>' + str(status['pmid']) + '</td>'
     status_table += '<td>' + str(status['title']) + '</td>'
+    status_table += '<td>' + str(status['keywords']) + '</td>'
+    status_table += '<td>' + str(status['abstract']) + '</td>'
     status_table += '<td>' + str(status['first_author']) + '</td>'
     status_table += '<td>' + str(status['first_author_affiliation']) + '</td>'
     status_table += '<td>' + str(status['clean_institution']) + '</td>'
@@ -575,6 +605,8 @@ def coverage_report(papers):
     status_table += '<td>' + str(int(round(100*status['doi']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['pmid']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['title']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['keywords']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['abstract']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['first_author']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['first_author_affiliation']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['clean_institution']/number_of_papers))) + '</td>'
