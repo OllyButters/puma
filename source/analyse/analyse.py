@@ -45,7 +45,8 @@ def journals(papers):
 ############################################################
 # Build a list of words used in Abstracts
 ############################################################
-def abstracts(papers):
+# def abstracts(papers):
+def DEPRICATED(papers):
     print "\n###Abstracts###"
 
     words = []
@@ -106,6 +107,66 @@ def abstracts(papers):
                 print w, freq[w]
                 i = i+1
             abstracts_file.writerow([w.encode('utf-8'), freq[w]])
+
+    return data_from_count
+
+
+############################################################
+# Build a list of words used in 'item'
+############################################################
+def word_frequencies(papers, item):
+    print("\n###" + item + "###")
+
+    all_words = []
+    data_from_count = 0
+    # Go through all papers
+    for this_paper in papers:
+        try:
+            # Get abstract text
+            text = str(this_paper['clean']['item'])
+
+            # Remove punctuation and esacpe characters that will cause a problem
+            text = text.lower()
+            text = text.replace(",", " ")
+            text = text.replace(".", " ")
+            text = text.replace(":", " ")
+            text = text.replace(";", " ")
+            text = text.replace("'", "\'")
+            text = text.replace('"', ' ')
+
+            # Add abstract words into list of all words
+            all_words.extend(text.split())
+            data_from_count += 1
+        except:
+            pass
+
+    # calculate the frequency of each word in abstracts
+    freq = dict((x, all_words.count(x)) for x in set(all_words))
+
+    # = Remove stop words from the list of all words =
+    # Read stop words from file
+    stop_lines = tuple(open(config.config_dir + "/stopwords", "r"))
+    stop_words = []
+    for line in stop_lines:
+        split = line.split()
+        if len(split) > 0 and split[0] != "|" and "|" not in split[0]:
+            stop_words.append(split[0])
+
+    # Remove stop words
+    for stp in stop_words:
+        freq.pop(stp, None)
+
+    i = 0
+    print 'Top 5'
+
+    # Output the data to file and print the top 5 to screen.
+    with open(config.data_dir + '/' + item + '.csv', 'wb') as csvfile:
+        output_file = csv.writer(csvfile)
+        for w in sorted(freq, key=freq.get, reverse=True):
+            if i < 5:
+                print w, freq[w]
+                i = i+1
+            output_file.writerow([w.encode('utf-8'), freq[w]])
 
     return data_from_count
 

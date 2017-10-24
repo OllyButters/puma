@@ -145,7 +145,13 @@ bibliography.bibtex.bibtex(papers, error_log)
 # some CSV type files that can be analysed.
 analyse.journals(papers)
 
-abstract_data_from_count = analyse.abstracts(papers)
+# abstract_data_from_count = analyse.abstracts(papers)
+
+# Figure out the work frequecies
+analyse.word_frequencies(papers, 'title')
+analyse.word_frequencies(papers, 'keywords')
+abstract_data_from_count = analyse.word_frequencies(papers, 'abstract')
+
 network = analyse.authors(papers)
 analyse.first_authors(papers)
 analyse.inst(papers)
