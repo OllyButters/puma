@@ -446,6 +446,7 @@ def coverage_report(papers):
                     <th>First<br/>Author<br/>affil</th>
                     <th>Clean<br/>Inst</th>
                     <th>Clean<br/>Date</th>
+                    <th>Journal</th>
                     <th>Scopus<br/>Citations</th>
                 </tr>'''
 
@@ -461,6 +462,7 @@ def coverage_report(papers):
     status['first_author_affiliation'] = 0
     status['clean_institution'] = 0
     status['clean_date'] = 0
+    status['journal']
     status['scopus'] = 0
 
     for this_paper in papers:
@@ -607,6 +609,18 @@ def coverage_report(papers):
         except:
             cov_html += '<td class="missing_required">???</td>'
 
+        # Journal
+        try:
+            journal = this_paper['clean']['journal']['journal_name']
+            if journal != '':
+                cov_html += '<td>OK</td>'
+                status['journal'] = status['journal'] + 1
+            else:
+                raise Exception()
+        except:
+            cov_html += '<td class="missing_good_to_have">???</td>'
+
+
         # Scopus citations
         try:
             scopus = this_paper['clean']['citations']['scopus']['count']
@@ -636,6 +650,7 @@ def coverage_report(papers):
                     <th>First<br/>Author<br/>affil</th>
                     <th>Clean<br/>Inst</th>
                     <th>Clean<br/>Date</th>
+                    <th>Journal</th>
                     <th>Scopus<br/>Citations</th>
                 </tr>'''
 
@@ -655,6 +670,7 @@ def coverage_report(papers):
     status_table += '<td>' + str(status['first_author_affiliation']) + '</td>'
     status_table += '<td>' + str(status['clean_institution']) + '</td>'
     status_table += '<td>' + str(status['clean_date']) + '</td>'
+    status_table += '<td>' + str(status['journal']) + '</td>'
     status_table += '<td>' + str(status['scopus']) + '</td>'
     status_table += '</tr>'
 
@@ -672,6 +688,7 @@ def coverage_report(papers):
     status_table += '<td>' + str(int(round(100*status['first_author_affiliation']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['clean_institution']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['clean_date']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['journal']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['scopus']/number_of_papers))) + '</td>'
     status_table += '</tr></table>'
 
