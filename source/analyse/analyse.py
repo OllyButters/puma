@@ -462,7 +462,7 @@ def coverage_report(papers):
     status['first_author_affiliation'] = 0
     status['clean_institution'] = 0
     status['clean_date'] = 0
-    status['journal']
+    status['journal'] = 0
     status['scopus'] = 0
 
     for this_paper in papers:
