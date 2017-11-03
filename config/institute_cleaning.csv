@@ -135,6 +135,7 @@ Royal United Hospital,Royal United Hospital
 Southampton General Hospital,Southampton General Hospital
 Southmead Hospital,Southmead Hospital
 St George's Hospital,St George's Hospital
+St Thomas' Hospital,St Thomas' Hospital
 "Severn Deanery, Deanery House Unit D, Vantage Office Park Hambrook, Bristol, United Kingdom.","Severn Deanery"
 "Vascular Physiology Unit, National Centre for Cardiovascular Disease Prevention & Outcomes","University College London"
 "Leopold Muller Centre for Child and Family Mental Health","University College London"
@@ -256,5 +257,5 @@ BS8 1TQ,University of Bristol
 "Unit of Paediatric and Perinatal Epidemiology, Institute of Child Health, Bristol",University of Bristol
 "School of Social and Community Medicine, Bristol",University of Bristol
 ,
-#Some UCL munging
+#Some UCL munging,
 WC1N 1EH,University College London
