@@ -1,6 +1,10 @@
-#Do email addresses first - my guess is that people are more likely to ,
-#have only one email address than multiple institution addresses...,
-anu.edu.au,The Australian National University
+#Manually made lookup from author provided info to the canonical institute name.,
+#The order matters here, the matching starts at the top of the list and stops when something is found.
+#Ignore The, so The University of Bristol is University of Bristol.
+#Group alphabetically by the main name, so all variations of Bristol should be in B. 
+#,
+#Do email addresses first - they are much more structured than postal addresses, and usually people have one.
+anu.edu.au,Australian National University
 bthft.nhs.uk,Bradford Royal Infirmary
 bbk.ac.uk,"Birkbeck, University of London"
 bristol.ac.uk,University of Bristol
@@ -175,6 +179,7 @@ University of Amsterdam,University of Amsterdam
 Arabian Gulf University,Arabian Gulf University
 Academic Medical Center,Academic Medical Center
 University of Auckland,University of Auckland
+Australian National University,Australian National University
 "Centre for Research in Environmental Epidemiology, Barcelona","Centre for Research in Environmental Epidemiology, Barcelona"
 University of Belgrade,University of Belgrade
 Boston University,Boston University
