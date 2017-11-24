@@ -187,7 +187,7 @@ University College London,University College London
 "Institute of Child Health, University of London",University College London
 Royal Free and University College Hospital Medical School,University College London
 University of East Anglia,University of East Anglia
-#W
+#W,
 University of Warwick,University of Warwick
 Wellcome Trust Sanger Institute,Wellcome Trust Sanger Institute
 University of the West of England,UWE
@@ -237,8 +237,11 @@ United Bristol Healthcare Trust,University of Bristol
 "Elsie Widdowson Laboratory, Cambridge","Elsie Widdowson Laboratory, Cambridge"
 International Longevity Centre UK,International Longevity Centre UK
 ,
+################################################################################################,
 #International,
+##,
 23andMe,23andMe
+#A,
 Aarhus University,Aarhus University
 University of Adelaide,University of Adelaide
 University of Alabama,University of Alabama
@@ -251,12 +254,14 @@ Arabian Gulf University,Arabian Gulf University
 Academic Medical Center,Academic Medical Center
 University of Auckland,University of Auckland
 Australian National University,Australian National University
+#B,
 "Centre for Research in Environmental Epidemiology, Barcelona","Centre for Research in Environmental Epidemiology, Barcelona"
 Baylor College of Medicine,Baylor College of Medicine
 University of Belgrade,University of Belgrade
 Boston University,Boston University
 Brigham and Women's Hospital,Brigham and Women's Hospital
 Broad Institute,Broad Institute
+#C,
 University of California,University of California
 Cancer Treatment Centers of America,Cancer Treatment Centers of America
 Case Western Reserve University,Case Western Reserve University
@@ -274,21 +279,25 @@ University of Copenhagen,University of Copenhagen
 Cork University Maternity Hospital,Cork University Maternity Hospital
 Cornell University,Cornell University
 Czech Academy of Sciences,Czech Academy of Sciences
+#D,
 TX 75231,"Retina Foundation of the Southwest"
 Dalhousie University,Dalhousie University
 Deakin University,Deakin University
 Deodoro,Deodoro
 UCD Dublin, University College Dublin
 University College Dublin,University College Dublin
+#E,
 East Tennessee State University,East Tennessee State University
 Emory University,Emory University
 Erasmus Medical Center,Erasmus MC
 Eunice Kennedy Shriver National Institute of Child Health and Human Development,Eunice Kennedy Shriver National Institute of Child Health and Human Development
 eurac.edu,European Academy of Bozen
+#F,
 Feinstein Institute for Medical Research,Feinstein Institute for Medical Research
 Flinders University,Flinders University
 University of Florence,University of Florence
 Fred Hutchinson Cancer Research Center,Fred Hutchinson Cancer Research Center
+#G,
 iGE3,University of Geneva
 German Research Center for Environmental Health,German Research Center for Environmental Health
 Ghent University,Ghent University
@@ -296,6 +305,7 @@ GlaxoSmithKline R&D,GlaxoSmithKline R&D
 Universidad de Granada,University of Granada
 University of Groningen,University of Groningen
 umcg.nl,University of Groningen
+#H,
 University of Heidelberg,University of Heidelberg
 University of Hong Kong,The University of Hong Kong
 Hadassah-Hebrew University,Hadassah-Hebrew University
@@ -313,6 +323,7 @@ University of Helsinki,University of Helsinki
 The Generation R Study Group,Erasmus University Rotterdam
 uniklinik-saarland.de,Saarland University Hospital
 Saarland University Hospital,Saarland University Hospital
+#I,
 Icahn School of Medicine at Mount Sinai,Icahn School of Medicine at Mount Sinai
 University of Illinois,University of Illinois
 Indiana University,Indiana University
@@ -320,17 +331,21 @@ Indiana University,Indiana University
 International Agency for Research on Cancer,International Agency for Research on Cancer
 University of Iowa,University of Iowa
 NUI Galway,NUI Galway
+#J,
 Johns Hopkins University,Johns Hopkins University
 "Hunter Genetics, Hunter New England Health Service, NSW, Australia.","John Hunter Hospital"
 Hospital for Sick Children,Hospital for Sick Children
+#K,
 Karolinska Institutet,Karolinska Institutet
 King Saud Bin Abdulaziz University for Health Sciences,King Saud Bin Abdulaziz University for Health Sciences
 Kio University,Kio University
 Kwong Wah Hospital,Kwong Wah Hospital
+#L,
 University of Lausanne,University of Lausanne
 Leiden University,Leiden University
 University of Leipzig,University of Leipzig
 Universit\u00e4t zu L\u00fcbeck,University of Lübeck
+#M,
 M.I.T.,Massachusetts Institute of Technology
 Massachusetts Institute of Technology,Massachusetts Institute of Technology
 University of Manitoba,University of Manitoba
@@ -346,6 +361,7 @@ University of Melbourne,University of Melbourne
 murdoch,"Murdoch Childrens Research Institute"
 turningpoint.org.au,"Turning Point Alcohol and Drug Centre"
 lrz.tum.de,Technical University of Munich
+#N,
 Nanjing Medical University,Nanjing Medical University
 University of Naples Federico II,University of Naples Federico II
 NIAA,National Institute on Alcohol Abuse and Alcoholism
@@ -357,12 +373,14 @@ National Institute of Environmental Health Sciences,National Institute of Enviro
 University of North Carolina,University of North Carolina
 North Carolina State University,North Carolina State University
 NYU,New York University
+#O,
 Oklahoma Medical Research Foundation,Oklahoma Medical Research Foundation
 University of Oregon,University of Oregon
 Oregon Health & Science University,Oregon Health & Science University
 Oslo University Hospital,University of Oslo
 University of Otago,University of Otago
 University of Ottawa,University of Ottawa
+#P,
 The Children's Hospital Philadelphia,The Children's Hospital Philadelphia
 Universitat Pompeu Fabra,Universitat Pompeu Fabra
 Gairdner,Sir Charles Gairdner Hospital
@@ -378,11 +396,13 @@ University of Eastern Piedmont,University of Eastern Piedmont
 Children's Hospital of Pittsburgh of UPMC,Children's Hospital of Pittsburgh of UPMC
 University of Porto,University of Porto
 Princeton University,Princeton University
+#Q,
 Qingdao University,Qingdao University
 University of Queensland,University of Queensland
 Queensland Institute of Medical Research,"Queensland Institute of Medical Research"
 QIMR Berghofer Medical Research Institute,QIMR Berghofer Medical Research Institute
 Queensland University of Technology,Queensland University of Technology
+#R,
 Radboud University,Radboud University
 University Regensburg,University Hospital Regensburg
 Regensburg University Medical Center,University Hospital Regensburg
@@ -392,6 +412,7 @@ Rotman Research Institute,Rotman Research Institute
 Erasmus University Medical Center,Erasmus MC
 Erasmus University Rotterdam,Erasmus University Rotterdam
 Rotterdam Eye Hospital,Rotterdam Eye Hospital
+#S,
 Dialectical Behavior Therapy Center of Seattle,Dialectical Behavior Therapy Center of Seattle
 Hospital de Santa Creu i Sant Pau,Hospital de Santa Creu i Sant Pau
 University of Saskatchewan,University of Saskatchewan
@@ -404,6 +425,8 @@ Shanghai Jiao Tong University,Shanghai Jiao Tong University
 Sheri-Kashmir Institute of Medical Sciences,Sheri-Kashmir Institute of Medical Sciences
 Genome Institute of Singapore,Genome Institute of Singapore
 National University of Singapore,National University of Singapore
+"Department of Ophthalmology, National University of Singapore and National University Health System","National University of Singapore"
+
 University of Split,University of Split
 Stanford University,Stanford University
 University of Stockholm,University of Stockholm
@@ -412,6 +435,9 @@ Sun Yat-Sen University,Sun Yat-Sen University
 Swiss Tropical and Public Health Institute,Swiss Tropical and Public Health Institute
 University of Sydney,University of Sydney
 Syracuse University,Syracuse University
+University of Seville,University of Seville
+Seoul National University,Seoul National University
+#T,
 University of Tampere,University of Tampere
 The University of Texas,The University of Texas
 Tilburg University,Tilburg University
@@ -420,34 +446,35 @@ University of Trieste,University of Trieste
 "Trinity College, Dublin","Trinity College, Dublin"
 University of Tsukuba,University of Tsukuba
 Tulane University,Tulane University
+University of Texas Health Science Center,University of Texas Health Science Center at San Antonio
+#U,
+University Medical Centre Utrecht,University Medical Center Utrecht
+University Medical Center Utrecht,University Medical Center Utrecht
+Uppsala University,Uppsala University
+#V,
 Vanderbilt University,Vanderbilt University
 Vanda Pharmaceuticals Inc,Vanda Pharmaceuticals Inc.
 University of Victoria,University of Victoria
 Virginia Commonwealth University,Virginia Commonwealth University
 Yale University,Yale University
 VU University,Vrije Universiteit
-"Bethesda, Maryland",Eunice Kennedy Shriver National Institute of Child Health and Human Development
-University Medical Centre Utrecht,University Medical Center Utrecht
-"Department of Ophthalmology, National University of Singapore and National University Health System","National University of Singapore"
-"Max Planck Institute for Psycholinguistics","Max Planck Institute for Psycholinguistics"
-"KP Agricultural University","KP Agricultural University"
-"Children's Memorial Hospital, Chicago","Children's Memorial Hospital, Chicago"
-"Massachusetts General Hospital","Massachusetts General Hospital"
-"Retina Foundation of the Southwest","Retina Foundation of the Southwest"
-University of Seville,University of Seville
-Seoul National University,Seoul National University
-University of Texas Health Science Center,University of Texas Health Science Center at San Antonio
-"Montefiore Medical Center/Albert Einstein College of Medicine","Montefiore Medical Center/Albert Einstein College of Medicine"
-University Medical Center Utrecht,University Medical Center Utrecht
+#W,
 University of Washington,University of Washington
-Uppsala University,Uppsala University
 Medical University of Warsaw,Medical University of Warsaw
 Washington University,Washington University
 Wayne State University,Wayne State University
 University of Wroc\u0142aw,University of Wrocław
 uwa.edu.au,University of Western Australia
 Medical College of Wisconsin,Medical College of Wisconsin
+#Y,
 Yongin University,Yongin University
+"Bethesda, Maryland",Eunice Kennedy Shriver National Institute of Child Health and Human Development
+"Max Planck Institute for Psycholinguistics","Max Planck Institute for Psycholinguistics"
+"KP Agricultural University","KP Agricultural University"
+"Children's Memorial Hospital, Chicago","Children's Memorial Hospital, Chicago"
+"Massachusetts General Hospital","Massachusetts General Hospital"
+"Retina Foundation of the Southwest","Retina Foundation of the Southwest"
+"Montefiore Medical Center/Albert Einstein College of Medicine","Montefiore Medical Center/Albert Einstein College of Medicine"
 ,
 #Some special ALSPAC munging,
 Oakfield Grove,University of Bristol
