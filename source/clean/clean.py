@@ -254,7 +254,7 @@ def clean_institution(papers):
 
         if hasAffiliation:
             for y in range(0, len(pattern)):
-                # logging.debug('%s %s %s', institute, pattern[y], replacements[y])
+                logging.debug('%s %s %s', institute, pattern[y], replacements[y])
                 temp = re.search(pattern[y], institute, re.IGNORECASE)
                 if temp > 0:
                     logging.info(
@@ -281,6 +281,8 @@ def clean_institution(papers):
     print 'Cleaning institutions'
     print str(len(papers)-number_not_matched) + '/' + str(len(papers)) + ' cleaned'
 
+    exit()
+    
     return number_not_matched
 
 
