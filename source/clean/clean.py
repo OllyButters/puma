@@ -228,7 +228,7 @@ def clean_institution(papers):
                 pass
 
     for i in range(0, len(pattern)):     
-        logging.debug(pattern[i] + " --> " + replacements[0])
+        logging.debug(pattern[i] + " --> " + replacements[i])
 
     logging.info('Config read in, starting processing')
 
