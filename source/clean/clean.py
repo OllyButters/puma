@@ -222,10 +222,13 @@ def clean_institution(papers):
                     continue
 
                 # If there is a second element in this row then carry on
-                pattern.append(row[0])
+                pattern.append('r"' + row[0] + '"')
                 replacements.append(row[1])
             except:
                 pass
+
+    for i in range(0, length(pattern)):     
+        logging.debug(pattern[i] + " --> " + replacements[0])
 
     logging.info('Config read in, starting processing')
 
