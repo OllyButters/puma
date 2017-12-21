@@ -221,14 +221,17 @@ def clean_institution(papers):
                 if row[0] == '':
                     continue
 
-                # If there is a second element in this row then carry on
-                pattern.append('r"' + row[0] + '"')
-                replacements.append(row[1])
+                # Retype both to unicode, this will parse any \u1234 bits to their
+                # actual unicode.
+                # Make patter lowercase so it matches better.
+                pattern.append(unicode(row[0]).lower())
+                replacements.append(unicode(row[1]))
             except:
                 pass
 
-    for i in range(0, len(pattern)):     
-        logging.debug(pattern[i] + " --> " + replacements[i])
+    # Stick a copy of the parsed lookup into the log.
+    for i in range(0, len(pattern)):
+        logging.debug(str(type(pattern[i])) + pattern[i] + " --> " + replacements[i])
 
     logging.info('Config read in, starting processing')
 
@@ -243,25 +246,22 @@ def clean_institution(papers):
 
         hasAffiliation = True
         try:
-            # print '============='
-            # print this_paper['merged']['author'][0]['affiliation'][0]['name']
-            # institute = this_paper['merged']['PubmedArticle'][0]['MedlineCitation']['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
             institute = this_paper['merged']['author'][0]['affiliation'][0]['name']
-            # institute = this_paper['merged']['PubmedArticle'][0]['MedlineCitation']['Article']['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
         except:
             logging.warn('Could not find an affiliation for %s', this_paper)
             hasAffiliation = False
 
         if hasAffiliation:
             for y in range(0, len(pattern)):
-                logging.debug('%s %s %s', institute, pattern[y], replacements[y])
-                temp = re.search(pattern[y], institute, re.IGNORECASE)
+                # logging.debug('%s %s %s', institute, pattern[y], replacements[y])
+
+                # Check pattern in institite. These are both unicode and lowercase
+                temp = pattern[y] in unicode(institute).lower()
                 if temp > 0:
                     logging.info(
                         'ID:%s. %s MATCHES %s REPLACEDBY %s',
                         this_paper, institute, pattern[y], replacements[y])
                     this_paper['clean']['location']['clean_institute'] = replacements[y]
-
                     break
 
                 if y == len(pattern)-1:
@@ -281,8 +281,6 @@ def clean_institution(papers):
     print 'Cleaning institutions'
     print str(len(papers)-number_not_matched) + '/' + str(len(papers)) + ' cleaned'
 
-    exit()
-    
     return number_not_matched
 
 

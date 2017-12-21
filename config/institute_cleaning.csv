@@ -1,7 +1,7 @@
 #Manually made lookup from author provided info to the canonical institute name.,
 #The order matters here, the matching starts at the top of the list and stops when something is found.
 #Ignore The, so The University of Bristol is University of Bristol.
-#Group alphabetically by the main name, so all variations of Bristol should be in B. 
+#Group alphabetically by the main name, so all variations of Bristol should be in B.
 #,
 #Do email addresses first - they are much more structured than postal addresses, and usually people have one.
 anu.edu.au,Australian National University
@@ -131,7 +131,7 @@ Imperial,Imperial College London
 Institute of Education,UCL Institute of Education
 Institute of Cancer Research,Institute of Cancer Research
 #K,
-King'?s College,King's College London
+King's College,King's College London
 Institute of Psychiary,King's College London
 Kingston University,Kingston University
 #L,
@@ -463,7 +463,8 @@ University of Tsukuba,University of Tsukuba
 Tulane University,Tulane University
 University of Texas Health Science Center,University of Texas Health Science Center at San Antonio
 #U,
-"Ume\u00e5 University",Umeå University
+#"Ume\u00e5 University",Umeå University
+Umeå University,Umeå University
 University Medical Centre Utrecht,University Medical Center Utrecht
 University Medical Center Utrecht,University Medical Center Utrecht
 Uppsala University,Uppsala University
@@ -480,7 +481,7 @@ University of Washington,University of Washington
 Medical University of Warsaw,Medical University of Warsaw
 Washington University,Washington University
 Wayne State University,Wayne State University
-University of Wroc\\u0142aw,University of Wrocław
+University of Wrocław,University of Wrocław
 uwa.edu.au,University of Western Australia
 Medical College of Wisconsin,Medical College of Wisconsin
 #Y,
