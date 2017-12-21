@@ -1,6 +1,6 @@
 Puma README!
 
-Puma is a pipeline to take a list of biomedical focussed publications and add lots of metadata to them to make them a valuable research object in their own right. 
+Puma is a pipeline to mine academic publication metadata, creating a valuable research object and visual analytics from a research project publication list.
 
 The technical documentation is at:
 
@@ -8,7 +8,7 @@ The technical documentation is at:
 
 
 Puma has been running for a couple of years and has been funded by a few different sources, of particular note are:
+- Nuffield Foundataion Summer Research placement.
 - D2K, University of Bristol.
-- Nuffied Foundataion Summer Research placement.
 - CLOSER.
-- D2K, Newcatle University.
+- D2K, Newcastle University.
