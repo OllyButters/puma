@@ -47,6 +47,7 @@ pasteur-lille.fr,University of Lille
 lse.ac.uk,London School of Economics and Political Science
 lshtm.ac.uk,London School of Hygiene & Tropical Medicine
 leedsmh.nhs.uk,NHS Leeds South and East
+umontreal.ca,Université de Montréal
 nccs.com.sg,"National Cancer Centre, Singapore"
 nida.nih.gov,National Institute on Drug Abuse
 niehs.nih.gov,National Institute of Environmental Health Sciences
@@ -70,6 +71,7 @@ sghms.ac.uk,St George's Hospital
 sgul.ac.uk,St George's Hospital
 ssi.dk,Statens Serum Institut
 temple.edu,Temple University
+uth.tmc.edu,The University of Texas Health Science Center at Houston
 uchicago.edu,University of Chicargo
 ucl.ac.uk,University College London
 uga.edu,University of Georgia
@@ -132,12 +134,15 @@ Institute of Education,UCL Institute of Education
 Institute of Cancer Research,Institute of Cancer Research
 #K,
 King's College,King's College London
+King’s College,King's College London
+Kings College,King's College London
 Institute of Psychiary,King's College London
 Kingston University,Kingston University
 #L,
 Lancaster University,Lancaster University
 University of Leeds,University of Leeds
 University of Leicester,University of Leicester
+University of Lincoln,University of Lincoln
 University of Liverpool,University of Liverpool
 London Metropolitan University,London Metropolitan University
 London School of Hygiene and Tropical Medicine,London School of Hygiene and Tropical Medicine
@@ -151,6 +156,7 @@ MRC Epidemiology Unit,Medical Research Council Centre Cambridge
 Medical Research Council Human Nutrition Research ,Medical Research Council Centre Cambridge
 University of Munich,Ludwig Maximilian University of Munich
 #N,
+National Institute of Economic and Social Research,National Institute of Economic and Social Research
 Newcastle University,Newcastle University
 University of Newcastle,Newcastle University
 Wellcome Centre for Mitochondrial Research,Newcastle University
@@ -158,6 +164,7 @@ University of Nottingham,University of Nottingham
 #O,
 Botnar Research Centre,University of Oxford
 "Nuffield College, Oxford",University of Oxford
+Nuffield College,University of Oxford
 University of Oxford,University of Oxford
 "Wellcome Trust Centre for Human Genetics, Oxford",University of Oxford
 "Oxford Centre for Diabetes, Endocrinology and Metabolism",University of Oxford
@@ -220,11 +227,16 @@ Ty Bryn Unit,"St Cadoc's Hospital"
 Ninewells Hospital,Ninewells Hospital
 North Bristol NHS Trust,North Bristol NHS Trust
 Northlands R & D Unit,Northlands R & D Unit
+Northwick Park Hospital,Northwick Park Hospital
 "University Hospital, Queens Medical Centre, Nottingham",Queen's Medical Centre
 University Hospital of Nottingham,Queen's Medical Centre
+"Duncan Macmillan House, Porchester Road",Nottinghamshire Healthcare NHS Foundation Trust
+University Hospital Nottingham,University Hospital Nottingham
 "Park Hospital, Headington, Oxford, UK.","Park Hospital for Children"
+the Royal College of Surgeons in Ireland,The Royal College of Surgeons in Ireland
 Royal United Hospital,Royal United Hospital
 Royal Alexandra Children's Hospital,Royal Alexandra Children's Hospital
+Royal Free Hospital School of Medicine,Royal Free Hospital School of Medicine
 Southampton General Hospital,Southampton General Hospital
 Southmead Hospital,Southmead Hospital
 St. Bartholomew's,St Bartholomew's Hospital
@@ -273,6 +285,7 @@ Case Western Reserve University,Case Western Reserve University
 Cedars-Sinai Medical Center,Cedars-Sinai Medical Center
 University of Chicago,University of Chicago
 Children's National Medical Center,Children's National Medical Center
+Chinese Academy of Sciences,Chinese Academy of Sciences
 Christchurch School of Medicine,University of Otago Christchurch School of Medicine
 St. Clare's Mercy Hospital,St. Clare's Mercy Hospital
 "Centres for Disease Control Prevention, Atlanta","Centers for Disease Control and Prevention"
@@ -295,6 +308,7 @@ University College Dublin,University College Dublin
 #E,
 East Tennessee State University,East Tennessee State University
 Emory University,Emory University
+Erasmus MC,Erasmus MC
 Erasmus Medical Center,Erasmus MC
 Erasmus University Medical Centre,Erasmus MC
 Eunice Kennedy Shriver National Institute of Child Health and Human Development,Eunice Kennedy Shriver National Institute of Child Health and Human Development
@@ -312,6 +326,7 @@ Ghent University,Ghent University
 GlaxoSmithKline R&D,GlaxoSmithKline R&D
 Universidad de Granada,University of Granada
 University of Groningen,University of Groningen
+"University Medical Center, Groningen",University of Groningen
 umcg.nl,University of Groningen
 #H,
 University of Heidelberg,University of Heidelberg
@@ -335,16 +350,20 @@ Saarland University Hospital,Saarland University Hospital
 Icahn School of Medicine at Mount Sinai,Icahn School of Medicine at Mount Sinai
 University of Illinois,University of Illinois
 Indiana University,Indiana University
+INSERM,INSERM
 "Institute for Human Services Research, Hong Kong","Institute for Human Services Research, Hong Kong"
 International Agency for Research on Cancer,International Agency for Research on Cancer
 University of Iowa,University of Iowa
 NUI Galway,NUI Galway
+Istituto di Studi sui Sistemi Intelligenti per l'Automazione - CNR,Istituto di Studi sui Sistemi Intelligenti per l'Automazione - CNR
+Istituto di Studi sui Sistemi Intelligenti per l'Automazione - C.N.R.,Istituto di Studi sui Sistemi Intelligenti per l'Automazione - CNR
 #J,
 Johns Hopkins University,Johns Hopkins University
 Johns Hopkins Medical Institutions,Johns Hopkins University
 "Hunter Genetics, Hunter New England Health Service, NSW, Australia.","John Hunter Hospital"
 Hospital for Sick Children,Hospital for Sick Children
 "University Medical Center, Mainz", Johannes Gutenberg University Mainz
+Johannes Gutenberg University-Mainz,Johannes Gutenberg University Mainz
 #K,
 Karolinska Institutet,Karolinska Institutet
 Christian-Albrechts-University,Kiel University
@@ -358,10 +377,12 @@ Kwong Wah Hospital,Kwong Wah Hospital
 University of Lausanne,University of Lausanne
 Leiden University,Leiden University
 University of Leipzig,University of Leipzig
-Universit\u00e4t zu L\u00fcbeck,University of Lübeck
+Universität zu Lübeck,University of Lübeck
+KULeuven,University of Leuven
 #M,
 M.I.T.,Massachusetts Institute of Technology
 Massachusetts Institute of Technology,Massachusetts Institute of Technology
+University of Massachusetts Lowell,University of Massachusetts Lowell
 University of Manitoba,University of Manitoba
 Max-Delbrück-Center (MDC) for Molecular Medicine,Max-Delbrück-Center (MDC) for Molecular Medicine
 Mayo clinic,"Mayo Medical School"
@@ -379,14 +400,17 @@ lrz.tum.de,Technical University of Munich
 Nanjing Medical University,Nanjing Medical University
 University of Naples Federico II,University of Naples Federico II
 NIAA,National Institute on Alcohol Abuse and Alcoholism
+"National Cancer Institute, National Institutes of Health","National Cancer Institute, National Institutes of Health"
 National Institute on Alcohol Abuse and Alcoholism,National Institute on Alcohol Abuse and Alcoholism
 National Institute on Aging,National Institute on Aging
 National Taiwan University,National Taiwan University
 LMBB,National Institute on Alcohol Abuse and Alcoholism
 National Institute of Environmental Health Sciences,National Institute of Environmental Health Sciences
+New Jersey Institute of Technology,New Jersey Institute of Technology
 University of North Carolina,University of North Carolina
 North Carolina State University,North Carolina State University
 NYU,New York University
+Hôpital Necker Enfants-Malades,Hôpital Necker – Enfants Malades
 #O,
 Oklahoma Medical Research Foundation,Oklahoma Medical Research Foundation
 University of Oregon,University of Oregon
@@ -394,9 +418,11 @@ Oregon Health & Science University,Oregon Health & Science University
 Oslo University Hospital,University of Oslo
 University of Otago,University of Otago
 University of Ottawa,University of Ottawa
+Örebro County Council,Örebro County Council
 #P,
 Institut Pasteur,Pasteur Institute
 The Children's Hospital Philadelphia,The Children's Hospital Philadelphia
+Children's Hospital of Philadelphia,The Children's Hospital Philadelphia
 Universitat Pompeu Fabra,Universitat Pompeu Fabra
 Gairdner,Sir Charles Gairdner Hospital
 Federal University of Pelotas,Federal University of Pelotas
@@ -410,14 +436,19 @@ Pierre et Marie Curie,University Pierre et Marie Curie
 University of Eastern Piedmont,University of Eastern Piedmont
 Children's Hospital of Pittsburgh of UPMC,Children's Hospital of Pittsburgh of UPMC
 University of Porto,University of Porto
+"PricewaterhouseCoopers ,  London","PricewaterhouseCoopers, London"
 Princeton University,Princeton University
+Hôpital de la Pitié-Salpêtrière,Pitié-Salpêtrière Hospital
+Instituto de Parasitología y Biomedicina López-Neyra, Instituto de Parasitología y Biomedicina López - Neyra
 #Q,
 Qingdao University,Qingdao University
 University of Queensland,University of Queensland
+The Queensland Brain Institute,University of Queensland
 Queensland Institute of Medical Research,"Queensland Institute of Medical Research"
 QIMR Berghofer Medical Research Institute,QIMR Berghofer Medical Research Institute
 Queensland University of Technology,Queensland University of Technology
 #R,
+RAND Corporation,RAND Corporation
 Radboud University,Radboud University
 University Regensburg,University Hospital Regensburg
 Regensburg University Medical Center,University Hospital Regensburg
@@ -484,6 +515,7 @@ Wayne State University,Wayne State University
 University of Wrocław,University of Wrocław
 uwa.edu.au,University of Western Australia
 Medical College of Wisconsin,Medical College of Wisconsin
+Wake Forest University,Wake Forest University
 #Y,
 Yamagata University,Yamagata University
 Yongin University,Yongin University
@@ -503,6 +535,9 @@ BS8 1TQ,University of Bristol
 "Unit of Paediatric and Perinatal Epidemiology, Institute of Child Health, Bristol",University of Bristol
 "School of Social and Community Medicine, Bristol",University of Bristol
 School of Social and Community Medicine and.,University of Bristol
+,
+#Some NSHD munging
+MRC National Survey of Health and Development,University College London
 ,
 #Some UCL munging,
 WC1N 1EH,University College London
