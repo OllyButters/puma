@@ -26,7 +26,7 @@ ehesp.fr,"EHESP"
 einstein.yu.edu,Albert Einstein College of Medicine
 emory.edu,Emory University
 erasmusmc.nl,Erasmus University Medical Center
-speech-therapy.org.uk,Southmead Hospital
+eurac.edu,European Academy of Bozen
 ghc.org,Group Health Cooperative
 gla.ac.uk,University of Glasgow
 harvard.edu,Harvard University
@@ -34,6 +34,7 @@ helmholtz-muenchen.de,Helmholtz Zentrum München
 helmholtzmuenchen.de,Helmholtz Zentrum München
 hitachi.com,Hitachi
 iarc.fr,International Agency for Research on Cancer
+idc.ac.il,Interdisciplinary Center Herzliya
 inserm.fr,Centre for Research in Epidemiology and Population Health - Villejuif
 jhsph.edu,Johns Hopkins University
 jhmi.edu,Johns Hopkins University
@@ -43,14 +44,14 @@ kuleuven.be,KU Leuven
 landspitali.is,Landspitali-University Hospital
 leeds.ac.uk,University of Leeds
 liverpool.ac.uk,University of Liverpool
-pasteur-lille.fr,University of Lille
+lrz.tum.de,Technical University of Munich
 lse.ac.uk,London School of Economics and Political Science
 lshtm.ac.uk,London School of Hygiene & Tropical Medicine
 leedsmh.nhs.uk,NHS Leeds South and East
-umontreal.ca,Université de Montréal
 nccs.com.sg,"National Cancer Centre, Singapore"
 nida.nih.gov,National Institute on Drug Abuse
 niehs.nih.gov,National Institute of Environmental Health Sciences
+nshd.mrc.ac.uk,"Medical Research Council National Survey of Health and Development, Department of Epidemiology and Public Health, Royal Free and University College Medical School, London"
 nottingham.ac.uk,University of Nottingham
 northlandsrnd.org.uk,Northlands Surgery
 nrc.ca,National Research Council of Canada
@@ -60,6 +61,7 @@ osu.edu,Ohio State University
 otago.ac.nz,University of Otago
 oxford.ac.uk,University of Oxford
 ox.ac.uk,University of Oxford
+pasteur-lille.fr,University of Lille
 pds.ac.uk,Peninsula College of Medicine and Dentistry
 qimrberghofer.edu.au,Queensland Institute of Medical Research
 qmw.ac.uk,"Queen Mary, University of London"
@@ -69,28 +71,33 @@ sanger.ac.uk,Wellcome Trust Sanger Institute
 soton.ac.uk,University of Southampton
 sghms.ac.uk,St George's Hospital
 sgul.ac.uk,St George's Hospital
+speech-therapy.org.uk,Southmead Hospital
 ssi.dk,Statens Serum Institut
 temple.edu,Temple University
+turningpoint.org.au,Turning Point Alcohol and Drug Centre
 uth.tmc.edu,The University of Texas Health Science Center at Houston
 uchicago.edu,University of Chicargo
 ucl.ac.uk,University College London
 uga.edu,University of Georgia
 ulg.ac.be,University of Liege
 uib.no,University of Bergen
+umcg.nl,University of Groningen
+umontreal.ca,Université de Montréal
 uni-bonn.de,University of Bonn
 uni.wroc.pl,University of Wrocław
+uniklinik-saarland.de,Saarland University Hospital
 uq.edu.au,University of Queensland
+uwa.edu.au,University of Western Australia
 uwe.ac.uk,University of the West of England
 uw.edu,University of Washington
+utu.fi,University of Turku
+utwente.nl,University of Twente
+uu.nl,Utrecht University
 washington.edu,University of Washington
 wisc.edu,University of Wisconsin
 vumc.nl,VU University Medical Center
 wfubmc.edu,Wake Forest University
 wustl.edu,Washington University in St. Louis
-utu.fi,University of Turku
-utwente.nl,University of Twente
-uu.nl,Utrecht University
-nshd.mrc.ac.uk,"Medical Research Council National Survey of Health and Development, Department of Epidemiology and Public Health, Royal Free and University College Medical School, London"
 ,
 ,
 ################################################################################################,
@@ -137,6 +144,7 @@ King's College,King's College London
 King’s College,King's College London
 Kings College,King's College London
 Institute of Psychiary,King's College London
+Institute of Psychiatry,King's College London
 Kingston University,Kingston University
 #L,
 Lancaster University,Lancaster University
@@ -172,7 +180,6 @@ University of Oxford,University of Oxford
 #P,
 Peninsula,Peninsula College of Medicine and Dentistry
 Plymouth,Plymouth University
-"Institute of Psychiatry, London","Institute of Psychiatry"
 #Q,
 Queen's University,Queens University
 Queen Mary University,Queen Mary University
@@ -276,8 +283,9 @@ Australian National University,Australian National University
 Baylor College of Medicine,Baylor College of Medicine
 University of Belgrade,University of Belgrade
 Boston University,Boston University
-"Brigham and Women's Hospital","Brigham and Women's Hospital"
+Brigham and Women's Hospital,Brigham and Women's Hospital
 Broad Institute,Broad Institute
+"Bethesda, Maryland",Eunice Kennedy Shriver National Institute of Child Health and Human Development
 #C,
 University of California,University of California
 Cancer Treatment Centers of America,Cancer Treatment Centers of America
@@ -297,8 +305,8 @@ Cork University Maternity Hospital,Cork University Maternity Hospital
 Cornell University,Cornell University
 Czech Academy of Sciences,Czech Academy of Sciences
 Center for Genomic Regulation,Center for Genomic Regulation
+"Children's Memorial Hospital, Chicago","Children's Memorial Hospital, Chicago"
 #D,
-TX 75231,"Retina Foundation of the Southwest"
 Dalhousie University,Dalhousie University
 Deakin University,Deakin University
 deCODE Genetics,deCODE Genetics
@@ -312,7 +320,6 @@ Erasmus MC,Erasmus MC
 Erasmus Medical Center,Erasmus MC
 Erasmus University Medical Centre,Erasmus MC
 Eunice Kennedy Shriver National Institute of Child Health and Human Development,Eunice Kennedy Shriver National Institute of Child Health and Human Development
-eurac.edu,European Academy of Bozen
 #F,
 Feinstein Institute for Medical Research,Feinstein Institute for Medical Research
 Flinders University,Flinders University
@@ -327,12 +334,12 @@ GlaxoSmithKline R&D,GlaxoSmithKline R&D
 Universidad de Granada,University of Granada
 University of Groningen,University of Groningen
 "University Medical Center, Groningen",University of Groningen
-umcg.nl,University of Groningen
+NUI Galway,NUI Galway
+Gairdner,Sir Charles Gairdner Hospital
 #H,
 University of Heidelberg,University of Heidelberg
 University of Hong Kong,The University of Hong Kong
 Hadassah-Hebrew University,Hadassah-Hebrew University
-idc.ac.il,Interdisciplinary Center Herzliya
 Harbin Medical University,Harbin Medical University
 Hong Kong Polytechnic University,Hong Kong Polytechnic University
 Harokopio University,Harokopio University
@@ -344,8 +351,6 @@ Hunan Normal University,Hunan Normal University
 FIMM,University of Helsinki
 University of Helsinki,University of Helsinki
 The Generation R Study Group,Erasmus University Rotterdam
-uniklinik-saarland.de,Saarland University Hospital
-Saarland University Hospital,Saarland University Hospital
 #I,
 Icahn School of Medicine at Mount Sinai,Icahn School of Medicine at Mount Sinai
 University of Illinois,University of Illinois
@@ -354,7 +359,6 @@ INSERM,INSERM
 "Institute for Human Services Research, Hong Kong","Institute for Human Services Research, Hong Kong"
 International Agency for Research on Cancer,International Agency for Research on Cancer
 University of Iowa,University of Iowa
-NUI Galway,NUI Galway
 Istituto di Studi sui Sistemi Intelligenti per l'Automazione - CNR,Istituto di Studi sui Sistemi Intelligenti per l'Automazione - CNR
 Istituto di Studi sui Sistemi Intelligenti per l'Automazione - C.N.R.,Istituto di Studi sui Sistemi Intelligenti per l'Automazione - CNR
 #J,
@@ -373,6 +377,7 @@ King Faisal Specialist Hospital and Research Center,King Faisal Specialist Hospi
 King Saud Bin Abdulaziz University for Health Sciences,King Saud Bin Abdulaziz University for Health Sciences
 Kio University,Kio University
 Kwong Wah Hospital,Kwong Wah Hospital
+KP Agricultural University,KP Agricultural University
 #L,
 University of Lausanne,University of Lausanne
 Leiden University,Leiden University
@@ -383,9 +388,10 @@ KULeuven,University of Leuven
 M.I.T.,Massachusetts Institute of Technology
 Massachusetts Institute of Technology,Massachusetts Institute of Technology
 University of Massachusetts Lowell,University of Massachusetts Lowell
+Massachusetts General Hospital,Massachusetts General Hospital
 University of Manitoba,University of Manitoba
 Max-Delbrück-Center (MDC) for Molecular Medicine,Max-Delbrück-Center (MDC) for Molecular Medicine
-Mayo clinic,"Mayo Medical School"
+Mayo clinic,Mayo Medical School
 McGill University,McGill University
 University of Miami,University of Miami
 University of Michigan,University of Michigan
@@ -393,9 +399,9 @@ Michigan State University,Michigan State University
 University of Minnesota,University of Minnesota
 University of Missouri-Kansas City,University of Missouri-Kansas City
 University of Melbourne,University of Melbourne
-murdoch,"Murdoch Childrens Research Institute"
-turningpoint.org.au,"Turning Point Alcohol and Drug Centre"
-lrz.tum.de,Technical University of Munich
+murdoch,Murdoch Childrens Research Institute
+Max Planck Institute for Psycholinguistics,Max Planck Institute for Psycholinguistics
+"Montefiore Medical Center/Albert Einstein College of Medicine","Montefiore Medical Center/Albert Einstein College of Medicine"
 #N,
 Nanjing Medical University,Nanjing Medical University
 University of Naples Federico II,University of Naples Federico II
@@ -424,7 +430,6 @@ Institut Pasteur,Pasteur Institute
 The Children's Hospital Philadelphia,The Children's Hospital Philadelphia
 Children's Hospital of Philadelphia,The Children's Hospital Philadelphia
 Universitat Pompeu Fabra,Universitat Pompeu Fabra
-Gairdner,Sir Charles Gairdner Hospital
 Federal University of Pelotas,Federal University of Pelotas
 PerkinElmer,PerkinElmer Inc.
 Pennsylvania State University,Pennsylvania State University
@@ -444,7 +449,7 @@ Instituto de Parasitología y Biomedicina López-Neyra, Instituto de Parasitolog
 Qingdao University,Qingdao University
 University of Queensland,University of Queensland
 The Queensland Brain Institute,University of Queensland
-Queensland Institute of Medical Research,"Queensland Institute of Medical Research"
+Queensland Institute of Medical Research,Queensland Institute of Medical Research
 QIMR Berghofer Medical Research Institute,QIMR Berghofer Medical Research Institute
 Queensland University of Technology,Queensland University of Technology
 #R,
@@ -458,6 +463,8 @@ Rotman Research Institute,Rotman Research Institute
 Erasmus University Medical Center,Erasmus MC
 Erasmus University Rotterdam,Erasmus University Rotterdam
 Rotterdam Eye Hospital,Rotterdam Eye Hospital
+TX 75231,Retina Foundation of the Southwest
+Retina Foundation of the Southwest,Retina Foundation of the Southwest
 #S,
 Dialectical Behavior Therapy Center of Seattle,Dialectical Behavior Therapy Center of Seattle
 Hospital de Santa Creu i Sant Pau,Hospital de Santa Creu i Sant Pau
@@ -483,6 +490,7 @@ Syracuse University,Syracuse University
 University of Seville,University of Seville
 Seoul National University,Seoul National University
 IdISSC,Health Research Institute of the Hospital Clínico San Carlos
+Saarland University Hospital,Saarland University Hospital
 #T,
 University of Tampere,University of Tampere
 The University of Texas,The University of Texas
@@ -494,10 +502,8 @@ University of Tsukuba,University of Tsukuba
 Tulane University,Tulane University
 University of Texas Health Science Center,University of Texas Health Science Center at San Antonio
 #U,
-#"Ume\u00e5 University",Umeå University
 Umeå University,Umeå University
 University Medical Centre Utrecht,University Medical Center Utrecht
-University Medical Center Utrecht,University Medical Center Utrecht
 Uppsala University,Uppsala University
 #V,
 Vanderbilt University,Vanderbilt University
@@ -505,7 +511,6 @@ Vanda Pharmaceuticals Inc,Vanda Pharmaceuticals Inc.
 University of Victoria,University of Victoria
 Virginia Commonwealth University,Virginia Commonwealth University
 University of Virginia,University of Virginia
-Yale University,Yale University
 VU University,Vrije Universiteit
 #W,
 University of Washington,University of Washington
@@ -513,19 +518,12 @@ Medical University of Warsaw,Medical University of Warsaw
 Washington University,Washington University
 Wayne State University,Wayne State University
 University of Wrocław,University of Wrocław
-uwa.edu.au,University of Western Australia
 Medical College of Wisconsin,Medical College of Wisconsin
 Wake Forest University,Wake Forest University
 #Y,
+Yale University,Yale University
 Yamagata University,Yamagata University
 Yongin University,Yongin University
-"Bethesda, Maryland",Eunice Kennedy Shriver National Institute of Child Health and Human Development
-"Max Planck Institute for Psycholinguistics","Max Planck Institute for Psycholinguistics"
-"KP Agricultural University","KP Agricultural University"
-"Children's Memorial Hospital, Chicago","Children's Memorial Hospital, Chicago"
-"Massachusetts General Hospital","Massachusetts General Hospital"
-"Retina Foundation of the Southwest","Retina Foundation of the Southwest"
-"Montefiore Medical Center/Albert Einstein College of Medicine","Montefiore Medical Center/Albert Einstein College of Medicine"
 ,
 #Some special ALSPAC munging,
 Oakfield Grove,University of Bristol
