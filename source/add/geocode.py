@@ -31,7 +31,7 @@ def geocode(papers, error_log, api_key):
 
     # Loop through the papers and attempt to find the coordinates, city name and country name
     locations_found = 0
-    number_done = 1
+    number_done = 0
     for this_paper in papers:
 
         found_coords = False
