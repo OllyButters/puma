@@ -1336,7 +1336,7 @@ def build_abstract_word_cloud(papers, data_from_count):
 
     print "\n###HTML - Abstract Word Cloud###"
 
-    f = open(config.data_dir + "/abstracts.csv", 'rt')
+    f = open(config.data_dir + "/abstract.csv", 'rt')
 
     list = "["
     n = 0
@@ -1565,10 +1565,12 @@ def build_error_log(papers, error_log):
     temp += ' var expiration_date = new Date(); var cookie_string = ""; expiration_date.setFullYear(expiration_date.getFullYear() + 1); cookie_string = "show_error_page=true; path=/; expires=" + expiration_date.toUTCString(); document.cookie = cookie_string;'
     temp += "</script>"
 
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp.encode(encoding='utf_8'))
 
     temp = build_common_foot()
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp.encode(encoding='utf_8'))
 
 
 ###########################################################
