@@ -85,51 +85,88 @@ def clean_date(this_paper, error_log):
     this_paper['clean']['clean_date'] = {}
 
     # Try the different date fields. If we don't get a full day, month and year for the clean_date
-    # then try the next possible field. Finally if none of the fields work then try the Zotero notes field.
-    try:
-        # First check for Pubmed date
-        if str(this_paper['merged']['PubmedData']['History'][0]['Day']) == "" or str(this_paper['merged']['PubmedData']['History'][0]['Month']) == "" or str(this_paper['merged']['PubmedData']['History'][0]['Year']) == "":
-            raise Exception('Invalid Date')
+    # then try the next possible field. If that's not going well try getting just the year.
+    # Finally if none of the fields work then try the Zotero notes field.
+    date_status = False
 
-        this_paper['clean']['clean_date']['day'] = str(this_paper['merged']['PubmedData']['History'][0]['Day'])
-        this_paper['clean']['clean_date']['month'] = str(this_paper['merged']['PubmedData']['History'][0]['Month'])
-        this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['PubmedData']['History'][0]['Year'])
-
-    except:
+    # Full Pubmed date - probably the best one
+    if date_status is False:
         try:
-            # Check for an issue date
-            if str(this_paper['merged']['issued']['date-parts'][0][2]) == "" or str(this_paper['merged']['issued']['date-parts'][0][1]) == "" or str(this_paper['merged']['issued']['date-parts'][0][0]) == "":
-                raise Exception('Invalid Date')
-
-            this_paper['clean']['clean_date']['day'] = str(this_paper['merged']['issued']['date-parts'][0][2])
-            this_paper['clean']['clean_date']['month'] = str(this_paper['merged']['issued']['date-parts'][0][1])
-            this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['issued']['date-parts'][0][0])
-
+            if str(this_paper['merged']['PubmedData']['History'][0]['Day']) != "" and str(this_paper['merged']['PubmedData']['History'][0]['Month']) != "" and str(this_paper['merged']['PubmedData']['History'][0]['Year']) != "":
+                this_paper['clean']['clean_date']['day'] = str(this_paper['merged']['PubmedData']['History'][0]['Day'])
+                this_paper['clean']['clean_date']['month'] = str(this_paper['merged']['PubmedData']['History'][0]['Month'])
+                this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['PubmedData']['History'][0]['Year'])
+                date_status = True
         except:
-            try:
-                # Check for a created date
-                if str(this_paper['merged']['created']['date-parts'][0][2]) == "" or str(this_paper['merged']['created']['date-parts'][0][1]) == "" or str(this_paper['merged']['created']['date-parts'][0][0]) == "":
-                    raise Exception('Invalid Date')
+            pass
 
-                this_paper['clean']['clean_date']['day'] = str(this_paper['merged']['created']['date-parts'][0][2])
-                this_paper['clean']['clean_date']['month'] = str(this_paper['merged']['created']['date-parts'][0][1])
-                this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['created']['date-parts'][0][0])
+    # Full issue date
+    if date_status is False:
+        try:
+            if str(this_paper['merged']['issued']['date-parts'][0][2]) != "" and str(this_paper['merged']['issued']['date-parts'][0][1]) != "" and str(this_paper['merged']['issued']['date-parts'][0][0]) != "":
+                this_paper['clean']['clean_date']['day'] = str(this_paper['merged']['issued']['date-parts'][0][2])
+                this_paper['clean']['clean_date']['month'] = str(this_paper['merged']['issued']['date-parts'][0][1])
+                this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['issued']['date-parts'][0][0])
+                date_status = True
+        except:
+            pass
 
-            except:
-                try:
-                    # Zotero Notes overide date
-                    date_parts = this_paper['merged']['extra']['date'].split("/")
-                    this_paper['clean']['clean_date']['day'] = str(date_parts[0])
-                    this_paper['clean']['clean_date']['month'] = str(date_parts[1])
-                    this_paper['clean']['clean_date']['year'] = str(date_parts[2])
-                except:
-                    try:
-                        # zotero 'date' field (only contains numerical year, word month)
-                        date_parts = this_paper['merged']['date'].split(" ")
-                        this_paper['clean']['clean_date']['year'] = str(date_parts[-1])
-                    except:
-                        # A date has not been found. Put this in the error log.
-                        error_log.logErrorPaper("Cannot Create Clean Date (Consider using Zotero notes)", this_paper)
+    # Full created date
+    # if date_status is False:
+        # try:
+            # actually I am not sure this is a good idea, I think this might be the date the metadata was created...
+            # if str(this_paper['merged']['created']['date-parts'][0][2]) == "" or str(this_paper['merged']['created']['date-parts'][0][1]) == "" or str(this_paper['merged']['created']['date-parts'][0][0]) == "":
+            #    raise Exception('Invalid Date')
+
+            # this_paper['clean']['clean_date']['day'] = str(this_paper['merged']['created']['date-parts'][0][2])
+            # this_paper['clean']['clean_date']['month'] = str(this_paper['merged']['created']['date-parts'][0][1])
+            # this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['created']['date-parts'][0][0])
+            # date_status = True
+        # except:
+        #    pass
+
+    # PARTIAL Pubmed date
+    if date_status is False:
+        try:
+            if str(this_paper['merged']['PubmedData']['History'][0]['Year']) != "":
+                this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['PubmedData']['History'][0]['Year'])
+                date_status = True
+        except:
+            pass
+
+    # PARTIAL issue date
+    if date_status is False:
+        try:
+            if str(this_paper['merged']['issued']['date-parts'][0][0]) != "":
+                this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['issued']['date-parts'][0][0])
+                date_status = True
+        except:
+            pass
+
+    # Zotero Notes overide date
+    if date_status is False:
+        try:
+            date_parts = this_paper['merged']['extra']['date'].split("/")
+            this_paper['clean']['clean_date']['day'] = str(date_parts[0])
+            this_paper['clean']['clean_date']['month'] = str(date_parts[1])
+            this_paper['clean']['clean_date']['year'] = str(date_parts[2])
+            date_status = True
+        except:
+            pass
+
+    # zotero 'date' field (only contains numerical year, word month)
+    if date_status is False:
+        try:
+            date_parts = this_paper['merged']['date'].split(" ")
+            this_paper['clean']['clean_date']['year'] = str(date_parts[-1])
+            date_status = True
+        except:
+            pass
+
+    # A date has not been found. Put this in the error log.
+    if date_status is False:
+        error_log.logErrorPaper("Cannot Create Clean Date (Consider using Zotero notes)", this_paper)
+        logging.warn("Cannot Create Clean Date (Consider using Zotero notes). Hash: " + str(this_paper['IDs']['hash']))
 
 
 # Clean author name
