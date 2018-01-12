@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 import csv
-import logging
+# import logging
 import config.config as config
 import os
 import shutil
@@ -43,75 +43,6 @@ def journals(papers):
 
 
 ############################################################
-# Build a list of words used in Abstracts
-############################################################
-# def abstracts(papers):
-def DEPRICATED(papers):
-    print "\n###Abstracts###"
-
-    words = []
-    data_from_count = 0
-    # Go through all papers
-    for this_paper in papers:
-        try:
-            # Get abstract text
-            abstracts = str(this_paper['clean']['abstract'])
-
-            # Remove punctuation and esacpe characters that will cause a problem
-            abstracts = abstracts.lower()
-            abstracts = abstracts.replace(",", " ")
-            abstracts = abstracts.replace(".", " ")
-            abstracts = abstracts.replace(":", " ")
-            abstracts = abstracts.replace(";", " ")
-            abstracts = abstracts.replace("'", "\'")
-            abstracts = abstracts.replace('"', '\"')
-
-            # Add abstract words into list of all words
-            words.extend(abstracts.split())
-            data_from_count += 1
-        except:
-            pass
-
-    # calculate the frequency of each word in abstracts
-    freq = dict((x, words.count(x)) for x in set(words))
-
-    # = Remove stop words from the list of all words =
-    # Read stop words from file
-    stop_lines = tuple(open(config.config_dir + "/stopwords", "r"))
-    stop_words = []
-    for line in stop_lines:
-        split = line.split()
-        if len(split) > 0 and split[0] != "|" and "|" not in split[0]:
-            stop_words.append(split[0])
-
-    # Remove words
-    for stp in stop_words:
-        freq.pop(stp, None)
-
-    # Remove anything with " in it (Causes javascript problems)
-    toRemove = []
-    for f in freq:
-        if '"' in f:
-            toRemove.append(f)
-
-    for f in toRemove:
-        freq.pop(f, None)
-
-    i = 0
-    print 'Top 5'
-    # print a list of sorted frequencies
-    with open(config.data_dir + '/abstracts.csv', 'wb') as csvfile:
-        abstracts_file = csv.writer(csvfile)
-        for w in sorted(freq, key=freq.get, reverse=True):
-            if i < 5:
-                print w, freq[w]
-                i = i+1
-            abstracts_file.writerow([w.encode('utf-8'), freq[w]])
-
-    return data_from_count
-
-
-############################################################
 # Build a list of words used in 'item'
 ############################################################
 def word_frequencies(papers, item):
@@ -122,7 +53,7 @@ def word_frequencies(papers, item):
     # Go through all papers
     for this_paper in papers:
         try:
-            # Get abstract text
+            # Get item text
             text = str(this_paper['clean']['item'])
 
             # Remove punctuation and esacpe characters that will cause a problem
@@ -134,13 +65,13 @@ def word_frequencies(papers, item):
             text = text.replace("'", "\'")
             text = text.replace('"', ' ')
 
-            # Add abstract words into list of all words
+            # Add item words into list of all words
             all_words.extend(text.split())
             data_from_count += 1
         except:
             pass
 
-    # calculate the frequency of each word in abstracts
+    # calculate the frequency of each word in item
     freq = dict((x, all_words.count(x)) for x in set(all_words))
 
     # = Remove stop words from the list of all words =
@@ -619,7 +550,6 @@ def coverage_report(papers):
                 raise Exception()
         except:
             cov_html += '<td class="missing_good_to_have">???</td>'
-
 
         # Scopus citations
         try:
