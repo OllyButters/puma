@@ -1336,7 +1336,7 @@ def build_abstract_word_cloud(papers, data_from_count):
 
     print "\n###HTML - Abstract Word Cloud###"
 
-    f = open(config.data_dir + "/abstract.csv", 'rt')
+    f = open(config.data_dir + "/abstract_raw.csv", 'rt')
 
     list = "["
     n = 0
