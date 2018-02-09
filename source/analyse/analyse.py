@@ -52,13 +52,9 @@ def word_frequencies(papers, item):
     data_from_count = 0
     # Go through all papers
     for this_paper in papers:
-
-        print(this_paper['IDs']['hash'])
         try:
             # Get item text
-            text = str(this_paper['clean']['item'])
-
-            print(text)
+            text = str(this_paper['clean'][item])
 
             # Remove punctuation and esacpe characters that will cause a problem
             text = text.lower()
@@ -69,8 +65,6 @@ def word_frequencies(papers, item):
             text = text.replace("'", "\'")
             text = text.replace('"', ' ')
 
-            print(text)
-
             # Add item words into list of all words
             all_words.extend(text.split())
             data_from_count += 1
@@ -80,8 +74,6 @@ def word_frequencies(papers, item):
     # calculate the frequency of each word in item
     freq = dict((x, all_words.count(x)) for x in set(all_words))
 
-    print(freq)
-
     # = Remove stop words from the list of all words =
     # Read stop words from file
     stop_lines = tuple(open(config.config_dir + "/stopwords", "r"))
@@ -90,8 +82,6 @@ def word_frequencies(papers, item):
         split = line.split()
         if len(split) > 0 and split[0] != "|" and "|" not in split[0]:
             stop_words.append(split[0])
-
-    print('here')
 
     # Remove stop words
     for stp in stop_words:
@@ -108,8 +98,6 @@ def word_frequencies(papers, item):
                 print w, freq[w]
                 i = i+1
             output_file.writerow([w.encode('utf-8'), freq[w]])
-
-    exit(1)
 
     return data_from_count
 
