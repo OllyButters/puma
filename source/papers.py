@@ -33,8 +33,8 @@ import get.collate
 import networks.author_network as author_network
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
-__date__ = 15/6/17
-__version__ = '0.3.0'
+__date__ = 9/2/18
+__version__ = '0.4.0'
 
 # Lets figure out some paths that everything is relative to
 # global root_dir

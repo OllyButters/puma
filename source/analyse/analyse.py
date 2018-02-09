@@ -5,6 +5,7 @@ import csv
 import config.config as config
 import os
 import shutil
+from nltk.stem import WordNetLemmatizer
 
 ############################################################
 # Have all the data now, so do something with it
@@ -48,12 +49,14 @@ def journals(papers):
 def word_frequencies(papers, item):
     print("\n###" + item + "###")
 
+    lemmatizer = WordNetLemmatizer()
+
     all_words = []
     data_from_count = 0
     # Go through all papers
     for this_paper in papers:
         try:
-            # Get item text
+            # Get item text - this will be a long string of words
             text = str(this_paper['clean'][item])
 
             # Remove punctuation and esacpe characters that will cause a problem
@@ -64,6 +67,8 @@ def word_frequencies(papers, item):
             text = text.replace(";", " ")
             text = text.replace("'", "\'")
             text = text.replace('"', ' ')
+            text = text.replace('[', ' ')
+            text = text.replace(']', ' ')
 
             # Add item words into list of all words
             all_words.extend(text.split())
@@ -71,8 +76,16 @@ def word_frequencies(papers, item):
         except:
             pass
 
+    # Parse all_words through a lemmatizer. This is like finding the stem, but
+    # should always return real words.
+    lemmatized_all_words = []
+
+    for this_word in all_words:
+        lemmatized_all_words.append(lemmatizer.lemmatize(this_word))
+
     # calculate the frequency of each word in item
-    freq = dict((x, all_words.count(x)) for x in set(all_words))
+    raw_freq = dict((x, all_words.count(x)) for x in set(all_words))
+    lemmatized_freq = dict((x, lemmatized_all_words.count(x)) for x in set(lemmatized_all_words))
 
     # = Remove stop words from the list of all words =
     # Read stop words from file
@@ -85,19 +98,29 @@ def word_frequencies(papers, item):
 
     # Remove stop words
     for stp in stop_words:
-        freq.pop(stp, None)
+        raw_freq.pop(stp, None)
+        lemmatized_freq.pop(stp, None)
 
     i = 0
     print 'Top 5'
 
-    # Output the data to file and print the top 5 to screen.
-    with open(config.data_dir + '/' + item + '.csv', 'wb') as csvfile:
+    # Output the RAW data to file and print the top 5 to screen.
+    with open(config.data_dir + '/' + item + '_raw.csv', 'wb') as csvfile:
         output_file = csv.writer(csvfile)
-        for w in sorted(freq, key=freq.get, reverse=True):
+        for w in sorted(raw_freq, key=raw_freq.get, reverse=True):
             if i < 5:
-                print w, freq[w]
+                print w, raw_freq[w]
                 i = i+1
-            output_file.writerow([w.encode('utf-8'), freq[w]])
+            output_file.writerow([w.encode('utf-8'), raw_freq[w]])
+
+    # Output the LEMMATIZED data to file and print the top 5 to screen.
+    with open(config.data_dir + '/' + item + '_lemmatized.csv', 'wb') as csvfile:
+        output_file = csv.writer(csvfile)
+        for w in sorted(lemmatized_freq, key=lemmatized_freq.get, reverse=True):
+            if i < 5:
+                print w, lemmatized_freq[w]
+                i = i+1
+            output_file.writerow([w.encode('utf-8'), lemmatized_freq[w]])
 
     return data_from_count
 
