@@ -49,6 +49,7 @@ def journals(papers):
 def word_frequencies(papers, item):
     print("\n###" + item + "###")
 
+    # initialize lemmatizer
     lemmatizer = WordNetLemmatizer()
 
     all_words = []
@@ -61,6 +62,10 @@ def word_frequencies(papers, item):
 
             # Remove punctuation and esacpe characters that will cause a problem
             text = text.lower()
+            text = text.replace("u'", "")
+            text = text.replace("'", "")
+            text = text.replace("{", "")
+            text = text.replace("}", "")
             text = text.replace(",", " ")
             text = text.replace(".", " ")
             text = text.replace(":", " ")
@@ -82,6 +87,12 @@ def word_frequencies(papers, item):
 
     for this_word in all_words:
         lemmatized_all_words.append(lemmatizer.lemmatize(this_word))
+
+    # Stick this in a log file to check the lemmatizing makes sense
+    with open(config.data_dir + '/' + item + '_lemmatizing_log.csv', 'wb') as csvfile:
+        output_file = csv.writer(csvfile)
+        for this_word in all_words:
+            output_file.writerow([this_word, lemmatizer.lemmatize(this_word)])
 
     # calculate the frequency of each word in item
     raw_freq = dict((x, all_words.count(x)) for x in set(all_words))
