@@ -14,7 +14,7 @@ def getDoi(doi):
     url = doi
     doi = re.sub(r'^http://dx\.doi\.org/', '', doi)
   else:
-    url = 'http://dx.doi.org/'+doi
+    url = 'https://doi.org/'+doi
   request = urllib2.Request(url, headers={"Accept": "application/vnd.citationstyles.csl+json"})
   try:
     response = urllib2.urlopen(request)

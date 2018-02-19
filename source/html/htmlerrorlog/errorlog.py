@@ -35,7 +35,7 @@ class ErrorLog:
         string += "</tr>"
         string += "<tr>"
         if this_paper['IDs']['DOI'] != "":
-            string += "<td>DOI</td><td><a href='http://doi.org/" + str(this_paper['IDs']['DOI']) + "'>" + str(this_paper['IDs']['DOI']) + "</a></td>"
+            string += "<td>DOI</td><td><a href='https://doi.org/" + str(this_paper['IDs']['DOI']) + "'>" + str(this_paper['IDs']['DOI']) + "</a></td>"
         else:
             string += "<td>DOI</td><td>No DOI</td>"
         string += "</tr>"
@@ -74,7 +74,7 @@ class ErrorLog:
         string += "</tr>"
         string += "<tr>"
         if this_paper['IDs']['DOI'] != "":
-            string += "<td>DOI</td><td><a href='http://doi.org/" + str(this_paper['IDs']['DOI']) + "'>" + str(this_paper['IDs']['DOI']) + "</a></td>"
+            string += "<td>DOI</td><td><a href='https://doi.org/" + str(this_paper['IDs']['DOI']) + "'>" + str(this_paper['IDs']['DOI']) + "</a></td>"
         else:
             string += "<td>DOI</td><td>No DOI</td>"
         string += "</tr>"

@@ -147,7 +147,7 @@ function search(){
         // DOI
         try{
             if( data[i].IDs.DOI ){
-                results += 'DOI: <a href="http://doi.org/' + data[i].IDs.DOI + '">' + data[i].IDs.DOI + '</a>&nbsp;';
+                results += 'DOI: <a href="https://doi.org/' + data[i].IDs.DOI + '">' + data[i].IDs.DOI + '</a>&nbsp;';
             }
         } catch (err){}
 
