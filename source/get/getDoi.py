@@ -9,10 +9,10 @@ import hashlib
 # return json data
 def getDoi(doi):
   print "Getting DOI: "+doi
-  check_doi = re.match(r'^http://dx\.doi\.org/', doi)
+  check_doi = re.match(r'^https?://(dx\.)?doi\.org/', doi)
   if check_doi is not None:
     url = doi
-    doi = re.sub(r'^http://dx\.doi\.org/', '', doi)
+    doi = re.sub(r'^https?://(dx\.)?doi\.org/', '', doi)
   else:
     url = 'https://doi.org/'+doi
   request = urllib2.Request(url, headers={"Accept": "application/vnd.citationstyles.csl+json"})
