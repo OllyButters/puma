@@ -92,9 +92,9 @@ def collate():
         if 'DOI' in paper and paper['DOI'] != "":
             # check if this is the full url, and if so, strip the parent
             # note that this is done again in getDoi.getDoi, but will not find the filename in the cache if we don't process this
-            check_doi = re.match(r'^http://dx\.doi\.org/', paper['DOI'])
+            check_doi = re.match(r'^https?://(dx\.)?doi\.org/', paper['DOI'])
             if check_doi is not None:
-                doi = re.sub(r'^http://dx\.doi\.org/', '', doi)
+                doi = re.sub(r'^https?://(dx\.)?doi\.org/', '', doi)
 
             # as doi's use '/' chars, we do an md5 of the doi as the filename
             print ((paper['DOI']).encode("ascii", "ignore"))

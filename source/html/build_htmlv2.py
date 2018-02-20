@@ -325,7 +325,7 @@ def draw_paper(this_paper):
     # DOI
     try:
         if this_paper['IDs']['DOI']:
-            html += 'DOI: <a href="http://doi.org/' + this_paper['IDs']['DOI'] + '">' + this_paper['IDs']['DOI'] + '</a>&nbsp;'
+            html += 'DOI: <a href="https://doi.org/' + this_paper['IDs']['DOI'] + '">' + this_paper['IDs']['DOI'] + '</a>&nbsp;'
     except:
         pass
 
