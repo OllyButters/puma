@@ -396,8 +396,8 @@ def coverage_report(papers):
                 a:visited {color: red;}
     '''
 
-    cov_html = '<table>'
-    cov_html += '''<tr>
+    cov_html = '<table class="tablesorter">'
+    cov_html += '''<thead><tr>
                     <th>Hash</th>
                     <th>Zotero</th>
                     <th>DOI</th>
@@ -410,10 +410,12 @@ def coverage_report(papers):
                     <th>First<br/>Author</th>
                     <th>First<br/>Author<br/>affil</th>
                     <th>Clean<br/>Inst</th>
+                    <th>Geocoded</th>
                     <th>Clean<br/>Date</th>
                     <th>Journal</th>
                     <th>Scopus<br/>Citations</th>
-                </tr>'''
+                </tr></thead>
+                <tbody>'''
 
     status = {}
     status['hash'] = 0
@@ -426,12 +428,13 @@ def coverage_report(papers):
     status['first_author'] = 0
     status['first_author_affiliation'] = 0
     status['clean_institution'] = 0
+    status['geocoded'] = 0
     status['clean_date'] = 0
     status['journal'] = 0
     status['scopus'] = 0
 
     for this_paper in papers:
-        cov_html += '<tr>'
+        cov_html += '<tr class="item">'
 
         # Filename hash - this has to be prsent!
         try:
@@ -561,7 +564,34 @@ def coverage_report(papers):
             else:
                 raise Exception()
         except:
-            cov_html += '<td class="missing_good_to_have">???</td>'
+            # Check to see if we have a DIRTY first author affiliation, if we do then we really should have a clean one too.
+            try:
+                first_author_affiliation = this_paper['clean']['full_author_list'][0]['affiliation'][0]['name']
+                if first_author_affiliation != '':
+                    cov_html += '<td class="missing_required">???</td>'
+                else:
+                    raise Exception()
+            except:
+                cov_html += '<td class="missing_good_to_have">???</td>'
+
+        # Geocoded
+        try:
+            latitude = this_paper['clean']['location']['latitude']
+            if latitude != '':
+                cov_html += '<td>OK</td>'
+                status['geocoded'] = status['geocoded'] + 1
+            else:
+                raise Exception()
+        except:
+            # Check to see if we have a clean institute, if we do then we should have a geocode
+            try:
+                clean_institution = this_paper['clean']['location']['clean_institute']
+                if clean_institution != '':
+                    cov_html += '<td class="missing_required">???</td>'
+                else:
+                    raise Exception()
+            except:
+                cov_html += '<td class="missing_required">???</!d>'
 
         # Clean date
         try:
@@ -572,7 +602,7 @@ def coverage_report(papers):
             else:
                 raise Exception()
         except:
-            cov_html += '<td class="missing_required">???</td>'
+            cov_html += '<td class="missing_required">???</!d>'
 
         # Journal
         try:
@@ -587,17 +617,43 @@ def coverage_report(papers):
 
         # Scopus citations
         try:
-            scopus = this_paper['clean']['citations']['scopus']['count']
-            if scopus != '':
-                cov_html += '<td>OK</td>'
-                status['scopus'] = status['scopus'] + 1
-            else:
-                raise Exception()
+            scopus_url = 'http://api.elsevier.com/content/search/scopus'
+
+            # Start a blank string to add to so can gracefully bail if problems
+            scopus_html = ''
+
+            # These should exist, they might be empty though
+            doi = this_paper['IDs']['DOI']
+            pmid = this_paper['IDs']['PMID']
+
+            try:
+                # Might not exist
+                scopus = this_paper['clean']['citations']['scopus']['count']
+
+                # If there is some scopus data then show it
+                if scopus != '':
+                    scopus_html += '<td>'
+                    scopus_html += scopus + '&nbsp;'
+                    status['scopus'] = status['scopus'] + 1
+            except:
+                scopus_html += '<td class="missing_good_to_have">'
+
+            # Put links in
+            if doi != '':
+                scopus_html += '<a href="' + scopus_url + '?apiKey=' + config.scopus_api_key + '&query=DOI(' + doi + ')&httpAccept=application%2Fjson" target="_blank">DOI</a>'
+            if pmid != '':
+                # Stick in a space if needed
+                if doi != '':
+                    scopus_html += '&nbsp;'
+                scopus_html += '<a href="' + scopus_url + '?apiKey=' + config.scopus_api_key + '&query=PMID(' + pmid + ')&httpAccept=application%2Fjson" target="_blank">PMID</a>'
+
+            scopus_html += '</td>'
+            cov_html += scopus_html
         except:
-            cov_html += '<td class="missing_good_to_have">???</td>'
+            cov_html += '<td class="missing_required">ERROR</td>'
 
         cov_html += '</tr>'
-    cov_html += '</table>'
+    cov_html += '</tbody></table>'
 
     # Build a status table
     status_table = '<table>'
@@ -613,6 +669,7 @@ def coverage_report(papers):
                     <th>First<br/>Author</th>
                     <th>First<br/>Author<br/>affil</th>
                     <th>Clean<br/>Inst</th>
+                    <th>Geocoded</th>
                     <th>Clean<br/>Date</th>
                     <th>Journal</th>
                     <th>Scopus<br/>Citations</th>
@@ -633,6 +690,7 @@ def coverage_report(papers):
     status_table += '<td>' + str(status['first_author']) + '</td>'
     status_table += '<td>' + str(status['first_author_affiliation']) + '</td>'
     status_table += '<td>' + str(status['clean_institution']) + '</td>'
+    status_table += '<td>' + str(status['geocoded']) + '</td>'
     status_table += '<td>' + str(status['clean_date']) + '</td>'
     status_table += '<td>' + str(status['journal']) + '</td>'
     status_table += '<td>' + str(status['scopus']) + '</td>'
@@ -651,6 +709,7 @@ def coverage_report(papers):
     status_table += '<td>' + str(int(round(100*status['first_author']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['first_author_affiliation']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['clean_institution']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['geocoded']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['clean_date']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['journal']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['scopus']/number_of_papers))) + '</td>'
@@ -659,9 +718,20 @@ def coverage_report(papers):
     # Title
     title = '<h1>' + config.project_details['short_name'] + '</h1>'
 
-    output_text = '<html><head><style>' + cov_css + '</style></head><body>' + title + status_table + '<br/><br/>' + cov_html + '</body></html>'
+    # scripts = '<script src="http://code.jquery.com/jquery-latest.min.js"></script>\n<script src="jquery.tablesort.js"></script>'
+    # scripts_2 = "\n<script>$(function() {$('status').tablesort();});</script>"
+
+    # scripts = '<script type="text/javascript" src="/path/to/jquery-latest.js"></script>'
+    scripts = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>'
+    scripts += '<script type="text/javascript" src="jquery.tablesorter.js"></script>'
+    scripts += "<script>$(function(){$('table').tablesorter({widgets        : ['zebra', 'columns'],usNumberFormat : false,sortReset      : true,sortRestart    : true});});</script>"
+
+    output_text = '<html><head><style>' + cov_css + '</style>' + scripts + '</head><body>' + title + status_table + '\n<br/><br/>' + cov_html + '</body></html>'
     coverage_file = open(config.html_dir + '/coverage_report.html', 'w')
     print >> coverage_file, output_text
+
+    # Copy the jquery.tablesorter.js file across
+    shutil.copy(config.template_dir + '/jquery.tablesorter.js', config.html_dir + '/jquery.tablesorter.js')
 
     # put a copy of all the processed files in the web tree
     if os.path.exists(config.html_dir + '/status/cleaned'):
