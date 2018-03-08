@@ -404,15 +404,15 @@ def coverage_report(papers):
                     <th>PMID &uarr;&darr;</th>
                     <th>PMID DOI<br/>Lookup</th>
                     <th>PMID title<br/>Lookup</th>
-                    <th>Title &uarr;&darr;</th>
-                    <th>Keywords &uarr;&darr;</th>
-                    <th>Abstract &uarr;&darr;</th>
+                    <th>Title<br/>&uarr;&darr;</th>
+                    <th>Keywords<br/>&uarr;&darr;</th>
+                    <th>Abstract<br/>&uarr;&darr;</th>
                     <th>First<br/>Author &uarr;&darr;</th>
                     <th>First<br/>Author<br/>affil &uarr;&darr;</th>
-                    <th>Clean<br/>Inst &uarr;&darr;</th>
-                    <th>Geocoded &uarr;&darr;</th>
+                    <th>Clean<br/>Inst.<br/>&uarr;&darr;</th>
+                    <th>Geocoded<br/>&uarr;&darr;</th>
                     <th>Clean<br/>Date &uarr;&darr;</th>
-                    <th>Journal &uarr;&darr;</th>
+                    <th>Journal<br/>&uarr;&darr;</th>
                     <th>Scopus<br/>Citations &uarr;&darr;</th>
                 </tr></thead>
                 <tbody>'''
