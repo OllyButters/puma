@@ -390,7 +390,7 @@ def coverage_report(papers):
     cov_css = '''
                 .missing_required {background-color: red;}
                 .missing_good_to_have {background-color: orange;}
-                tr:nth-child(even) {background-color: #f2f2f2}
+                tr:nth-child(even) {background-color: lightgray}
                 th {background-color: #4CAF50; color: white;}
                 td, th {padding: 0.2em;}
                 a:visited {color: red;}
@@ -398,22 +398,22 @@ def coverage_report(papers):
 
     cov_html = '<table class="tablesorter">'
     cov_html += '''<thead><tr>
-                    <th>Hash</th>
-                    <th>Zotero</th>
-                    <th>DOI</th>
-                    <th>PMID</th>
+                    <th>Hash &uarr;&darr;</th>
+                    <th>Zotero &uarr;&darr;</th>
+                    <th>DOI &uarr;&darr;</th>
+                    <th>PMID &uarr;&darr;</th>
                     <th>PMID DOI<br/>Lookup</th>
                     <th>PMID title<br/>Lookup</th>
-                    <th>Title</th>
-                    <th>Keywords</th>
-                    <th>Abstract</th>
-                    <th>First<br/>Author</th>
-                    <th>First<br/>Author<br/>affil</th>
-                    <th>Clean<br/>Inst</th>
-                    <th>Geocoded</th>
-                    <th>Clean<br/>Date</th>
-                    <th>Journal</th>
-                    <th>Scopus<br/>Citations</th>
+                    <th>Title &uarr;&darr;</th>
+                    <th>Keywords &uarr;&darr;</th>
+                    <th>Abstract &uarr;&darr;</th>
+                    <th>First<br/>Author &uarr;&darr;</th>
+                    <th>First<br/>Author<br/>affil &uarr;&darr;</th>
+                    <th>Clean<br/>Inst &uarr;&darr;</th>
+                    <th>Geocoded &uarr;&darr;</th>
+                    <th>Clean<br/>Date &uarr;&darr;</th>
+                    <th>Journal &uarr;&darr;</th>
+                    <th>Scopus<br/>Citations &uarr;&darr;</th>
                 </tr></thead>
                 <tbody>'''
 
@@ -434,7 +434,7 @@ def coverage_report(papers):
     status['scopus'] = 0
 
     for this_paper in papers:
-        cov_html += '<tr class="item">'
+        cov_html += '\n<tr class="item">'
 
         # Filename hash - this has to be prsent!
         try:
@@ -591,13 +591,13 @@ def coverage_report(papers):
                 else:
                     raise Exception()
             except:
-                cov_html += '<td class="missing_required">???</!d>'
+                cov_html += '<td class="missing_good_to_have">???</!d>'
 
         # Clean date
         try:
             clean_date = this_paper['clean']['clean_date']['year']
             if clean_date != '':
-                cov_html += '<td>OK</td>'
+                cov_html += '<td>' + this_paper['clean']['clean_date']['year'] + '</td>'
                 status['clean_date'] = status['clean_date'] + 1
             else:
                 raise Exception()
@@ -628,7 +628,7 @@ def coverage_report(papers):
 
             try:
                 # Might not exist
-                scopus = this_paper['clean']['citations']['scopus']['count']
+                scopus = str(this_paper['clean']['citations']['scopus']['count'])
 
                 # If there is some scopus data then show it
                 if scopus != '':
@@ -718,10 +718,6 @@ def coverage_report(papers):
     # Title
     title = '<h1>' + config.project_details['short_name'] + '</h1>'
 
-    # scripts = '<script src="http://code.jquery.com/jquery-latest.min.js"></script>\n<script src="jquery.tablesort.js"></script>'
-    # scripts_2 = "\n<script>$(function() {$('status').tablesort();});</script>"
-
-    # scripts = '<script type="text/javascript" src="/path/to/jquery-latest.js"></script>'
     scripts = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>'
     scripts += '<script type="text/javascript" src="jquery.tablesorter.js"></script>'
     scripts += "<script>$(function(){$('table').tablesorter({widgets        : ['zebra', 'columns'],usNumberFormat : false,sortReset      : true,sortRestart    : true});});</script>"
