@@ -19,7 +19,6 @@ import sys
 # from pprint import pprint
 
 # Internal packages
-# import get.get
 import config.config as config
 import setup.setup as setup
 import clean.clean as clean

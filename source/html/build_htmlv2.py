@@ -302,7 +302,6 @@ def draw_paper(this_paper):
     html += this_paper['clean']['journal']['journal_name']
 
     try:
-        # html += ', Volume ' + this_paper['volume']
         html += ', Volume ' + this_paper['clean']['journal']['volume']
     except:
         pass

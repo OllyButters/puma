@@ -1,7 +1,6 @@
-#! /usr/bin/env python
+#! /usr/bin/env python2
 
 import csv
-# import logging
 import config.config as config
 import os
 import shutil
@@ -270,7 +269,7 @@ def first_authors(papers):
             if i < 5:
                 print w, freq[w]
                 i = i+1
-                # Need to utf-8 encode
+            # Need to utf-8 encode
             authors_file.writerow([w.encode('utf-8'), freq[w]])
 
 
@@ -302,7 +301,7 @@ def inst(papers):
             if i < 5:
                 print w, freq[w]
                 i = i+1
-        # Need to utf-8 encode
+            # Need to utf-8 encode
             authors_file.writerow([w.encode('utf-8'), freq[w]])
 
 
@@ -381,7 +380,7 @@ def output_csv(papers):
 
 
 ################################################################################
-# Build an HTML report of the status of the importat fields
+# Build an HTML report of the status of the important fields. Useful for cleaning
 ################################################################################
 def coverage_report(papers):
 
