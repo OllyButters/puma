@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python2
 
 import os.path
 import shutil
@@ -87,7 +87,7 @@ def build_file_tree(root_dir):
     if not os.path.exists(config.html_dir):
         os.mkdir(config.html_dir)
 
-    html_directories = {"/mesh", "/css", "/papers", "/all_keywords", "/major_keywords", "/map", "/country", "/city", "/metrics", "/wordcloud", "/abstractwordcloud", "/authornetwork", "/errorlog", "/help", "/search", "status"}
+    html_directories = {"/mesh", "/css", "/papers", "/all_keywords", "/major_keywords", "/map", "/country", "/city", "/metrics", "/wordcloud", "/abstractwordcloud", "/authornetwork", "/errorlog", "/help", "/search", "/status"}
 
     for direct in html_directories:
         if not os.path.exists(config.html_dir + direct):
