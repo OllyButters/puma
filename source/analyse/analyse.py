@@ -74,6 +74,22 @@ def word_frequencies(papers, item):
             text = text.replace('[', ' ')
             text = text.replace(']', ' ')
 
+            # The MeSH terms have things like major, and minor in them.
+            if item == 'keywords':
+                text = text.replace('mesh', '')
+                text = text.replace('major', '')
+                text = text.replace('minor', '')
+                text = text.replace('term', '')
+
+            # Get rid of the names of the studies. This should be in a config file REALLY.
+            text = text.replace('alspac', '')
+            text = text.replace('avon longitudinal study of pregnancy and childbirth', '')
+            text = text.replace('avon longitudinal study of pregnancy and childhood', '')
+            text = text.replace('avon longitudinal study of parents and children', '')
+            text = text.replace('1958 birth cohort', '')
+            text = text.replace('ncds', '')
+            text = text.replace('national child development survey', '')
+
             # Add item words into list of all words
             all_words.extend(text.split())
             data_from_count += 1
