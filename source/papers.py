@@ -122,9 +122,9 @@ if config.scopus_run_citation:
     add.citations.citations(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update, error_log)
 
 # Write papers to summary file
-file_name = root_dir + '/data/summary_added_to'
-fo = open(file_name, 'wb')
+file_name = root_dir + '/data/' + config.project_details['short_name'] + '/summary_added_to'
 fo.write(json.dumps(papers, indent=4))
+fo = open(file_name, 'wb')
 fo.close()
 
 # Write a copy of each paper to a separate file
