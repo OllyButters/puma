@@ -6,7 +6,6 @@ import os.path
 import csv
 import htmlentities
 import time
-# import datetime
 import math
 import codecs
 import os
@@ -14,7 +13,6 @@ import logging
 
 import config.config as config
 
-# Version 2 of the html pages. The new site that matches bristol's ALSPAC pages.
 # The colour scheme is automatic. The colours from the config are automatically put into the pages.
 # This .py file also handles the generation of some CSS files.
 
@@ -31,8 +29,8 @@ def build_common_body(breadcrumb, nav_path, body):
 
     html = "<body " + body + ">"
 
-    html += "<div class='uob-header-container'>"
-    html += "<div class='uob-header width-master' role='banner'>"
+    html += "<div class='header-container'>"
+    html += "<div class='header width-master' role='banner'>"
 
     if os.path.isfile(config.config_dir + '/' + config.project_details['header_institution_logo_filename']):
         shutil.copy(config.config_dir + '/' + config.project_details['header_institution_logo_filename'], config.html_dir + '/' + config.project_details['header_institution_logo_filename'])
@@ -44,8 +42,8 @@ def build_common_body(breadcrumb, nav_path, body):
     html += "</div>"
     html += "</div>"
 
-    html += '<div id="uobcms-wrapper" class="width-master">'
-    html += '<div id="uobcms-col1" role="navigation">'
+    html += '<div id="wrapper" class="width-master">'
+    html += '<div id="col1" role="navigation">'
     html += '<!-- navigation object : navigation -->'
 
     html += '<ul class="navgroup">'
@@ -94,7 +92,7 @@ def build_common_body(breadcrumb, nav_path, body):
 
     html += breadcrumb
 
-    html += '<div id="uobcms-content" role="main">'
+    html += '<div id="content" role="main">'
 
     return html
 
@@ -1685,7 +1683,7 @@ def build_css_colour_scheme():
 
     html_file = open(config.html_dir + '/css/colour_scheme.css', 'w')
 
-    temp = ".uob-header-container {background: #" + config.project_details['colour_hex_primary'] + ";}"
+    temp = ".header-container {background: #" + config.project_details['colour_hex_primary'] + ";}"
 
     temp += "/* h1 */"
     temp += "#pagetitle {"
@@ -1700,12 +1698,8 @@ def build_css_colour_scheme():
     temp += "border-left: 1px solid rgba(255, 255, 255, 0.2);"
     temp += "}"
 
-    # temp += "#uoblogo span {"
-    # temp += "background-image: url(" + config.project_details['header_image_url'] + ");"
-    # temp += "}"
-
-    temp += ".uob-header-container:before,"
-    temp += ".uob-header-container:after {"
+    temp += ".header-container:before,"
+    temp += ".header-container:after {"
     temp += "display: block;"
     temp += "visibility: visible;"
     temp += "}"
@@ -1719,30 +1713,30 @@ def build_css_colour_scheme():
     temp += "}"
 
     temp += "/* keywords list */"
-    temp += "div#uobcms-content ul a {"
+    temp += "div#content ul a {"
     temp += "color: #" + config.project_details['colour_hex_primary'] + ";"
     temp += "}"
 
     temp += "/* Metrics Page */"
 
-    temp += "div#uobcms-content div.metric {"
+    temp += "div#content div.metric {"
     temp += "background:#efede9;"
     temp += "color:#" + config.project_details['colour_hex_primary'] + ";"
     temp += "}"
 
-    temp += "div#uobcms-content div.metric:hover {"
+    temp += "div#content div.metric:hover {"
     temp += "background:#" + config.project_details['colour_hex_primary'] + ";"
     temp += "}"
 
-    temp += "div#uobcms-content div.metric:hover div.metric_name {"
+    temp += "div#content div.metric:hover div.metric_name {"
     temp += "color:#f2f2f2;"
     temp += "}"
 
-    temp += "div#uobcms-content div.metric:hover div.metric_value {"
+    temp += "div#content div.metric:hover div.metric_value {"
     temp += "color:#f2f2f2;"
     temp += "}"
 
-    temp += "div#uobcms-content div.metric div.metric_description {"
+    temp += "div#content div.metric div.metric_description {"
     temp += "color:#efede9;"
     temp += "}"
 

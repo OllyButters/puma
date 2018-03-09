@@ -189,7 +189,7 @@ max-width:1150px;
 min-width:967px;
 }
 
-#uobcms-wrapper,.uob-mega-footer,.feedback-container, .uob-header  {
+#wrapper,.header  {
 padding:0 2.08%;
 }
 
@@ -198,7 +198,7 @@ padding:0 2.08%;
 /* #CLEARFIX */
 .clearfix:after,
 .layout-container:after,
-#uobcms-wrapper:after {
+#wrapper:after {
 visibility:hidden;
 display:block;
 font-size:0;
@@ -221,7 +221,7 @@ zoom:1;
 
 
 /* #HEADER */
-.uob-header-container {
+.header-container {
 background:#FFF;
 color:#333;
 min-height:95px;
@@ -232,7 +232,7 @@ position:relative;
 z-index: 505;
 }
 
-.uob-header {
+.header {
 position:relative;
 overflow: auto;
 min-height:107px;
@@ -312,21 +312,21 @@ outline: none;
 color:#666;
 }
 
-/* #UOBCMS WRAPPER AND CONTENT CONTAINERS */
-#uobcms-wrapper {
+/* #WRAPPER AND CONTENT CONTAINERS */
+#wrapper {
 clear:both;
 min-height:1%;
 overflow:visible;
 position: relative;
 }
 
-#uobcms-content,#uobcms-content-nonav {
+#content,#content-nonav {
 /*height:1%;*/
 padding:0;
 min-height:20em;
 }
 
-#uobcms-content {
+#content {
 margin-left:20.823%;
 }
 
@@ -365,7 +365,7 @@ outline: none;
 
 
 /* #LEFT COL HOLDING SIDENAV */
-#uobcms-col1 {
+#col1 {
 float:left;
 font-size:.875em;
 padding:6.2em 0 0 0; /* moving it down */
