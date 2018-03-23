@@ -123,8 +123,8 @@ if config.scopus_run_citation:
 
 # Write papers to summary file
 file_name = root_dir + '/data/' + config.project_details['short_name'] + '/summary_added_to'
-fo.write(json.dumps(papers, indent=4))
 fo = open(file_name, 'wb')
+fo.write(json.dumps(papers, indent=4))
 fo.close()
 
 # Write a copy of each paper to a separate file
