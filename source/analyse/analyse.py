@@ -52,9 +52,21 @@ def word_frequencies(papers, item):
     lemmatizer = WordNetLemmatizer()
 
     all_words = []
+    all_words_by_year = []
     data_from_count = 0
     # Go through all papers
     for this_paper in papers:
+        try:
+            # Make sure there is a year dict for this year
+            this_year = this_paper['clean']['year']
+        except:
+            this_year = 0
+
+        try:
+            all_words_by_year[this_year]
+        except:
+            all_words_by_year[this_year] = []
+
         try:
             # Get item text - this will be a long string of words
             text = str(this_paper['clean'][item])
@@ -91,6 +103,7 @@ def word_frequencies(papers, item):
             text = text.replace('national child development survey', '')
 
             # Add item words into list of all words
+            all_words_by_year[this_year].extend(text.split())
             all_words.extend(text.split())
             data_from_count += 1
         except:
@@ -99,9 +112,14 @@ def word_frequencies(papers, item):
     # Parse all_words through a lemmatizer. This is like finding the stem, but
     # should always return real words.
     lemmatized_all_words = []
+    lemmatized_all_words_by_year = []
 
     for this_word in all_words:
         lemmatized_all_words.append(lemmatizer.lemmatize(this_word))
+
+    for this_year in all_words_by_year:
+        for this_word in all_words_by_year[this_year]:
+            lemmatized_all_words_by_year[this_year].append(lemmatizer.lemmatize(this_word))
 
     # Stick this in a log file to check the lemmatizing makes sense
     with open(config.data_dir + '/' + item + '_lemmatizing_log.csv', 'wb') as csvfile:
@@ -112,6 +130,10 @@ def word_frequencies(papers, item):
     # calculate the frequency of each word in item
     raw_freq = dict((x, all_words.count(x)) for x in set(all_words))
     lemmatized_freq = dict((x, lemmatized_all_words.count(x)) for x in set(lemmatized_all_words))
+
+    lemmatized_freq_by_year = []
+    for this_year in all_words_by_year:
+        lemmatized_freq_by_year[this_year] = dict((x, lemmatized_all_words_by_year[this_year].count(x)) for x in set(lemmatized_all_words_by_year[this_year]))
 
     # = Remove stop words from the list of all words =
     # Read stop words from file
@@ -147,6 +169,54 @@ def word_frequencies(papers, item):
                 print w, lemmatized_freq[w]
                 i = i+1
             output_file.writerow([w.encode('utf-8'), lemmatized_freq[w]])
+
+    # Output the LEMMATIZED data by year.
+    # How do I actually want to output this? year as cols, words as rows? Will need to zero
+    # all the cells first for when the word was not used in that year at all. Might need to run
+    # through all the words in order first and build a zero dict.
+
+    import numpy as np
+    import pandas as pd
+
+    # Years as columns
+    # Words as rows
+
+    # Get the list of years. This may have gaps
+    years = all_words_by_year.keys()
+
+    # years = ['62', '59', '58', '63', '67', '64']
+    # words = ['study', 'chair', 'bobby', 'davey', 'house', 'thiss']
+
+    # Make a list of years based on min and max years in the years list. It could be
+    # that some years have no data. SS
+    all_years = list(range(int(min(years)), int(max(years))+1))
+
+    # Force the years to be strings, otherwise it is hard to index the cells if they are ints
+    all_years = list(map(str, all_years))
+
+    # Make a zero filled array
+    len_years = int(len(all_years))
+    len_words = int(len(all_words))
+    A = np.zeros(len_years * len_words, dtype=int).reshape(len_words, len_years)
+
+    # Make the DataFrame of the zeroes
+    df = pd.DataFrame(A, index=sorted(all_words), columns=sorted(all_years))
+
+    # Update a value in the DataFrame
+    # df.at['study', '58'] = 123
+    # df.at['house', '63'] = 123
+
+    # for this_year in all_words_by_year:
+    #     for this_word in all_words_by_year[this_year]:
+    #         df.at[this_word,this_year] = freq
+
+    # Update the DataFrame with the actual lemmatized data
+    for this_year in lemmatized_freq_by_year:
+        for this_word in lemmatized_freq_by_year[this_year]:
+            df.at[this_word, this_year] = lemmatized_freq_by_year[this_year][this_word]
+
+    # Output to a csv file
+    df.to_csv('df.csv', index=True, header=True, sep=' ')
 
     return data_from_count
 
