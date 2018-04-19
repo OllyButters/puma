@@ -143,15 +143,17 @@ def word_frequencies(papers, item):
         print(this_year)
         print(type(this_year))
         print(type(lemmatized_all_words_by_year))
-        print(lemmatized_all_words_by_year)
-        lemmatized_all_words_by_year[this_year] = {}
-        print(lemmatized_all_words_by_year)
+        print(lemmatized_all_words_by_year[this_year])
+        # lemmatized_all_words_by_year[this_year] = {}
+        # print(lemmatized_all_words_by_year)
         bob = set(lemmatized_all_words_by_year[this_year])
         temp = dict((x, lemmatized_all_words_by_year[this_year].count(x)) for x in set(lemmatized_all_words_by_year[this_year]))
         # test = lemmatized_all_words_by_year[this_year]
         lemmatized_freq_by_year[this_year] = dict((x, lemmatized_all_words_by_year[this_year].count(x)) for x in set(lemmatized_all_words_by_year[this_year]))
         print('freqbyyear')
         print(lemmatized_freq_by_year[this_year])
+
+    exit(1)
 
     # = Remove stop words from the list of all words =
     # Read stop words from file
