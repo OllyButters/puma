@@ -62,6 +62,7 @@ def word_frequencies(papers, item):
         except:
             this_year = '0'
 
+        print(this_paper['clean'])
         print('this year = ' + str(this_year))
 
         try:
