@@ -132,7 +132,7 @@ def word_frequencies(papers, item):
     raw_freq = dict((x, all_words.count(x)) for x in set(all_words))
     lemmatized_freq = dict((x, lemmatized_all_words.count(x)) for x in set(lemmatized_all_words))
 
-    lemmatized_freq_by_year = []
+    lemmatized_freq_by_year = {}
     for this_year in all_words_by_year:
         lemmatized_freq_by_year[this_year] = dict((x, lemmatized_all_words_by_year[this_year].count(x)) for x in set(lemmatized_all_words_by_year[this_year]))
 
