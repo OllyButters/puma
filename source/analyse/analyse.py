@@ -51,8 +51,8 @@ def word_frequencies(papers, item):
     # initialize lemmatizer
     lemmatizer = WordNetLemmatizer()
 
-    all_words = []
-    all_words_by_year = {}
+    all_words = []    # A list
+    all_words_by_year = {}  # A dictionary of lists
     data_from_count = 0
     # Go through all papers
     for this_paper in papers:
@@ -142,7 +142,7 @@ def word_frequencies(papers, item):
 
         # Do the lemmatization
         for this_word in all_words_by_year[this_year]:
-            lemmatized_all_words_by_year[this_year].extend(lemmatizer.lemmatize(this_word))
+            lemmatized_all_words_by_year[this_year].append(lemmatizer.lemmatize(this_word))
 
     # Stick this in a log file to check the lemmatizing makes sense
     with open(config.data_dir + '/' + item + '_lemmatizing_log.csv', 'wb') as csvfile:
