@@ -58,7 +58,7 @@ def word_frequencies(papers, item):
     for this_paper in papers:
         try:
             # Make sure there is a year dict for this year
-            this_year = this_paper['clean']['year']
+            this_year = this_paper['clean']['clean_date']['year']
         except:
             this_year = '0'
 
