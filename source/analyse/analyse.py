@@ -234,12 +234,14 @@ def word_frequencies(papers, item):
     print(all_years)
 
     # Make a zero filled array
-    len_years = int(len(all_years))
-    len_words = int(len(all_words))
+    len_years = int(len(set(all_years)))
+    len_words = int(len(set(all_words)))
+    print('years= ' + str(len_years))
+    print('words= ' + str(len_words))
     A = np.zeros(len_years * len_words, dtype=int).reshape(len_words, len_years)
 
     # Make the DataFrame of the zeroes
-    df = pd.DataFrame(A, index=sorted(all_words), columns=sorted(all_years))
+    df = pd.DataFrame(A, index=sorted(set(all_words)), columns=sorted(set(all_years)))
 
     # Update a value in the DataFrame
     # df.at['study', '58'] = 123
