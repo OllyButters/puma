@@ -62,10 +62,11 @@ def word_frequencies(papers, item):
         except:
             this_year = '0'
 
+        print('this year = ' + str(this_year))
+
         try:
             all_words_by_year[this_year]
         except:
-            print(this_year)
             all_words_by_year[this_year] = {}
 
         try:
@@ -109,6 +110,10 @@ def word_frequencies(papers, item):
             data_from_count += 1
         except:
             pass
+
+    print('all words (by year)')
+    print(len(all_words))
+    print(len(all_words_by_year))
 
     # Parse all_words through a lemmatizer. This is like finding the stem, but
     # should always return real words.
