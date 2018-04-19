@@ -113,7 +113,7 @@ def word_frequencies(papers, item):
     # Parse all_words through a lemmatizer. This is like finding the stem, but
     # should always return real words.
     lemmatized_all_words = []
-    lemmatized_all_words_by_year = []
+    lemmatized_all_words_by_year = {}
 
     for this_word in all_words:
         lemmatized_all_words.append(lemmatizer.lemmatize(this_word))
