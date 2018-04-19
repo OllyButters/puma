@@ -225,8 +225,13 @@ def word_frequencies(papers, item):
         for this_word in lemmatized_freq_by_year[this_year]:
             df.at[this_word, this_year] = lemmatized_freq_by_year[this_year][this_word]
 
+    print(len(lemmatized_freq_by_year))
+    print(lemmatized_freq_by_year)
+
     # Output to a csv file
     df.to_csv('df.csv', index=True, header=True, sep=' ')
+
+    exit(1)
 
     return data_from_count
 
