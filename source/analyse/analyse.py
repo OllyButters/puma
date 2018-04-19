@@ -52,7 +52,7 @@ def word_frequencies(papers, item):
     lemmatizer = WordNetLemmatizer()
 
     all_words = []
-    all_words_by_year = []
+    all_words_by_year = {}
     data_from_count = 0
     # Go through all papers
     for this_paper in papers:
