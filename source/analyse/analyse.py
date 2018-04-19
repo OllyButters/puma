@@ -134,15 +134,15 @@ def word_frequencies(papers, item):
         lemmatized_all_words.append(lemmatizer.lemmatize(this_word))
 
     for this_year in all_words_by_year:
-        # Make sure there is a dict for this year
+        # Make sure there is a LIST for this year
         try:
             lemmatized_all_words_by_year[this_year]
         except:
-            lemmatized_all_words_by_year = {}
+            lemmatized_all_words_by_year[this_year] = []
 
         # Do the lemmatization
         for this_word in all_words_by_year[this_year]:
-            lemmatized_all_words_by_year[this_year].append(lemmatizer.lemmatize(this_word))
+            lemmatized_all_words_by_year[this_year].extend(lemmatizer.lemmatize(this_word))
 
     # Stick this in a log file to check the lemmatizing makes sense
     with open(config.data_dir + '/' + item + '_lemmatizing_log.csv', 'wb') as csvfile:
