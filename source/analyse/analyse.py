@@ -150,6 +150,8 @@ def word_frequencies(papers, item):
         temp = dict((x, lemmatized_all_words_by_year[this_year].count(x)) for x in set(lemmatized_all_words_by_year[this_year]))
         # test = lemmatized_all_words_by_year[this_year]
         lemmatized_freq_by_year[this_year] = dict((x, lemmatized_all_words_by_year[this_year].count(x)) for x in set(lemmatized_all_words_by_year[this_year]))
+        print('freqbyyear')
+        print(lemmatized_freq_by_year[this_year])
 
     # = Remove stop words from the list of all words =
     # Read stop words from file
