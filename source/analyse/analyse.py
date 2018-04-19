@@ -204,6 +204,9 @@ def word_frequencies(papers, item):
     # Force the years to be strings, otherwise it is hard to index the cells if they are ints
     all_years = list(map(str, all_years))
 
+    print(all_words)
+    print(all_years)
+
     # Make a zero filled array
     len_years = int(len(all_years))
     len_words = int(len(all_words))
