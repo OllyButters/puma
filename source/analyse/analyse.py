@@ -65,6 +65,7 @@ def word_frequencies(papers, item):
         try:
             all_words_by_year[this_year]
         except:
+            print(this_year)
             all_words_by_year[this_year] = []
 
         try:
