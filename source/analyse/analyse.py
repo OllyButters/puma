@@ -65,6 +65,7 @@ def word_frequencies(papers, item):
         print(this_paper['clean'])
         print('this year = ' + str(this_year))
 
+        # Make sure there is a dict for this year
         try:
             all_words_by_year[this_year]
         except:
@@ -106,8 +107,11 @@ def word_frequencies(papers, item):
             text = text.replace('national child development survey', '')
 
             # Add item words into list of all words
-            all_words_by_year[this_year].extend(text.split())
-            all_words.extend(text.split())
+            temp = text.split()
+            all_words_by_year[this_year].extend(temp)
+            all_words.extend(temp)
+            # all_words_by_year[this_year].extend(text.split())
+            # all_words.extend(text.split())
             data_from_count += 1
         except:
             pass
@@ -115,6 +119,8 @@ def word_frequencies(papers, item):
     print('all words (by year)')
     print(len(all_words))
     print(len(all_words_by_year))
+
+    print(all_words_by_year['2005'])
 
     # Parse all_words through a lemmatizer. This is like finding the stem, but
     # should always return real words.
@@ -125,6 +131,13 @@ def word_frequencies(papers, item):
         lemmatized_all_words.append(lemmatizer.lemmatize(this_word))
 
     for this_year in all_words_by_year:
+        # Make sure there is a dict for this year
+        try:
+            lemmatized_all_words_by_year[this_year]
+        except:
+            lemmatized_all_words_by_year = {}
+
+        # Do the lemmatization
         for this_word in all_words_by_year[this_year]:
             lemmatized_all_words_by_year[this_year].append(lemmatizer.lemmatize(this_word))
 
