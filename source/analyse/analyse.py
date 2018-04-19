@@ -65,11 +65,11 @@ def word_frequencies(papers, item):
         # print(this_paper['clean'])
         print('this year = ' + str(this_year))
 
-        # Make sure there is a dict for this year
+        # Make sure there is a LIST for this year
         try:
             all_words_by_year[this_year]
         except:
-            all_words_by_year[this_year] = {}
+            all_words_by_year[this_year] = []
 
         try:
             # Get item text - this will be a long string of words
@@ -112,7 +112,7 @@ def word_frequencies(papers, item):
             temp = text.split()
             print(temp)
             all_words.extend(temp)
-            all_words_by_year[this_year].update(temp)
+            all_words_by_year[this_year].extend(temp)
             # all_words_by_year[this_year].extend(text.split())
             # all_words.extend(text.split())
             data_from_count += 1
