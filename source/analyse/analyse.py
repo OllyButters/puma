@@ -123,8 +123,6 @@ def word_frequencies(papers, item):
     print(len(all_words))
     print(len(all_words_by_year))
 
-    print(all_words_by_year['2005'])
-
     # Parse all_words through a lemmatizer. This is like finding the stem, but
     # should always return real words.
     lemmatized_all_words = []
@@ -218,8 +216,8 @@ def word_frequencies(papers, item):
     # Force the years to be strings, otherwise it is hard to index the cells if they are ints
     all_years = list(map(str, all_years))
 
-    print(all_words)
-    print(all_years)
+    # print(all_words)
+    # print(all_years)
 
     # Make a zero filled array
     len_years = int(len(set(all_years)))
@@ -244,13 +242,13 @@ def word_frequencies(papers, item):
         for this_word in lemmatized_freq_by_year[this_year]:
             df.at[this_word, this_year] = lemmatized_freq_by_year[this_year][this_word]
 
-    print(len(lemmatized_freq_by_year))
-    print(lemmatized_freq_by_year)
+    # print(len(lemmatized_freq_by_year))
+    # print(lemmatized_freq_by_year)
 
     # Output to a csv file
-    df.to_csv('df.csv', index=True, header=True, sep=' ')
+    df.to_csv(item + 'df.csv', index=True, header=True, sep=' ')
 
-    exit(1)
+    # exit(1)
 
     return data_from_count
 
