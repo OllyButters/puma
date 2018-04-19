@@ -60,13 +60,13 @@ def word_frequencies(papers, item):
             # Make sure there is a year dict for this year
             this_year = this_paper['clean']['year']
         except:
-            this_year = 0
+            this_year = '0'
 
         try:
             all_words_by_year[this_year]
         except:
             print(this_year)
-            all_words_by_year[this_year] = []
+            all_words_by_year[this_year] = {}
 
         try:
             # Get item text - this will be a long string of words
