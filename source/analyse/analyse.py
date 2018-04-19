@@ -111,8 +111,8 @@ def word_frequencies(papers, item):
             # Add item words into list of all words
             temp = text.split()
             print(temp)
-            all_words_by_year[this_year].extend(temp)
             all_words.extend(temp)
+            all_words_by_year[this_year].update(temp)
             # all_words_by_year[this_year].extend(text.split())
             # all_words.extend(text.split())
             data_from_count += 1
