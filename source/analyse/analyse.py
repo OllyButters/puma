@@ -169,7 +169,7 @@ def word_frequencies(papers, item):
         print('freqbyyear')
         print(lemmatized_freq_by_year[this_year])
 
-    exit(1)
+    # exit(1)
 
     # = Remove stop words from the list of all words =
     # Read stop words from file
