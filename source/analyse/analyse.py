@@ -46,7 +46,13 @@ def journals(papers):
 
 
 ############################################################
-# Build a list of words used in 'item'
+# Build a list of words used in 'item'. Does this in a
+# variety of ways:
+# - Raw list of word frequencies
+# - Lemmatized list of word frequencies
+# - Lemmatized list of word frequencies by year
+# - Lemmatized list of word frequencies by year weighted by
+#   the number of papers published that year
 ############################################################
 def word_frequencies(papers, item):
     print("\n###" + item + "###")
@@ -56,6 +62,7 @@ def word_frequencies(papers, item):
 
     all_words = []    # A list
     all_words_by_year = {}  # A dictionary of lists
+    number_of_papers_by_year = {}  # Needed to weight the values later
     data_from_count = 0
     # Go through all papers
     for this_paper in papers:
@@ -65,8 +72,14 @@ def word_frequencies(papers, item):
         except:
             this_year = '0'
 
-        # print(this_paper['clean'])
         print('this year = ' + str(this_year))
+
+        # Increment the number of papers this year, or if we don't have one yet
+        # initialize it to ONE!
+        try:
+            number_of_papers_by_year[this_year] = number_of_papers_by_year[this_year] + 1
+        except:
+            number_of_papers_by_year[this_year] = 1
 
         # Make sure there is a LIST for this year
         try:
@@ -77,8 +90,6 @@ def word_frequencies(papers, item):
         try:
             # Get item text - this will be a long string of words
             text = str(this_paper['clean'][item])
-
-            print(text)
 
             # Remove punctuation and esacpe characters that will cause a problem
             text = text.lower()
@@ -231,7 +242,30 @@ def word_frequencies(papers, item):
             df.at[this_word, this_year] = lemmatized_freq_by_year[this_year][this_word]
 
     # Output to a csv file
-    df.to_csv(config.data_dir + '/' + item + '_lemmatized_by_year.csv', index=True, header=True, sep=' ')
+    df.to_csv(config.data_dir + '/' + item + '_lemmatized_by_year.csv', index=True, header=True, sep=',')
+
+    # Do the same but weight it by the number of papers published this year
+    # Make the DataFrame of the zeroes
+    A = np.zeros(len_years * len_words, dtype=float).reshape(len_words, len_years)
+    df_weighted = pd.DataFrame(A, index=sorted(set(lemmatized_all_words)), columns=sorted(set(all_years)))
+
+    # Update the DataFrame with the actual lemmatized data
+    for this_year in lemmatized_freq_by_year:
+        for this_word in lemmatized_freq_by_year[this_year]:
+            # Put in zero check to stop divide by zero errors. If the number_of_papers_by_year is zero then
+            # the lemmatized_freq_by_year for this year should also be zero, so this checks if that is not the case.
+            if number_of_papers_by_year[this_year] == 0:
+                if lemmatized_freq_by_year[this_year][this_word] == 0:
+                    continue
+                else:
+                    print('ERROR! No papers published this year, but there are words for this year! ' + this_year)
+                    print(number_of_papers_by_year)
+                    print(lemmatized_freq_by_year[this_year])
+                    exit(1)
+            df_weighted.at[this_word, this_year] = (1.0*lemmatized_freq_by_year[this_year][this_word])/(1.0*number_of_papers_by_year[this_year])
+
+    # Output to a csv file
+    df_weighted.to_csv(config.data_dir + '/' + item + '_lemmatized_by_year_weighted.csv', index=True, header=True, sep=',')
 
     return data_from_count
 
