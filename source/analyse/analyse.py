@@ -217,7 +217,10 @@ def word_frequencies(papers, item):
 
     # Might be a zero year if a year was not set in the clean data.
     # Drop the zero for now, otherwise we have a list from 0-max(years).
-    years.remove('0')
+    try:
+        years.remove('0')
+    except:
+        pass
 
     # Make a list of years based on min and max years in the years list. It could be
     # that some years have no data.
