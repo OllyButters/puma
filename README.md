@@ -8,7 +8,7 @@ The technical documentation is at:
 
 
 Puma has been running for a couple of years and has been funded by a few different sources, of particular note are:
-- Nuffield Foundataion Summer Research placement.
+- Nuffield Foundation Summer Research placement.
 - D2K, University of Bristol.
 - CLOSER.
 - D2K, Newcastle University.
