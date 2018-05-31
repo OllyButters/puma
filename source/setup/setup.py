@@ -24,6 +24,10 @@ def tidy_existing_file_tree(root_dir):
         if os.path.exists(config.cache_dir + '/raw/pubmed'):
             shutil.rmtree(config.cache_dir + '/raw/pubmed')
 
+    if config.scopus_force_citation_update is True:
+        if os.path.exists(config.cache_dir + '/raw/scopus'):
+            shutil.rmtree(config.cache_dir + '/raw/scopus')
+
     # Merged files. Orphans get left here if deleted from e.g. zotero or
     # the raw cache folder.
     if config.merge_all is True and config.use_cached_merge_only is False:
@@ -51,6 +55,9 @@ def build_file_tree(root_dir):
 
     if not os.path.exists(config.cache_dir + '/raw/pubmed/xml'):
         os.mkdir(config.cache_dir + '/raw/pubmed/xml')
+
+    if not os.path.exists(config.cache_dir + '/raw/scopus'):
+        os.mkdir(config.cache_dir + '/raw/scopus')
 
     if not os.path.exists(config.cache_dir + '/raw/zotero'):
         os.mkdir(config.cache_dir + '/raw/zotero')

@@ -30,10 +30,11 @@ import html.build_htmlv2
 import bibliography.bibtex
 import get.collate
 import networks.author_network as author_network
+import get.setScopus
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
-__date__ = 8/3/18
-__version__ = '0.5.0'
+__date__ = 30/5/18
+__version__ = '0.6.0'
 
 # Lets figure out some paths that everything is relative to
 # global root_dir
@@ -76,6 +77,7 @@ logging.info('Started at: ' + str(start_time))
 # papers will be the giant LIST that has all the papers in it, each as a dictionary
 papers = []
 
+# Collate does not do anything with the papers object.
 get.collate.collate()
 # print temp
 # exit(1)
@@ -98,6 +100,10 @@ for this_merged_file in merged_files_list:
 # input_file = 'data-alspac-all-pubmed-merged-format'
 # with open('../cache/raw/'+input_file) as fo:
 #     papers = json.load(fo)
+
+
+# First attempt at getting all the scopus data
+get.getScopus.getScopus(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update, error_log)
 
 
 print str(len(papers)) + ' papers to process'
