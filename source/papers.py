@@ -28,9 +28,8 @@ import analyse.analyse as analyse
 import html.htmlerrorlog.errorlog
 import html.build_htmlv2
 import bibliography.bibtex
-import get.collate
+import get.simple_collate
 import networks.author_network as author_network
-import get.setScopus
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
 __date__ = 30/5/18
@@ -78,7 +77,7 @@ logging.info('Started at: ' + str(start_time))
 papers = []
 
 # Collate does not do anything with the papers object.
-get.collate.collate()
+#get.simple_collate.collate()
 # print temp
 # exit(1)
 
@@ -103,7 +102,7 @@ for this_merged_file in merged_files_list:
 
 
 # First attempt at getting all the scopus data
-get.getScopus.getScopus(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update, error_log)
+# get.getScopus.getScopus(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update, error_log)
 
 
 print str(len(papers)) + ' papers to process'
@@ -119,13 +118,14 @@ clean.clean_institution(papers)
 # for this_paper in papers:
 #    pprint(this_paper)
 
+# exit()
 
 ###########################################################
 # Add some extra data in - i.e. geocodes and citations
 add.geocode.geocode(papers, error_log, config.google_maps_api_key)
 
-if config.scopus_run_citation:
-    add.citations.citations(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update, error_log)
+#if config.scopus_run_citation:
+#    add.citations.citations(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update, error_log)
 
 # Write papers to summary file
 file_name = root_dir + '/data/' + config.project_details['short_name'] + '/summary_added_to'
@@ -135,10 +135,12 @@ fo.close()
 
 # Write a copy of each paper to a separate file
 for this_paper in papers:
-    this_file_name = config.cache_dir + '/processed/cleaned/' + this_paper['IDs']['hash']
+    this_file_name = config.cache_dir + '/processed/cleaned/' + this_paper['IDs']['zotero'] + '.cleaned'
     fo = open(this_file_name, 'wb')
     fo.write(json.dumps(this_paper, indent=4))
     fo.close()
+
+# exit()
 
 # Generate the coverage report
 analyse.coverage_report(papers)

@@ -12,6 +12,7 @@ import csv
 # input_file = '../../data/ncds/title_lemmatized_by_year_weighted.csv'
 # input_file = '../../data/alspac/keywords_lemmatized_by_year_weighted.csv'
 input_file = '../../data/ncds/keywords_lemmatized_by_year_weighted.csv'
+input_file = '../../data/ncds/temp.csv'
 # input_file = '../../data/alspac/abstract_lemmatized_by_year_weighted.csv'
 # input_file = '../../data/ncds/abstract_lemmatized_by_year_weighted.csv'
 
@@ -95,9 +96,10 @@ with open(input_file) as f:
 print('Number of words plotted: ' + str(ok_freqs))
 
 # Put a date range in. Good to ignore early and late years as low numbers of papers.
+plt.legend(fontsize='x-large')
 plt.xlim(int(min_year), int(max_year))
-plt.legend()
-plt.xticks(np.arange(int(min_year), int(max_year)+1, 5.0))
-plt.xlabel('Year')
-plt.ylabel('Weighted word freqency')
+plt.xticks(np.arange(int(min_year), int(max_year)+1, 5.0), fontsize='x-large')
+plt.xlabel('Year', fontsize='x-large')
+plt.yticks(fontsize='x-large')
+plt.ylabel('Weighted word freqency', fontsize='x-large')
 plt.show()

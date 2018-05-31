@@ -224,6 +224,7 @@ def word_frequencies(papers, item):
 
     # Make a list of years based on min and max years in the years list. It could be
     # that some years have no data.
+    print('Min/max years: ' + str(int(min(years))) + '/' + str(int(max(years))))
     all_years = list(range(int(min(years)), int(max(years))+1))
 
     # Force the years to be strings, otherwise it is hard to index the cells if they are ints
@@ -575,7 +576,7 @@ def coverage_report(papers):
 
         # Filename hash - this has to be prsent!
         try:
-            fn_hash = this_paper['IDs']['hash']
+            fn_hash = this_paper['IDs']['zotero'] + '.cleaned'
             status['hash'] = status['hash'] + 1
         except:
             fn_hash = '???'

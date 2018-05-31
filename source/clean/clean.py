@@ -11,13 +11,16 @@ import config.config as config
 def clean_notes(papers, error_log):
     for this_paper in papers:
         try:
-            notes = this_paper['merged']['extra']
-            this_paper['merged']['extra'] = {}
+            # notes = this_paper['merged']['extra']
+            # this_paper['merged']['extra'] = {}
+            notes = this_paper['raw']['zotero_data']['extra']
+            this_paper['raw']['zotero_data']['extra'] = {}
             # split the notes data into key/value pairs
             fields = notes.split("\n")
             for this_field in fields:
                 components = this_field.split(":")
-                this_paper['merged']['extra'][components[0].strip()] = components[1].strip()
+                # this_paper['merged']['extra'][components[0].strip()] = components[1].strip()
+                this_paper['clean']['zotero_data']['extra'][components[0].strip()] = components[1].strip()
         except:
             pass
 
@@ -37,7 +40,7 @@ def pre_clean(papers, error_log):
         this_paper['clean'] = {}
 
         # add clean title
-        this_paper['clean']['title'] = this_paper['merged']['title']
+        this_paper['clean']['title'] = this_paper['raw']['zotero_data']['title']
 
         # clean up the authors and add to 'clean'
         clean_authors(this_paper)
@@ -64,10 +67,13 @@ def pre_clean(papers, error_log):
 
 
 # get the abstract from MedlineCitation if present and add to clean['abstract']
+# pmid_data   - usually present
+# doi_data    - ??
+# scopus_data - ??
 def clean_abstract(this_paper):
     try:
         # Get abstract text
-        this_paper['clean']['abstract'] = str(this_paper['merged']['MedlineCitation']['Article']['Abstract']['AbstractText'])
+        this_paper['clean']['abstract'] = str(this_paper['raw']['pmid_data']['MedlineCitation']['Article']['Abstract']['AbstractText'])
     except:
         logging.warn('No abstract for ' + this_paper['IDs']['hash'])
 
@@ -76,7 +82,7 @@ def clean_date(this_paper, error_log):
     # Generate a Clean Date
     # There are a lot of different dates in the paper data object.
     # These need to be converted into 1 date field so that it is consistently accessible throughout.
-    # Relying on just this clean date will potentially cause some data lose so in situations where
+    # Relying on just this clean date will potentially cause some data loss so in situations where
     # you need a particular date, e.g. online publication date not paper publish date, then you
     # should make sure you are using the correct one. However, the clean_date field gives you the
     # best chance of getting a relevant date that is at least correct for something.
@@ -92,10 +98,10 @@ def clean_date(this_paper, error_log):
     # Full Pubmed date - probably the best one
     if date_status is False:
         try:
-            if str(this_paper['merged']['PubmedData']['History'][0]['Day']) != "" and str(this_paper['merged']['PubmedData']['History'][0]['Month']) != "" and str(this_paper['merged']['PubmedData']['History'][0]['Year']) != "":
-                this_paper['clean']['clean_date']['day'] = str(this_paper['merged']['PubmedData']['History'][0]['Day'])
-                this_paper['clean']['clean_date']['month'] = str(this_paper['merged']['PubmedData']['History'][0]['Month'])
-                this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['PubmedData']['History'][0]['Year'])
+            if str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Day']) != "" and str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Month']) != "" and str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Year']) != "":
+                this_paper['clean']['clean_date']['day'] = str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Day'])
+                this_paper['clean']['clean_date']['month'] = str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Month'])
+                this_paper['clean']['clean_date']['year'] = str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Year'])
                 date_status = True
         except:
             pass
@@ -103,10 +109,10 @@ def clean_date(this_paper, error_log):
     # Full issue date
     if date_status is False:
         try:
-            if str(this_paper['merged']['issued']['date-parts'][0][2]) != "" and str(this_paper['merged']['issued']['date-parts'][0][1]) != "" and str(this_paper['merged']['issued']['date-parts'][0][0]) != "":
-                this_paper['clean']['clean_date']['day'] = str(this_paper['merged']['issued']['date-parts'][0][2])
-                this_paper['clean']['clean_date']['month'] = str(this_paper['merged']['issued']['date-parts'][0][1])
-                this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['issued']['date-parts'][0][0])
+            if str(this_paper['raw']['pmid_data']['issued']['date-parts'][0][2]) != "" and str(this_paper['raw']['pmid_data']['issued']['date-parts'][0][1]) != "" and str(this_paper['raw']['pmid_data']['issued']['date-parts'][0][0]) != "":
+                this_paper['clean']['clean_date']['day'] = str(this_paper['raw']['pmid_data']['issued']['date-parts'][0][2])
+                this_paper['clean']['clean_date']['month'] = str(this_paper['raw']['pmid_data']['issued']['date-parts'][0][1])
+                this_paper['clean']['clean_date']['year'] = str(this_paper['raw']['pmid_data']['issued']['date-parts'][0][0])
                 date_status = True
         except:
             pass
@@ -128,8 +134,8 @@ def clean_date(this_paper, error_log):
     # PARTIAL Pubmed date
     if date_status is False:
         try:
-            if str(this_paper['merged']['PubmedData']['History'][0]['Year']) != "":
-                this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['PubmedData']['History'][0]['Year'])
+            if str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Year']) != "":
+                this_paper['clean']['clean_date']['year'] = str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Year'])
                 date_status = True
         except:
             pass
@@ -137,8 +143,8 @@ def clean_date(this_paper, error_log):
     # PARTIAL issue date
     if date_status is False:
         try:
-            if str(this_paper['merged']['issued']['date-parts'][0][0]) != "":
-                this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['issued']['date-parts'][0][0])
+            if str(this_paper['raw']['pmid_data']['issued']['date-parts'][0][0]) != "":
+                this_paper['clean']['clean_date']['year'] = str(this_paper['raw']['pmid_data']['issued']['date-parts'][0][0])
                 date_status = True
         except:
             pass
@@ -146,7 +152,7 @@ def clean_date(this_paper, error_log):
     # Zotero Notes overide date
     if date_status is False:
         try:
-            date_parts = this_paper['merged']['extra']['date'].split("/")
+            date_parts = this_paper['raw']['zotero_data']['extra']['date'].split("/")
             this_paper['clean']['clean_date']['day'] = str(date_parts[0])
             this_paper['clean']['clean_date']['month'] = str(date_parts[1])
             this_paper['clean']['clean_date']['year'] = str(date_parts[2])
@@ -157,7 +163,7 @@ def clean_date(this_paper, error_log):
     # zotero 'date' field (only contains numerical year, word month)
     if date_status is False:
         try:
-            date_parts = this_paper['merged']['date'].split(" ")
+            date_parts = this_paper['raw']['zotero_data']['date'].split(" ")
             this_paper['clean']['clean_date']['year'] = str(date_parts[-1])
             date_status = True
         except:
@@ -175,40 +181,52 @@ def clean_date(this_paper, error_log):
 # returns string of cleaned name
 def clean_author_name(this_author):
     # Create a clean author field. This is the Surname followed by first initial
-    cleaned_author_name = this_author['family'] + " " + this_author['given'][0]
+    cleaned_author_name = this_author['LastName'] + " " + this_author['Initials']
     return cleaned_author_name
 
 
 # Clean up the author list
 # Copies cleaned entry into this_paper['clean']['full_author_list']
 # returns list of cleaned authors
+# pmid_data   - usually present
+# doi_data    - ??
+# scopus_data - ??
 def clean_authors(this_paper):
+    # generate the relevant structure in clean
+    this_paper['clean']['full_author_list'] = []
+
+    # PMID first
+    # Get the list of authors
+    raw_author_list = []
+    try:
+        raw_author_list = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['AuthorList']
+    except:
+        pass
+
     # First, delete the empty authors.
     # There must be a more elegant way than this.
     authors_to_keep = []
-    for this_author in this_paper['merged']['author']:
+    # for this_author in this_paper['merged']['author']:
+    for this_author in raw_author_list:
         try:
-            if this_author['family'] != "":
+            if this_author['LastName'] != "":
                 authors_to_keep.append(this_author)
         except:
             pass
 
-    this_paper['merged']['author'] = authors_to_keep
+    # this_paper['merged']['author'] = authors_to_keep
 
     # now go through authors and clean name then append to clean full_author_list
     authors = []
-    # Some pmid files dont actually have an authorlist! e.g. 2587412
-    # This probably needs to be resolved with pubmed!
+    # Some pmid files dont actually have an authorlist e.g. 2587412
     try:
-        # generate the relevant structure in clean
-        this_paper['clean']['full_author_list'] = []
-
-        for this_author in this_paper['merged']['author']:
+        # for this_author in this_paper['merged']['author']:
+        for this_author in authors_to_keep:
             # There are some entries in the author list that are not actually authors e.g. 21379325 last author
             # note that any authors with an empty 'family' key have been
             # removed by clean.clean()
             try:
-                authors.append(this_author['family'])
+                authors.append(this_author['LastName'])
                 # Create a clean author field. This is the Surname followed by first initial.
                 # clean_author_name = this_author['family'] + " " + this_author['given'][0]
                 cleaned_author_name = clean_author_name(this_author)
@@ -225,14 +243,12 @@ def clean_authors(this_paper):
     if len(this_paper['clean']['full_author_list']) == 0:
         logging.info('No author found, going to try extra field.')
         try:
-            this_paper['clean']['full_author_list'].append({'clean': this_paper['merged']['extra']['clean_first_author']})
+            # this_paper['clean']['full_author_list'].append({'clean': this_paper['merged']['extra']['clean_first_author']})
+            this_paper['clean']['full_author_list'].append({'clean': this_paper['raw']['zotero_data']['extra']['clean_first_author']})
             # this_paper['clean']['full_author_list'][0] = {'clean': this_paper['merged']['extra']['clean_first_author']}
             logging.debug('Author added via extra field.')
         except:
             logging.warn('Tried adding author from zotero extra, but failed. ')
-
-    # do we need to return anything here? currently returns list of authors, probably should just be 0 or error code
-    return authors
 
 
 # Have a go at tidying up the mess that is first author institution.
@@ -283,9 +299,9 @@ def clean_institution(papers):
 
         hasAffiliation = True
         try:
-            institute = this_paper['merged']['author'][0]['affiliation'][0]['name']
+            institute = this_paper['raw']['pmid_data']['author'][0]['AffiliationInfo']['Affiliation']
         except:
-            logging.warn('Could not find an affiliation for %s', this_paper)
+            logging.warn('Could not find an affiliation for %s', this_paper['IDs']['zotero'])
             hasAffiliation = False
 
         if hasAffiliation:
@@ -332,10 +348,10 @@ def clean_journal(this_paper):
           'issue': ''
         }
         try:
-            this_paper['clean']['journal']['journal_name'] = this_paper['merged']['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
+            this_paper['clean']['journal']['journal_name'] = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
         except:
             try:
-                this_paper['clean']['journal']['journal_name'] = this_paper['merged']['container-title']
+                this_paper['clean']['journal']['journal_name'] = this_paper['raw']['doi_data']['container-title']
             except:
                 logging.warn('No clean journal name for ' + this_paper['IDs']['hash'])
                 pass
@@ -344,7 +360,7 @@ def clean_journal(this_paper):
 
 # clean keywords (tags) for this_paper
 def clean_keywords(this_paper):
-    if 'tags' in this_paper['merged']:
+    if 'tags' in this_paper['raw']:
         try:
             this_paper['clean']['keywords']
         except KeyError:
@@ -366,20 +382,20 @@ def clean_keywords(this_paper):
 
 # clean mesh headings for this_paper
 def clean_mesh(this_paper):
-    if 'MedlineCitation' in this_paper['merged'].keys():
+    if 'MedlineCitation' in this_paper['raw']['pmid_data'].keys():
         try:
             this_paper['clean']['keywords']
         except KeyError:
             this_paper['clean']['keywords'] = {}
 
-        if 'MeshHeadingList' in this_paper['merged']['MedlineCitation'].keys():
+        if 'MeshHeadingList' in this_paper['raw']['pmid_data']['MedlineCitation'].keys():
             try:
                 this_paper['clean']['keywords']['mesh']
             except KeyError:
                 this_paper['clean']['keywords']['mesh'] = []
 
             try:
-                for this_mesh in this_paper['merged']['MedlineCitation']['MeshHeadingList']:
+                for this_mesh in this_paper['raw']['pmid_data']['MedlineCitation']['MeshHeadingList']:
                     this_paper['clean']['keywords']['mesh'].append(
                         {
                             'term': this_mesh['DescriptorName'],

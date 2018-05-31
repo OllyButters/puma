@@ -10,14 +10,7 @@ import config.config as config
 import papersCache as pc
 
 
-# Use the elsevier API to get extra info about the paper (including citations).
-# Try using the PMID first, if nothing returned then try using the DOI.
-def getScopus(papers, api_key, citation_max_life, force_update, error_log):
-
-    url = 'http://api.elsevier.com/content/search/scopus'
-
-    print('Getting Scopus data')
-
+def cleanScopus(citation_max_life):
     # If the force update flag is set in the config then all the scopus data
     # will have been deleted already in the setup phase.
 
@@ -31,80 +24,74 @@ def getScopus(papers, api_key, citation_max_life, force_update, error_log):
         if abs(datetime.datetime.now() - datetime.datetime.fromtimestamp(os.stat(config.cache_dir + '/raw/scopus/' + this_file).st_mtime)) > datetime.timedelta(days=citation_max_life):
             print('Will delete')
 
-    number_papers_to_process = len(papers)
-    counter = 0
-    for this_paper in papers:
-        counter = counter + 1
-        logging.info('\nScopus on # ' + str(counter) + ' of ' + str(number_papers_to_process) + ' ' + this_paper['IDs']['zotero'])
-        print('\nScopus on # ' + str(counter) + ' of ' + str(number_papers_to_process) + ' ' + this_paper['IDs']['zotero'])
 
-        # Check if this file already exists, if it does then skip it.
-        filename = config.cache_dir + '/raw/scopus/' + this_paper['IDs']['zotero'] + '.scopus'
-        if os.path.isfile(filename):
-            logging.info(filename + ' alrady exists, skipping.')
-            continue
+# Use the elsevier API to get extra info about the paper (including citations).
+# Try using the PMID first, if nothing returned then try using the DOI.
+def getScopus(zotero_ID, PMID, DOI):
 
-        try:
-            # query scopus with a pmid
-            if this_paper['IDs']['PMID'] != "":
-                request_string = url + '?apiKey=' + api_key + '&query=PMID(' + this_paper['IDs']['PMID'] + ')'
-                logging.info(request_string)
-                response = urllib2.urlopen(request_string).read()
-                scopus_object = json.loads(response)
+    url = 'http://api.elsevier.com/content/search/scopus'
 
-                # Check to see if this is just an errorlog
-                try:
-                    error = scopus_object['search-results']['entry'][0]['error']
-                    if error == 'Result set was empty':
-                        logging.info('Result set empty for ' + str(this_paper['IDs']['PMID']))
-                        del(scopus_object)
-                except:
-                    pass
-                if scopus_object:
-                    logging.info('Scopus data got via PMID.')
-                else:
-                    raise
+    try:
+        # query scopus with a pmid
+        if PMID != "":
+            request_string = url + '?apiKey=' + config.scopus_api_key + '&query=PMID(' + str(PMID) + ')'
+            logging.info(request_string)
+            response = urllib2.urlopen(request_string).read()
+            scopus_object = json.loads(response)
 
-        except:
-            # querying with PMID failed, so try DOI.
+            # Check to see if this is just an errorlog
             try:
-                if this_paper['IDs']['DOI'] != "":
-                    try:
-                        request_string = url + '?apiKey=' + api_key + '&query=DOI(' + this_paper['IDs']['DOI'] + ')'
-                        logging.info(request_string)
-                        response = urllib2.urlopen(request_string).read()
-                        scopus_object = json.loads(response)
-
-                        # Check to see if this is just an errorlog
-                        try:
-                            error = scopus_object['search-results']['entry'][0]['error']
-                            if error == 'Result set was empty':
-                                logging.info('Result set empty for ' + str(this_paper['IDs']['PMID']))
-                                del(scopus_object)
-                        except:
-                            pass
-                        if scopus_object:
-                            logging.info('Scopus data got via DOI.')
-                    except:
-                        print('Didnt work with DOI either.')
-                        logging.info('Scopus data failed to get.')
+                error = scopus_object['search-results']['entry'][0]['error']
+                if error == 'Result set was empty':
+                    logging.info('Result set empty for ' + str(PMID))
+                    del(scopus_object)
             except:
-                # Nothing found for this papers
                 pass
+            if scopus_object:
+                logging.info('Scopus data got via PMID.')
+            else:
+                raise
 
+    except:
+        # querying with PMID failed, so try DOI.
         try:
-            # Hopefully have scopus object now.
-            if scopus_object != "":
-                # Require a scopus ID
+            if DOI != "":
                 try:
-                    # scopus_id = scopus_object['search-results']['entry'][0]['eid']
-                    # cannot guarantee format of scopus ID so do an md5 of it for the filename
-                    # filename = hashlib.md5(scopus_id).hexdigest()
-                    filename = this_paper['IDs']['zotero'] + '.scopus'
-                    pc.dumpJson(filename, scopus_object, filetype='raw/scopus')
+                    request_string = url + '?apiKey=' + config.scopus_api_key + '&query=DOI(' + DOI + ')'
+                    logging.info(request_string)
+                    response = urllib2.urlopen(request_string).read()
+                    scopus_object = json.loads(response)
+
+                    # Check to see if this is just an errorlog
+                    try:
+                        error = scopus_object['search-results']['entry'][0]['error']
+                        if error == 'Result set was empty':
+                            logging.info('Result set empty for ' + str(DOI))
+                            del(scopus_object)
+                    except:
+                        pass
+                    if scopus_object:
+                        logging.info('Scopus data got via DOI.')
                 except:
-                    print('No scopus ID found.')
+                    print('Didnt work with DOI either.')
+                    logging.info('Scopus data failed to get.')
         except:
+            # Nothing found for this papers
             pass
 
-    exit(1)
+    try:
+        # Hopefully have scopus object now.
+        if scopus_object != "":
+            # Require a scopus ID
+            try:
+                # scopus_id = scopus_object['search-results']['entry'][0]['eid']
+                # cannot guarantee format of scopus ID so do an md5 of it for the filename
+                # filename = hashlib.md5(scopus_id).hexdigest()
+                filename = zotero_ID + '.scopus'
+                pc.dumpJson(filename, scopus_object, filetype='raw/scopus')
+                return scopus_object
+            except:
+                print('No scopus ID found.')
+                return None
+    except:
+        return None
