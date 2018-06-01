@@ -9,3 +9,5 @@ source/tools.pyc
 
 #Where a real config sits
 /config/config.ini
+/config/1958_config.ini
+/config/ALSPAC_config.ini
