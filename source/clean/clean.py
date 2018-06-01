@@ -8,18 +8,22 @@ import config.config as config
 # Some data will be missing. To deal with this, missing data will be put into the
 # Zotero notes field ('extra') in a formatted structure "<key>:<value>\n<key>:<value>\n". That data will then be parsed by
 # this function and put into the paper object so that it can be accessed throughout the analysis and html functions.
-def clean_notes(papers, error_log):
+def clean_zotero_extras(papers):
     for this_paper in papers:
         try:
+            this_paper['clean'] = {}
+            this_paper['clean']['zotero_data'] = {}
+            this_paper['clean']['zotero_data']['extra'] = {}
             # notes = this_paper['merged']['extra']
             # this_paper['merged']['extra'] = {}
-            notes = this_paper['raw']['zotero_data']['extra']
-            this_paper['raw']['zotero_data']['extra'] = {}
+            extras = this_paper['raw']['zotero_data']['extra']
+
             # split the notes data into key/value pairs
-            fields = notes.split("\n")
+            fields = extras.split("\n")
             for this_field in fields:
                 components = this_field.split(":")
                 # this_paper['merged']['extra'][components[0].strip()] = components[1].strip()
+                # this_paper['clean']['zotero_data']['extra'][components[0].strip()] = components[1].strip()
                 this_paper['clean']['zotero_data']['extra'][components[0].strip()] = components[1].strip()
         except:
             pass
@@ -33,11 +37,9 @@ def pre_clean(papers, error_log):
 
     for this_paper in papers:
 
-        # print this_paper['merged']['title']
-
-        # Add an extras item that we add stuff to - clean_institution,
+        # Add an clean dict that we add stuff to - clean_institution,
         # citations etc
-        this_paper['clean'] = {}
+        # this_paper['clean'] = {}
 
         # add clean title
         this_paper['clean']['title'] = this_paper['raw']['zotero_data']['title']
@@ -65,6 +67,9 @@ def pre_clean(papers, error_log):
         except:
             pass
 
+        # Get the scopus data from the cache
+        clean_citations_scopus(this_paper)
+
 
 # get the abstract from MedlineCitation if present and add to clean['abstract']
 # pmid_data   - usually present
@@ -78,6 +83,7 @@ def clean_abstract(this_paper):
         logging.warn('No abstract for ' + this_paper['IDs']['hash'])
 
 
+################################################################################
 def clean_date(this_paper, error_log):
     # Generate a Clean Date
     # There are a lot of different dates in the paper data object.
@@ -93,32 +99,31 @@ def clean_date(this_paper, error_log):
     # Try the different date fields. If we don't get a full day, month and year for the clean_date
     # then try the next possible field. If that's not going well try getting just the year.
     # Finally if none of the fields work then try the Zotero notes field.
-    date_status = False
 
-    # Full Pubmed date - probably the best one
-    if date_status is False:
+    ############################################################################
+    # Try the various PubMed dates. Return True if one works
+    def _clean_date_pmid(this_paper):
+        # Full Pubmed date - probably the best one
         try:
             if str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Day']) != "" and str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Month']) != "" and str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Year']) != "":
                 this_paper['clean']['clean_date']['day'] = str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Day'])
                 this_paper['clean']['clean_date']['month'] = str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Month'])
                 this_paper['clean']['clean_date']['year'] = str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Year'])
-                date_status = True
+                return True
         except:
             pass
 
-    # Full issue date
-    if date_status is False:
+        # Full issue date
         try:
             if str(this_paper['raw']['pmid_data']['issued']['date-parts'][0][2]) != "" and str(this_paper['raw']['pmid_data']['issued']['date-parts'][0][1]) != "" and str(this_paper['raw']['pmid_data']['issued']['date-parts'][0][0]) != "":
                 this_paper['clean']['clean_date']['day'] = str(this_paper['raw']['pmid_data']['issued']['date-parts'][0][2])
                 this_paper['clean']['clean_date']['month'] = str(this_paper['raw']['pmid_data']['issued']['date-parts'][0][1])
                 this_paper['clean']['clean_date']['year'] = str(this_paper['raw']['pmid_data']['issued']['date-parts'][0][0])
-                date_status = True
+                return True
         except:
             pass
 
-    # Full created date
-    # if date_status is False:
+        # Full created date
         # try:
             # actually I am not sure this is a good idea, I think this might be the date the metadata was created...
             # if str(this_paper['merged']['created']['date-parts'][0][2]) == "" or str(this_paper['merged']['created']['date-parts'][0][1]) == "" or str(this_paper['merged']['created']['date-parts'][0][0]) == "":
@@ -131,50 +136,79 @@ def clean_date(this_paper, error_log):
         # except:
         #    pass
 
-    # PARTIAL Pubmed date
-    if date_status is False:
+        # PARTIAL Pubmed date
         try:
             if str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Year']) != "":
                 this_paper['clean']['clean_date']['year'] = str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Year'])
-                date_status = True
+                return True
         except:
             pass
 
-    # PARTIAL issue date
-    if date_status is False:
+        # PARTIAL issue date
         try:
             if str(this_paper['raw']['pmid_data']['issued']['date-parts'][0][0]) != "":
                 this_paper['clean']['clean_date']['year'] = str(this_paper['raw']['pmid_data']['issued']['date-parts'][0][0])
-                date_status = True
+                return True
         except:
             pass
+    ############################################################################
 
-    # Zotero Notes overide date
-    if date_status is False:
+    ############################################################################
+    # Try the various DOI dates. Return True if one works
+    def _clean_date_doi(this_paper):
+        # Try issued/data-parts (year and month)
+        try:
+            if str(this_paper['raw']['doi_data']['issued']['date-parts'][0][0]) != "" and str(this_paper['raw']['doi_data']['issued']['date-parts'][0][0]) != "":
+                this_paper['clean']['clean_date']['month'] = str(this_paper['raw']['doi_data']['issued']['date-parts'][0][1])
+                this_paper['clean']['clean_date']['year'] = str(this_paper['raw']['doi_data']['issued']['date-parts'][0][0])
+                return True
+        except:
+            pass
+        # Try issued/data-parts (year and month)
+        try:
+            if str(this_paper['raw']['doi_data']['issued']['date-parts'][0][0]) != "":
+                this_paper['clean']['clean_date']['year'] = str(this_paper['raw']['doi_data']['issued']['date-parts'][0][0])
+                return True
+        except:
+            pass
+    ############################################################################
+
+    ############################################################################
+    # Parse the zotero dates
+    def _clean_date_zotero(this_paper):
+        # Zotero Notes overide date
         try:
             date_parts = this_paper['raw']['zotero_data']['extra']['date'].split("/")
             this_paper['clean']['clean_date']['day'] = str(date_parts[0])
             this_paper['clean']['clean_date']['month'] = str(date_parts[1])
             this_paper['clean']['clean_date']['year'] = str(date_parts[2])
-            date_status = True
+            return True
         except:
             pass
 
-    # zotero 'date' field (only contains numerical year, word month)
-    if date_status is False:
+        # zotero 'date' field (only contains numerical year, word month)
         try:
             date_parts = this_paper['raw']['zotero_data']['date'].split(" ")
             this_paper['clean']['clean_date']['year'] = str(date_parts[-1])
-            date_status = True
+            return True
         except:
             pass
+    ############################################################################
+
+    status = _clean_date_pmid(this_paper)
+    if not status:
+        status = _clean_date_doi(this_paper)
+    if not status:
+        status = _clean_date_zotero(this_paper)
 
     # A date has not been found. Put this in the error log.
-    if date_status is False:
+    if status is False:
         error_log.logErrorPaper("Cannot Create Clean Date (Consider using Zotero notes)", this_paper)
         logging.warn("Cannot Create Clean Date (Consider using Zotero notes). Hash: " + str(this_paper['IDs']['hash']))
+################################################################################
 
 
+################################################################################
 # Clean author name
 # param author dict doi-style author object (at least 'family' and 'given' as keys)
 # Author's cleaned name is lastname (family) followed by first initial
@@ -185,8 +219,16 @@ def clean_author_name(this_author):
     return cleaned_author_name
 
 
+################################################################################
 # Clean up the author list
-# Copies cleaned entry into this_paper['clean']['full_author_list']
+# Copies cleaned entry into:
+#
+# this_paper['clean']['full_author_list']
+# affiliation,
+# given,
+# clean (<Surname> <First initial>)
+# family
+#
 # returns list of cleaned authors
 # pmid_data   - usually present
 # doi_data    - ??
@@ -195,62 +237,141 @@ def clean_authors(this_paper):
     # generate the relevant structure in clean
     this_paper['clean']['full_author_list'] = []
 
-    # PMID first
-    # Get the list of authors
-    raw_author_list = []
-    try:
-        raw_author_list = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['AuthorList']
-    except:
-        pass
-
-    # First, delete the empty authors.
-    # There must be a more elegant way than this.
-    authors_to_keep = []
-    # for this_author in this_paper['merged']['author']:
-    for this_author in raw_author_list:
+    ############################################################################
+    # PMID data
+    ############################################################################
+    def _clean_authors_pmid(this_paper):
         try:
-            if this_author['LastName'] != "":
-                authors_to_keep.append(this_author)
-        except:
-            pass
+            # Get the list of authors
+            raw_author_list = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['AuthorList']
 
-    # this_paper['merged']['author'] = authors_to_keep
+            # First, delete the empty authors.
+            # There must be a more elegant way than this.
+            authors = []
+            for this_author in raw_author_list:
+                try:
+                    if this_author['LastName'] != "":
+                        authors.append(this_author)
+                except:
+                    pass
 
-    # now go through authors and clean name then append to clean full_author_list
-    authors = []
-    # Some pmid files dont actually have an authorlist e.g. 2587412
-    try:
-        # for this_author in this_paper['merged']['author']:
-        for this_author in authors_to_keep:
-            # There are some entries in the author list that are not actually authors e.g. 21379325 last author
-            # note that any authors with an empty 'family' key have been
-            # removed by clean.clean()
+            # now go through authors and clean name then append to clean full_author_list
+            # Some pmid files dont actually have an authorlist e.g. 2587412
             try:
-                authors.append(this_author['LastName'])
-                # Create a clean author field. This is the Surname followed by first initial.
-                # clean_author_name = this_author['family'] + " " + this_author['given'][0]
-                cleaned_author_name = clean_author_name(this_author)
-                this_author.update({'clean': cleaned_author_name})
-                this_paper['clean']['full_author_list'].append(this_author)
+                for this_author in authors:
+                    # There are some entries in the author list that are not actually authors e.g. 21379325 last author
+                    # note that any authors with an empty 'LastName' key have been removed
+                    try:
+                        this_family = this_author['LastName']
+                    except:
+                        this_family = ''
+                    try:
+                        this_given = this_author['ForeName']
+                    except:
+                        this_given = ''
+                    try:
+                        this_affiliation = this_author['AffiliationInfo'][0]['Affiliation']
+                    except:
+                        this_affiliation = ''
+
+                    if (this_family != '') and (this_given != ''):
+                        this_clean = this_family + ' ' + this_given[0]
+
+                    this_clean_author = {'clean': this_clean,
+                                         'family': this_family,
+                                         'given': this_given,
+                                         'affiliation': {'name': this_affiliation}}
+
+                    this_paper['clean']['full_author_list'].append(this_clean_author)
             except:
                 pass
 
-    except Exception as e:
-        print str(e)
-        logging.warn('No AuthorList for ' + this_paper['IDs']['hash'])
+            # Check to see if we have something, if so we can
+            if len(this_paper['clean']['full_author_list']) > 0:
+                return True
+
+        except Exception as e:
+            print str(e)
+            logging.warn('No AuthorList for ' + this_paper['IDs']['hash'])
+    ############################################################################
+
+    ############################################################################
+    # DOI data
+    ############################################################################
+    def _clean_authors_doi(this_paper):
+        try:
+            # Get the list of authors
+            raw_author_list = this_paper['raw']['doi_data']['author']
+
+            # First, delete the empty authors.
+            # There must be a more elegant way than this.
+            authors = []
+            for this_author in raw_author_list:
+                try:
+                    if this_author['family'] != "":
+                        authors.append(this_author)
+                except:
+                    pass
+
+            # now go through authors and clean name then append to clean full_author_list
+            try:
+                for this_author in authors:
+                    # There are some entries in the author list that are not actually authors e.g. 21379325 last author
+                    # note that any authors with an empty 'LastName' key have been removed
+                    try:
+                        this_family = this_author['family']
+                    except:
+                        this_family = ''
+                    try:
+                        this_given = this_author['given']
+                    except:
+                        this_given = ''
+                    try:
+                        this_affiliation = this_author['affiliation'][0]['name']
+                    except:
+                        this_affiliation = ''
+
+                    if (this_family != '') and (this_given != ''):
+                        this_clean = this_family + ' ' + this_given[0]
+
+                    this_clean_author = {'clean': this_clean,
+                                         'family': this_family,
+                                         'given': this_given,
+                                         'affiliation': {'name': this_affiliation}}
+
+                    this_paper['clean']['full_author_list'].append(this_clean_author)
+            except:
+                pass
+
+            # Check to see if we have something, if so we can
+            if len(this_paper['clean']['full_author_list']) > 0:
+                return True
+
+        except Exception as e:
+            print str(e)
+            logging.warn('No AuthorList for ' + this_paper['IDs']['hash'])
+    ############################################################################
+
+    # Actually run some code
+    status = _clean_authors_pmid(this_paper)
+
+    if status is not True:
+        status = _clean_authors_doi(this_paper)
 
     # Sanity check we have something here, if not then see if the extras from zotero has something
     if len(this_paper['clean']['full_author_list']) == 0:
         logging.info('No author found, going to try extra field.')
         try:
             # this_paper['clean']['full_author_list'].append({'clean': this_paper['merged']['extra']['clean_first_author']})
-            this_paper['clean']['full_author_list'].append({'clean': this_paper['raw']['zotero_data']['extra']['clean_first_author']})
+            this_paper['clean']['full_author_list'].append({'clean': this_paper['clean']['zotero_data']['extra']['clean_first_author']})
             # this_paper['clean']['full_author_list'][0] = {'clean': this_paper['merged']['extra']['clean_first_author']}
             logging.debug('Author added via extra field.')
         except:
             logging.warn('Tried adding author from zotero extra, but failed. ')
+################################################################################
 
 
+################################################################################
 # Have a go at tidying up the mess that is first author institution.
 # Essentially go through each institution and see if it matches a patten
 # in the institute_cleaning.csv file. If it does then replace it with a
@@ -299,7 +420,8 @@ def clean_institution(papers):
 
         hasAffiliation = True
         try:
-            institute = this_paper['raw']['pmid_data']['author'][0]['AffiliationInfo']['Affiliation']
+            # institute = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
+            institute = this_paper['clean']['full_author_list'][0]['affiliation']['name']
         except:
             logging.warn('Could not find an affiliation for %s', this_paper['IDs']['zotero'])
             hasAffiliation = False
@@ -327,7 +449,7 @@ def clean_institution(papers):
         except:
             # Check for Zotero note institution
             try:
-                this_paper['clean']['location']['clean_institute'] = this_paper['merged']['extra']['clean_institute']
+                this_paper['clean']['location']['clean_institute'] = this_paper['clean']['zotero_data']['extra']['clean_institute']
             except:
                 pass
 
@@ -405,3 +527,29 @@ def clean_mesh(this_paper):
             except Exception as e:
                 print str(e)
                 pass
+
+
+################################################################################
+# Get the scopus citation data from the cached scopus files.
+def clean_citations_scopus(this_paper):
+    # Do i really need this?
+    this_paper['clean']['citations'] = {}
+    this_paper['clean']['citations']['scopus'] = {}
+    this_paper['clean']['citations']['PMC'] = {}
+
+    try:
+        # sometimes this returns multiple entries e.g. 22935244
+        if len(this_paper['raw']['scopus_data']['search-results']['entry']) > 1:
+            logging.warn("Multiple different citaton counts found!")
+            return False
+
+        if len(this_paper['raw']['scopus_data']['search-results']['entry']) == 1:
+            this_paper['clean']['citations']['scopus']['count'] = this_paper['raw']['scopus_data']['search-results']['entry'][0]['citedby-count']
+            logging.info('Citation added.')
+            return True
+
+        if len(this_paper['raw']['scopus_data']['search-results']['entry']) == 0:
+            logging.warn("0 citatons counts found!")
+            return False
+    except:
+        pass
