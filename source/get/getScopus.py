@@ -29,6 +29,10 @@ def cleanScopus(citation_max_life):
 # Try using the PMID first, if nothing returned then try using the DOI.
 def getScopus(zotero_ID, PMID, DOI):
 
+    logging.debug('here')
+    logging.debug(PMID)
+    logging.debug('here')
+
     url = 'http://api.elsevier.com/content/search/scopus'
 
     try:
@@ -51,12 +55,14 @@ def getScopus(zotero_ID, PMID, DOI):
                 logging.info('Scopus data got via PMID.')
             else:
                 raise
-
+        else:
+            raise
     except:
         # querying with PMID failed, so try DOI.
         try:
             if DOI != "":
                 try:
+                    logging.debug('now here')
                     request_string = url + '?apiKey=' + config.scopus_api_key + '&query=DOI(' + DOI + ')'
                     logging.info(request_string)
                     response = urllib2.urlopen(request_string).read()

@@ -4,6 +4,8 @@ import papersCache as pc
 import re
 import hashlib
 
+import urllib
+
 
 # retrieve the metadata available at doi.org
 # store retrieved json data in cache
@@ -11,10 +13,9 @@ import hashlib
 def getDoi(doi):
     check_doi = re.match(r'^https?://(dx\.)?doi\.org/', doi)
     if check_doi is not None:
-        url = doi
         doi = re.sub(r'^https?://(dx\.)?doi\.org/', '', doi)
-    else:
-        url = 'http://doi.org/'+doi
+
+    url = 'http://doi.org/' + urllib.quote_plus(doi)
     request = urllib2.Request(url, headers={"Accept": "application/vnd.citationstyles.csl+json"})
     try:
         response = urllib2.urlopen(request)

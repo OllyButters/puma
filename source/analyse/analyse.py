@@ -684,7 +684,7 @@ def coverage_report(papers):
 
         # First author affiliation - Not required, but REALLY useful
         try:
-            first_author_affiliation = this_paper['clean']['full_author_list'][0]['affiliation'][0]['name']
+            first_author_affiliation = this_paper['clean']['full_author_list'][0]['affiliation']['name']
             if first_author_affiliation != '':
                 cov_html += '<td>OK</td>'
                 status['first_author_affiliation'] = status['first_author_affiliation'] + 1

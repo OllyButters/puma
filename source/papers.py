@@ -32,8 +32,8 @@ import get.simple_collate
 import networks.author_network as author_network
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
-__date__ = 30/5/18
-__version__ = '0.6.0'
+__date__ = 1/6/18
+__version__ = '0.7.0'
 
 # Lets figure out some paths that everything is relative to
 # global root_dir
@@ -77,7 +77,7 @@ logging.info('Started at: ' + str(start_time))
 papers = []
 
 # Collate does not do anything with the papers object.
-#get.simple_collate.collate()
+get.simple_collate.collate()
 # print temp
 # exit(1)
 
@@ -111,7 +111,7 @@ print str(len(papers)) + ' papers to process'
 
 ###########################################################
 # Clean the data - e.g. tidy dates and institute names
-clean.clean_notes(papers, error_log)
+clean.clean_zotero_extras(papers)
 clean.pre_clean(papers, error_log)
 # should probably move clean_institution into clean directly
 clean.clean_institution(papers)
@@ -124,7 +124,7 @@ clean.clean_institution(papers)
 # Add some extra data in - i.e. geocodes and citations
 add.geocode.geocode(papers, error_log, config.google_maps_api_key)
 
-#if config.scopus_run_citation:
+# if config.scopus_run_citation:
 #    add.citations.citations(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update, error_log)
 
 # Write papers to summary file

@@ -44,7 +44,6 @@ def collate():
     zot.getPapersKeys()
 
     new_keys = []
-    # new_papers = []
     zotero_papers = []
 
     # we may want to re-download the data from zotero
@@ -100,8 +99,8 @@ def collate():
         }
 
         logging.info('\nWorking on '+paper['title']+' (zotero key: '+paper['key']+')')
-        logging.info('Getting doi/pubmed data.')
-        print('Getting doi/pubmed/scopus data for paper: ' + paper['title'] + ' (zotero key: '+paper['key']+')')
+        logging.info('Getting doi/pubmed/scopus data.')
+        print('Getting doi/pubmed/scopus data for paper: ' + paper['title'].encode("ascii", "ignore") + ' (zotero key: '+paper['key']+')')
 
         # Couple of placeholders
         this_merged_paper['raw'] = {}
@@ -175,6 +174,9 @@ def collate():
             if scopus_cache_filename not in scopus_cache:
                 print('Scopus: Downloading.')
                 logging.debug('Downloading (or redownloading) Scopus data.')
+                logging.debug(this_merged_paper['IDs']['zotero'])
+                logging.debug(this_merged_paper['IDs']['PMID'])
+                logging.debug(this_merged_paper['IDs']['DOI'])
                 scopus_paper = ps.getScopus(this_merged_paper['IDs']['zotero'], this_merged_paper['IDs']['PMID'], this_merged_paper['IDs']['DOI'])
                 this_merged_paper['raw']['scopus_data'] = scopus_paper
                 print('Scopus: Success')
