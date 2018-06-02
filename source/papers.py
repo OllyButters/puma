@@ -30,7 +30,7 @@ import html.build_htmlv2
 import bibliography.bibtex
 import get.simple_collate
 import networks.author_network as author_network
-import analyse.coverage_report
+import analyse.coverage_report as coverage_report
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
 __date__ = 2/6/18
@@ -78,7 +78,7 @@ logging.info('Started at: ' + str(start_time))
 papers = []
 
 # Collate does not do anything with the papers object.
-get.simple_collate.collate()
+# get.simple_collate.collate()
 # print temp
 # exit(1)
 
@@ -144,7 +144,7 @@ for this_paper in papers:
 # exit()
 
 # Generate the coverage report
-analyse.coverage_report.coverage_report(papers)
+coverage_report.coverage_report(papers)
 
 bibliography.bibtex.bibtex(papers, error_log)
 

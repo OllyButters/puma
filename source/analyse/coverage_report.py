@@ -1,6 +1,5 @@
 #! /usr/bin/env python2
 
-import csv
 import config.config as config
 import os
 import shutil
@@ -30,6 +29,7 @@ def coverage_report(papers):
                     <th>Zotero &uarr;&darr;</th>
                     <th>DOI &uarr;&darr;</th>
                     <th>PMID &uarr;&darr;</th>
+                    <th>Scopus<br/>ID &uarr;&darr;</th>
                     <th>PMID DOI<br/>Lookup</th>
                     <th>PMID title<br/>Lookup</th>
                     <th>Title<br/>&uarr;&darr;</th>
@@ -51,6 +51,7 @@ def coverage_report(papers):
     status['zotero'] = 0
     status['doi'] = 0
     status['pmid'] = 0
+    status['scopus'] = 0
     status['title'] = 0
     status['keywords'] = 0
     status['abstract'] = 0
@@ -60,7 +61,7 @@ def coverage_report(papers):
     status['geocoded'] = 0
     status['clean_date'] = 0
     status['journal'] = 0
-    status['scopus'] = 0
+    status['scopus_citation'] = 0
 
     for this_paper in papers:
         cov_html += '\n<tr class="item">'
@@ -68,7 +69,7 @@ def coverage_report(papers):
         #####
         # Filename hash - this has to be present!
         try:
-            fn_hash = this_paper['IDs']['zotero'] + '.cleaned'
+            fn_hash = this_paper['IDs']['zotero'] + '.cleaned.json'
             status['hash'] = status['hash'] + 1
         except:
             fn_hash = '???'
@@ -104,6 +105,18 @@ def coverage_report(papers):
             if pmid != '':
                 cov_html += '<td><a href="https://www.ncbi.nlm.nih.gov/pubmed/' + pmid + '" target="_blank">' + pmid + '</a></td>'
                 status['pmid'] = status['pmid'] + 1
+            else:
+                raise Exception()
+        except:
+            cov_html += '<td class="missing_good_to_have">???</td>'
+
+        #####
+        # scopus - Not required, but REALLY useful
+        try:
+            scopus_id = this_paper['IDs']['scopus']
+            if scopus_id != '':
+                cov_html += '<td><a href="https://api.elsevier.com/content/article/eid/' + scopus_id + '" target="_blank">' + scopus_id + '</a></td>'
+                status['scopus'] = status['scopus'] + 1
             else:
                 raise Exception()
         except:
@@ -242,7 +255,8 @@ def coverage_report(papers):
         # Geocoded
         try:
             latitude = this_paper['clean']['location']['latitude']
-            if latitude != '':
+            longitude = this_paper['clean']['location']['longitude']
+            if latitude != '' and longitude != '':
                 cov_html += '<td>OK</td>'
                 status['geocoded'] = status['geocoded'] + 1
             else:
@@ -302,7 +316,7 @@ def coverage_report(papers):
                 if scopus != '':
                     scopus_html += '<td>'
                     scopus_html += scopus + '&nbsp;'
-                    status['scopus'] = status['scopus'] + 1
+                    status['scopus_citation'] = status['scopus_citation'] + 1
             except:
                 scopus_html += '<td class="missing_good_to_have">'
 
@@ -332,6 +346,7 @@ def coverage_report(papers):
                     <th>Zotero</th>
                     <th>DOI</th>
                     <th>PMID</th>
+                    <th>Scopus</th>
                     <th>Title</th>
                     <th>Keywords</th>
                     <th>Abstract</th>
@@ -353,6 +368,7 @@ def coverage_report(papers):
     status_table += '<td>' + str(status['zotero']) + '</td>'
     status_table += '<td>' + str(status['doi']) + '</td>'
     status_table += '<td>' + str(status['pmid']) + '</td>'
+    status_table += '<td>' + str(status['scopus']) + '</td>'
     status_table += '<td>' + str(status['title']) + '</td>'
     status_table += '<td>' + str(status['keywords']) + '</td>'
     status_table += '<td>' + str(status['abstract']) + '</td>'
@@ -362,7 +378,7 @@ def coverage_report(papers):
     status_table += '<td>' + str(status['geocoded']) + '</td>'
     status_table += '<td>' + str(status['clean_date']) + '</td>'
     status_table += '<td>' + str(status['journal']) + '</td>'
-    status_table += '<td>' + str(status['scopus']) + '</td>'
+    status_table += '<td>' + str(status['scopus_citation']) + '</td>'
     status_table += '</tr>'
 
     # Percentages
@@ -372,6 +388,7 @@ def coverage_report(papers):
     status_table += '<td>' + str(int(round(100*status['zotero']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['doi']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['pmid']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['scopus']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['title']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['keywords']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['abstract']/number_of_papers))) + '</td>'
@@ -381,7 +398,7 @@ def coverage_report(papers):
     status_table += '<td>' + str(int(round(100*status['geocoded']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['clean_date']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['journal']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['scopus']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['scopus_citation']/number_of_papers))) + '</td>'
     status_table += '</tr></table>'
 
     # Title
@@ -401,4 +418,10 @@ def coverage_report(papers):
     # put a copy of all the processed files in the web tree
     if os.path.exists(config.html_dir + '/status/cleaned'):
         shutil.rmtree(config.html_dir + '/status/cleaned')
-    shutil.copytree(config.cache_dir + '/processed/cleaned', config.html_dir + '/status/cleaned')
+
+    os.mkdir(config.html_dir + '/status/cleaned')
+
+    # shutil.copytree(config.cache_dir + '/processed/cleaned', config.html_dir + '/status/cleaned')
+    # Copy data to web tree, but put json extension on them.
+    for this_file in os.listdir(config.cache_dir + '/processed/cleaned'):
+        shutil.copy(config.cache_dir + '/processed/cleaned/' + this_file, config.html_dir + '/status/cleaned/' + this_file + '.json')

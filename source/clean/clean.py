@@ -21,8 +21,8 @@ def clean(papers, error_log):
         # Parse the zotero extras field into clean/zoter_data
         parse_zotero_extras(this_paper)
 
-        # add clean title
-        this_paper['clean']['title'] = this_paper['raw']['zotero_data']['title']
+        # clean the title
+        clean_title(this_paper)
 
         # clean up the authors and add to 'clean'
         clean_author_list(this_paper)
@@ -80,10 +80,58 @@ def parse_zotero_extras(this_paper):
 
 
 ################################################################################
+# get the title and add to clean/title
+# pmid_data   - usually present
+# doi_data    - usually present
+# scopus_data - usually present
+# zotero_data - usually present
+################################################################################
+def clean_title(this_paper):
+    clean_title_status = False
+
+    # pmid first
+    if not clean_title_status:
+        try:
+            this_paper['clean']['title'] = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['ArticleTitle']
+            clean_title_status = True
+            logging.debug('Title added via PMID.' + this_paper['clean']['title'])
+        except:
+            pass
+
+    # doi second
+    if not clean_title_status:
+        try:
+            this_paper['clean']['title'] = this_paper['raw']['doi_data']['title']
+            clean_title_status = True
+            logging.debug('Title added via DOI.' + this_paper['clean']['title'])
+        except:
+            pass
+
+    # scopus third
+    if not clean_title_status:
+        try:
+            this_paper['clean']['title'] = this_paper['raw']['scopus_data']['search-results']['entry'][0]['dc:title']
+            clean_title_status = True
+            logging.debug('Title added via Scopus.' + this_paper['clean']['title'])
+        except:
+            pass
+
+    # zotero last
+    if not clean_title_status:
+        try:
+            this_paper['clean']['title'] = this_paper['raw']['zotero_data']['title']
+            clean_title_status = True
+            logging.debug('Title added via zotero.' + this_paper['clean']['title'])
+        except:
+            logging.warn('No abstract for ' + this_paper['IDs']['hash'])
+################################################################################
+
+
+################################################################################
 # get the abstract from MedlineCitation if present and add to clean['abstract']
 # pmid_data   - usually present
-# doi_data    - ??
-# scopus_data - ??
+# doi_data    - never present
+# scopus_data - never present
 ################################################################################
 def clean_abstract(this_paper):
     try:
@@ -514,6 +562,9 @@ def clean_journal(this_paper):
 
 ################################################################################
 # clean keywords (tags) for this_paper
+# pmid - Usually present
+# doi - never present
+# scopus - never present
 ################################################################################
 def clean_keywords(this_paper):
     if 'tags' in this_paper['raw']:
@@ -584,6 +635,9 @@ def clean_citations_scopus(this_paper):
         if len(this_paper['raw']['scopus_data']['search-results']['entry']) == 1:
             this_paper['clean']['citations']['scopus']['count'] = this_paper['raw']['scopus_data']['search-results']['entry'][0]['citedby-count']
             logging.info('Citation added.')
+
+            # Lets grab the scopus ID while we are here
+            this_paper['IDs']['scopus'] = this_paper['raw']['scopus_data']['search-results']['entry'][0]['eid']
             return True
 
         if len(this_paper['raw']['scopus_data']['search-results']['entry']) == 0:

@@ -2,8 +2,6 @@
 
 import csv
 import config.config as config
-import os
-import shutil
 from nltk.stem import WordNetLemmatizer
 import numpy as np
 import pandas as pd
