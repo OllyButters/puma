@@ -30,10 +30,11 @@ import html.build_htmlv2
 import bibliography.bibtex
 import get.simple_collate
 import networks.author_network as author_network
+import analyse.coverage_report
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
-__date__ = 1/6/18
-__version__ = '0.7.0'
+__date__ = 2/6/18
+__version__ = '0.8.0'
 
 # Lets figure out some paths that everything is relative to
 # global root_dir
@@ -111,8 +112,8 @@ print str(len(papers)) + ' papers to process'
 
 ###########################################################
 # Clean the data - e.g. tidy dates and institute names
-clean.clean_zotero_extras(papers)
-clean.pre_clean(papers, error_log)
+# clean.clean_zotero_extras(papers)
+clean.clean(papers, error_log)
 # should probably move clean_institution into clean directly
 clean.clean_institution(papers)
 # for this_paper in papers:
@@ -143,7 +144,7 @@ for this_paper in papers:
 # exit()
 
 # Generate the coverage report
-analyse.coverage_report(papers)
+analyse.coverage_report.coverage_report(papers)
 
 bibliography.bibtex.bibtex(papers, error_log)
 
