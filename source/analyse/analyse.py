@@ -528,7 +528,9 @@ def coverage_report(papers):
     cov_css = '''
                 .missing_required {background-color: red;}
                 .missing_good_to_have {background-color: orange;}
-                tr:nth-child(even) {background-color: lightgray}
+                .raw_missing {color: red;}
+                .raw_present {color: green;}
+                tr:nth-child(even) {background-color: lightgray;}
                 th {background-color: #4CAF50; color: white;}
                 td, th {padding: 0.2em;}
                 a:visited {color: red;}
@@ -536,7 +538,7 @@ def coverage_report(papers):
 
     cov_html = '<table class="tablesorter">'
     cov_html += '''<thead><tr>
-                    <th>Hash &uarr;&darr;</th>
+                    <th>Data</th>
                     <th>Zotero &uarr;&darr;</th>
                     <th>DOI &uarr;&darr;</th>
                     <th>PMID &uarr;&darr;</th>
@@ -546,6 +548,7 @@ def coverage_report(papers):
                     <th>Keywords<br/>&uarr;&darr;</th>
                     <th>Abstract<br/>&uarr;&darr;</th>
                     <th>First<br/>Author &uarr;&darr;</th>
+                    <th>Raw<br/>affil</th>
                     <th>First<br/>Author<br/>affil &uarr;&darr;</th>
                     <th>Clean<br/>Inst.<br/>&uarr;&darr;</th>
                     <th>Geocoded<br/>&uarr;&darr;</th>
@@ -574,14 +577,15 @@ def coverage_report(papers):
     for this_paper in papers:
         cov_html += '\n<tr class="item">'
 
-        # Filename hash - this has to be prsent!
+        # Filename hash - this has to be present!
         try:
             fn_hash = this_paper['IDs']['zotero'] + '.cleaned'
             status['hash'] = status['hash'] + 1
         except:
             fn_hash = '???'
 
-        cov_html += '<td><a href="status/cleaned/' + fn_hash + '" target="_blank">' + fn_hash + '</a></td>'
+        # cov_html += '<td><a href="status/cleaned/' + fn_hash + '" target="_blank">' + fn_hash + '</a></td>'
+        cov_html += '<td><a href="status/cleaned/' + fn_hash + '" target="_blank">data</a></td>'
 
         # Zotero ID - this has to be present!
         try:
@@ -681,6 +685,27 @@ def coverage_report(papers):
                 raise Exception()
         except:
             cov_html += '<td class="missing_good_to_have">???</td>'
+
+        # First author affiliation coverage
+        try:
+            raw_affil_pmid = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
+            raw_affil_pmid = '<span class="raw_present">P</span>'
+        except:
+            raw_affil_pmid = '<span class="raw_missing">P</span>'
+
+        try:
+            raw_affil_doi = this_paper['raw']['doi_data']['author'][0]['affiliation'][0]['name']
+            raw_affil_doi = '<span class="raw_present">D</span>'
+        except:
+            raw_affil_doi = '<span class="raw_missing">D</span>'
+
+        try:
+            raw_affil_scopus = this_paper['raw']['scopus_data']['search-results']['entry'][0]['affiliation'][0]['affilname']
+            raw_affil_scopus = '<span class="raw_present">S</span>'
+        except:
+            raw_affil_scopus = '<span class="raw_missing">S</span>'
+
+        cov_html += '<td>' + raw_affil_pmid + ' ' + raw_affil_doi + ' ' + raw_affil_scopus + '</td>'
 
         # First author affiliation - Not required, but REALLY useful
         try:
