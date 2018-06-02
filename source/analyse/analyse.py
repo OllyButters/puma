@@ -380,7 +380,7 @@ def first_authors(papers):
     for this_paper in papers:
         try:
 
-            first_author_name = this_paper['clean']['full_author_list'][0]['clean']
+            first_author_name = this_paper['clean']['first_author']
             # stick the first author cleaned name in clean['first_author']['name']
             # try:
             #     this_paper['clean']['first_author']
@@ -577,6 +577,7 @@ def coverage_report(papers):
     for this_paper in papers:
         cov_html += '\n<tr class="item">'
 
+        #####
         # Filename hash - this has to be present!
         try:
             fn_hash = this_paper['IDs']['zotero'] + '.cleaned'
@@ -587,6 +588,7 @@ def coverage_report(papers):
         # cov_html += '<td><a href="status/cleaned/' + fn_hash + '" target="_blank">' + fn_hash + '</a></td>'
         cov_html += '<td><a href="status/cleaned/' + fn_hash + '" target="_blank">data</a></td>'
 
+        #####
         # Zotero ID - this has to be present!
         try:
             zotero = this_paper['IDs']['zotero']
@@ -595,6 +597,7 @@ def coverage_report(papers):
         except:
             cov_html += '<td class="missing_required">???</td>'
 
+        #####
         # DOI - Not required, but REALLY useful
         try:
             doi = this_paper['IDs']['DOI']
@@ -606,6 +609,7 @@ def coverage_report(papers):
         except:
             cov_html += '<td class="missing_good_to_have">???</td>'
 
+        #####
         # PMID - Not required, but REALLY useful
         try:
             pmid = this_paper['IDs']['PMID']
@@ -617,6 +621,7 @@ def coverage_report(papers):
         except:
             cov_html += '<td class="missing_good_to_have">???</td>'
 
+        #####
         # PMID lookup based on DOI
         try:
             doi = this_paper['IDs']['DOI']
@@ -630,6 +635,7 @@ def coverage_report(papers):
             # Not bothered if not there
             cov_html += '<td></td>'
 
+        #####
         # PMID lookup based on title
         try:
             title = this_paper['clean']['title']
@@ -642,6 +648,7 @@ def coverage_report(papers):
             # Not bothered if not there
             cov_html += '<td></td>'
 
+        #####
         # Paper title
         try:
             title = this_paper['clean']['title']
@@ -653,6 +660,7 @@ def coverage_report(papers):
         except:
             cov_html += '<td class="missing_good_to_have">???</td>'
 
+        #####
         # Keywords
         try:
             keywords = this_paper['clean']['keywords']
@@ -664,6 +672,7 @@ def coverage_report(papers):
         except:
             cov_html += '<td class="missing_good_to_have">???</td>'
 
+        #####
         # Abstract
         try:
             abstract = this_paper['clean']['abstract']
@@ -675,9 +684,10 @@ def coverage_report(papers):
         except:
             cov_html += '<td class="missing_good_to_have">???</td>'
 
+        #####
         # First author - Not required, but REALLY useful
         try:
-            first_author = this_paper['clean']['full_author_list'][0]['clean']
+            first_author = this_paper['clean']['first_author']
             if first_author != '':
                 cov_html += '<td>OK</td>'
                 status['first_author'] = status['first_author'] + 1
@@ -686,7 +696,8 @@ def coverage_report(papers):
         except:
             cov_html += '<td class="missing_good_to_have">???</td>'
 
-        # First author affiliation coverage
+        #####
+        # RAW first author affiliation coverage
         try:
             raw_affil_pmid = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
             raw_affil_pmid = '<span class="raw_present">P</span>'
@@ -707,9 +718,10 @@ def coverage_report(papers):
 
         cov_html += '<td>' + raw_affil_pmid + ' ' + raw_affil_doi + ' ' + raw_affil_scopus + '</td>'
 
+        #####
         # First author affiliation - Not required, but REALLY useful
         try:
-            first_author_affiliation = this_paper['clean']['full_author_list'][0]['affiliation']['name']
+            first_author_affiliation = this_paper['clean']['location']['candidate_institute']
             if first_author_affiliation != '':
                 cov_html += '<td>OK</td>'
                 status['first_author_affiliation'] = status['first_author_affiliation'] + 1
@@ -718,6 +730,7 @@ def coverage_report(papers):
         except:
             cov_html += '<td class="missing_good_to_have">???</td>'
 
+        #####
         # CLEAN first author affiliation - Not required, but REALLY useful
         try:
             clean_institution = this_paper['clean']['location']['clean_institute']
@@ -737,6 +750,7 @@ def coverage_report(papers):
             except:
                 cov_html += '<td class="missing_good_to_have">???</td>'
 
+        #####
         # Geocoded
         try:
             latitude = this_paper['clean']['location']['latitude']
@@ -756,6 +770,7 @@ def coverage_report(papers):
             except:
                 cov_html += '<td class="missing_good_to_have">???</!d>'
 
+        #####
         # Clean date
         try:
             clean_date = this_paper['clean']['clean_date']['year']
@@ -767,6 +782,7 @@ def coverage_report(papers):
         except:
             cov_html += '<td class="missing_required">???</!d>'
 
+        #####
         # Journal
         try:
             journal = this_paper['clean']['journal']['journal_name']
@@ -778,6 +794,7 @@ def coverage_report(papers):
         except:
             cov_html += '<td class="missing_good_to_have">???</td>'
 
+        #####
         # Scopus citations
         try:
             scopus_url = 'http://api.elsevier.com/content/search/scopus'
@@ -818,6 +835,7 @@ def coverage_report(papers):
         cov_html += '</tr>'
     cov_html += '</tbody></table>'
 
+    #####
     # Build a status table
     status_table = '<table>'
     status_table += '''<tr>

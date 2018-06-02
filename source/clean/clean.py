@@ -5,47 +5,30 @@ import logging
 import config.config as config
 
 
-# Some data will be missing. To deal with this, missing data will be put into the
-# Zotero notes field ('extra') in a formatted structure "<key>:<value>\n<key>:<value>\n". That data will then be parsed by
-# this function and put into the paper object so that it can be accessed throughout the analysis and html functions.
-def clean_zotero_extras(papers):
-    for this_paper in papers:
-        try:
-            this_paper['clean'] = {}
-            this_paper['clean']['zotero_data'] = {}
-            this_paper['clean']['zotero_data']['extra'] = {}
-            # notes = this_paper['merged']['extra']
-            # this_paper['merged']['extra'] = {}
-            extras = this_paper['raw']['zotero_data']['extra']
-
-            # split the notes data into key/value pairs
-            fields = extras.split("\n")
-            for this_field in fields:
-                components = this_field.split(":")
-                # this_paper['merged']['extra'][components[0].strip()] = components[1].strip()
-                # this_paper['clean']['zotero_data']['extra'][components[0].strip()] = components[1].strip()
-                this_paper['clean']['zotero_data']['extra'][components[0].strip()] = components[1].strip()
-        except:
-            pass
-
-
-# Copy all the raw data to the processed directory, this means we are only
-# ever working on the processed stuff and we never touch the raw data. This
-# makes it easier to rerun as we don't have to rebuild the raw cache each time.
-def pre_clean(papers, error_log):
-    print 'precleaning'
+################################################################################
+# Copy and format all the relevant raw data into the clean part of the data object.
+# This gives us a standard structure to work from later.
+################################################################################
+def clean(papers, error_log):
+    print 'Cleaning'
 
     for this_paper in papers:
 
         # Add an clean dict that we add stuff to - clean_institution,
         # citations etc
-        # this_paper['clean'] = {}
+        this_paper['clean'] = {}
+
+        # Parse the zotero extras field into clean/zoter_data
+        parse_zotero_extras(this_paper)
 
         # add clean title
         this_paper['clean']['title'] = this_paper['raw']['zotero_data']['title']
 
         # clean up the authors and add to 'clean'
-        clean_authors(this_paper)
+        clean_author_list(this_paper)
+
+        # Figure out the first author (from the list or zotero)
+        clean_first_author(this_paper)
 
         # clean mesh headings into 'clean'
         clean_mesh(this_paper)
@@ -69,18 +52,46 @@ def pre_clean(papers, error_log):
 
         # Get the scopus data from the cache
         clean_citations_scopus(this_paper)
+################################################################################
 
 
+################################################################################
+# Some data will be missing. To deal with this, missing data will be put into the
+# Zotero extra field in a formatted structure "<key>:<value>\n<key>:<value>\n". That data will then be parsed by
+# this function and put into the paper object so that it can be accessed throughout the analysis and html functions.
+################################################################################
+def parse_zotero_extras(this_paper):
+    try:
+        # Get the data, will bail here if there is none
+        extras = this_paper['raw']['zotero_data']['extra']
+
+        # Make the placeholders where this will go
+        this_paper['clean']['zotero_data'] = {}
+        this_paper['clean']['zotero_data']['extra'] = {}
+
+        # split the extras data into key/value pairs
+        fields = extras.split("\n")
+        for this_field in fields:
+            components = this_field.split(":")
+            this_paper['clean']['zotero_data']['extra'][components[0].strip()] = components[1].strip()
+    except:
+        pass
+################################################################################
+
+
+################################################################################
 # get the abstract from MedlineCitation if present and add to clean['abstract']
 # pmid_data   - usually present
 # doi_data    - ??
 # scopus_data - ??
+################################################################################
 def clean_abstract(this_paper):
     try:
         # Get abstract text
         this_paper['clean']['abstract'] = str(this_paper['raw']['pmid_data']['MedlineCitation']['Article']['Abstract']['AbstractText'])
     except:
         logging.warn('No abstract for ' + this_paper['IDs']['hash'])
+################################################################################
 
 
 ################################################################################
@@ -209,17 +220,6 @@ def clean_date(this_paper, error_log):
 
 
 ################################################################################
-# Clean author name
-# param author dict doi-style author object (at least 'family' and 'given' as keys)
-# Author's cleaned name is lastname (family) followed by first initial
-# returns string of cleaned name
-def clean_author_name(this_author):
-    # Create a clean author field. This is the Surname followed by first initial
-    cleaned_author_name = this_author['LastName'] + " " + this_author['Initials']
-    return cleaned_author_name
-
-
-################################################################################
 # Clean up the author list
 # Copies cleaned entry into:
 #
@@ -229,18 +229,18 @@ def clean_author_name(this_author):
 # clean (<Surname> <First initial>)
 # family
 #
-# returns list of cleaned authors
 # pmid_data   - usually present
 # doi_data    - ??
 # scopus_data - ??
-def clean_authors(this_paper):
+################################################################################
+def clean_author_list(this_paper):
     # generate the relevant structure in clean
     this_paper['clean']['full_author_list'] = []
 
     ############################################################################
     # PMID data
     ############################################################################
-    def _clean_authors_pmid(this_paper):
+    def _clean_author_list_pmid(this_paper):
         try:
             # Get the list of authors
             raw_author_list = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['AuthorList']
@@ -298,7 +298,7 @@ def clean_authors(this_paper):
     ############################################################################
     # DOI data
     ############################################################################
-    def _clean_authors_doi(this_paper):
+    def _clean_author_list_doi(this_paper):
         try:
             # Get the list of authors
             raw_author_list = this_paper['raw']['doi_data']['author']
@@ -353,19 +353,28 @@ def clean_authors(this_paper):
     ############################################################################
 
     # Actually run some code
-    status = _clean_authors_pmid(this_paper)
+    status = _clean_author_list_pmid(this_paper)
 
     if status is not True:
-        status = _clean_authors_doi(this_paper)
+        status = _clean_author_list_doi(this_paper)
+################################################################################
 
-    # Sanity check we have something here, if not then see if the extras from zotero has something
-    if len(this_paper['clean']['full_author_list']) == 0:
-        logging.info('No author found, going to try extra field.')
+
+################################################################################
+# The clean first author is not necessarily the first one in the clean author list
+# it could have come from the zotero field clean_first_author, but that doesnt
+# make sense to put in the list as it implies an author list of one which is
+# probably not true.
+################################################################################
+def clean_first_author(this_paper):
+    this_paper['clean']['first_author'] = ''
+    try:
+        # If the full_author_list has been populated (from any source) it will be here.
+        this_paper['clean']['first_author'] = this_paper['clean']['full_author_list'][0]['clean']
+    except:
         try:
-            # this_paper['clean']['full_author_list'].append({'clean': this_paper['merged']['extra']['clean_first_author']})
-            this_paper['clean']['full_author_list'].append({'clean': this_paper['clean']['zotero_data']['extra']['clean_first_author']})
-            # this_paper['clean']['full_author_list'][0] = {'clean': this_paper['merged']['extra']['clean_first_author']}
-            logging.debug('Author added via extra field.')
+            # try the zotero extras
+            this_paper['clean']['first_author'] = this_paper['clean']['zotero_data']['extra']['clean_first_author']
         except:
             logging.warn('Tried adding author from zotero extra, but failed. ')
 ################################################################################
@@ -376,6 +385,7 @@ def clean_authors(this_paper):
 # Essentially go through each institution and see if it matches a patten
 # in the institute_cleaning.csv file. If it does then replace it with a
 # standard name.
+################################################################################
 def clean_institution(papers):
     import unicodecsv
     logging.info('Starting institute cleaning')
@@ -418,50 +428,71 @@ def clean_institution(papers):
         if 'location' not in this_paper['clean'].keys():
             this_paper['clean']['location'] = {}
 
-        hasAffiliation = True
-        try:
-            # institute = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['AuthorList'][0]['AffiliationInfo'][0]['Affiliation']
-            institute = this_paper['clean']['full_author_list'][0]['affiliation']['name']
-        except:
-            logging.warn('Could not find an affiliation for %s', this_paper['IDs']['zotero'])
-            hasAffiliation = False
+        hasAffiliation = False
+        #####
+        # PubMed and DOI from first
+        if not hasAffiliation:
+            try:
+                candidate_institute = this_paper['clean']['full_author_list'][0]['affiliation']['name']
+                if candidate_institute != '':
+                    hasAffiliation = True
+            except:
+                logging.info('No affil from PubMed for %s', this_paper['IDs']['zotero'])
 
-        if hasAffiliation:
+        #####
+        # Try scopus
+        if not hasAffiliation:
+            try:
+                candidate_institute = this_paper['raw']['scopus_data']['search-results']['entry'][0]['affiliation'][0]['affilname']
+                if candidate_institute != '':
+                    hasAffiliation = True
+            except:
+                logging.info('No affil from Scopus for %s', this_paper['IDs']['zotero'])
+
+        #####
+        # Try zotero
+        # Doing zotero here means it will still get passed through the matching
+        # below to make sure it is a real place.
+        if not hasAffiliation:
+            try:
+                candidate_institute = this_paper['clean']['zotero_data']['extra']['clean_institute']
+                hasAffiliation = True
+            except:
+                logging.info('No affil from zotero for %s', this_paper['IDs']['zotero'])
+
+        if hasAffiliation and candidate_institute != '':
+            # Let's keep our candidate institite
+            this_paper['clean']['location']['candidate_institute'] = candidate_institute
+
             for y in range(0, len(pattern)):
                 # logging.debug('%s %s %s', institute, pattern[y], replacements[y])
 
                 # Check pattern in institite. These are both unicode and lowercase
-                temp = pattern[y] in unicode(institute).lower()
+                temp = pattern[y] in unicode(candidate_institute).lower()
                 if temp > 0:
                     logging.info(
                         'ID:%s. %s MATCHES %s REPLACEDBY %s',
-                        this_paper, institute, pattern[y], replacements[y])
+                        this_paper, candidate_institute, pattern[y], replacements[y])
                     this_paper['clean']['location']['clean_institute'] = replacements[y]
                     break
 
                 if y == len(pattern)-1:
-                    logging.info('No match for %s. ID:%s', institute, this_paper)
-                    logging.warn('No match for %s. ID:%s', institute, this_paper)
+                    logging.info('No match for %s. ID:%s', candidate_institute, this_paper)
+                    logging.warn('No match for %s. ID:%s', candidate_institute, this_paper)
                     number_not_matched += 1
-
-        try:
-            this_paper['clean']['location']['clean_institute']
-        except:
-            # Check for Zotero note institution
-            try:
-                this_paper['clean']['location']['clean_institute'] = this_paper['clean']['zotero_data']['extra']['clean_institute']
-            except:
-                pass
 
     print 'Cleaning institutions'
     print str(len(papers)-number_not_matched) + '/' + str(len(papers)) + ' cleaned'
 
     return number_not_matched
+################################################################################
 
 
+################################################################################
 # Clean journal title for paper
 # Journal title /should/ be in this_paper['merged']['MedlineCitation']['Article']['Journal']['ISOAbbreviation'] but is sometimes missing. Look elsewhere (this_paper['merged']['container-title'] in addition.
 # return this_paper with this_paper['clean']['journal'] set
+################################################################################
 def clean_journal(this_paper):
     if not('journal' in this_paper['clean'].keys() and this_paper['clean']['journal'] is not None):
         this_paper['clean']['journal'] = {
@@ -478,9 +509,12 @@ def clean_journal(this_paper):
                 logging.warn('No clean journal name for ' + this_paper['IDs']['hash'])
                 pass
     return this_paper
+################################################################################
 
 
+################################################################################
 # clean keywords (tags) for this_paper
+################################################################################
 def clean_keywords(this_paper):
     if 'tags' in this_paper['raw']:
         try:
@@ -500,9 +534,12 @@ def clean_keywords(this_paper):
                 )
         except:
             pass
+################################################################################
 
 
+################################################################################
 # clean mesh headings for this_paper
+################################################################################
 def clean_mesh(this_paper):
     if 'MedlineCitation' in this_paper['raw']['pmid_data'].keys():
         try:
@@ -531,6 +568,7 @@ def clean_mesh(this_paper):
 
 ################################################################################
 # Get the scopus citation data from the cached scopus files.
+################################################################################
 def clean_citations_scopus(this_paper):
     # Do i really need this?
     this_paper['clean']['citations'] = {}
@@ -553,3 +591,4 @@ def clean_citations_scopus(this_paper):
             return False
     except:
         pass
+################################################################################
