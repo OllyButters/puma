@@ -2,14 +2,33 @@
 
 import os.path
 import shutil
+import logging
+import datetime
 import config.config as config
 
 
-###########################################################
+################################################################################
+def clean_old_scopus_cache_file():
+    # If the force update flag is set in the config then all the scopus data
+    # will have been deleted already in the setup phase.
+
+    # Check the age of the exsiting files - scopus doesnt allow old citations
+    # so dump the whole file if it is too old.
+    cached_scopus_files_list = os.listdir(config.cache_dir + '/raw/scopus/')
+    for this_file in cached_scopus_files_list:
+        if abs(datetime.datetime.now() - datetime.datetime.fromtimestamp(os.stat(config.cache_dir + '/raw/scopus/' + this_file).st_mtime)) > datetime.timedelta(days=config.scopus_citation_max_age_days):
+            print('Deleting: ' + this_file)
+            logging.info('Deleting: ' + this_file)
+            os.remove(this_file)
+################################################################################
+
+
+################################################################################
 # Some of the config settings want to trample cached data,
 # this needs to be done elegantly otherwise old data is
 # left behind and can get picked up unnecessarily.
-def tidy_existing_file_tree(root_dir):
+################################################################################
+def tidy_existing_file_tree():
 
     # Raw zotero files. Orphans get left here if deleted from e.g. zotero
     if config.zotero_get_all is True:
@@ -35,11 +54,12 @@ def tidy_existing_file_tree(root_dir):
             shutil.rmtree(config.cache_dir + '/processed/merged')
 
 
-###########################################################
+################################################################################
 # Make sure the directory structure is set up first.
 # Everything in the cache is grabbed from elsewhere, or built on the fly,
 # so it should all be considerd ready to be deleted at any point!
-def build_file_tree(root_dir):
+################################################################################
+def build_file_tree():
     # = Cache directory =
     if not os.path.exists(config.cache_dir):
         os.makedirs(config.cache_dir)
@@ -75,24 +95,17 @@ def build_file_tree(root_dir):
         os.mkdir(config.cache_dir + '/geodata')
 
     # = Data directory =
-    if not os.path.exists(root_dir + '/data'):
-        os.mkdir(root_dir + '/data')
-
     if not os.path.exists(config.data_dir):
-        os.mkdir(config.data_dir)
+        os.makedirs(config.data_dir)
 
     # = Log directory =
-    if not os.path.exists(root_dir + '/logs'):
-        os.mkdir(root_dir + '/logs')
+    if not os.path.exists(config.log_dir):
+        os.makedirs(config.log_dir)
 
     # = Output html directory =
     # Html dir
-    if not os.path.exists(root_dir + "/html"):
-        os.mkdir(root_dir + "/html")
-
-    # Study html dir. This one is inside the previous one.
     if not os.path.exists(config.html_dir):
-        os.mkdir(config.html_dir)
+        os.makedirs(config.html_dir)
 
     html_directories = {"/mesh", "/css", "/papers", "/all_keywords", "/major_keywords", "/map", "/country", "/city", "/metrics", "/wordcloud", "/abstractwordcloud", "/authornetwork", "/errorlog", "/help", "/search", "/status"}
 

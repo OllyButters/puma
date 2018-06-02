@@ -46,10 +46,10 @@ print 'Root directory = ' + root_dir
 config.build_config_variables(root_dir)
 
 # Delete any unneeded data hanging around in the cache
-setup.tidy_existing_file_tree(root_dir)
+setup.tidy_existing_file_tree()
 
 # Build the file tree relative to the root_dir
-setup.build_file_tree(root_dir)
+setup.build_file_tree()
 
 # Time Log
 start_time = time.time()
@@ -78,7 +78,7 @@ logging.info('Started at: ' + str(start_time))
 papers = []
 
 # Collate does not do anything with the papers object.
-# get.simple_collate.collate()
+get.simple_collate.collate()
 # print temp
 # exit(1)
 
@@ -112,10 +112,11 @@ print str(len(papers)) + ' papers to process'
 
 ###########################################################
 # Clean the data - e.g. tidy dates and institute names
-# clean.clean_zotero_extras(papers)
-clean.clean(papers, error_log)
+clean.clean(papers)
+
 # should probably move clean_institution into clean directly
 clean.clean_institution(papers)
+
 # for this_paper in papers:
 #    pprint(this_paper)
 

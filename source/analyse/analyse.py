@@ -71,7 +71,7 @@ def word_frequencies(papers, item):
         except:
             this_year = '0'
 
-        print('this year = ' + str(this_year))
+        # print('this year = ' + str(this_year))
 
         # Increment the number of papers this year, or if we don't have one yet
         # initialize it to ONE!

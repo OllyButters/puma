@@ -36,7 +36,6 @@ def collate():
     doi_cache = pc.getCacheList(filetype='/raw/doi')
     pm_cache = pc.getCacheList(filetype='/raw/pubmed')
     scopus_cache = pc.getCacheData(filetype='/raw/scopus')
-    # merged_list = pc.getCacheList(filetype='/processed/merged')
 
     zot.collection = config.zotero_collection
 

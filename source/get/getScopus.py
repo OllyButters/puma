@@ -2,36 +2,17 @@
 
 import urllib2
 import json
-import datetime
 import logging
-import os
 
 import config.config as config
 import papersCache as pc
 
 
-def cleanScopus(citation_max_life):
-    # If the force update flag is set in the config then all the scopus data
-    # will have been deleted already in the setup phase.
-
-    # Check the age of the exsiting files - scopus doesnt allow old citations
-    # so dump the whole file if it is too old.
-    print(datetime.datetime.now())
-    cached_scopus_files_list = os.listdir(config.cache_dir + '/raw/scopus/')
-    for this_file in cached_scopus_files_list:
-        print(os.stat(config.cache_dir + '/raw/scopus/' + this_file).st_mtime)
-        print(datetime.datetime.fromtimestamp(os.stat(config.cache_dir + '/raw/scopus/' + this_file).st_mtime))
-        if abs(datetime.datetime.now() - datetime.datetime.fromtimestamp(os.stat(config.cache_dir + '/raw/scopus/' + this_file).st_mtime)) > datetime.timedelta(days=citation_max_life):
-            print('Will delete')
-
-
+################################################################################
 # Use the elsevier API to get extra info about the paper (including citations).
 # Try using the PMID first, if nothing returned then try using the DOI.
+################################################################################
 def getScopus(zotero_ID, PMID, DOI):
-
-    logging.debug('here')
-    logging.debug(PMID)
-    logging.debug('here')
 
     url = 'http://api.elsevier.com/content/search/scopus'
 
