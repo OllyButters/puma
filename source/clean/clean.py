@@ -9,13 +9,13 @@ import config.config as config
 # Copy and format all the relevant raw data into the clean part of the data object.
 # This gives us a standard structure to work from later.
 ################################################################################
-def clean(papers, error_log):
+def clean(papers):
     print 'Cleaning'
+    logging.info('Starting cleaning.')
 
     for this_paper in papers:
 
-        # Add an clean dict that we add stuff to - clean_institution,
-        # citations etc
+        # Add an clean dict that we add stuff to
         this_paper['clean'] = {}
 
         # Parse the zotero extras field into clean/zoter_data
@@ -43,15 +43,12 @@ def clean(papers, error_log):
         clean_abstract(this_paper)
 
         # get a cleaned date
-        # then insert year_published into clean['year_published'] if present
-        clean_date(this_paper, error_log)
-        try:
-            this_paper['clean']['year_published'] = this_paper['clean']['cleaned_date']['year']
-        except:
-            pass
+        clean_date(this_paper)
 
         # Get the scopus data from the cache
         clean_citations_scopus(this_paper)
+
+    logging.info('Finished cleaning.')
 ################################################################################
 
 
@@ -143,7 +140,7 @@ def clean_abstract(this_paper):
 
 
 ################################################################################
-def clean_date(this_paper, error_log):
+def clean_date(this_paper):
     # Generate a Clean Date
     # There are a lot of different dates in the paper data object.
     # These need to be converted into 1 date field so that it is consistently accessible throughout.
@@ -260,10 +257,13 @@ def clean_date(this_paper, error_log):
     if not status:
         status = _clean_date_zotero(this_paper)
 
-    # A date has not been found. Put this in the error log.
-    if status is False:
-        error_log.logErrorPaper("Cannot Create Clean Date (Consider using Zotero notes)", this_paper)
-        logging.warn("Cannot Create Clean Date (Consider using Zotero notes). Hash: " + str(this_paper['IDs']['hash']))
+    # Make a note of the year published. This should be complete!
+    if status:
+        try:
+            this_paper['clean']['year_published'] = this_paper['clean']['cleaned_date']['year']
+        except:
+            logging.warn("Cannot Create Clean Date (Consider using Zotero notes). Hash: " + str(this_paper['IDs']['hash']))
+
 ################################################################################
 
 
@@ -278,8 +278,8 @@ def clean_date(this_paper, error_log):
 # family
 #
 # pmid_data   - usually present
-# doi_data    - ??
-# scopus_data - ??
+# doi_data    - often present
+# scopus_data - often present - NOT USED HERE.
 ################################################################################
 def clean_author_list(this_paper):
     # generate the relevant structure in clean
@@ -338,8 +338,7 @@ def clean_author_list(this_paper):
             if len(this_paper['clean']['full_author_list']) > 0:
                 return True
 
-        except Exception as e:
-            print str(e)
+        except:
             logging.warn('No AuthorList for ' + this_paper['IDs']['hash'])
     ############################################################################
 
@@ -395,8 +394,7 @@ def clean_author_list(this_paper):
             if len(this_paper['clean']['full_author_list']) > 0:
                 return True
 
-        except Exception as e:
-            print str(e)
+        except:
             logging.warn('No AuthorList for ' + this_paper['IDs']['hash'])
     ############################################################################
 
@@ -531,8 +529,6 @@ def clean_institution(papers):
 
     print 'Cleaning institutions'
     print str(len(papers)-number_not_matched) + '/' + str(len(papers)) + ' cleaned'
-
-    return number_not_matched
 ################################################################################
 
 
@@ -613,7 +609,7 @@ def clean_mesh(this_paper):
                         }
                     )
             except Exception as e:
-                print str(e)
+                print('MeSH error: ' + str(e))
                 pass
 
 
