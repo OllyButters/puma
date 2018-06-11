@@ -6,7 +6,6 @@ from nltk.stem import WordNetLemmatizer
 import numpy as np
 import pandas as pd
 
-
 ############################################################
 # Have all the data now, so do something with it
 ############################################################
@@ -25,8 +24,8 @@ def journals(papers):
         if this_paper['clean']['journal']['journal_name'] != '':
             journals.append(this_paper['clean']['journal']['journal_name'])
 
-    print str(len(journals)) + '/' + str(num_papers)
-    print str(len(set(journals))) + ' different journals'
+    print(str(len(journals)) + '/' + str(num_papers))
+    print(str(len(set(journals))) + ' different journals')
 
     # calculate the frequency of each journal
     freq = dict((x, journals.count(x)) for x in set(journals))

@@ -545,14 +545,21 @@ def clean_journal(this_paper):
           'issue': ''
         }
         try:
-            this_paper['clean']['journal']['journal_name'] = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
+            candidate_journal = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
+            if isinstance(candidate_journal, unicode):
+                this_paper['clean']['journal']['journal_name'] = candidate_journal
+            elif isinstance(candidate_journal, list):
+                this_paper['clean']['journal']['journal_name'] = candidate_journal[0]
         except:
             try:
-                this_paper['clean']['journal']['journal_name'] = this_paper['raw']['doi_data']['container-title']
+                candidate_journal = this_paper['raw']['doi_data']['container-title']
+                if isinstance(candidate_journal, unicode):
+                    this_paper['clean']['journal']['journal_name'] = candidate_journal
+                elif isinstance(candidate_journal, list):
+                    this_paper['clean']['journal']['journal_name'] = candidate_journal[0]
             except:
                 logging.warn('No clean journal name for ' + this_paper['IDs']['hash'])
                 pass
-    return this_paper
 ################################################################################
 
 

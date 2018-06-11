@@ -43,6 +43,7 @@ def coverage_report(papers):
                     <th>Clean<br/>Date &uarr;&darr;</th>
                     <th>Journal<br/>&uarr;&darr;</th>
                     <th>Scopus<br/>Citations &uarr;&darr;</th>
+                    <th>Scopus<br/>Type &uarr;&darr;</th>
                 </tr></thead>
                 <tbody>'''
 
@@ -333,6 +334,17 @@ def coverage_report(papers):
             cov_html += scopus_html
         except:
             cov_html += '<td class="missing_required">ERROR</td>'
+
+        #####
+        # Scopus type
+        try:
+            scopus_type = this_paper['raw']['scopus_data']['search-results']['entry'][0]['subtypeDescription']
+            if scopus_type != '':
+                cov_html += '<td>' + scopus_type + '</td>'
+            else:
+                raise Exception()
+        except:
+            cov_html += '<td class="missing_good_to_have">???</td>'
 
         cov_html += '</tr>'
     cov_html += '</tbody></table>'
