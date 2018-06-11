@@ -70,7 +70,7 @@ def collate():
         pc.dumpJson(paper['key'], paper, 'raw/zotero')
         # add to new_papers for later doi/pubmed data retrieval
         # check itemType - if it's 'note', we can ignore
-        if paper['data']['itemType'] != 'note':
+        if paper['data']['itemType'] not in ('attachment', 'note'):
             zotero_papers.append(paper['data'])
 
     # zotero_papers will have ALL zotero data in it based on cache and newly downloaded data.
