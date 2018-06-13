@@ -492,16 +492,29 @@ def output_csv(papers):
                 first_author = '???'
 
             try:
+                all_authors = this_paper['clean']['full_author_list']
+                author_string = ''
+                for this_author in all_authors:
+                    author_string = author_string + this_author['family'] + ', '
+            except:
+                author_string = '???'
+
+            try:
                 journal = this_paper['clean']['journal']['journal_name']
             except:
                 journal = '???'
 
             try:
-                citations = this_paper['clean']['Citations']
+                citations = this_paper['clean']['citations']['scopus']['count']
             except:
                 citations = '???'
 
             try:
-                all_file.writerow([title, first_author, journal, citations, this_paper])
+                year = this_paper['clean']['clean_date']['year']
+            except:
+                year = '???'
+
+            try:
+                all_file.writerow([year, author_string, title, first_author, journal, citations])
             except:
                 pass
