@@ -161,6 +161,15 @@ def clean_date(this_paper):
     def _clean_date_pmid(this_paper):
         # Full Pubmed date - probably the best one
         try:
+            if str(this_paper['raw']['pmid_data']['MedlineCitation']['Article']['ArticleDate'][0]['Day']) != "" and str(this_paper['raw']['pmid_data']['MedlineCitation']['Article']['ArticleDate'][0]['Month']) != "" and str(this_paper['raw']['pmid_data']['MedlineCitation']['Article']['ArticleDate'][0]['Year']) != "":
+                this_paper['clean']['clean_date']['day'] = str(this_paper['raw']['pmid_data']['MedlineCitation']['Article']['ArticleDate'][0]['Day'])
+                this_paper['clean']['clean_date']['month'] = str(this_paper['raw']['pmid_data']['MedlineCitation']['Article']['ArticleDate'][0]['Month'])
+                this_paper['clean']['clean_date']['year'] = str(this_paper['raw']['pmid_data']['MedlineCitation']['Article']['ArticleDate'][0]['Year'])
+                return True
+        except:
+            pass
+
+        try:
             if str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Day']) != "" and str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Month']) != "" and str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Year']) != "":
                 this_paper['clean']['clean_date']['day'] = str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Day'])
                 this_paper['clean']['clean_date']['month'] = str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Month'])
