@@ -515,6 +515,6 @@ def output_csv(papers):
                 year = '???'
 
             try:
-                all_file.writerow([year, author_string, title, first_author, journal, citations])
+                all_file.writerow([year, author_string.encode('utf-8'), title.encode('utf-8'), first_author.encode('utf-8'), journal, citations])
             except:
                 pass
