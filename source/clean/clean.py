@@ -159,7 +159,18 @@ def clean_date(this_paper):
     ############################################################################
     # Try the various PubMed dates. Return True if one works
     def _clean_date_pmid(this_paper):
-        # Full Pubmed date - probably the best one
+
+        # Just the year from the Journal info. This is what the journal wants, and may
+        # be significantly later than when it first appeared online. It is how it would
+        # appear in a citation.
+        try:
+            if str(this_paper['raw']['pmid_data']['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Year']) != "":
+                this_paper['clean']['clean_date']['year'] = str(this_paper['raw']['pmid_data']['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['Year'])
+                return True
+        except:
+            pass
+
+        # Full Pubmed date - I think this is derived from various places
         try:
             if str(this_paper['raw']['pmid_data']['MedlineCitation']['Article']['ArticleDate'][0]['Day']) != "" and str(this_paper['raw']['pmid_data']['MedlineCitation']['Article']['ArticleDate'][0]['Month']) != "" and str(this_paper['raw']['pmid_data']['MedlineCitation']['Article']['ArticleDate'][0]['Year']) != "":
                 this_paper['clean']['clean_date']['day'] = str(this_paper['raw']['pmid_data']['MedlineCitation']['Article']['ArticleDate'][0]['Day'])
@@ -169,6 +180,7 @@ def clean_date(this_paper):
         except:
             pass
 
+        # Full history
         try:
             if str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Day']) != "" and str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Month']) != "" and str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Year']) != "":
                 this_paper['clean']['clean_date']['day'] = str(this_paper['raw']['pmid_data']['PubmedData']['History'][0]['Day'])
@@ -187,19 +199,6 @@ def clean_date(this_paper):
                 return True
         except:
             pass
-
-        # Full created date
-        # try:
-            # actually I am not sure this is a good idea, I think this might be the date the metadata was created...
-            # if str(this_paper['merged']['created']['date-parts'][0][2]) == "" or str(this_paper['merged']['created']['date-parts'][0][1]) == "" or str(this_paper['merged']['created']['date-parts'][0][0]) == "":
-            #    raise Exception('Invalid Date')
-
-            # this_paper['clean']['clean_date']['day'] = str(this_paper['merged']['created']['date-parts'][0][2])
-            # this_paper['clean']['clean_date']['month'] = str(this_paper['merged']['created']['date-parts'][0][1])
-            # this_paper['clean']['clean_date']['year'] = str(this_paper['merged']['created']['date-parts'][0][0])
-            # date_status = True
-        # except:
-        #    pass
 
         # PARTIAL Pubmed date
         try:
@@ -221,6 +220,15 @@ def clean_date(this_paper):
     ############################################################################
     # Try the various DOI dates. Return True if one works
     def _clean_date_doi(this_paper):
+
+        # journal-issue
+        try:
+            if str(this_paper['raw']['doi_data']['journal-issue']['published-print']['date-parts'][0][0]) != "":
+                this_paper['clean']['clean_date']['year'] = str(this_paper['raw']['doi_data']['journal-issue']['published-print']['date-parts'][0][0])
+                return True
+        except:
+            pass
+
         # Try issued/data-parts (year and month)
         try:
             if str(this_paper['raw']['doi_data']['issued']['date-parts'][0][0]) != "" and str(this_paper['raw']['doi_data']['issued']['date-parts'][0][0]) != "":
