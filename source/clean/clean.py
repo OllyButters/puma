@@ -221,7 +221,7 @@ def clean_date(this_paper):
     # Try the various DOI dates. Return True if one works
     def _clean_date_doi(this_paper):
 
-        # journal-issue
+        # journal-issue year
         try:
             if str(this_paper['raw']['doi_data']['journal-issue']['published-print']['date-parts'][0][0]) != "":
                 this_paper['clean']['clean_date']['year'] = str(this_paper['raw']['doi_data']['journal-issue']['published-print']['date-parts'][0][0])
