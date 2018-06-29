@@ -1,26 +1,26 @@
 [project_details]
-name: 1958 National Child Development Study
-short_name: 1958
+name:
+short_name:
 
 colour_hex_primary: 1d294d
 colour_hex_secondary: 9e9e9e
 
-header_image_url: http://bristol.ac.uk/media-library/protected/images/uob-logo-white-largest.png
-header_institution: University of Bristol
-header_institution_url: http://bristol.ac.uk
+header_image_url:
+header_institution:
+header_institution_url:
 
-side_image_url: http://www.bristol.ac.uk/media-library/sites/alspac/images/alspac-25-logo.png
-side_image_link: http://www.bristol.ac.uk/alspac/25/
+side_image_url:
+side_image_link:
 side_image_filename:
 
-header_institution_name: 
-header_institution_logo_filename: 
+header_institution_name:
+header_institution_logo_filename:
 
 [zotero_api]
-zotero_api_key: 
-zotero_id: 
+zotero_api_key:
+zotero_id:
 zotero_type: group
-zotero_collection: 
+zotero_collection:
 
 [collate]
 #settings specifying which (if any) old data to re-download and/or re-merge
@@ -29,26 +29,18 @@ zotero_collection:
 zotero_get_all: False
 #use_doi_pubmed_cache: use the cached versions (if any) of pubmed/doi data. True = use cache, False = don't (i.e. re-download)
 use_doi_pubmed_cache: True
-#merge_all: merge all cached and new papers if set to True. only merge new papers if set to False (existing papers are loaded from cache)
-merge_all: True
-##
-# use_cached_merge_only: 1 = OVERRIDE all the above collate settings and just
-# load pre-existing cached papers, 0 = run collate process using the 
-# above settings
-##
-use_cached_merge_only: False
 
 [pubmed_api]
 pubmed_email:
 
 [scopus]
 scopus_force_citation_update: False
-scopus_api_key: 
+scopus_api_key:
 scopus_citation_max_age_days: 30
 scopus_run_citation: True
 
 [google_apis]
-google_maps_api_key: 
+google_maps_api_key:
 
 [logging]
 loglevel: DEBUG

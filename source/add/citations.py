@@ -10,16 +10,6 @@ import logging
 import config.config as config
 
 
-# Use the elsevier API to get the number of citations a paper has.
-# Try using the PMID first, if nothing returned then try using the DOI.
-# Ultimately need to build a GET string like
-# http://api.elsevier.com/content/search/scopus?query=PMID(18562177)&apiKey=8024d746590aade6be6856a22a734783&field=citedby-count
-# After scopus try pubmedcentral for a citation count.
-# There does seem to be a fair bit of repatition between the DOI and PMID code,
-# this is because the DOI returned data sometimes has multiple results, so needs
-# a bit of extra parsing.
-# Note: eid is the ID scopus assigns to each paper it knows about, this is useful
-#     for linking to it on the HTML pages later on.
 def citations(papers, api_key, citation_max_life, force_update, error_log):
 
     ############################################################################

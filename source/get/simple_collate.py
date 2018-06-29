@@ -41,8 +41,7 @@ def collate():
             else:
                 # get the previously downloaded papers from the cache
                 cached_zotero_data = pc.getCacheData(filetype='/raw/zotero', filenames=[paper_key])[paper_key]
-                # check itemType - if it's 'note', we can ignore
-                # if new_paper['data']['itemType'] != 'note':
+                # check itemType - if it's 'note', or 'attachment' we can ignore
                 if cached_zotero_data['data']['itemType'] not in ('attachment', 'note'):
                     zotero_papers.append(cached_zotero_data['data'])
 
@@ -54,19 +53,18 @@ def collate():
         # cache zotero data
         pc.dumpJson(paper['key'], paper, 'raw/zotero')
         # add to new_papers for later doi/pubmed data retrieval
-        # check itemType - if it's 'note', we can ignore
+        # check itemType - if it's 'note', or 'attachment' we can ignore
         if paper['data']['itemType'] not in ('attachment', 'note'):
             zotero_papers.append(paper['data'])
 
     # zotero_papers will have ALL zotero data in it based on cache and newly downloaded data.
     # now check zotero_papers for doi, pubmed id, scopus data  and retrieve if required.
-    # at the same time build the merged dictionary
     counter = 0
     total_number_zotero_papers = str(len(zotero_papers))
 
     for paper in zotero_papers:
 
-        # Keep track of how far through we are if watching terminal
+        # Keep track of how far through we are if watching terminal# check itemType - if it's 'note', or 'attachment' we can ignore
         counter = counter + 1
         print('\nOn ' + str(counter) + '/' + total_number_zotero_papers)
 
@@ -149,8 +147,6 @@ def collate():
                     print('PMID: Getting from cache.')
                     this_merged_paper['raw']['pmid_data'] = pc.getCacheData(filetype='/raw/pubmed', filenames=[paper['pmid']])[paper['pmid']]
 
-        # CLEAN SCOPUS HERE.
-
         # Do scopus data now
         if this_merged_paper['IDs']['PMID'] != '' or this_merged_paper['IDs']['DOI'] != '':
             # check if paper data in scopus cache
@@ -173,9 +169,3 @@ def collate():
         merged_filename = this_merged_paper['IDs']['zotero'] + '.merged'
         logging.info('Merged filename: ' + merged_filename)
         pc.dumpJson(merged_filename, this_merged_paper, 'processed/merged')
-
-
-if __name__ == "__main__":
-    print "Collate data"
-
-    collate()

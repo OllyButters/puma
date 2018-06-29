@@ -33,8 +33,8 @@ import networks.author_network as author_network
 import analyse.coverage_report as coverage_report
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
-__date__ = 2/6/18
-__version__ = '0.8.0'
+__date__ = 29/6/18
+__version__ = '0.9.0'
 
 # Lets figure out some paths that everything is relative to
 # global root_dir
@@ -126,9 +126,6 @@ clean.clean_institution(papers)
 # Add some extra data in - i.e. geocodes and citations
 add.geocode.geocode(papers, error_log, config.google_maps_api_key)
 
-# if config.scopus_run_citation:
-#    add.citations.citations(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update, error_log)
-
 # Write papers to summary file
 file_name = root_dir + '/data/' + config.project_details['short_name'] + '/summary_added_to'
 fo = open(file_name, 'wb')
@@ -157,7 +154,7 @@ analyse.journals(papers)
 # Figure out the word frequecies
 analyse.word_frequencies(papers, 'title')
 analyse.word_frequencies(papers, 'keywords')
-abstract_data_from_count = analyse.word_frequencies(papers, 'abstract')
+# abstract_data_from_count = analyse.word_frequencies(papers, 'abstract')
 
 network = analyse.authors(papers)
 analyse.first_authors(papers)
@@ -174,7 +171,7 @@ html.build_htmlv2.build_mesh(papers)
 html.build_htmlv2.build_google_map(papers)
 html.build_htmlv2.build_country_map(papers, config.google_maps_api_key)
 html.build_htmlv2.build_metrics(papers, cohort_rating, cohort_rating_data_from, config.metrics_study_start_year, config.metrics_study_current_year)
-html.build_htmlv2.build_abstract_word_cloud(papers, abstract_data_from_count)
+# html.build_htmlv2.build_abstract_word_cloud(papers, abstract_data_from_count)
 html.build_htmlv2.build_author_network(papers, network, error_log)
 html.build_htmlv2.build_error_log(papers, error_log)
 html.build_htmlv2.build_help()
