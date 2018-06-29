@@ -33,7 +33,6 @@ def build_config_variables(root_dir):
     # collation settings
     global zotero_get_all
     global use_doi_pubmed_cache
-    global merge_all
 
     global pubmed_email
 
@@ -89,7 +88,6 @@ def build_config_variables(root_dir):
         # collate settings
         zotero_get_all = config.getboolean('collate', 'zotero_get_all')
         use_doi_pubmed_cache = config.getboolean('collate', 'use_doi_pubmed_cache')
-        merge_all = config.getboolean('collate', 'merge_all')
 
         # Pubmed
         pubmed_email = config.get('pubmed_api', 'pubmed_email')
