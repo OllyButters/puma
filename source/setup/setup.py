@@ -48,7 +48,8 @@ def tidy_existing_file_tree():
             shutil.rmtree(config.cache_dir + '/raw/scopus')
 
     # Merged files. Orphans get left here if deleted from e.g. zotero or
-    # the raw cache folder. These get rebuilt everytime now, so trash everything.
+    # the raw cache folder. These get rebuilt everytime now, so trash everything
+    # to avoid this.
     # if config.merge_all is True and config.use_cached_merge_only is False:
     if os.path.exists(config.cache_dir + '/processed/merged'):
         shutil.rmtree(config.cache_dir + '/processed/merged')

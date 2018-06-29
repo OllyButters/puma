@@ -34,7 +34,6 @@ def build_config_variables(root_dir):
     global zotero_get_all
     global use_doi_pubmed_cache
     global merge_all
-    global use_cached_merge_only
 
     global pubmed_email
 
@@ -91,7 +90,6 @@ def build_config_variables(root_dir):
         zotero_get_all = config.getboolean('collate', 'zotero_get_all')
         use_doi_pubmed_cache = config.getboolean('collate', 'use_doi_pubmed_cache')
         merge_all = config.getboolean('collate', 'merge_all')
-        use_cached_merge_only = config.getboolean('collate', 'use_cached_merge_only')
 
         # Pubmed
         pubmed_email = config.get('pubmed_api', 'pubmed_email')

@@ -13,21 +13,6 @@ import logging
 # Assuming this works all of the templating stuff and papersMerge from the old collate can go.
 
 def collate():
-    # first, check if config.use_cached_merged_only is set to True
-    # if so, just load these and return
-    if config.use_cached_merge_only is True:
-        # get list of currently merged papers
-        merged_list = pc.getCacheList(filetype='/processed/merged')
-        merged_papers = []
-        logging.info("COLLATE: use_cached_merge_only set to 1 so loading papers straight from processed/merged")
-        print "use_cached_merge_only set to 1 so loading papers straight from processed/merged"
-        for merged_paper in merged_list:
-            logging.info("Loading cached merged paper: "+merged_paper)
-            print "Loading cached merged paper: "+merged_paper+"."
-            merged_papers.append(pc.getCacheData(filetype='/processed/merged', filenames=[merged_paper])[merged_paper])
-
-        return merged_papers
-
     # first, check for new papers from zotero repo
     zot = pz.zotPaper()
 
