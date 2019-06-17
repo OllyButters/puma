@@ -154,7 +154,7 @@ analyse.journals(papers)
 # Figure out the word frequecies
 analyse.word_frequencies(papers, 'title')
 analyse.word_frequencies(papers, 'keywords')
-# abstract_data_from_count = analyse.word_frequencies(papers, 'abstract')
+analyse.word_frequencies(papers, 'abstract')
 
 network = analyse.authors(papers)
 analyse.first_authors(papers)
