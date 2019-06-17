@@ -816,6 +816,7 @@ def build_mesh(papers):
             # Build the text needed for each paper
             for this_paper in mesh_papers_all[this_mesh]:
 
+                # print(this_paper)
                 try:
                     # Get paper object
                     paper_obj = None

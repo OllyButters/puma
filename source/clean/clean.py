@@ -2,6 +2,7 @@
 
 import re
 import logging
+import hashlib
 import config.config as config
 
 
@@ -23,6 +24,9 @@ def clean(papers):
 
         # clean the title
         clean_title(this_paper)
+
+        # make a hash of the title
+        this_paper['IDs']['hash'] = hashlib.md5(this_paper['clean']['title'].encode('ascii', 'ignore')).hexdigest()
 
         # clean up the authors and add to 'clean'
         clean_author_list(this_paper)

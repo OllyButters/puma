@@ -1,3 +1,5 @@
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 Puma README!
 
 Puma is a pipeline to mine academic publication metadata, creating a valuable research object and visual analytics from a research project publication list.
