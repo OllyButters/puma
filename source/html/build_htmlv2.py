@@ -1223,17 +1223,17 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     temp += "</div>"
 
     temp += "<div class='metric'>"
-    temp += "<div class='metric_name'>Cohort-Rating</div>"
-    temp += "<div class='metric_value'>" + str("{0:.3f}".format(round(cohort_rating, 3))) + "</div>"
-    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(cohort_rating_data_from) + " Publications</div>"
-    temp += "<div class='metric_description'></div>"
-    temp += "</div>"
-
-    temp += "<div class='metric'>"
     temp += "<div class='metric_name'>Mean Citations Per Publication</div>"
     temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(average_citations, 2))) + "</div>"
     temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>The total number of citations divided by the total number of publications.</div>"
+    temp += "</div>"
+
+    temp += "<div class='metric'>"
+    temp += "<div class='metric_name'>Age-weighted Mean Citations Per Publication</div>"
+    temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(cohort_rating, 3))) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(cohort_rating_data_from) + " Publications</div>"
+    temp += "<div class='metric_description'>Age-weighted Mean Citations Per Publication.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
