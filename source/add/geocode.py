@@ -1,7 +1,6 @@
 #! /usr/bin/env python2
 
 import csv
-# import re
 import os.path
 import json
 import urllib2
@@ -15,7 +14,7 @@ import config.config as config
 # I would expect there to be a lat long for all of them
 def geocode(papers, error_log, api_key):
 
-    print 'Geocoding'
+    print('Geocoding')
 
     # Read in the backup csv file
     # This is used to make up for old places not being on wikidata or old places
@@ -131,8 +130,10 @@ def geocode(papers, error_log, api_key):
             logging.info('No Clean Institute for ' + this_paper['IDs']['hash'] + " (" + str(number_done) + "/" + str(len(papers)) + ")")
             error_log.logErrorPaper(" Clean Institute Missing for " + this_paper['IDs']['hash'] + " <a href='https://www.zotero.org/groups/" + config.zotero_id + "/items/itemKey/" + this_paper['IDs']['zotero'] + "'>Zotero</a>", this_paper)
 
-        if found_coords:
+
+        if found_coords and ('country_code' not in this_paper['clean']['location']) and ('postal_town' not in this_paper['clean']['location']):
             # The coordinates have been found from either wikidata or the backup file
+            # but we don't have a country_code or postal_town
             # Now using the google maps api to get the country and city data for use in the charts
             # Make API request.
             retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['clean']['location']['latitude'] + ',' + this_paper['clean']['location']['longitude'] + '&key=' + api_key))
@@ -163,4 +164,4 @@ def geocode(papers, error_log, api_key):
 
         number_done += 1
 
-    print "locations found: " + str(locations_found) + "/" + str(number_done)
+    print("locations found: " + str(locations_found) + "/" + str(number_done))
