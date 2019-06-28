@@ -11,7 +11,7 @@ import config.config as config
 # This gives us a standard structure to work from later.
 ################################################################################
 def clean(papers):
-    print 'Cleaning'
+    print('Cleaning')
     logging.info('Starting cleaning.')
 
     for this_paper in papers:
@@ -474,7 +474,7 @@ def clean_institution(papers):
 
                 # Retype both to unicode, this will parse any \u1234 bits to their
                 # actual unicode.
-                # Make patter lowercase so it matches better.
+                # Make pattern lowercase so it matches better.
                 pattern.append(unicode(row[0]).lower())
                 replacements.append(unicode(row[1]))
             except:
@@ -539,17 +539,17 @@ def clean_institution(papers):
                 if temp > 0:
                     logging.info(
                         'ID:%s. %s MATCHES %s REPLACEDBY %s',
-                        this_paper, candidate_institute, pattern[y], replacements[y])
+                        this_paper['IDs']['hash'], candidate_institute, pattern[y], replacements[y])
                     this_paper['clean']['location']['clean_institute'] = replacements[y]
                     break
 
                 if y == len(pattern)-1:
-                    logging.info('No match for %s. ID:%s', candidate_institute, this_paper)
-                    logging.warn('No match for %s. ID:%s', candidate_institute, this_paper)
+                    logging.info('No match for %s. ID:%s', candidate_institute, this_paper['IDs']['hash'])
+                    logging.warn('No match for %s. ID:%s', candidate_institute, this_paper['IDs']['hash'])
                     number_not_matched += 1
 
-    print 'Cleaning institutions'
-    print str(len(papers)-number_not_matched) + '/' + str(len(papers)) + ' cleaned'
+    print('Cleaning institutions')
+    print(str(len(papers)-number_not_matched) + '/' + str(len(papers)) + ' cleaned')
 ################################################################################
 
 

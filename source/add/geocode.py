@@ -7,6 +7,9 @@ import urllib2
 import requests
 import logging
 
+from SPARQLWrapper import SPARQLWrapper, JSON
+
+
 import config.config as config
 
 
@@ -48,7 +51,7 @@ def geocode(papers, error_log, api_key):
         # Each cached location is held in a seperate file
         try:
             clean_institute = this_paper['clean']['location']['clean_institute']
-            logging.info(str(this_paper['IDs']['hash']) + " geocode " + clean_institute + " (" + str(number_done) + "/" + str(len(papers)) + ")")
+            logging.info(str(this_paper['IDs']['hash']) + " geocode: " + clean_institute)
             if os.path.isfile(config.cache_dir + "/geodata/" + clean_institute):
                 # The location has a cache file. load cached data.
                 cache_file = open(config.cache_dir + "/geodata/" + clean_institute, "r")
@@ -72,11 +75,18 @@ def geocode(papers, error_log, api_key):
         try:
             # First we need to get the wikidata ID
             # Form query to get the wikidata item by english label
-            query = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?item WHERE { ?item rdfs:label "' + this_paper['clean']['location']['clean_institute'] + '"@en }'
-            url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql'
+            # query = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?item WHERE { ?item rdfs:label "' + this_paper['clean']['location']['clean_institute'] + '"@en }'
+            # url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql'
+            url = 'https://query.wikidata.org/sparql'
+            query = 'SELECT ?item WHERE { ?item rdfs:label "' + this_paper['clean']['location']['clean_institute'] + '"@en }'
 
             try:
-                data = requests.get(url, params={'query': query, 'format': 'json'}).json()
+                # data = requests.get(url, params={'query': query, 'format': 'json'}).json()
+
+                sparql = SPARQLWrapper(url)
+                sparql.setQuery(query)
+                sparql.setReturnFormat(JSON)
+                data = sparql.query().convert()
 
                 try:
                     # Process returned JSON to get entity id
@@ -115,13 +125,15 @@ def geocode(papers, error_log, api_key):
                         except:
                             # No coordinate location or HQ coordinate location was found.
                             error_log.logWarningPaper('Unable to get geo-data (No HQ P625 Or P625) ' + this_paper['clean']['location']['clean_institute'] + " " + item_id + " (" + str(number_done) + "/" + str(len(papers)) + ")", this_paper)
-
+                            logging.error('Unable to get geo-data (No HQ P625 Or P625) ' + this_paper['clean']['location']['clean_institute'])
                 except:
                     # Problem parseing the wikidata query
                     error_log.logWarningPaper("Wikidata parsing failed for " + this_paper['clean']['location']['clean_institute'], this_paper)
-            except:
+                    logging.error("Wikidata parsing failed for " + this_paper['clean']['location']['clean_institute'])
+            except Exception as e:
                 # Problem with the wikidata query
                 error_log.logWarningPaper("Wikidata query failed for " + this_paper['clean']['location']['clean_institute'], this_paper)
+                logging.error("Wikidata query failed for " + this_paper['clean']['location']['clean_institute'] + str(e))
         except:
             pass
 
