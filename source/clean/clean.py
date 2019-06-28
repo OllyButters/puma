@@ -281,7 +281,7 @@ def clean_date(this_paper):
     # Make a note of the year published. This should be complete!
     if status:
         try:
-            this_paper['clean']['year_published'] = this_paper['clean']['cleaned_date']['year']
+            this_paper['clean']['year_published'] = this_paper['clean']['clean_date']['year']
         except:
             logging.warn("Cannot Create Clean Date (Consider using Zotero notes). Hash: " + str(this_paper['IDs']['hash']))
 
