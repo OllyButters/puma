@@ -33,14 +33,14 @@ import networks.author_network as author_network
 import analyse.coverage_report as coverage_report
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
-__date__ = 29/6/18
-__version__ = '0.9.0'
+__date__ = 28/6/19
+__version__ = '0.10.0'
 
 # Lets figure out some paths that everything is relative to
 # global root_dir
 path_to_papers_py = os.path.abspath(sys.argv[0])
 root_dir = os.path.dirname(os.path.dirname(path_to_papers_py))
-print 'Root directory = ' + root_dir
+print('Root directory = ' + root_dir)
 
 # Get all the config - these will be a global vars available like config.varname
 config.build_config_variables(root_dir)
@@ -53,7 +53,7 @@ setup.build_file_tree()
 
 # Time Log
 start_time = time.time()
-print "Start Time: " + str(start_time)
+print('Start Time: ' + str(start_time))
 
 # Error log for displaying data input problems to user on the errorlog html page
 error_log = html.htmlerrorlog.errorlog.ErrorLog()
@@ -64,8 +64,8 @@ logging.basicConfig(filename=log_file,
                     filemode='w',
                     level=config.logging_loglevel)
 
-print 'Log file: ' + log_file
-print 'Run something like: tail -f ' + log_file
+print('Log file: ' + log_file)
+print('Run something like: tail -f ' + log_file)
 
 # Output some info to the log file to help with debugging
 logging.info('Running version: ' + __version__)
@@ -86,7 +86,7 @@ get.simple_collate.collate()
 merged_files_list = listdir(config.cache_dir + '/processed/merged/')
 merged_files_list.sort()
 # merged_files_list = merged_files_list[0:10]
-print str(len(merged_files_list))+' merged papers to load'
+print(str(len(merged_files_list))+' merged papers to load.')
 
 # Open each one and add to papers object
 for this_merged_file in merged_files_list:
@@ -106,7 +106,7 @@ for this_merged_file in merged_files_list:
 # get.getScopus.getScopus(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update, error_log)
 
 
-print str(len(papers)) + ' papers to process'
+print(str(len(papers)) + ' papers to process.')
 
 # exit()
 
@@ -154,7 +154,7 @@ analyse.journals(papers)
 # Figure out the word frequecies
 analyse.word_frequencies(papers, 'title')
 analyse.word_frequencies(papers, 'keywords')
-analyse.word_frequencies(papers, 'abstract')
+# analyse.word_frequencies(papers, 'abstract')
 
 network = analyse.authors(papers)
 analyse.first_authors(papers)
@@ -185,8 +185,8 @@ if config.network_create_networks:
 end_time = time.time()
 elapsed_time = end_time - start_time
 elapsed_time_string = str(int(elapsed_time) / 60) + ":" + str(int(elapsed_time) % 60).zfill(2)
-print "End Time: " + str(end_time)
-print "Elapsed Time (mm:ss) - " + elapsed_time_string
+print('End Time: ' + str(end_time))
+print('Elapsed Time (mm:ss) - ' + elapsed_time_string)
 
 logging.info('Finished at: ' + str(end_time))
 logging.info('Elapsed time (mm:ss) : ' + elapsed_time_string)
