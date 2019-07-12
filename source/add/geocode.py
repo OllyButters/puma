@@ -1,10 +1,9 @@
-#! /usr/bin/env python2
+#!/usr/bin/env python2
 
 import csv
 import os.path
 import json
 import urllib2
-import requests
 import logging
 
 from SPARQLWrapper import SPARQLWrapper, JSON
@@ -38,14 +37,12 @@ def geocode(papers, error_log, api_key):
 
         found_coords = False
 
-
         # If there is no clean_institute then there really is no point trying this one.
         try:
             clean_institute = this_paper['clean']['location']['clean_institute']
         except:
             logging.warn('No clean_institute for ' + this_paper['IDs']['hash'])
             continue
-
 
         # Check if the location data is already cached.
         # Each cached location is held in a seperate file
@@ -69,7 +66,6 @@ def geocode(papers, error_log, api_key):
 
         except:
             pass
-
 
         # Look up clean institute coordinates on wikidata
         try:
@@ -124,7 +120,7 @@ def geocode(papers, error_log, api_key):
 
                         except:
                             # No coordinate location or HQ coordinate location was found.
-                            error_log.logWarningPaper('Unable to get geo-data (No HQ P625 Or P625) ' + this_paper['clean']['location']['clean_institute'] + " " + item_id + " (" + str(number_done) + "/" + str(len(papers)) + ")", this_paper)
+                            error_log.logWarningPaper('Unable to get geo-data (No HQ P625 Or P625) ' + this_paper['clean']['location']['clean_institute'] + " " + item_id, this_paper)
                             logging.error('Unable to get geo-data (No HQ P625 Or P625) ' + this_paper['clean']['location']['clean_institute'])
                 except:
                     # Problem parseing the wikidata query
@@ -137,9 +133,7 @@ def geocode(papers, error_log, api_key):
         except:
             pass
 
-
-
-        #Not On Wikidata Check Backup File
+        # Not On Wikidata Check Backup File
         if not found_coords:
             # The item is not on wikidata. Check if the institute is in the backup coordinates file and get coordinates from there is possible.
             try:
@@ -154,10 +148,6 @@ def geocode(papers, error_log, api_key):
             except:
                 error_log.logWarningPaper("Insititue " + this_paper['clean']['location']['clean_institute'] + " not in backup file)", this_paper)
 
-
-
-
-
         if found_coords and ('country_code' not in this_paper['clean']['location']) and ('postal_town' not in this_paper['clean']['location']):
             # The coordinates have been found from either wikidata or the backup file
             # but we don't have a country_code or postal_town
@@ -166,8 +156,7 @@ def geocode(papers, error_log, api_key):
             try:
                 retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['clean']['location']['latitude'] + ',' + this_paper['clean']['location']['longitude'] + '&key=' + api_key))
             except:
-                print('Unable to get geo-data from Google API. ' + this_paper['clean']['location']['clean_institute'] + " (" + str(number_done) + "/" + str(len(papers)) + ")")
-
+                print('Unable to get geo-data from Google API. ' + this_paper['clean']['location']['clean_institute'])
 
             try:
                 comps = retur['results'][0]['address_components']

@@ -1,6 +1,7 @@
-#! /usr/bin/env python2
+#!/usr/bin/env python2
 
 import config.config as config
+
 
 # Output a bibtex file of the publications
 def bibtex(papers, error_log):
