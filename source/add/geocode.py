@@ -2,9 +2,8 @@
 
 import csv
 import os.path
-import json
-import urllib2
 import logging
+import pprint
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 
@@ -74,62 +73,94 @@ def geocode(papers, error_log, api_key):
             # query = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?item WHERE { ?item rdfs:label "' + this_paper['clean']['location']['clean_institute'] + '"@en }'
             # url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql'
             url = 'https://query.wikidata.org/sparql'
-            query = 'SELECT ?item WHERE { ?item rdfs:label "' + this_paper['clean']['location']['clean_institute'] + '"@en }'
+            # v2
+            # query = 'SELECT ?item WHERE { ?item rdfs:label "' + this_paper['clean']['location']['clean_institute'] + '"@en }'
+
+            # v3
+
+            query = '''
+                SELECT ?item ?itemLabel ?country ?countryLabel ?mainTown ?mainTownLabel ?mainLon ?mainLat ?hqTownLabel ?hqLon ?hqLat
+                WHERE {
+                    ?item rdfs:label "''' + this_paper['clean']['location']['clean_institute'] + '''"@en.
+                    ?item wdt:P17 ?country
+                    OPTIONAL
+                    {
+                        ?item wdt:P131 ?mainTown
+                    }
+                    OPTIONAL
+                    {
+                        # Main location
+                        ?item p:P625 ?mainLocation.
+                        ?mainLocation psv:P625 ?mainCoordinateNode.
+                        ?mainCoordinateNode wikibase:geoLongitude ?mainLon.
+                        ?mainCoordinateNode wikibase:geoLatitude ?mainLat.
+                    }
+                    OPTIONAL
+                    {
+                        # HQ location
+                        ?item wdt:P159 ?hqTown.
+                    }
+                    OPTIONAL
+                    {
+                        # HQ coordinates
+                        ?item wdt:P159 ?hq2.
+                        ?hq2 p:P625 ?hq3.
+                        ?hq3 psv:P625 ?hq4.
+                        ?hq4 wikibase:geoLongitude ?hqLon.
+                        ?hq4 wikibase:geoLatitude ?hqLat.
+                    }
+                    SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+                }'''
+            print(query)
 
             try:
-                # data = requests.get(url, params={'query': query, 'format': 'json'}).json()
-
                 sparql = SPARQLWrapper(url)
                 sparql.setQuery(query)
                 sparql.setReturnFormat(JSON)
                 data = sparql.query().convert()
 
+                pp = pprint.PrettyPrinter(indent=4)
+
+                pp.pprint(data)
+
+                # print(data)
+                logging.info(data)
+                #
+                # Parse the results
+                # Country first
                 try:
-                    # Process returned JSON to get entity id
-                    item_uri = data['results']['bindings'][0]['item']['value']
-                    item_uri_components = item_uri.split("/")
-                    item_id = item_uri_components[len(item_uri_components)-1]
-                    this_paper['wikidata_item_id'] = item_id
-
-                    # === USE WIKIDATA ID TO GET GEO-COORDS ===
-                    # The wikidata ID has been found now make a wikidata request for all the data
-                    # about the item and look for the coordinate location
-                    try:
-
-                        retur = json.load(urllib2.urlopen('https://www.wikidata.org/w/api.php?action=wbgetentities&ids=' + item_id + '&format=json'))
-                        p_lon = retur['entities'][item_id]['claims']['P625'][0]['mainsnak']['datavalue']['value']['longitude']
-                        p_lat = retur['entities'][item_id]['claims']['P625'][0]['mainsnak']['datavalue']['value']['latitude']
-
-                        locations_found += 1
-                        this_paper['clean']['location']['latitude'] = str(p_lat)
-                        this_paper['clean']['location']['longitude'] = str(p_lon)
-
-                        found_coords = True
-
-                    except:
-                        try:
-                            # The wikidata item does not have a statment for coordinate location. Instead check if there
-                            # is coordinate location inside the headquaters location (if there is a HQ statment).
-                            p_lon = retur['entities'][item_id]['claims']['P159'][0]['qualifiers']['P625'][0]['datavalue']['value']['longitude']
-                            p_lat = retur['entities'][item_id]['claims']['P159'][0]['qualifiers']['P625'][0]['datavalue']['value']['latitude']
-
-                            locations_found += 1
-                            this_paper['clean']['location']['latitude'] = str(p_lat)
-                            this_paper['clean']['location']['longitude'] = str(p_lon)
-                            found_coords = True
-
-                        except:
-                            # No coordinate location or HQ coordinate location was found.
-                            error_log.logWarningPaper('Unable to get geo-data (No HQ P625 Or P625) ' + this_paper['clean']['location']['clean_institute'] + " " + item_id, this_paper)
-                            logging.error('Unable to get geo-data (No HQ P625 Or P625) ' + this_paper['clean']['location']['clean_institute'])
+                    this_paper['clean']['location']['country'] = data['results']['bindings'][0]['countryLabel']['value']
                 except:
-                    # Problem parseing the wikidata query
-                    error_log.logWarningPaper("Wikidata parsing failed for " + this_paper['clean']['location']['clean_institute'], this_paper)
-                    logging.error("Wikidata parsing failed for " + this_paper['clean']['location']['clean_institute'])
+                    pass
+
+                # Try the main location
+                try:
+                    this_paper['clean']['location']['postal_town'] = data['results']['bindings'][0]['mainTownLabel']['value']
+                    this_paper['clean']['location']['latitude'] = data['results']['bindings'][0]['mainLat']['value']
+                    this_paper['clean']['location']['longitude'] = data['results']['bindings'][0]['mainLon']['value']
+                except:
+                    # Fall back to the HQ location if there is one
+                    try:
+                        this_paper['clean']['location']['postal_town'] = data['results']['bindings'][0]['hqTownLabel']['value']
+                        this_paper['clean']['location']['latitude'] = data['results']['bindings'][0]['hqLat']['value']
+                        this_paper['clean']['location']['longitude'] = data['results']['bindings'][0]['hqLon']['value']
+                    except:
+                        print("No suitable coordinates found from wikidata.")
+
+                try:
+                    print(this_paper['clean']['location']['country'])
+                    print(this_paper['clean']['location']['postal_town'])
+                    print(this_paper['clean']['location']['latitude'])
+                    print(this_paper['clean']['location']['longitude'])
+                except:
+                    pass
+
             except Exception as e:
                 # Problem with the wikidata query
                 error_log.logWarningPaper("Wikidata query failed for " + this_paper['clean']['location']['clean_institute'], this_paper)
                 logging.error("Wikidata query failed for " + this_paper['clean']['location']['clean_institute'] + str(e))
+                print("Error with wikidata query")
+                print(e)
         except:
             pass
 
@@ -148,38 +179,42 @@ def geocode(papers, error_log, api_key):
             except:
                 error_log.logWarningPaper("Insititue " + this_paper['clean']['location']['clean_institute'] + " not in backup file)", this_paper)
 
-        if found_coords and ('country_code' not in this_paper['clean']['location']) and ('postal_town' not in this_paper['clean']['location']):
+        # if found_coords and ('country_code' not in this_paper['clean']['location']) and ('postal_town' not in this_paper['clean']['location']):
             # The coordinates have been found from either wikidata or the backup file
             # but we don't have a country_code or postal_town
             # Now using the google maps api to get the country and city data for use in the charts
             # Make API request.
-            try:
-                retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['clean']['location']['latitude'] + ',' + this_paper['clean']['location']['longitude'] + '&key=' + api_key))
-            except:
-                print('Unable to get geo-data from Google API. ' + this_paper['clean']['location']['clean_institute'])
+            # try:
+            #    retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['clean']['location']['latitude'] + ',' + this_paper['clean']['location']['longitude'] + '&key=' + api_key))
+            # except:
+            #    print('Unable to get geo-data from Google API. ' + this_paper['clean']['location']['clean_institute'])
 
-            try:
-                comps = retur['results'][0]['address_components']
-                country_short = ""
-                postal_town = ""
-                for comp in comps:
-                    # Search through the returned address components for the country and city names
-                    if comp['types'][0] == "country":
-                        country_short = comp['long_name']
-                        this_paper['clean']['location']['country_code'] = country_short
+            # try:
+            #    comps = retur['results'][0]['address_components']
+            #    country_short = ""
+            #    postal_town = ""
+            #    for comp in comps:
+            #        # Search through the returned address components for the country and city names
+            #        if comp['types'][0] == "country":
+            #            country_short = comp['long_name']
+            #            this_paper['clean']['location']['country_code'] = country_short
 
-                    if comp['types'][0] == "postal_town":
-                        postal_town = comp['long_name']
-                        this_paper['clean']['location']['postal_town'] = postal_town
+            #        if comp['types'][0] == "postal_town":
+            #            postal_town = comp['long_name']
+            #            this_paper['clean']['location']['postal_town'] = postal_town
 
                 # clean = clean.replace("/", "#")
 
-                # Cache the data that has just been collected
+        # Cache the data that has just been collected
+        try:
+            if 'latitude' in this_paper['clean']['location'] and 'longitude' in this_paper['clean']['location'] and 'country' in this_paper['clean']['location'] and 'postal_town' in this_paper['clean']['location']:
                 cache_file = open(config.cache_dir + "/geodata/" + clean_institute, "w")
-                cache_file.write(this_paper['clean']['location']['latitude'] + "#" + this_paper['clean']['location']['longitude'] + "#" + country_short + "#" + postal_town)
+                cache_file.write(this_paper['clean']['location']['latitude'] + "#" + this_paper['clean']['location']['longitude'] + "#" + this_paper['clean']['location']['country'] + "#" + this_paper['clean']['location']['postal_town'])
                 cache_file.close()
-            except:
-                print("Error parsing Google geodata json file." + str(retur))
-                error_log.logErrorPaper(this_paper['clean']['location']['clean_institute'] + " Maybe Google API Quota Reached!", this_paper)
+        except:
+            pass
+            # except:
+            #    print("Error parsing Google geodata json file." + str(retur))
+            #    error_log.logErrorPaper(this_paper['clean']['location']['clean_institute'] + " Maybe Google API Quota Reached!", this_paper)
 
     print("locations found: " + str(locations_found) + "/" + str(len(papers)))
