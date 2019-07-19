@@ -1,10 +1,12 @@
 #!/usr/bin/env python2
 
+import logging
+
 import config.config as config
 
 
 # Output a bibtex file of the publications
-def bibtex(papers, error_log):
+def bibtex(papers):
 
     articles = []
 
@@ -49,7 +51,7 @@ def bibtex(papers, error_log):
             articles.append(this_article)
 
         except:
-            error_log.logErrorPaper("Cannot create bibtex output", this_paper)
+            logging.error("Cannot create bibtex output", this_paper)
             pass
 
     # output to file in data_dir

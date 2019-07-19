@@ -120,7 +120,7 @@ def build_common_foot():
 ############################################################
 # Home page with summary of years
 ############################################################
-def build_home(papers, error_log):
+def build_home(papers):
 
     print "\n###HTML - Home###"
 
@@ -1414,7 +1414,7 @@ def get_author_string_from_hash(hash_string, network):
 ###########################################################
 # Build Author Network
 ###########################################################
-def build_author_network(papers, network, error_log):
+def build_author_network(papers, network):
 
     print "\n###HTML - Author Network###"
 
@@ -1470,7 +1470,7 @@ def build_author_network(papers, network, error_log):
         try:
             shutil.copyfile(config.config_dir + '/' + config.project_details['short_name'] + '_author_network.png', config.html_dir + '/authornetwork/author_network.png')
         except:
-            error_log.logWarning("Not Author Network Image")
+            logging.warn("Not Author Network Image")
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -1529,49 +1529,6 @@ def build_author_network(papers, network, error_log):
 
     temp = build_common_foot()
     print >>html_file, temp
-
-
-###########################################################
-# ErrorLog
-###########################################################
-def build_error_log(papers, error_log):
-
-    print "\n###HTML - Error Log###"
-
-    html_file = open(config.html_dir + '/errorlog/index.html', 'w')
-
-    # Put html together for this page
-    temp = '<!DOCTYPE html><html lang="en-GB">'
-
-    # html head
-    temp += '<head>'
-    temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
-    temp += '<link rel="stylesheet" href="../css/style_main.css">'
-    temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
-    temp += '<link rel="stylesheet" href="../css/map.css">'
-
-    temp += '<script>function jsonFormat(){ var x = document.getElementsByClassName("textoutput"); for (i = 0; i < x.length; i++) { x[i].innerHTML = JSON.stringify(JSON.parse(x[i].innerHTML) , null, 4); } }</script>'
-
-    temp += '</head>'
-
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Error Log</p>', "../", "onload='jsonFormat();'")
-
-    temp += '<h1 id="pagetitle">Error Log</h1>'
-
-    temp += error_log.printLog()
-
-    temp += "<script>"
-    # Set cookie
-    temp += ' var expiration_date = new Date(); var cookie_string = ""; expiration_date.setFullYear(expiration_date.getFullYear() + 1); cookie_string = "show_error_page=true; path=/; expires=" + expiration_date.toUTCString(); document.cookie = cookie_string;'
-    temp += "</script>"
-
-    # print >>html_file, temp
-    html_file.write(temp.encode(encoding='utf_8'))
-
-    temp = build_common_foot()
-    # print >>html_file, temp
-    html_file.write(temp.encode(encoding='utf_8'))
 
 
 ###########################################################

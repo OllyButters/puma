@@ -25,7 +25,6 @@ import clean.clean as clean
 import add.geocode
 import add.citations
 import analyse.analyse as analyse
-import html.htmlerrorlog.errorlog
 import html.build_htmlv2
 import bibliography.bibtex
 import get.simple_collate
@@ -54,9 +53,6 @@ setup.build_file_tree()
 # Time Log
 start_time = time.time()
 print('Start Time: ' + str(start_time))
-
-# Error log for displaying data input problems to user on the errorlog html page
-error_log = html.htmlerrorlog.errorlog.ErrorLog()
 
 # Set up the logging. Level can be DEBUG|.....
 log_file = root_dir + '/logs/'+config.project_details['short_name']+'.log'
@@ -103,7 +99,7 @@ for this_merged_file in merged_files_list:
 
 
 # First attempt at getting all the scopus data
-# get.getScopus.getScopus(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update, error_log)
+# get.getScopus.getScopus(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update)
 
 
 print(str(len(papers)) + ' papers to process.')
@@ -124,7 +120,7 @@ clean.clean_institution(papers)
 
 ###########################################################
 # Add some extra data in - i.e. geocodes and citations
-add.geocode.geocode(papers, error_log)
+add.geocode.geocode(papers)
 
 # Write papers to summary file
 file_name = root_dir + '/data/' + config.project_details['short_name'] + '/summary_added_to'
@@ -144,7 +140,7 @@ for this_paper in papers:
 # Generate the coverage report
 coverage_report.coverage_report(papers)
 
-bibliography.bibtex.bibtex(papers, error_log)
+bibliography.bibtex.bibtex(papers)
 
 ###########################################################
 # Do some actual analysis on the data. This will result in
@@ -165,15 +161,14 @@ analyse.output_csv(papers)
 ###########################################################
 # Make some web pages
 html.build_htmlv2.build_css_colour_scheme()
-cohort_rating, cohort_rating_data_from = html.build_htmlv2.build_home(papers, error_log)
+cohort_rating, cohort_rating_data_from = html.build_htmlv2.build_home(papers)
 html.build_htmlv2.build_papers(papers)
 html.build_htmlv2.build_mesh(papers)
 html.build_htmlv2.build_google_map(papers)
 html.build_htmlv2.build_country_map(papers, config.google_maps_api_key)
 html.build_htmlv2.build_metrics(papers, cohort_rating, cohort_rating_data_from, config.metrics_study_start_year, config.metrics_study_current_year)
 # html.build_htmlv2.build_abstract_word_cloud(papers, abstract_data_from_count)
-html.build_htmlv2.build_author_network(papers, network, error_log)
-html.build_htmlv2.build_error_log(papers, error_log)
+html.build_htmlv2.build_author_network(papers, network)
 html.build_htmlv2.build_help()
 html.build_htmlv2.build_search(papers)
 

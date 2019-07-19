@@ -10,7 +10,7 @@ import logging
 import config.config as config
 
 
-def citations(papers, api_key, citation_max_life, force_update, error_log):
+def citations(papers, api_key, citation_max_life, force_update):
 
     ############################################################################
 

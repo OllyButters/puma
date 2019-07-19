@@ -12,7 +12,7 @@ import config.config as config
 
 # Have a go at geocoding the cleaned institute names
 # I would expect there to be a lat long for all of them
-def geocode(papers, error_log):
+def geocode(papers):
 
     print('Geocoding')
     logging.info('Geocoding.')
@@ -159,7 +159,6 @@ def geocode(papers, error_log):
 
             except Exception as e:
                 # Problem with the wikidata query
-                error_log.logWarningPaper("Wikidata query failed for " + this_paper['clean']['location']['clean_institute'], this_paper)
                 logging.error("Wikidata query failed for " + this_paper['clean']['location']['clean_institute'] + str(e))
                 print("Error with wikidata query")
                 print(e)
@@ -181,7 +180,8 @@ def geocode(papers, error_log):
                 found_coords = True
 
             except:
-                error_log.logWarningPaper("Insititue " + this_paper['clean']['location']['clean_institute'] + " not in backup file)", this_paper)
+                logging.warn("Not in backup file either.")
+                print("Not in backup file either.")
 
         # Cache the data that has just been collected
         try:
