@@ -3,7 +3,6 @@
 import csv
 import os.path
 import logging
-import pprint
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 
@@ -13,9 +12,10 @@ import config.config as config
 
 # Have a go at geocoding the cleaned institute names
 # I would expect there to be a lat long for all of them
-def geocode(papers, error_log, api_key):
+def geocode(papers, error_log):
 
     print('Geocoding')
+    logging.info('Geocoding.')
 
     # Read in the backup csv file
     # This is used to make up for old places not being on wikidata or old places
@@ -39,6 +39,7 @@ def geocode(papers, error_log, api_key):
         # If there is no clean_institute then there really is no point trying this one.
         try:
             clean_institute = this_paper['clean']['location']['clean_institute']
+            print("\n" + clean_institute)
         except:
             logging.warn('No clean_institute for ' + this_paper['IDs']['hash'])
             continue
@@ -60,6 +61,7 @@ def geocode(papers, error_log, api_key):
                 this_paper['clean']['location']['postal_town'] = split[3]
 
                 locations_found += 1
+                print("Added via cache.")
                 logging.info("Added via cache file.")
                 continue
 
@@ -68,15 +70,7 @@ def geocode(papers, error_log, api_key):
 
         # Look up clean institute coordinates on wikidata
         try:
-            # First we need to get the wikidata ID
-            # Form query to get the wikidata item by english label
-            # query = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?item WHERE { ?item rdfs:label "' + this_paper['clean']['location']['clean_institute'] + '"@en }'
-            # url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql'
             url = 'https://query.wikidata.org/sparql'
-            # v2
-            # query = 'SELECT ?item WHERE { ?item rdfs:label "' + this_paper['clean']['location']['clean_institute'] + '"@en }'
-
-            # v3
 
             query = '''
                 SELECT ?item ?itemLabel ?country ?countryLabel ?mainTown ?mainTownLabel ?mainLon ?mainLat ?hqTownLabel ?hqLon ?hqLat
@@ -111,21 +105,18 @@ def geocode(papers, error_log, api_key):
                     }
                     SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
                 }'''
-            print(query)
+
+            logging.debug(query)
 
             try:
-                sparql = SPARQLWrapper(url)
+                sparql = SPARQLWrapper(url, agent="PUMA/0.1 (https://github.com/OllyButters/puma) Python2/SPARQLWrapper")
                 sparql.setQuery(query)
                 sparql.setReturnFormat(JSON)
                 data = sparql.query().convert()
 
-                pp = pprint.PrettyPrinter(indent=4)
-
-                pp.pprint(data)
-
                 # print(data)
                 logging.info(data)
-                #
+
                 # Parse the results
                 # Country first
                 try:
@@ -145,13 +136,24 @@ def geocode(papers, error_log, api_key):
                         this_paper['clean']['location']['latitude'] = data['results']['bindings'][0]['hqLat']['value']
                         this_paper['clean']['location']['longitude'] = data['results']['bindings'][0]['hqLon']['value']
                     except:
+                        logging.info("No suitable coordinates found from wikidata.")
                         print("No suitable coordinates found from wikidata.")
 
                 try:
                     print(this_paper['clean']['location']['country'])
+                    logging.info(this_paper['clean']['location']['country'])
                     print(this_paper['clean']['location']['postal_town'])
+                    logging.info(this_paper['clean']['location']['postal_town'])
+                except:
+                    pass
+
+                # If I can print them then they must exist
+                try:
                     print(this_paper['clean']['location']['latitude'])
+                    logging.info(this_paper['clean']['location']['latitude'])
                     print(this_paper['clean']['location']['longitude'])
+                    logging.info(this_paper['clean']['location']['longitude'])
+                    found_coords = True
                 except:
                     pass
 
@@ -173,37 +175,13 @@ def geocode(papers, error_log, api_key):
                 this_paper['clean']['location']['latitude'] = str(backup_coords['lat'])
                 this_paper['clean']['location']['longitude'] = str(backup_coords['long'])
 
+                print("Coordinates added from backup file.")
+                logging.info("Coordinates added from backup file.")
                 locations_found += 1
                 found_coords = True
 
             except:
                 error_log.logWarningPaper("Insititue " + this_paper['clean']['location']['clean_institute'] + " not in backup file)", this_paper)
-
-        # if found_coords and ('country_code' not in this_paper['clean']['location']) and ('postal_town' not in this_paper['clean']['location']):
-            # The coordinates have been found from either wikidata or the backup file
-            # but we don't have a country_code or postal_town
-            # Now using the google maps api to get the country and city data for use in the charts
-            # Make API request.
-            # try:
-            #    retur = json.load(urllib2.urlopen('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this_paper['clean']['location']['latitude'] + ',' + this_paper['clean']['location']['longitude'] + '&key=' + api_key))
-            # except:
-            #    print('Unable to get geo-data from Google API. ' + this_paper['clean']['location']['clean_institute'])
-
-            # try:
-            #    comps = retur['results'][0]['address_components']
-            #    country_short = ""
-            #    postal_town = ""
-            #    for comp in comps:
-            #        # Search through the returned address components for the country and city names
-            #        if comp['types'][0] == "country":
-            #            country_short = comp['long_name']
-            #            this_paper['clean']['location']['country_code'] = country_short
-
-            #        if comp['types'][0] == "postal_town":
-            #            postal_town = comp['long_name']
-            #            this_paper['clean']['location']['postal_town'] = postal_town
-
-                # clean = clean.replace("/", "#")
 
         # Cache the data that has just been collected
         try:
@@ -212,9 +190,7 @@ def geocode(papers, error_log, api_key):
                 cache_file.write(this_paper['clean']['location']['latitude'] + "#" + this_paper['clean']['location']['longitude'] + "#" + this_paper['clean']['location']['country'] + "#" + this_paper['clean']['location']['postal_town'])
                 cache_file.close()
         except:
-            pass
-            # except:
-            #    print("Error parsing Google geodata json file." + str(retur))
-            #    error_log.logErrorPaper(this_paper['clean']['location']['clean_institute'] + " Maybe Google API Quota Reached!", this_paper)
+            logging.warn("Problem caching geocode data for: " + clean_institute)
+            print("Problem caching geocode data for: " + clean_institute)
 
     print("locations found: " + str(locations_found) + "/" + str(len(papers)))

@@ -244,7 +244,7 @@ def coverage_report(papers):
         except:
             # Check to see if we have a DIRTY first author affiliation, if we do then we really should have a clean one too.
             try:
-                first_author_affiliation = this_paper['clean']['full_author_list'][0]['affiliation'][0]['name']
+                first_author_affiliation = this_paper['clean']['location']['candidate_institute']
                 if first_author_affiliation != '':
                     cov_html += '<td class="missing_required">???</td>'
                 else:

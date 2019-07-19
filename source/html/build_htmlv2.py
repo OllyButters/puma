@@ -1025,7 +1025,8 @@ def build_city_map(papers):
     temp += "<div class='loading'><img src='loading.gif' alt='Loading'></div>"
     temp += '<div id="regions_div" style="width: 900px; height: 500px;"></div>'
     temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp.encode(encoding='utf_8'))
 
     temp = build_common_foot()
     print >>html_file, temp

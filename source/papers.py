@@ -33,8 +33,8 @@ import networks.author_network as author_network
 import analyse.coverage_report as coverage_report
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
-__date__ = 28/6/19
-__version__ = '0.10.0'
+__date__ = 19/7/19
+__version__ = '0.11.0'
 
 # Lets figure out some paths that everything is relative to
 # global root_dir
@@ -124,7 +124,7 @@ clean.clean_institution(papers)
 
 ###########################################################
 # Add some extra data in - i.e. geocodes and citations
-add.geocode.geocode(papers, error_log, config.google_maps_api_key)
+add.geocode.geocode(papers, error_log)
 
 # Write papers to summary file
 file_name = root_dir + '/data/' + config.project_details['short_name'] + '/summary_added_to'
