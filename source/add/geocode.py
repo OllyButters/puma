@@ -57,7 +57,7 @@ def geocode(papers, error_log):
 
                 this_paper['clean']['location']['latitude'] = split[0]
                 this_paper['clean']['location']['longitude'] = split[1]
-                this_paper['clean']['location']['country_code'] = split[2]
+                this_paper['clean']['location']['country'] = split[2]
                 this_paper['clean']['location']['postal_town'] = split[3]
 
                 locations_found += 1

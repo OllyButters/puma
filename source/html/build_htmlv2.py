@@ -922,16 +922,17 @@ def build_country_map(papers, api_key):
         try:
 
             if this_paper['clean']['location']['country_code'] in countries:
-                countries[this_paper['clean']['location']['country_code']] += 1
+                countries[this_paper['clean']['location']['country']] += 1
             else:
-                countries[this_paper['clean']['location']['country_code']] = 1
+                countries[this_paper['clean']['location']['country']] = 1
             number_of_points += 1
         except:
             pass
 
     country_string = ""
     for country in countries.keys():
-        country_string += ",['" + country + "'," + str(countries[country]) + "]"
+        # country_string += ",['" + country + "'," + str(countries[country]) + "]"
+        country_string += ',["' + country + '",' + str(countries[country]) + ']'
 
     html_file = open(config.html_dir + '/country/index.html', 'w')
 
