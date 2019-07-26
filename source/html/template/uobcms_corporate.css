@@ -1,304 +1,184 @@
-/* #TYPOGRAPHY */
-/* Scale is 14px, 16px, 20px, 24px. No deviation from these font sizes */
-
 #pagetitle {
-margin:0;
-font-size:1.875em;
-font-size:34px;
-font-weight:normal;
-color:#B01C2E;
-margin-bottom: 0.75em;
-font-family: Georgia;
-line-height:1.1;
-letter-spacing: -0.01em
+  margin:0;
+  font-size:1.875em;
+  font-size:34px;
+  font-weight:normal;
+  color:#B01C2E;
+  margin-bottom: 0.75em;
+  font-family: Georgia;
+  line-height:1.1;
+  letter-spacing: -0.01em
 }
-
 
 #pagetitle:after {
-margin-top: 0.5em;
-content: " ";
-height: 2px;
-border-top: 1px solid #dedcd2;
-border-bottom: 1px solid #dedcd2;
-display: block;
-padding: 0;
-width: 100%;
-margin-top: 0.65em;
-}
-
-.small {
-font-size:.875em;
+  margin-top: 0.5em;
+  content: " ";
+  height: 2px;
+  border-top: 1px solid #dedcd2;
+  border-bottom: 1px solid #dedcd2;
+  display: block;
+  padding: 0;
+  width: 100%;
+  margin-top: 0.65em;
 }
 
 h1 {
-color:#B01C2E;
-font-size:1.5em;
-font-weight:normal;
-line-height: 1.25em;
+  color:#B01C2E;
+  font-size:1.5em;
+  font-weight:normal;
+  line-height: 1.25em;
 }
 
 h2 {
-font-size:1.125em;
-font-weight:bold;
-line-height: 1.333em;
-margin: 1.9995em 0 0.6665em 0;
+  font-size:1.125em;
+  font-weight:bold;
+  line-height: 1.333em;
+  margin: 1.9995em 0 0.6665em 0;
 }
 
-h3,h4,h5,h6  {
-font-size:1em;
-font-weight:bold;
-margin:0;
-}
-
-.heading-border:before  {
-content: " ";
-height: 1px;
-margin: 2px 0 0.6em 0 ;
-border-top: 1px solid #dedcd2;
-display: block;
-}
-
-p, ul, ol, dl, form, blockquote, pre, table {
-margin-top:0;
-margin-bottom:1.5em;
-}
-
-ul ul, ul ol, ol ol, ol ul {
-margin-bottom: 0
+p, ul, ol, table {
+  margin-top:0;
+  margin-bottom:1.5em;
 }
 
 ol, ul {
-margin-left: 2em;
-padding-left:0;
+  margin-left: 2em;
+  padding-left:0;
 }
 
 ul {
-list-style-image:none;
-list-style-type: disc;
+  list-style-image:none;
+  list-style-type: disc;
 }
 
 li {
-margin-left: 0;
-padding-left: 0
-}
-
-.list-no-style {
-list-style-type:none;
-margin-left: 0!important;
-padding-left: 0!important;
+  margin-left: 0;
+  padding-left: 0
 }
 
 /* LINKS */
 a:link {
-color: #0F7CA4;
-text-decoration:none;
+  color: #0F7CA4;
+  text-decoration:none;
 }
 
 a:visited {
-color: #0F7CA4;
+  color: #0F7CA4;
 }
 
 a:hover, a:focus {
-color: #0F7CA4;
-text-decoration:underline;
-outline: none;
+  color: #0F7CA4;
+  text-decoration:underline;
+  outline: none;
 }
 
 /* #IMAGES */
 img {
-max-width: 100%;
-max-height: 100%;
-/* height: auto;*/
+  max-width: 100%;
+  max-height: 100%;
 }
 
-/* images in body area with no grid - align right */
-.align-right,
-.align-right-no-width {
-float: right;
-margin: 0 0 1.5em 4.5%;
-width:  31.06%;
- -moz-box-sizing: border-box;
- -webkit-box-sizing: border-box;
- box-sizing: border-box; }
-
- /* no width */
-.align-right-no-width {
-width:  auto;
-}
-
-/* #TABLES */
-.table-basic {
-width: 100%;
-border-top: 1px solid #dedcd2;
-margin-bottom: 1.7142em;
-font-size: 0.875em;
-}
-
-
-.table-basic td, .table-basic th {
-text-align: left;
-padding: 0.5em 1em;
-border-bottom: 1px solid #dedcd2;
-vertical-align: top;
-box-sizing: border-box;
--moz-box-sizing: border-box;
--webkit-box-sizing: border-box;
-}
-
-.table-basic th {
- background-color:#efede9;
-}
-
-/* table with no style */
-.table-no-style {
-border: 0;
-}
-
-.table-no-style td, .table-no-style th {
-padding: 0;
-border: 0;
-}
-
-.table-no-style th {
- background-color: transparent!important;
-}
-
-/* striped table */
-.table-striped tr th {
-background-color: #efede9;
-}
-
-.table-striped tr:nth-of-type(even) td {
-  background-color:#efede9;
-}
-
-/* solid table */
-.table-solid tr, .table-solid th, .table-solid td {
-background-color:#efede9;
-}
-
-/* HIDDEN */
-.hidden {
-display: none;
-visibility:hidden }
 
 /* #MASTER WIDTH AND CENTERING */
 .width-master {
-margin:0 auto;
-max-width:1150px;
-min-width:967px;
+  margin:0 auto;
+  max-width:1150px;
+  min-width:967px;
 }
 
 #wrapper,.header  {
-padding:0 2.08%;
+  padding:0 2.08%;
 }
-
-
 
 /* #CLEARFIX */
-.clearfix:after,
-.layout-container:after,
 #wrapper:after {
-visibility:hidden;
-display:block;
-font-size:0;
-content:" ";
-clear:both;
-height:0;
+  visibility:hidden;
+  display:block;
+  font-size:0;
+  content:" ";
+  clear:both;
+  height:0;
 }
-
-* html .clearfix,
-* html .layout-container,
-* html .module-horizontal {
-zoom:1;
-}
-
-:first-child+html .clearfix,
-:first-child+html .layout-container,
-:first-child+html .module-horizontal {
-zoom:1;
-}
-
 
 /* #HEADER */
 .header-container {
-background:#FFF;
-color:#333;
-min-height:95px;
-border-bottom:1px solid #dedcd2;
-box-shadow:0 6px 6px -6px rgba(0,0,0,0.2);
-margin-bottom: 2.75em;
-position:relative;
-z-index: 505;
+  background:#FFF;
+  color:#333;
+  min-height:95px;
+  border-bottom:1px solid #dedcd2;
+  box-shadow:0 6px 6px -6px rgba(0,0,0,0.2);
+  margin-bottom: 2.75em;
+  position:relative;
+  z-index: 505;
 }
 
 .header {
-position:relative;
-overflow: auto;
-min-height:107px;
+  position:relative;
+  overflow: auto;
+  min-height:107px;
 }
 
 
 /* #MAINTITLE */
 .maintitle {
-margin-left: 19.4945%;
-padding-left:1.1945%;
-border-left:1px solid #fff;
-margin-right: 20%;
+  margin-left: 19.4945%;
+  padding-left:1.1945%;
+  border-left:1px solid #fff;
+  margin-right: 20%;
 }
 
 .maintitle #title1 {
-font-family:Georgia;
-display:block;
-font-weight:normal;
-font-size:1.5em;
-margin:0;
-padding:0;
-color:#333;
-/* new */
-font-size: 24px;
+  font-family:Georgia;
+  display:block;
+  font-weight:normal;
+  font-size:1.5em;
+  margin:0;
+  padding:0;
+  color:#333;
+  /* new */
+  font-size: 24px;
 }
 
 #maintitle1 {
-margin-top:2.1em;
-margin-bottom: 1.15em;
-padding-top: 0.5em;
-padding-bottom: 0.75em;
+  margin-top:2.1em;
+  margin-bottom: 1.15em;
+  padding-top: 0.5em;
+  padding-bottom: 0.75em;
 }
 
 #maintitle1 #title1 {
-line-height: 1.2em;
+  line-height: 1.2em;
 }
 
 #maintitle2 {
-margin-top:1.6em;
-margin-bottom: 1.0em;
+  margin-top:1.6em;
+  margin-bottom: 1.0em;
 }
 
 #maintitle2 #title2 {
-padding:0;
-margin:0;
-font-size: .875em;
-text-transform:none;
-font-weight:normal;
-color:#333;
+  padding:0;
+  margin:0;
+  font-size: .875em;
+  text-transform:none;
+  font-weight:normal;
+  color:#333;
 }
 
 #maintitle2 .hide {
-display:none;
-visibility:hidden;
+  display:none;
+  visibility:hidden;
 }
 
 #maintitle2 #title1 {
-top:0;
-margin:0;
-padding:0;
-line-height: 1.2em
+  top:0;
+  margin:0;
+  padding:0;
+  line-height: 1.2em
 }
 
 .maintitle a,.maintitle a:visited {
-color:#333;
-text-decoration:none;
+  color:#333;
+  text-decoration:none;
 }
 
 .maintitle a:hover, .maintitle a:focus {
@@ -338,29 +218,21 @@ background-color:#dedcd2;
 }
 
 /* #BREADCRUMBS */
-#breadcrumbs,#breadcrumbs-nonav {
-margin:0;
-padding:.4em 0 0.5em 0;
-font-size:.875em;
-color:#666;
-/* new */
-padding: 0.25em 0 0.5em 0;
-}
-
 #breadcrumbs {
-margin: 0 0 0 20.823%;
-/* new */
-margin: 0 0 0 21%;
+  margin: 0 0 0 21%;
+  font-size:.875em;
+  color:#666;
+  padding: 0.25em 0 0.5em 0;
 }
 
-#breadcrumbs a, #breadcrumbs-nonav a, #breadcrumbs a:visited, #breadcrumbs-nonav a:visited {
-color:#666!important;
-text-decoration:none;
+#breadcrumbs a, #breadcrumbs a:visited {
+  color:#666!important;
+  text-decoration:none;
 }
 
 #breadcrumbs a:hover, #breadcrumbs a:focus  {
-text-decoration:underline;
-outline: none;
+  text-decoration:underline;
+  outline: none;
 }
 
 
@@ -416,91 +288,4 @@ outline: none;
 -ms-transition: all 0.15s linear;
 -o-transition: all 0.15s linear;
 transition: all 0.15s linear;
-}
-
-.navgroup span.currentsection {
-display:block;
-margin:0;
-padding:.5em 5%;
-width: 90%;
-color:#333;
-text-decoration:none;
-background-color:#fff;
-font-weight: bold;
-}
-
-.navgroup ul {
-margin:0;
-background-color:#fff;
-padding:0;
-border:0;
-}
-
-.navgroup ul li {
-list-style-type:none;
-background-color:#fff;
-border:0;
-border-top:1px solid #dedcd2;
-}
-
-.navgroup ul li a {
-background:#fff url(http://www.bristol.ac.uk/media-library/protected/images/subnav-square.png) no-repeat 5% 1.15em;
-padding:.5em 5% .5em 10%;
-width: 85%;
-}
-
-.navgroup ul li a:hover, .navgroup ul li a:focus {
-background-color:#fff;
-color:#333;
-text-decoration:underline;
-}
-
-.navgroup ul span.currentsection {
-color:#333;
-background:#fff url(http://www.bristol.ac.uk/media-library/protected/images/subnav-square.png) no-repeat 5% 1.15em;
-padding:.5em 5% .5em 10%;
-font-weight:bold;
-}
-
-.navgroup ul ul {
-margin:0;
-padding:0;
-border-top:0;
-}
-
-.navgroup ul ul li {
-color:#333;
-list-style-type:none;
-border-bottom:0;
-border-top:1px solid #dedcd2;
-}
-
-.navgroup ul ul li a {
-background:#fff url(http://www.bristol.ac.uk/media-library/protected/images/subnav-square.png) no-repeat 10% 1.15em;
-padding:.5em 5% .5em 16%;
-}
-
-.navgroup ul ul li a:hover {
-background-color:#fff;
-color:#333;
-text-decoration:underline;
-}
-
-.navgroup ul ul li span.currentsection {
-color:#333;
-background:#FFF url(http://www.bristol.ac.uk/media-library/protected/images/subnav-square.png) no-repeat 10% 1.15em;
-padding:.5em 5% .5em 16%;
-font-weight:bold;
-}
-
-/* content snippets after nav (logos, boxes, etc) */
-.after-navgroup {
-margin-top: 1.5em;
-}
-
-.after-navgroup .module ul,
-.after-navgroup .module p,
-.after-navgroup .module ol,
-.after-navgroup .module dl {
-font-size: 1em;
 }

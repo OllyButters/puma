@@ -8,15 +8,15 @@ from pprint import pprint
 from string import Template
 import shutil
 
+
 def copy_network_files(network_datafile, script_name, outputdir):
   # Copy CSS files
   shutil.copyfile(config.template_dir + '/style_main.css', config.html_dir + '/css/style_main.css')
-  shutil.copyfile(config.template_dir + '/uobcms_corporate.css', config.html_dir + '/css/uobcms_corporate.css')
 
   #copy js file
   shutil.copyfile(os.path.join(config.template_dir, script_name), os.path.join(config.html_dir, outputdir, script_name))
 
-  #copy images
+    #copy images
   imagefiles = (
     'dot-highlight.png',
     'vline3.png',
@@ -28,7 +28,7 @@ def copy_network_files(network_datafile, script_name, outputdir):
     shutil.copyfile(os.path.join(config.template_dir, imagefile), os.path.join(config.html_dir, outputdir, imagefile))
 
 
-  
+
   #copy datafile
   shutil.copyfile(os.path.join(config.cache_dir, network_datafile), os.path.join(config.html_dir, outputdir, os.path.split(network_datafile)[1]))
 
@@ -43,10 +43,10 @@ def build_network_page(network_title, network_datafile, script_name):
   html_text = template.safe_substitute(common_body = build_html.build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; ' + network_title + '</p>', "../", ""), common_foot = build_html.build_common_foot())
 
   template = Template(html_text)
-  html_text = template.safe_substitute(title = network_title, datafile = network_datafile, script_name = script_name) 
+  html_text = template.safe_substitute(title = network_title, datafile = network_datafile, script_name = script_name)
 
   return html_text
-    
+
 
 if __name__ == '__main__':
   if __package__ is None:
@@ -93,7 +93,7 @@ if __name__ == '__main__':
       title = arg
 
   #add in script name
-  if net_type == 'simple_nodes': 
+  if net_type == 'simple_nodes':
     script_name = 'network.simplenodes.js'
   elif net_type == 'authors':
     script_name = 'network.authors.js'
@@ -108,6 +108,3 @@ if __name__ == '__main__':
 
   with open(os.path.join(config.html_dir, outputdir, datafile_name + '.html'), 'w') as outputfile:
     outputfile.write(network_html)
-
-
-

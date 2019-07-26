@@ -6,7 +6,6 @@ import os.path
 import csv
 import htmlentities
 import time
-import math
 import codecs
 import os
 import logging
@@ -52,14 +51,6 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'help/index.html">Information</a></li>'
     html += '<li><a href="' + nav_path + 'all_keywords/index.html">All Keywords</a></li>'
     html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords (MeSH)</a></li>'
-
-    # html += '<li><a>Maps</a>'
-    # html += '<ul class="multilevel-linkul-0">'
-    # html += '    <li><a href="' + nav_path + 'map/index.html">Institutions Map</a></li>'
-    # html += '    <li><a href="' + nav_path + 'country/index.html">Publications by Country</a></li>'
-    # html += '    <li><a href="' + nav_path + 'city/index.html">Publications by UK City</a></li>'
-    # html += '</ul></li>'
-
     html += '<li><a href="' + nav_path + 'country/index.html">Map by Country</a></li>'
     html += '<li><a href="' + nav_path + 'institute/index.html">Map by UK institute</a></li>'
 
@@ -69,7 +60,6 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
     html += '<li><a href="' + nav_path + 'wordcloud/index.html">Major Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
-    html += '<li id="error_page_li" style="display:none;"><a href="' + nav_path + 'errorlog/index.html">Error Log</a></li>'
     html += '<li><a href="' + nav_path + 'coverage_report.html">Coverage report</a></li>'
     html += '</ul>'
 
@@ -101,11 +91,7 @@ def build_common_foot():
     # This function builds the common footer for all pages.
     html = '</div>'
     html += '</div>'
-
-    # html += '<div class="feedback-container width-master clear"><div class="page-feedback small"></div></div>'
-    # html += '<div class="foot clearfix"></div>'
     html += '<div class="foot">'
-    # html += 'Stats last updated on ' + str(time.time())
     html += 'Stats last updated on ' + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
     html += '</div>'
     html += '</body>'
@@ -129,7 +115,6 @@ def build_home(papers):
 
     # Copy CSS files
     shutil.copyfile(config.template_dir + '/style_main.css', config.html_dir + '/css/style_main.css')
-    shutil.copyfile(config.template_dir + '/uobcms_corporate.css', config.html_dir + '/css/uobcms_corporate.css')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -137,7 +122,6 @@ def build_home(papers):
     # html head
     temp += '<head>'
     temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="css/uobcms_corporate.css">'
     temp += '<link rel="stylesheet" href="css/style_main.css">'
     temp += '<link rel="stylesheet" href="css/colour_scheme.css">'
     temp += '</head>'
@@ -367,7 +351,6 @@ def build_papers(papers):
     # html head
     temp += '<head>'
     temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '</head>'
@@ -420,7 +403,6 @@ def build_papers(papers):
         # html head
         temp += '<head>'
         temp += '<title>' + site_second_title + '</title>'
-        temp += '<link rel="stylesheet" href="../../css/uobcms_corporate.css">'
         temp += '<link rel="stylesheet" href="../../css/style_main.css">'
         temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
         temp += '</head>'
@@ -454,7 +436,6 @@ def build_papers(papers):
     # html head
     temp += '<head>'
     temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="../../css/uobcms_corporate.css">'
     temp += '<link rel="stylesheet" href="../../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
     temp += '</head>'
@@ -618,7 +599,6 @@ def build_mesh(papers):
     # html head
     temp += '<head>'
     temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '</head>'
@@ -646,7 +626,6 @@ def build_mesh(papers):
     # html head
     temp += '<head>'
     temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '</head>'
@@ -729,7 +708,6 @@ def build_mesh(papers):
             # html head
             temp += '<head>'
             temp += '<title>' + site_second_title + '</title>'
-            temp += '<link rel="stylesheet" href="../../css/uobcms_corporate.css">'
             temp += '<link rel="stylesheet" href="../../css/style_main.css">'
             temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
 
@@ -878,7 +856,6 @@ def build_google_map(papers):
     # html head
     temp += '<head>'
     temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
@@ -940,7 +917,6 @@ def build_country_map(papers, api_key):
     # html head
     temp += '<head>'
     temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
@@ -1003,7 +979,6 @@ def build_institute_map(papers):
     # html head
     temp += '<head>'
     temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
@@ -1186,7 +1161,6 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     # html head
     temp += '<head>'
     temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
@@ -1205,8 +1179,6 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Study Metrics</p>', "../", "")
 
     temp += '<h1 id="pagetitle">Study Metrics</h1>'
-
-    temp += "<p>{Explanation of study metrics}</p>"
 
     # Ouput Metrics
     temp += "<div class='metric_con'>"
@@ -1299,11 +1271,9 @@ def build_word_cloud(papers, list, data_from_count):
     # html head
     temp += '<head>'
     temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
-    # temp += '<style>.wordcloud{ width:100%; height:500px;}</style>'
 
     shutil.copyfile(config.template_dir + '/d3wordcloud.js', config.html_dir + '/wordcloud/d3wordcloud.js')
     shutil.copyfile(config.template_dir + '/d3.layout.cloud.js', config.html_dir + '/wordcloud/d3.layout.cloud.js')
@@ -1371,7 +1341,6 @@ def build_abstract_word_cloud(papers, data_from_count):
     # html head
     temp += '<head>'
     temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
@@ -1479,7 +1448,6 @@ def build_author_network(papers, network):
     # html head
     temp += '<head>'
     temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<style>.links line {  stroke: #999;  stroke-opacity: 0.6;} .nodes circle {  stroke: #fff;  stroke-width: 1.5px;} </style>'
@@ -1547,7 +1515,6 @@ def build_help():
     # html head
     temp += '<head>'
     temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
@@ -1599,7 +1566,6 @@ def build_search(papers):
     # html head
     temp += '<head>'
     temp += '<title>' + site_second_title + '</title>'
-    temp += '<link rel="stylesheet" href="../css/uobcms_corporate.css">'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
