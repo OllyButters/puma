@@ -112,6 +112,7 @@ University of Birmingham,University of Birmingham
 Birmingham University,University of Birmingham
 Blackpool Royal Victoria Hospital,Blackpool Victoria Hospital
 University of Brighton,University of Brighton
+Brighton and Sussex Medical School,Brighton and Sussex Medical School
 University of Bristol,University of Bristol
 Brunel University,Brunel University London
 #C,
@@ -158,6 +159,7 @@ University of Lincoln,University of Lincoln
 University of Liverpool,University of Liverpool
 London Metropolitan University,London Metropolitan University
 London School of Hygiene and Tropical Medicine,London School of Hygiene & Tropical Medicine
+London School of Hygiene & Tropical Medicine,London School of Hygiene & Tropical Medicine
 London School of Hygiene &amp; Tropical Medicine,London School of Hygiene & Tropical Medicine
 London School of Economics and Political Science,London School of Economics and Political Science
 Loughborough University,Loughborough University
@@ -203,6 +205,7 @@ Stirling University,University of Stirling
 University of Surrey,University of Surrey
 University of Sussex,University of Sussex
 Sheffield Hallam University,Sheffield Hallam University
+Swansea University,Swansea University
 #U,
 UCL,University College London
 University College London,University College London
@@ -321,6 +324,7 @@ Center for Genomic Regulation,Center for Genomic Regulation
 "Children's Memorial Hospital, Chicago","Children's Memorial Hospital, Chicago"
 Charité Universitätsmedizin Berlin,Charité
 Charite´-University Medicine Berlin,Charité
+Centre for Research and Technology Hellas,Centre for Research and Technology Hellas
 #D,
 Dalhousie University,Dalhousie University
 Deakin University,Deakin University
@@ -340,6 +344,7 @@ Feinstein Institute for Medical Research,Feinstein Institute for Medical Researc
 Flinders University,Flinders University
 University of Florence,University of Florence
 Fred Hutchinson Cancer Research Center,Fred Hutchinson Cancer Research Center
+University of Florida,University of Florida
 #G,
 iGE3,University of Geneva
 Geisel School of Medicine at Dartmouth,Geisel School of Medicine at Dartmouth
@@ -391,6 +396,8 @@ Christian-Albrechts University,Kiel University
 Campus Kiel,Kiel University
 King Faisal Specialist Hospital and Research Center,King Faisal Specialist Hospital and Research Center
 King Saud Bin Abdulaziz University for Health Sciences,King Saud Bin Abdulaziz University for Health Sciences
+King Abdullah University of Science and Technology,King Abdullah University of Science and Technology
+King Abdullah International Medical Research Center,King Abdullah International Medical Research Center
 Kio University,Kio University
 Kwong Wah Hospital,Kwong Wah Hospital
 KP Agricultural University,KP Agricultural University
@@ -418,6 +425,7 @@ University of Melbourne,University of Melbourne
 murdoch,Royal Children's Hospital
 Max Planck Institute for Psycholinguistics,Max Planck Institute for Psycholinguistics
 "Montefiore Medical Center/Albert Einstein College of Medicine","Montefiore Medical Center/Albert Einstein College of Medicine"
+Monash University,Monash University
 #N,
 Nanjing Medical University,Nanjing Medical University
 University of Naples Federico II,University of Naples Federico II
@@ -435,6 +443,7 @@ NYU,New York University
 Hôpital Necker Enfants-Malades,Hôpital Necker – Enfants Malades
 "UNC Hospitals, Chapel Hill",University of North Carolina at Chapel Hill
 "Gillings School of Global Public Health, UNC-Chapel Hill",University of North Carolina at Chapel Hill
+"National Center for Global Health and Medicine, Tokyo",National Center for Global Health and Medicine
 #O,
 Oklahoma Medical Research Foundation,Oklahoma Medical Research Foundation
 Okan Üniversitesi,Okan University
@@ -526,6 +535,7 @@ University of Texas Health Science Center,University of Texas Health Science Cen
 Umeå University,Umeå University
 University Medical Centre Utrecht,University Medical Center Utrecht
 Uppsala University,Uppsala University
+Utrecht University,Utrecht University
 #V,
 Vanderbilt University,Vanderbilt University
 Vanda Pharmaceuticals Inc,Vanda Pharmaceuticals Inc.
@@ -541,6 +551,7 @@ Wayne State University,Wayne State University
 University of Wrocław,University of Wrocław
 Medical College of Wisconsin,Medical College of Wisconsin
 Wake Forest University,Wake Forest University
+World Health Organization,World Health Organization
 #Y,
 Yale University,Yale University
 Yamagata University,Yamagata University
