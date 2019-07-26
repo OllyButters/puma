@@ -711,7 +711,8 @@ def build_mesh(papers):
         if number > word_cloud_max:
             word_cloud_max = number
 
-        word_cloud_list += '{"text":"' + this_mesh + '", "size":' + str(math.sqrt(number)*2.5) + '}'
+        # word_cloud_list += '{"text":"' + this_mesh + '", "size":' + str(math.sqrt(number)*2.5) + '}'
+        word_cloud_list += '{"text":"' + this_mesh + '", "size":' + str(number*5) + '}'
 
         for x in range(0, number):
             word_cloud_raw += " " + this_mesh
@@ -1349,7 +1350,8 @@ def build_abstract_word_cloud(papers, data_from_count):
 
             if row[0] != "":
                 # list += '["' + row[0].replace("'","\'").replace('"','\"') + '",' + str(row[1]) +  ']'
-                list += '{"text":"' + row[0].replace("'", "\'").replace('"', '\"') + '","size":' + str(math.sqrt(int(row[1]))*1.5) + '}'
+                # list += '{"text":"' + row[0].replace("'", "\'").replace('"', '\"') + '","size":' + str(math.sqrt(int(row[1]))*1.5) + '}'
+                list += '{"text":"' + row[0].replace("'", "\'").replace('"', '\"') + '","size":' + str(row[1]) + '}'
                 n += 1
 
             if n > 200:
