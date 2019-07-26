@@ -195,9 +195,6 @@ def build_home(papers):
         print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['num_papers']) + '],'
     print >>data_file, ']);'
 
-    # Copy the main html page across
-    # shutil.copyfile('html/templates/plot.html','../html/plot.html')
-
     # Cohort-Rating calculation
     cr_current_year = float(config.metrics_study_current_year)
     cr_sum = 0.0
