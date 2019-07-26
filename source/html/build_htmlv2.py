@@ -53,12 +53,15 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'all_keywords/index.html">All Keywords</a></li>'
     html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords (MeSH)</a></li>'
 
-    html += '<li><a>Maps</a>'
-    html += '<ul class="multilevel-linkul-0">'
-    html += '    <li><a href="' + nav_path + 'map/index.html">Institutions Map</a></li>'
-    html += '    <li><a href="' + nav_path + 'country/index.html">Publications by Country</a></li>'
-    html += '    <li><a href="' + nav_path + 'city/index.html">Publications by UK City</a></li>'
-    html += '</ul></li>'
+    # html += '<li><a>Maps</a>'
+    # html += '<ul class="multilevel-linkul-0">'
+    # html += '    <li><a href="' + nav_path + 'map/index.html">Institutions Map</a></li>'
+    # html += '    <li><a href="' + nav_path + 'country/index.html">Publications by Country</a></li>'
+    # html += '    <li><a href="' + nav_path + 'city/index.html">Publications by UK City</a></li>'
+    # html += '</ul></li>'
+
+    html += '<li><a href="' + nav_path + 'country/index.html">Map by Country</a></li>'
+    html += '<li><a href="' + nav_path + 'institute/index.html">Map by UK institute</a></li>'
 
     if config.page_show_author_network == "True":
         html += '<li><a href="' + nav_path + 'authornetwork/index.html">Author Network</a></li>'
@@ -69,12 +72,6 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li id="error_page_li" style="display:none;"><a href="' + nav_path + 'errorlog/index.html">Error Log</a></li>'
     html += '<li><a href="' + nav_path + 'coverage_report.html">Coverage report</a></li>'
     html += '</ul>'
-
-    # = Cookie errorlog display =
-    # Once a user has gone to the errorlog page a cookie called show_error_page is set.
-    # If this cookie is set then we show the user the errorlog page on the navigation menu.
-    html += '<script>function getCookie(cname) {var name = cname + "=";var ca = document.cookie.split(";");for(var i = 0; i <ca.length; i++) { var c = ca[i]; while (c.charAt(0)==" ") {c = c.substring(1);}if (c.indexOf(name) == 0) {return c.substring(name.length,c.length);}}return "";}</script>'
-    html += '<script>if ( getCookie("show_error_page") != "" ){ document.getElementById("error_page_li").style.display = "block";}</script>'
 
     html += '<div class="after-navgroup">'
     html += '<!-- navigation object : navigation bottom -->'
@@ -922,7 +919,7 @@ def build_country_map(papers, api_key):
     for this_paper in papers:
         try:
 
-            if this_paper['clean']['location']['country_code'] in countries:
+            if this_paper['clean']['location']['country'] in countries:
                 countries[this_paper['clean']['location']['country']] += 1
             else:
                 countries[this_paper['clean']['location']['country']] = 1
@@ -970,35 +967,35 @@ def build_country_map(papers, api_key):
     temp = build_common_foot()
     print >>html_file, temp
 
-    build_city_map(papers)
-
 
 ###########################################################
-# Publications by UK city
+# Publications by UK institute
 ###########################################################
-def build_city_map(papers):
+def build_institute_map(papers):
 
-    print "\n###HTML - City Map###"
+    print("\n###HTML - Institute Map###")
 
-    cities = {}
+    institutes = {}
     number_of_points = 0
     for this_paper in papers:
-
         try:
-            if this_paper['clean']['location']['postal_town'] != "":
-                if this_paper['clean']['location']['postal_town'] in cities:
-                    cities[this_paper['clean']['location']['postal_town']] += 1
+            if this_paper['clean']['location']['clean_institute'] != "":
+                if this_paper['clean']['location']['clean_institute'] in institutes:
+                    institutes[this_paper['clean']['location']['clean_institute']]['count'] += 1
                 else:
-                    cities[this_paper['clean']['location']['postal_town']] = 1
+                    institutes[this_paper['clean']['location']['clean_institute']] = {}
+                    institutes[this_paper['clean']['location']['clean_institute']]['lat'] = this_paper['clean']['location']['latitude']
+                    institutes[this_paper['clean']['location']['clean_institute']]['lon'] = this_paper['clean']['location']['longitude']
+                    institutes[this_paper['clean']['location']['clean_institute']]['count'] = 1
                 number_of_points += 1
         except:
             pass
 
-    city_string = ""
-    for city in cities.keys():
-        city_string += ",['" + city + "'," + str(cities[city]) + "]"
+    institute_string = ""
+    for this_institute in institutes.keys():
+        institute_string += ',[' + institutes[this_institute]['lat'] + ',' + institutes[this_institute]['lon'] + ',"' + str(this_institute) + '",' + str(institutes[this_institute]['count']) + ']'
 
-    html_file = open(config.html_dir + '/city/index.html', 'w')
+    html_file = open(config.html_dir + '/institute/index.html', 'w')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -1013,16 +1010,17 @@ def build_city_map(papers):
 
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>'
     # temp += '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
-    temp += "<script>google.charts.load('current', {'packages':['geochart'], mapsApiKey:'" + config.google_maps_api_key + "'});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['City',   'Publications']" + city_string + " ]); var options = {region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#" + config.project_details['colour_hex_secondary'] + "', '#" + config.project_details['colour_hex_primary'] + "']}}; var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));chart.draw(data, options); };</script>"
+    # temp += "<script>google.charts.load('current', {'packages':['geochart'], mapsApiKey:'" + config.google_maps_api_key + "'});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['City',   'Publications']" + city_string + " ]); var options = {region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#" + config.project_details['colour_hex_secondary'] + "', '#" + config.project_details['colour_hex_primary'] + "']}};
+    temp += "<script>google.charts.load('current', {'packages':['geochart'], mapsApiKey:'" + config.google_maps_api_key + "'});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['lat', 'lon', 'Institute','Publication count']" + institute_string + " ]); var options = {magnifyingGlass: {zoomFactor: '15.0'}, region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#" + config.project_details['colour_hex_secondary'] + "', '#" + config.project_details['colour_hex_primary'] + "']}}; var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));chart.draw(data, options); };</script>"
 
-    shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/city/loading.gif')
-    shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/city/map.css')
+    shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/institute/loading.gif')
+    shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/institute/map.css')
 
     temp += '</head>'
 
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by UK City</p>', "../", "")
 
-    temp += '<h1 id="pagetitle">Publications by UK City</h1>'
+    temp += '<h1 id="pagetitle">Publications by UK Institute</h1>'
 
     temp += "<div class='loading'><img src='loading.gif' alt='Loading'></div>"
     temp += '<div id="regions_div" style="width: 900px; height: 500px;"></div>'
@@ -1031,7 +1029,8 @@ def build_city_map(papers):
     html_file.write(temp.encode(encoding='utf_8'))
 
     temp = build_common_foot()
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
 
 ###########################################################
