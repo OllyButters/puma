@@ -1564,7 +1564,7 @@ def build_help():
 ###########################################################
 def build_search(papers):
 
-    print "\n###HTML - Search page###"
+    print("\n###HTML - Search page###")
 
     html_file = open(config.html_dir + '/search/index.html', 'w')
     shutil.copyfile(config.template_dir + '/search.js', config.html_dir + '/search/search.js')
@@ -1598,7 +1598,16 @@ def build_search(papers):
     temp += '<h2 id="num_search_results"></h2>'
     temp += '<div id="search_results"></div>'
 
-    temp += '<script id="search_data">var papers = ' + str(json.dumps(papers)).replace("<", "&lt;").replace(">", "&gt;") + ';</script>'
+    searchable_data = []
+    for this_paper in papers:
+        temp = {}
+        temp['clean'] = this_paper['clean']
+        # searchable_data.append(temp)
+        searchable_data.append({'clean': this_paper['clean']})
+
+    print(searchable_data)
+    # temp += '<script id="search_data">var papers = ' + str(json.dumps(papers)).replace("<", "&lt;").replace(">", "&gt;") + ';</script>'
+    temp += '<script id="search_data">var papers = ' + str(json.dumps(searchable_data)).replace("<", "&lt;").replace(">", "&gt;") + ';</script>'
 
     # temp += '<div style="display:none" id="exec_list">' + str(json.dumps(exec_list)).replace("<", "&lt;").replace(">", "&gt;") + '</div>'
 

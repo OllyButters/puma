@@ -41,7 +41,7 @@ function search(){
       var match = false;
 
       // Check title
-      if( data[i].merged.title.contains( query_components[j] ) ){
+      if( data[i].clean.title.contains( query_components[j] ) ){
         match = true;
       }
 
