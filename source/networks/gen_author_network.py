@@ -2,6 +2,7 @@ import json
 import unicodecsv
 import os
 import re
+import sys
 
 
 def loadCleaning():
@@ -49,9 +50,9 @@ if __name__ == '__main__':
     else:
         from ..analyse import genLinks as gl
         from ..config import config as config
-    else:
-        import analyse.genLinks as gl
-        import config.config as config
+else:
+    import analyse.genLinks as gl
+    import config.config as config
 
 
 def output_network():
