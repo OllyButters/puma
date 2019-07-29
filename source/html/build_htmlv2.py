@@ -1025,7 +1025,7 @@ def intWithCommas(x):
 ###########################################################
 def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_year, study_current_year):
 
-    print "\n###HTML - Metrics###"
+    print("\n###HTML - Metrics###")
 
     html_file = open(config.html_dir + '/metrics/index.html', 'w')
 
@@ -1131,26 +1131,27 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
 
     n_papers_with_x_citations += "]);"
 
-    # = High Citations Range =
-    n_papers_with_x_citations += "var papers_per_high_citation_count = ([['Number of Citations (Scopus)','Number of Papers',{ role: 'style' }]"
-    for this_bin in range(0, (max_citations - citation_number_limit)/citation_bin_size + 1):
+    # High Citations Range, but only if they are above the citation_number_limit
+    if(max_citations >= citation_number_limit):
+        n_papers_with_x_citations += "var papers_per_high_citation_count = ([['Number of Citations (Scopus)','Number of Papers',{ role: 'style' }]"
+        for this_bin in range(0, (max_citations - citation_number_limit)/citation_bin_size + 1):
 
-        # Calculate the start and end of the bin
-        bin_start = this_bin * citation_bin_size + citation_number_limit + 1
-        bin_end = bin_start + citation_bin_size
+            # Calculate the start and end of the bin
+            bin_start = this_bin * citation_bin_size + citation_number_limit + 1
+            bin_end = bin_start + citation_bin_size
 
-        num_papers_in_bin = 0
+            num_papers_in_bin = 0
 
-        # Count all citation counts in bin
-        for n in range(bin_start, bin_end):
-            try:
-                num_papers_in_bin += num_papers_citations[n]
-            except:
-                pass
+            # Count all citation counts in bin
+            for n in range(bin_start, bin_end):
+                try:
+                    num_papers_in_bin += num_papers_citations[n]
+                except:
+                    pass
 
-        n_papers_with_x_citations += ",['" + str(bin_start) + "-" + str(bin_end) + "'," + str(num_papers_in_bin) + ",'" + colour + "']"
+            n_papers_with_x_citations += ",['" + str(bin_start) + "-" + str(bin_end) + "'," + str(num_papers_in_bin) + ",'" + colour + "']"
 
-    n_papers_with_x_citations += "]);"
+        n_papers_with_x_citations += "]);"
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -1245,8 +1246,11 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     temp += "<div style='margin-left:auto;margin-right:auto;'><div class='average_citations' style='height:15px; width:33px; float:left; background:#" + config.project_details['colour_hex_secondary'] + "'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Mean number of citations</div></div>"
     temp += "<div style='margin-left:auto;margin-right:auto;margin-top:5px;'><div class='average_citations' style='height:15px; width:33px; float:left; background:green'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Median number of citations</div></div>"
     temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
-    temp += '<div id="papers_per_high_citation_count_div"></div>'
-    temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
+
+    if(max_citations >= citation_number_limit):
+        temp += '<div id="papers_per_high_citation_count_div"></div>'
+        temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
+
     print >>html_file, temp
 
     temp = build_common_foot()
