@@ -862,7 +862,7 @@ def build_google_map(papers):
     temp += '<script type="text/javascript" src="map.js"></script>'
 
     shutil.copyfile(config.template_dir + '/map.js', config.html_dir + '/map/map.js')
-    shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/map/loading.gif')
+    # shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/map/loading.gif')
     shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/css/map.css')
 
     temp += '</head>'
@@ -871,7 +871,6 @@ def build_google_map(papers):
 
     temp += '<h1 id="pagetitle">Institutions Map</h1>'
 
-    temp += "<div class='loading'><img src='loading.gif' alt='Loading'></div>"
     temp += "<div id='map_canvas'></div>"
     temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
 
@@ -931,8 +930,7 @@ def build_country_map(papers, api_key):
 
     temp += '<h1 id="pagetitle">Publications by Country</h1>'
 
-    temp += "<div class='loading'><img src='loading.gif' alt='Loading'></div>"
-    temp += "<div id='regions_div' style='width: 900px; height: 500px;'></div>"
+    temp += '<div id="regions_div" style="width: 900px; height: 500px;"><img src="loading.gif" alt="Loading"></div>'
     temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
 
     print >>html_file, temp
@@ -994,8 +992,7 @@ def build_institute_map(papers):
 
     temp += '<h1 id="pagetitle">Publications by UK Institute</h1>'
 
-    temp += "<div class='loading'><img src='loading.gif' alt='Loading'></div>"
-    temp += '<div id="regions_div" style="width: 900px; height: 500px;"></div>'
+    temp += '<div id="regions_div" style="width: 900px; height: 500px;"><img src="loading.gif" alt="Loading"></div>'
     temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
     # print >>html_file, temp
     html_file.write(temp.encode(encoding='utf_8'))
