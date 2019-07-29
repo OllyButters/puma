@@ -1525,22 +1525,30 @@ def build_help():
 
     temp += '<h2>Where does the data come from?</h2>'
     temp += '<h3>Publication Data</h3>'
-    temp += '<p>Data and metadata for the publications are located using the PubMed search engine.</p>'
+    temp += '<p>Data and metadata for the publications are downloaded using the PubMed and DOI APIs.</p>'
 
     temp += '<h3>Citations Data</h3>'
     temp += '<p>Citation data is retrieved from the <a href="https://www.elsevier.com/solutions/scopus">Scopus</a> API provided by Elsevier and from the <a href="https://europepmc.org/">Europe PMC</a> API.</p>'
 
     temp += '<h3>Geodata</h3>'
-    temp += '<p>The Coordinate location of institutions is retrieved from the free project <a href="https://www.wikidata.org">Wikidata</a>. The coordinate data is then converted into country and city names using the <a href="https://developers.google.com/maps/">Google Maps API</a>.</p>'
+    temp += '<p>The coordinate location and town of institutions is retrieved from the free project <a href="https://www.wikidata.org">Wikidata</a>.</p>'
 
     temp += "<h2>Why don't some statistics use data from all publications?</h2>"
 
     temp += '<p>Data can be missing because some publications are very old. There are many different ways to track publications'
-    temp += ' and Prior to the introduction of DOIs in 2000 there was no standard method. This means some metadata on old publications could have been lost or not recorded.</p>'
+    temp += ' and prior to the introduction of DOIs in 2000 there was no standard method. This means some metadata on old publications could have been lost or not recorded.</p>'
 
     temp += '<p>The data used for the statistics are gathered from databases which only collect data from particular journals.'
     temp += ' This problem is most obvious for citation data from Scopus and Europe PMC. Although they have a particular publication on record,'
     temp += ' there may be citations for this publication from a journal that they do not index and therefore these will not be in the citation count. This is why citiation counts from different sources are not always the same.</p>'
+
+    temp += '<h2>I want to know more!</h2>'
+    temp += '<ul>'
+    temp += '<li>The source code is at <a href="https://github.com/OllyButters/puma">https://github.com/OllyButters/puma</a></li>'
+    temp += '<li>Some documentation is at <a href="https://github.com/OllyButters/puma/wiki">https://github.com/OllyButters/puma/wiki</a></li>'
+    temp += '<li>You can talk to us at: <a href="https://twitter.com/DrOllyButters">@DrOllyButters</a>, <a href="https://twitter.com/DrBeccaWilson">@DrBeccaWilson</a> and <a href="https://twitter.com/_hugh_garner_">@_hugh_garner_</a></li>'
+    temp += '<li>This project has been funded by: <ul><li>CLOSER, whose mission is to maximise the use, value and impact of longitudinal studies. CLOSER is funded by the Economic and Social Research Council (ESRC) and Medical Research Council (MRC) (grant reference: ES/K000357/1).</li><li>Becca is also supported by the UK Medical Research Council (MRC) (award reference: MR/S003959/1).</li><li>We have also had funding by the Nuffield Foundation research placement program.</li></ul></li>'
+    temp += '</li>'
 
     print >>html_file, temp
 
