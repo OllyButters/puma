@@ -60,7 +60,10 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
     html += '<li><a href="' + nav_path + 'wordcloud/index.html">Major Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
-    html += '<li><a href="' + nav_path + 'coverage_report.html">Coverage report</a></li>'
+
+    if config.public_facing == "False":
+        html += '<li><a href="' + nav_path + 'coverage_report.html">Coverage report</a></li>'
+
     html += '</ul>'
 
     html += '<div class="after-navgroup">'
@@ -1384,7 +1387,7 @@ def get_author_string_from_hash(hash_string, network):
 ###########################################################
 def build_author_network(papers, network):
 
-    print "\n###HTML - Author Network###"
+    print("\n###HTML - Author Network###")
 
     # Create json file
     net_file = open(config.html_dir + '/authornetwork/network.json', 'w')

@@ -135,10 +135,9 @@ for this_paper in papers:
     fo.write(json.dumps(this_paper, indent=4))
     fo.close()
 
-# exit()
-
-# Generate the coverage report
-coverage_report.coverage_report(papers)
+# Generate the coverage report, but only if not to be shown publicly
+if config.public_facing == "False":
+    coverage_report.coverage_report(papers)
 
 bibliography.bibtex.bibtex(papers)
 

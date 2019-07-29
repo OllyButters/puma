@@ -36,6 +36,9 @@ def build_config_variables(root_dir):
 
     global pubmed_email
 
+    # Some data cannot be dispayed on a public facing website - e.g. all the data in merged json file.
+    global public_facing
+
     global page_show_author_network
 
     global network_create_networks
@@ -104,6 +107,8 @@ def build_config_variables(root_dir):
 
         # Pages
         page_show_author_network = config.get('pages', 'page_show_author_network')
+        public_facing = config.getboolean('pages', 'public_facing')
+
         # Networks
         network_create_networks = config.getboolean('networks', 'create_networks')
 
