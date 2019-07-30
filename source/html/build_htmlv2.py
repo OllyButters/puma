@@ -47,8 +47,8 @@ def build_common_body(breadcrumb, nav_path, body):
 
     html += '<ul class="navgroup">'
     html += '<li><a href="' + nav_path + 'index.html">Home</a></li>'
+    html += '<li><a href="' + nav_path + 'help/index.html">About</a></li>'
     html += '<li><a href="' + nav_path + 'search/index.html">Search</a></li>'
-    html += '<li><a href="' + nav_path + 'help/index.html">Information</a></li>'
     html += '<li><a href="' + nav_path + 'all_keywords/index.html">All Keywords</a></li>'
     html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords (MeSH)</a></li>'
     html += '<li><a href="' + nav_path + 'country/index.html">Map by Country</a></li>'
@@ -1550,7 +1550,7 @@ def build_help():
     temp += '<li>The source code is at <a href="https://github.com/OllyButters/puma">https://github.com/OllyButters/puma</a></li>'
     temp += '<li>Some documentation is at <a href="https://github.com/OllyButters/puma/wiki">https://github.com/OllyButters/puma/wiki</a></li>'
     temp += '<li>You can talk to us at: <a href="https://twitter.com/DrOllyButters">@DrOllyButters</a>, <a href="https://twitter.com/DrBeccaWilson">@DrBeccaWilson</a> and <a href="https://twitter.com/_hugh_garner_">@_hugh_garner_</a></li>'
-    temp += '<li>This project has been funded by: <ul><li>CLOSER, whose mission is to maximise the use, value and impact of longitudinal studies. CLOSER is funded by the Economic and Social Research Council (ESRC) and Medical Research Council (MRC) (grant reference: ES/K000357/1).</li><li>Becca is also supported by the UK Medical Research Council (MRC) (award reference: MR/S003959/1).</li><li>We have also had funding by the Nuffield Foundation research placement program.</li></ul></li>'
+    temp += '<li>This project has been funded by: <ul><li>CLOSER, whose mission is to maximise the use, value and impact of longitudinal studies. CLOSER is funded by the Economic and Social Research Council (ESRC) and Medical Research Council (MRC) (grant reference: ES/K000357/1).</li><li>Becca Wilson is a UKRI Innovation Fellow with HDR UK [MR/S003959/1].</li><li>We have also had funding by the Nuffield Foundation research placement program.</li></ul></li>'
     temp += '</li>'
 
     print >>html_file, temp
@@ -1591,7 +1591,7 @@ def build_search(papers):
 
     temp += '<h1 id="pagetitle">Search</h1>'
 
-    temp += '<p>Search for the fields titles, abstracts, keywords, MeSH, and authors.<br/>To narrow down the results search for multiple fields at once.</p>'
+    temp += '<p>Search for the fields titles, abstracts, keywords and authors.<br/>To narrow down the results search for multiple fields at once.</p>'
     temp += '<p><input type="text" id="search"><button onclick="search();">Search</button></p>'
 
     temp += '<div style="display:none;" id="searching">Searching...</div>'

@@ -565,12 +565,27 @@ def clean_journal(this_paper):
           'volume': '',
           'issue': ''
         }
+
+        # PMID first
         try:
             candidate_journal = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
             if isinstance(candidate_journal, unicode):
                 this_paper['clean']['journal']['journal_name'] = candidate_journal
             elif isinstance(candidate_journal, list):
                 this_paper['clean']['journal']['journal_name'] = candidate_journal[0]
+
+            # Lets get the volume and issue too.
+            try:
+                this_paper['clean']['journal']['volume'] = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['Journal']['JournalIssue']['Volume']
+            except:
+                pass
+
+            try:
+                this_paper['clean']['journal']['issue'] = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['Journal']['JournalIssue']['Issue']
+            except:
+                pass
+
+        # Try DOI if PMID didnt work
         except:
             try:
                 candidate_journal = this_paper['raw']['doi_data']['container-title']
@@ -578,6 +593,18 @@ def clean_journal(this_paper):
                     this_paper['clean']['journal']['journal_name'] = candidate_journal
                 elif isinstance(candidate_journal, list):
                     this_paper['clean']['journal']['journal_name'] = candidate_journal[0]
+
+                # Lets get the volume and issue too.
+                try:
+                    this_paper['clean']['journal']['volume'] = this_paper['raw']['doi_data']['volume']
+                except:
+                    pass
+
+                try:
+                    this_paper['clean']['journal']['issue'] = this_paper['raw']['doi_data']['issue']
+                except:
+                    pass
+
             except:
                 logging.warn('No clean journal name for ' + this_paper['IDs']['hash'])
                 pass

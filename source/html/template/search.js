@@ -67,8 +67,8 @@ function search(){
       try {
 //        for( n = 0; n < data[i].merged.MedlineCitation.MeshHeadingList.length ; n++ ){
   //        if( data[i].merged.MedlineCitation.MeshHeadingList[n].DescriptorName.contains( query_components[j] ) ){
-          for( n = 0; n < data[i].clean.mesh.length ; n++ ){
-            if( data[i].clean.mesh[n].term.contains( query_components[j] ) ){
+          for( n = 0; n < data[i].clean.keywords.mesh.length ; n++ ){
+            if( data[i].clean.keywords.mesh[n].term.contains( query_components[j] ) ){
 
             match = true;
           }
@@ -124,13 +124,13 @@ function search(){
         } catch (err){}
 
         try{
-            if( "volume" in data[i].clean.journal ){
-              results += ', Volume ' + data[i].clean.journal.volume;
+            if( "volume" in data[i].clean.journal && data[i].clean.journal.volume != ''){
+                results += ', Volume ' + data[i].clean.journal.volume;
             }
         } catch (err){}
 
         try{
-            if( "issue" in data[i].clean.journal){
+            if( "issue" in data[i].clean.journal && data[i].clean.journal.issue != ''){
               results += ', Issue ' + data[i].clean.journal.issue;
             }
         } catch (err){}
