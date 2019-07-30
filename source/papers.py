@@ -136,7 +136,7 @@ for this_paper in papers:
     fo.close()
 
 # Generate the coverage report, but only if not to be shown publicly
-if config.public_facing == "False":
+if not config.public_facing:
     coverage_report.coverage_report(papers)
 
 bibliography.bibtex.bibtex(papers)

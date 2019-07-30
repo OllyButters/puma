@@ -61,7 +61,7 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'wordcloud/index.html">Major Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
 
-    if config.public_facing == "False":
+    if not config.public_facing:
         html += '<li><a href="' + nav_path + 'coverage_report.html">Coverage report</a></li>'
 
     html += '</ul>'
