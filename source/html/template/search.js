@@ -78,7 +78,8 @@ function search(){
       // Check author names
       try {
         for( n = 0; n < data[i].clean.full_author_list.length ; n++ ){
-          if( data[i].clean.full_author_list[n].family.contains( query_components[j] ) || data[i].clean.full_author_list[n].given.contains( query_components[j] ) ){
+          //if( data[i].clean.full_author_list[n].family.contains( query_components[j] ) || data[i].clean.full_author_list[n].given.contains( query_components[j] ) ){
+          if( data[i].clean.full_author_list[n].clean.contains( query_components[j] )){
             match = true;
           }
         }
@@ -111,7 +112,8 @@ function search(){
               if( a > 0 ){
                 results += "; ";
               }
-              results += data[i].clean.full_author_list[a].family + ', ' + data[i].clean.full_author_list[a].given;
+              // results += data[i].clean.full_author_list[a].family + ', ' + data[i].clean.full_author_list[a].given;
+              results += data[i].clean.full_author_list[a].clean;
           }
           results += '<br/>'
 

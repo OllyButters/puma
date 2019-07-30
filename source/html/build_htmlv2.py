@@ -1619,7 +1619,9 @@ def build_search(papers):
             pass
 
         try:
-            this_subset['clean']['full_author_list'] = this_paper['clean']['full_author_list']
+            this_subset['clean']['full_author_list'] = []
+            for this_author in this_paper['clean']['full_author_list']:
+                this_subset['clean']['full_author_list'].append({'clean': this_author['clean']})
         except:
             pass
 
@@ -1628,14 +1630,9 @@ def build_search(papers):
         except:
             pass
 
-        # searchable_data.append(temp)
         searchable_data.append(this_subset)
 
-    print(searchable_data)
-    # temp += '<script id="search_data">var papers = ' + str(json.dumps(papers)).replace("<", "&lt;").replace(">", "&gt;") + ';</script>'
     temp += '<script id="search_data">var papers = ' + str(json.dumps(searchable_data)).replace("<", "&lt;").replace(">", "&gt;") + ';</script>'
-
-    # temp += '<div style="display:none" id="exec_list">' + str(json.dumps(exec_list)).replace("<", "&lt;").replace(">", "&gt;") + '</div>'
 
     print >>html_file, temp
 
