@@ -151,31 +151,6 @@ function search(){
             }
         } catch (err){}
 
-        // Citation Counts and Sources
-        number_citations_counts = 2; // The number of different citation count sources
-        citations_counts_width = 100 // number_citations_counts;
-        results += "<table class='citation_table'>";
-        results += '<tr><th colspan="' + number_citations_counts + '">Citation Counts</th></tr>';
-        results += '<tr>';
-        try{
-            // Try to display citation count with link to scopus page
-            results += '<td style="width:' + citations_counts_width + '%;">Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + data[i].IDs.scopus + '&origin=inward&txGid=0">' + data[i].clean.citations.scopus.count + '</a></td>';
-        } catch (err){
-            try {
-                results += '<td style="width:' + citations_counts_width + '%;">Scopus: ' + data[i].clean.citations.scopus.count + '</td>';
-            } catch (err){
-                results += '<td style="width:' + citations_counts_width + '%;">Scopus: -</td>';
-            }
-        }
-
-        try{
-            results += '<td style="width:' + citations_counts_width + '%;">Europe PMC: ' + data[i].clean.citation.PMC.count + '</td>';
-        } catch (err){
-            results += '<td style="width:' + citations_counts_width + '%;">Europe PMC: -</td>';
-        }
-
-        results += '</tr>';
-        results += "</table>";
         results += '</div>';
 
 
