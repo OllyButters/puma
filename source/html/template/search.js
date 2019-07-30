@@ -153,7 +153,7 @@ function search(){
 
         // Citation Counts and Sources
         number_citations_counts = 2; // The number of different citation count sources
-        citations_counts_width = 100 / number_citations_counts;
+        citations_counts_width = 100 // number_citations_counts;
         results += "<table class='citation_table'>";
         results += '<tr><th colspan="' + number_citations_counts + '">Citation Counts</th></tr>';
         results += '<tr>';

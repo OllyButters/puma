@@ -1600,10 +1600,36 @@ def build_search(papers):
 
     searchable_data = []
     for this_paper in papers:
-        temp = {}
-        temp['clean'] = this_paper['clean']
+        this_subset = {}
+        this_subset['IDs'] = this_paper['IDs']
+        this_subset['clean'] = {}
+        try:
+            this_subset['clean']['title'] = this_paper['clean']['title']
+        except:
+            pass
+
+        try:
+            this_subset['clean']['abstract'] = this_paper['clean']['abstract']
+        except:
+            pass
+
+        try:
+            this_subset['clean']['keywords'] = this_paper['clean']['keywords']
+        except:
+            pass
+
+        try:
+            this_subset['clean']['full_author_list'] = this_paper['clean']['full_author_list']
+        except:
+            pass
+
+        try:
+            this_subset['clean']['journal'] = this_paper['clean']['journal']
+        except:
+            pass
+
         # searchable_data.append(temp)
-        searchable_data.append({'clean': this_paper['clean']})
+        searchable_data.append(this_subset)
 
     print(searchable_data)
     # temp += '<script id="search_data">var papers = ' + str(json.dumps(papers)).replace("<", "&lt;").replace(">", "&gt;") + ';</script>'
