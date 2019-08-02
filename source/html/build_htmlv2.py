@@ -953,7 +953,7 @@ def build_institute_map(papers):
     number_of_points = 0
     for this_paper in papers:
         try:
-            if this_paper['clean']['location']['clean_institute'] != "":
+            if this_paper['clean']['location']['clean_institute'] != "" and this_paper['clean']['location']['latitude'] != "" and this_paper['clean']['location']['longitude'] != "":
                 if this_paper['clean']['location']['clean_institute'] in institutes:
                     institutes[this_paper['clean']['location']['clean_institute']]['count'] += 1
                 else:
@@ -967,7 +967,8 @@ def build_institute_map(papers):
 
     institute_string = ""
     for this_institute in institutes.keys():
-        institute_string += ',[' + institutes[this_institute]['lat'] + ',' + institutes[this_institute]['lon'] + ',"' + str(this_institute) + '",' + str(institutes[this_institute]['count']) + ']'
+        print(this_institute)
+        institute_string += ',[' + institutes[this_institute]['lat'] + ',' + institutes[this_institute]['lon'] + ',"' + str(this_institute.encode('ascii', 'ignore')) + '",' + str(institutes[this_institute]['count']) + ']'
 
     html_file = open(config.html_dir + '/institute/index.html', 'w')
 
@@ -982,8 +983,6 @@ def build_institute_map(papers):
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
     temp += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>'
-    # temp += '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
-    # temp += "<script>google.charts.load('current', {'packages':['geochart'], mapsApiKey:'" + config.google_maps_api_key + "'});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['City',   'Publications']" + city_string + " ]); var options = {region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#" + config.project_details['colour_hex_secondary'] + "', '#" + config.project_details['colour_hex_primary'] + "']}};
     temp += "<script>google.charts.load('current', {'packages':['geochart'], mapsApiKey:'" + config.google_maps_api_key + "'});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['lat', 'lon', 'Institute','Publication count']" + institute_string + " ]); var options = {magnifyingGlass: {zoomFactor: '15.0'}, region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#" + config.project_details['colour_hex_secondary'] + "', '#" + config.project_details['colour_hex_primary'] + "']}}; var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));chart.draw(data, options); };</script>"
 
     shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/institute/loading.gif')
@@ -997,11 +996,9 @@ def build_institute_map(papers):
 
     temp += '<div id="regions_div" style="width: 900px; height: 500px;"><img src="loading.gif" alt="Loading"></div>'
     temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
-    # print >>html_file, temp
     html_file.write(temp.encode(encoding='utf_8'))
 
     temp = build_common_foot()
-    # print >>html_file, temp
     html_file.write(temp)
 
 

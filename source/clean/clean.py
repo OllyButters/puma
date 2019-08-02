@@ -651,20 +651,22 @@ def clean_mesh(this_paper):
     except KeyError:
         this_paper['clean']['keywords']['mesh'] = []
 
-    if 'MeshHeadingList' in this_paper['raw']['pmid_data']['MedlineCitation'].keys():
-
-        try:
-            for this_mesh in this_paper['raw']['pmid_data']['MedlineCitation']['MeshHeadingList']:
-                this_paper['clean']['keywords']['mesh'].append(
-                    {
-                        'term': this_mesh['DescriptorName'],
-                        'major': this_mesh['MajorTopicYN']
-                    }
-                    )
-        except Exception as e:
-            logging.error('MeSH error: ' + str(e))
-            print('MeSH error: ' + str(e))
-            pass
+    # Might not be any pmid data at all.
+    try:
+        if 'MeshHeadingList' in this_paper['raw']['pmid_data']['MedlineCitation'].keys():
+            try:
+                for this_mesh in this_paper['raw']['pmid_data']['MedlineCitation']['MeshHeadingList']:
+                    this_paper['clean']['keywords']['mesh'].append(
+                        {
+                            'term': this_mesh['DescriptorName'],
+                            'major': this_mesh['MajorTopicYN']
+                        }
+                        )
+            except Exception as e:
+                logging.error('MeSH error: ' + str(e))
+                print('MeSH error: ' + str(e))
+    except:
+        pass
 
 
 ################################################################################
