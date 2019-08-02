@@ -43,6 +43,8 @@ def coverage_report(papers):
                     <th>Geocoded<br/>&uarr;&darr;</th>
                     <th>Clean<br/>Date &uarr;&darr;</th>
                     <th>Journal<br/>&uarr;&darr;</th>
+                    <th>Volume<br/>&uarr;&darr;</th>
+                    <th>Issue<br/>&uarr;&darr;</th>
                     <th>Scopus<br/>Citations &uarr;&darr;</th>
                     <th>Scopus<br/>Type &uarr;&darr;</th>
                 </tr></thead>
@@ -64,6 +66,8 @@ def coverage_report(papers):
     status['geocoded'] = 0
     status['clean_date'] = 0
     status['journal'] = 0
+    status['volume'] = 0
+    status['issue'] = 0
     status['scopus_citation'] = 0
 
     for this_paper in papers:
@@ -320,6 +324,30 @@ def coverage_report(papers):
             cov_html += '<td class="missing_good_to_have">???</td>'
 
         #####
+        # Volume
+        try:
+            volume = this_paper['clean']['journal']['volume']
+            if volume != '':
+                cov_html += '<td>OK</td>'
+                status['volume'] = status['volume'] + 1
+            else:
+                raise Exception()
+        except:
+            cov_html += '<td class="missing_good_to_have">???</td>'
+
+        #####
+        # Issue
+        try:
+            issue = this_paper['clean']['journal']['issue']
+            if issue != '':
+                cov_html += '<td>OK</td>'
+                status['issue'] = status['issue'] + 1
+            else:
+                raise Exception()
+        except:
+            cov_html += '<td class="missing_good_to_have">???</td>'
+
+        #####
         # Scopus citations
         try:
             scopus_url = 'http://api.elsevier.com/content/search/scopus'
@@ -391,6 +419,8 @@ def coverage_report(papers):
                     <th>Geocoded</th>
                     <th>Clean<br/>Date</th>
                     <th>Journal</th>
+                    <th>Volume</th>
+                    <th>Issue</th>
                     <th>Scopus<br/>Citations</th>
                 </tr>'''
 
@@ -414,6 +444,8 @@ def coverage_report(papers):
     status_table += '<td>' + str(status['geocoded']) + '</td>'
     status_table += '<td>' + str(status['clean_date']) + '</td>'
     status_table += '<td>' + str(status['journal']) + '</td>'
+    status_table += '<td>' + str(status['volume']) + '</td>'
+    status_table += '<td>' + str(status['issue']) + '</td>'
     status_table += '<td>' + str(status['scopus_citation']) + '</td>'
     status_table += '</tr>'
 
@@ -435,6 +467,8 @@ def coverage_report(papers):
     status_table += '<td>' + str(int(round(100*status['geocoded']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['clean_date']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['journal']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['volume']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['issue']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['scopus_citation']/number_of_papers))) + '</td>'
     status_table += '</tr></table>'
 

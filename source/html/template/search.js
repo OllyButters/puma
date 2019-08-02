@@ -67,8 +67,8 @@ function search(){
       try {
 //        for( n = 0; n < data[i].merged.MedlineCitation.MeshHeadingList.length ; n++ ){
   //        if( data[i].merged.MedlineCitation.MeshHeadingList[n].DescriptorName.contains( query_components[j] ) ){
-          for( n = 0; n < data[i].clean.mesh.length ; n++ ){
-            if( data[i].clean.mesh[n].term.contains( query_components[j] ) ){
+          for( n = 0; n < data[i].clean.keywords.mesh.length ; n++ ){
+            if( data[i].clean.keywords.mesh[n].term.contains( query_components[j] ) ){
 
             match = true;
           }
@@ -78,7 +78,8 @@ function search(){
       // Check author names
       try {
         for( n = 0; n < data[i].clean.full_author_list.length ; n++ ){
-          if( data[i].clean.full_author_list[n].family.contains( query_components[j] ) || data[i].clean.full_author_list[n].given.contains( query_components[j] ) ){
+          //if( data[i].clean.full_author_list[n].family.contains( query_components[j] ) || data[i].clean.full_author_list[n].given.contains( query_components[j] ) ){
+          if( data[i].clean.full_author_list[n].clean.contains( query_components[j] )){
             match = true;
           }
         }
@@ -111,7 +112,8 @@ function search(){
               if( a > 0 ){
                 results += "; ";
               }
-              results += data[i].clean.full_author_list[a].family + ', ' + data[i].clean.full_author_list[a].given;
+              // results += data[i].clean.full_author_list[a].family + ', ' + data[i].clean.full_author_list[a].given;
+              results += data[i].clean.full_author_list[a].clean;
           }
           results += '<br/>'
 
@@ -124,13 +126,13 @@ function search(){
         } catch (err){}
 
         try{
-            if( "volume" in data[i].clean.journal ){
-              results += ', Volume ' + data[i].clean.journal.volume;
+            if( "volume" in data[i].clean.journal && data[i].clean.journal.volume != ''){
+                results += ', Volume ' + data[i].clean.journal.volume;
             }
         } catch (err){}
 
         try{
-            if( "issue" in data[i].clean.journal){
+            if( "issue" in data[i].clean.journal && data[i].clean.journal.issue != ''){
               results += ', Issue ' + data[i].clean.journal.issue;
             }
         } catch (err){}
@@ -151,31 +153,6 @@ function search(){
             }
         } catch (err){}
 
-        // Citation Counts and Sources
-        number_citations_counts = 2; // The number of different citation count sources
-        citations_counts_width = 100 // number_citations_counts;
-        results += "<table class='citation_table'>";
-        results += '<tr><th colspan="' + number_citations_counts + '">Citation Counts</th></tr>';
-        results += '<tr>';
-        try{
-            // Try to display citation count with link to scopus page
-            results += '<td style="width:' + citations_counts_width + '%;">Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + data[i].IDs.scopus + '&origin=inward&txGid=0">' + data[i].clean.citations.scopus.count + '</a></td>';
-        } catch (err){
-            try {
-                results += '<td style="width:' + citations_counts_width + '%;">Scopus: ' + data[i].clean.citations.scopus.count + '</td>';
-            } catch (err){
-                results += '<td style="width:' + citations_counts_width + '%;">Scopus: -</td>';
-            }
-        }
-
-        try{
-            results += '<td style="width:' + citations_counts_width + '%;">Europe PMC: ' + data[i].clean.citation.PMC.count + '</td>';
-        } catch (err){
-            results += '<td style="width:' + citations_counts_width + '%;">Europe PMC: -</td>';
-        }
-
-        results += '</tr>';
-        results += "</table>";
         results += '</div>';
 
 
