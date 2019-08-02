@@ -61,7 +61,7 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'wordcloud/index.html">Major Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
 
-    if config.public_facing == "False":
+    if config.public_facing is False:
         html += '<li><a href="' + nav_path + 'coverage_report.html">Coverage report</a></li>'
 
     html += '</ul>'
@@ -468,7 +468,7 @@ def build_papers(papers):
 ############################################################
 def build_mesh(papers):
 
-    print "\n###HTML - mesh###"
+    print("\n###HTML - mesh###")
 
     shutil.copyfile(config.template_dir + '/keyword_history.js', config.html_dir + '/mesh/keyword_history.js')
 
@@ -1631,11 +1631,8 @@ def build_search(papers):
         # searchable_data.append(temp)
         searchable_data.append(this_subset)
 
-    print(searchable_data)
-    # temp += '<script id="search_data">var papers = ' + str(json.dumps(papers)).replace("<", "&lt;").replace(">", "&gt;") + ';</script>'
+    # print(searchable_data)
     temp += '<script id="search_data">var papers = ' + str(json.dumps(searchable_data)).replace("<", "&lt;").replace(">", "&gt;") + ';</script>'
-
-    # temp += '<div style="display:none" id="exec_list">' + str(json.dumps(exec_list)).replace("<", "&lt;").replace(">", "&gt;") + '</div>'
 
     print >>html_file, temp
 

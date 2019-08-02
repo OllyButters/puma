@@ -33,7 +33,8 @@ def coverage_report(papers):
                     <th>PMID DOI<br/>Lookup</th>
                     <th>PMID title<br/>Lookup</th>
                     <th>Title<br/>&uarr;&darr;</th>
-                    <th>Keywords<br/>&uarr;&darr;</th>
+                    <th>Keywords<br/>MeSH<br/>&uarr;&darr;</th>
+                    <th>Keywords<br/>Other<br/>&uarr;&darr;</th>
                     <th>Abstract<br/>&uarr;&darr;</th>
                     <th>First<br/>Author &uarr;&darr;</th>
                     <th>Raw<br/>affil</th>
@@ -54,7 +55,8 @@ def coverage_report(papers):
     status['pmid'] = 0
     status['scopus'] = 0
     status['title'] = 0
-    status['keywords'] = 0
+    status['keywords_mesh'] = 0
+    status['keywords_other'] = 0
     status['abstract'] = 0
     status['first_author'] = 0
     status['first_author_affiliation'] = 0
@@ -163,12 +165,32 @@ def coverage_report(papers):
             cov_html += '<td class="missing_good_to_have">???</td>'
 
         #####
-        # Keywords
+        # Keywords MeSH
         try:
-            keywords = this_paper['clean']['keywords']
-            if keywords != '':
-                cov_html += '<td>OK</td>'
-                status['keywords'] = status['keywords'] + 1
+            keywords_mesh = this_paper['clean']['keywords']['mesh']
+            if keywords_mesh != '':
+                if len(keywords_mesh) > 0:
+                    # cov_html += '<td>OK</td>'
+                    cov_html += '<td>' + str(len(keywords_mesh)) + '</td>'
+                    status['keywords_mesh'] = status['keywords_mesh'] + 1
+                else:
+                    raise Exception()
+            else:
+                raise Exception()
+        except:
+            cov_html += '<td class="missing_good_to_have">???</td>'
+
+        #####
+        # Keywords other
+        try:
+            keywords_other = this_paper['clean']['keywords']['other']
+            if keywords_other != '':
+                if len(keywords_other) > 0:
+                    # cov_html += '<td>OK</td>'
+                    cov_html += '<td>' + str(len(keywords_other)) + '</td>'
+                    status['keywords_other'] = status['keywords_other'] + 1
+                else:
+                    raise Exception()
             else:
                 raise Exception()
         except:
@@ -360,7 +382,8 @@ def coverage_report(papers):
                     <th>PMID</th>
                     <th>Scopus</th>
                     <th>Title</th>
-                    <th>Keywords</th>
+                    <th>Keywords<br/>MeSH</th>
+                    <th>Keywords<br/>Other</th>
                     <th>Abstract</th>
                     <th>First<br/>Author</th>
                     <th>First<br/>Author<br/>affil</th>
@@ -382,7 +405,8 @@ def coverage_report(papers):
     status_table += '<td>' + str(status['pmid']) + '</td>'
     status_table += '<td>' + str(status['scopus']) + '</td>'
     status_table += '<td>' + str(status['title']) + '</td>'
-    status_table += '<td>' + str(status['keywords']) + '</td>'
+    status_table += '<td>' + str(status['keywords_mesh']) + '</td>'
+    status_table += '<td>' + str(status['keywords_other']) + '</td>'
     status_table += '<td>' + str(status['abstract']) + '</td>'
     status_table += '<td>' + str(status['first_author']) + '</td>'
     status_table += '<td>' + str(status['first_author_affiliation']) + '</td>'
@@ -402,7 +426,8 @@ def coverage_report(papers):
     status_table += '<td>' + str(int(round(100*status['pmid']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['scopus']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['title']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['keywords']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['keywords_mesh']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(round(100*status['keywords_other']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['abstract']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['first_author']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['first_author_affiliation']/number_of_papers))) + '</td>'

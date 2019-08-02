@@ -555,7 +555,6 @@ def clean_institution(papers):
 
 ################################################################################
 # Clean journal title for paper
-# Journal title /should/ be in this_paper['merged']['MedlineCitation']['Article']['Journal']['ISOAbbreviation'] but is sometimes missing. Look elsewhere (this_paper['merged']['container-title'] in addition.
 # return this_paper with this_paper['clean']['journal'] set
 ################################################################################
 def clean_journal(this_paper):
@@ -591,24 +590,23 @@ def clean_journal(this_paper):
 # scopus - never present
 ################################################################################
 def clean_keywords(this_paper):
-    if 'tags' in this_paper['raw']:
-        try:
-            this_paper['clean']['keywords']
-        except KeyError:
-            this_paper['clean']['keywords'] = {}
+    try:
+        this_paper['clean']['keywords']
+    except KeyError:
+        this_paper['clean']['keywords'] = {}
 
-        try:
-            this_paper['clean']['keywords']['other']
-        except KeyError:
-            this_paper['clean']['keywords']['other'] = []
+    try:
+        this_paper['clean']['keywords']['other']
+    except KeyError:
+        this_paper['clean']['keywords']['other'] = []
 
-        try:
-            for this_tag in this_paper['merged']['tags']:
-                this_paper['clean']['keywords']['other'].append(
-                    this_tag['tag'],
-                )
-        except:
-            pass
+    try:
+        for this_tag in this_paper['raw']['pmid_data']['MedlineCitation']['KeywordList']:
+            this_paper['clean']['keywords']['other'].append(
+                this_tag['tag'],
+            )
+    except:
+        pass
 ################################################################################
 
 
@@ -616,29 +614,30 @@ def clean_keywords(this_paper):
 # clean mesh headings for this_paper
 ################################################################################
 def clean_mesh(this_paper):
-    if 'MedlineCitation' in this_paper['raw']['pmid_data'].keys():
+    try:
+        this_paper['clean']['keywords']
+    except KeyError:
+        this_paper['clean']['keywords'] = {}
+
+    try:
+        this_paper['clean']['keywords']['mesh']
+    except KeyError:
+        this_paper['clean']['keywords']['mesh'] = []
+
+    if 'MeshHeadingList' in this_paper['raw']['pmid_data']['MedlineCitation'].keys():
+
         try:
-            this_paper['clean']['keywords']
-        except KeyError:
-            this_paper['clean']['keywords'] = {}
-
-        if 'MeshHeadingList' in this_paper['raw']['pmid_data']['MedlineCitation'].keys():
-            try:
-                this_paper['clean']['keywords']['mesh']
-            except KeyError:
-                this_paper['clean']['keywords']['mesh'] = []
-
-            try:
-                for this_mesh in this_paper['raw']['pmid_data']['MedlineCitation']['MeshHeadingList']:
-                    this_paper['clean']['keywords']['mesh'].append(
-                        {
-                            'term': this_mesh['DescriptorName'],
-                            'major': this_mesh['MajorTopicYN']
-                        }
+            for this_mesh in this_paper['raw']['pmid_data']['MedlineCitation']['MeshHeadingList']:
+                this_paper['clean']['keywords']['mesh'].append(
+                    {
+                        'term': this_mesh['DescriptorName'],
+                        'major': this_mesh['MajorTopicYN']
+                    }
                     )
-            except Exception as e:
-                print('MeSH error: ' + str(e))
-                pass
+        except Exception as e:
+            logging.error('MeSH error: ' + str(e))
+            print('MeSH error: ' + str(e))
+            pass
 
 
 ################################################################################
