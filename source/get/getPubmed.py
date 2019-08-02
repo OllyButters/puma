@@ -59,5 +59,5 @@ def getPubmed(this_pmid):
         return pmid_data
     except Exception as e:
         logging.warn('Unable to read pmid %s', this_pmid)
-        print str(e)
+        print(str(e))
         return None

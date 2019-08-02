@@ -15,7 +15,7 @@ import pandas as pd
 # Build a list of all journals and count frequencies of each.
 # output this to a csv file so it can be analysed by someone else.
 def journals(papers):
-    print "\n###Journals###"
+    print("\n###Journals###")
 
     num_papers = len(papers)
 
@@ -31,14 +31,14 @@ def journals(papers):
     freq = dict((x, journals.count(x)) for x in set(journals))
 
     i = 0
-    print 'Top 5'
+    print('Top 5')
 
     # print a list of sorted frequencies
     with open(config.data_dir + '/journals.csv', 'wb') as csvfile:
         journals_file = csv.writer(csvfile)
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
-                print w, freq[w]
+                print(w, freq[w])
                 i = i + 1
             journals_file.writerow([w.encode('utf-8'), freq[w]])
 
@@ -186,14 +186,14 @@ def word_frequencies(papers, item):
         lemmatized_freq.pop(stp, None)
 
     i = 0
-    print 'Top 5'
+    print('Top 5')
 
     # Output the RAW data to file and print the top 5 to screen.
     with open(config.data_dir + '/' + item + '_raw.csv', 'wb') as csvfile:
         output_file = csv.writer(csvfile)
         for w in sorted(raw_freq, key=raw_freq.get, reverse=True):
             if i < 5:
-                print w, raw_freq[w]
+                print(w, raw_freq[w])
                 i = i+1
             output_file.writerow([w.encode('utf-8'), raw_freq[w]])
 
@@ -202,7 +202,7 @@ def word_frequencies(papers, item):
         output_file = csv.writer(csvfile)
         for w in sorted(lemmatized_freq, key=lemmatized_freq.get, reverse=True):
             if i < 5:
-                print w, lemmatized_freq[w]
+                print(w, lemmatized_freq[w])
                 i = i+1
             output_file.writerow([w.encode('utf-8'), lemmatized_freq[w]])
 
@@ -289,19 +289,19 @@ def authors(papers):
 
     # print authors
     freq = dict((x, authors.count(x)) for x in set(authors))
-    print "\n###Authors###"
+    print("\n###Authors###")
 
-    print str(len(set(authors))) + ' different authors'
+    print(str(len(set(authors))) + ' different authors')
     # print freq
 
     i = 0
-    print 'Top 5'
+    print('Top 5')
 
     with open(config.data_dir + '/authors.csv', 'wb') as csvfile:
         authors_file = csv.writer(csvfile)
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
-                print w, freq[w]
+                print(w, freq[w])
                 i = i + 1
         # Need to utf-8 encode
             authors_file.writerow([w.encode('utf-8'), freq[w]])
@@ -362,9 +362,9 @@ def authors(papers):
         except:
             pass
 
-    print "\n###Author network###"
-    print str(len(author_network['authors'])) + " Authors"
-    print str(len(author_network['connections'])) + " Connections"
+    print("\n###Author network###")
+    print(str(len(author_network['authors'])) + " Authors")
+    print(str(len(author_network['connections'])) + " Connections")
     return author_network
 
 
@@ -383,19 +383,19 @@ def first_authors(papers):
             next
 
     freq = dict((x, first_authors.count(x)) for x in set(first_authors))
-    print "\n###First authors###"
+    print("\n###First authors###")
 
-    print str(len(first_authors))+'/'+str(num_papers)
-    print str(len(set(first_authors)))+' different first authors'
+    print(str(len(first_authors))+'/'+str(num_papers))
+    print(str(len(set(first_authors)))+' different first authors')
 
     i = 0
-    print 'Top 5'
+    print('Top 5')
 
     with open(config.data_dir + '/first_authors.csv', 'wb') as csvfile:
         authors_file = csv.writer(csvfile)
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
-                print w, freq[w]
+                print(w, freq[w])
                 i = i+1
             # Need to utf-8 encode
             authors_file.writerow([w.encode('utf-8'), freq[w]])
@@ -415,19 +415,19 @@ def inst(papers):
             pass
 
     freq = dict((x, first_authors_inst.count(x)) for x in set(first_authors_inst))
-    print "\n###First authors institute###"
+    print("\n###First authors institute###")
 
-    print str(len(first_authors_inst))+'/'+str(num_papers)
-    print str(len(set(first_authors_inst)))+' different first author institutes'
+    print(str(len(first_authors_inst))+'/'+str(num_papers))
+    print(str(len(set(first_authors_inst)))+' different first author institutes')
 
     i = 0
-    print 'Top 5'
+    print('Top 5')
 
     with open(config.data_dir + '/first_authors_inst.csv', 'wb') as csvfile:
         authors_file = csv.writer(csvfile)
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
-                print w, freq[w]
+                print(w, freq[w])
                 i = i+1
             # Need to utf-8 encode
             authors_file.writerow([w.encode('utf-8'), freq[w]])
@@ -454,19 +454,19 @@ def mesh(papers):
                     pass
 
     freq = dict((x, mesh.count(x)) for x in set(mesh))
-    print "\n###Mesh###"
+    print("\n###Mesh###")
 
-    print str(coverage)+'/'+str(num_papers)
-    print str(len(set(mesh)))+' different mesh headings'
+    print(str(coverage)+'/'+str(num_papers))
+    print(str(len(set(mesh)))+' different mesh headings')
 
     i = 0
-    print 'Top 5'
+    print('Top 5')
 
     with open(config.data_dir + '/mesh.csv', 'wb') as csvfile:
         mesh_file = csv.writer(csvfile)
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
-                print w, freq[w]
+                print(w, freq[w])
                 i = i+1
             # Need to utf-8 encode
             mesh_file.writerow([w.encode('utf-8'), freq[w]])
@@ -477,7 +477,7 @@ def mesh(papers):
 ################################################################################
 def output_csv(papers):
 
-    print '\n###Outputting CSV file###'
+    print('\n###Outputting CSV file###')
     with open(config.data_dir + '/all.csv', 'wb') as csvfile:
         all_file = csv.writer(csvfile)
         for this_paper in papers:

@@ -108,7 +108,7 @@ def build_common_foot():
 ############################################################
 def build_home(papers):
 
-    print "\n###HTML - Home###"
+    print("\n###HTML - Home###")
 
     summary = {}
     missing_year = {'num_papers': 0, 'citations': 0}

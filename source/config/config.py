@@ -51,15 +51,15 @@ def build_config_variables(root_dir):
     parser.add_argument("-c", "--config", help="Specify a config file. Just want the name not the path.")
     args = parser.parse_args()
     if args.config:
-        print 'Config file set to: '+args.config
+        print('Config file set to: '+args.config)
         config_file_name = args.config
 
     # Check config file exists
     config_file_path = root_dir + "/config/" + config_file_name
     if os.path.isfile(config_file_path):
-        print 'Config file ok!: ' + config_file_path
+        print('Config file ok!: ' + config_file_path)
     else:
-        print 'Config file doesnt exist!: ' + config_file_path
+        print('Config file doesnt exist!: ' + config_file_path)
         sys.exit()
 
     config = ConfigParser.ConfigParser()
@@ -113,8 +113,8 @@ def build_config_variables(root_dir):
         network_create_networks = config.getboolean('networks', 'create_networks')
 
     except Exception as e:
-        print 'Problem with the settings file'
-        print str(e)
+        print('Problem with the settings file')
+        print(str(e))
         exit(0)
 
     # Define the file tree names

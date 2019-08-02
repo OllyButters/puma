@@ -170,7 +170,6 @@ def geocode(papers):
             # The item is not on wikidata. Check if the institute is in the backup coordinates file and get coordinates from there is possible.
             try:
                 backup_coords = institute_coordinates_backup[this_paper['clean']['location']['clean_institute']]
-                # print 'Using Institute coordinates backup to get coordinates for ' + this_paper['Extras']['CleanInstitute']
                 this_paper['clean']['location']['latitude'] = str(backup_coords['lat'])
                 this_paper['clean']['location']['longitude'] = str(backup_coords['long'])
 

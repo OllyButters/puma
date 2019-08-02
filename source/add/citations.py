@@ -15,7 +15,7 @@ def citations(papers, api_key, citation_max_life, force_update):
     ############################################################################
 
     # === Europe PMC ===
-    print 'Doing Europe PMC Citations'
+    print('Doing Europe PMC Citations')
     cached_citations = {}
 
     # If the force_update flag is True then there is no point reading in the cache
@@ -67,7 +67,6 @@ def citations(papers, api_key, citation_max_life, force_update):
                 logging.info(str(this_paper['IDs']['hash'])+" fetched EuropePMC citation count (" + str(counter) + "/" + str(len(papers)) + ")")
 
             except:
-                # print "No Europe PMC citations count for " + this_paper['IDs']['hash'] + " (" + str(counter) + "/" + str(len(papers)) + ")"
                 pass
 
         counter += 1

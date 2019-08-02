@@ -75,8 +75,6 @@ papers = []
 
 # Collate does not do anything with the papers object.
 get.simple_collate.collate()
-# print temp
-# exit(1)
 
 # Get list of files in merged directory
 merged_files_list = listdir(config.cache_dir + '/processed/merged/')
@@ -92,19 +90,8 @@ for this_merged_file in merged_files_list:
         this_paper['filename'] = this_merged_file
         papers.append(this_paper)
 
-# input_file = 'sample_data_object'
-# input_file = 'data-alspac-all-pubmed-merged-format'
-# with open('../cache/raw/'+input_file) as fo:
-#     papers = json.load(fo)
-
-
-# First attempt at getting all the scopus data
-# get.getScopus.getScopus(papers, config.scopus_api_key, config.scopus_citation_max_age_days, config.scopus_force_citation_update)
-
-
 print(str(len(papers)) + ' papers to process.')
 
-# exit()
 
 ###########################################################
 # Clean the data - e.g. tidy dates and institute names
@@ -112,11 +99,6 @@ clean.clean(papers)
 
 # should probably move clean_institution into clean directly
 clean.clean_institution(papers)
-
-# for this_paper in papers:
-#    pprint(this_paper)
-
-# exit()
 
 ###########################################################
 # Add some extra data in - i.e. geocodes and citations
@@ -163,7 +145,6 @@ html.build_htmlv2.build_css_colour_scheme()
 cohort_rating, cohort_rating_data_from = html.build_htmlv2.build_home(papers)
 html.build_htmlv2.build_papers(papers)
 html.build_htmlv2.build_mesh(papers)
-# html.build_htmlv2.build_google_map(papers)
 html.build_htmlv2.build_country_map(papers, config.google_maps_api_key)
 html.build_htmlv2.build_institute_map(papers)
 html.build_htmlv2.build_metrics(papers, cohort_rating, cohort_rating_data_from, config.metrics_study_start_year, config.metrics_study_current_year)

@@ -10,7 +10,7 @@ import shutil
 ################################################################################
 def coverage_report(papers):
 
-    print 'Building coverage report'
+    print('Building coverage report')
 
     cov_css = '''
                 .missing_required {background-color: red;}
@@ -481,7 +481,7 @@ def coverage_report(papers):
 
     output_text = '<html><head><style>' + cov_css + '</style>' + scripts + '</head><body>' + title + status_table + '\n<br/><br/>' + cov_html + '</body></html>'
     coverage_file = open(config.html_dir + '/coverage_report.html', 'w')
-    print >> coverage_file, output_text
+    coverage_file.write(output_text)
 
     # Copy the jquery.tablesorter.js file across
     shutil.copy(config.template_dir + '/jquery.tablesorter.js', config.html_dir + '/jquery.tablesorter.js')
