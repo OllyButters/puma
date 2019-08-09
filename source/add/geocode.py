@@ -27,6 +27,15 @@ def geocode(papers):
             institute_coordinates_backup[row[0]] = {}
             institute_coordinates_backup[row[0]]['lat'] = row[1]
             institute_coordinates_backup[row[0]]['long'] = row[2]
+            try:
+                institute_coordinates_backup[row[0]]['town'] = row[3]
+            except:
+                pass
+
+            try:
+                institute_coordinates_backup[row[0]]['country'] = row[4]
+            except:
+                pass
     csvfile.close()
 
     # Loop through the papers and attempt to find the coordinates, city name and country name
@@ -165,23 +174,6 @@ def geocode(papers):
         except:
             pass
 
-        # Not On Wikidata Check Backup File
-        if not found_coords:
-            # The item is not on wikidata. Check if the institute is in the backup coordinates file and get coordinates from there is possible.
-            try:
-                backup_coords = institute_coordinates_backup[this_paper['clean']['location']['clean_institute']]
-                this_paper['clean']['location']['latitude'] = str(backup_coords['lat'])
-                this_paper['clean']['location']['longitude'] = str(backup_coords['long'])
-
-                print("Coordinates added from backup file.")
-                logging.info("Coordinates added from backup file.")
-                locations_found += 1
-                found_coords = True
-
-            except:
-                logging.warn("Not in backup file either.")
-                print("Not in backup file either.")
-
         # Cache the data that has just been collected
         try:
             if 'latitude' in this_paper['clean']['location'] and 'longitude' in this_paper['clean']['location'] and 'country' in this_paper['clean']['location'] and 'postal_town' in this_paper['clean']['location']:
@@ -191,5 +183,24 @@ def geocode(papers):
         except:
             logging.warn("Problem caching geocode data for: " + clean_institute)
             print("Problem caching geocode data for: " + clean_institute)
+
+        # Not On Wikidata Check Backup File
+        if not found_coords:
+            # The item is not on wikidata. Check if the institute is in the backup coordinates file and get coordinates from there is possible.
+            try:
+                backup_coords = institute_coordinates_backup[this_paper['clean']['location']['clean_institute']]
+                this_paper['clean']['location']['latitude'] = str(backup_coords['lat'])
+                this_paper['clean']['location']['longitude'] = str(backup_coords['long'])
+                this_paper['clean']['location']['postal_town'] = str(backup_coords['town'])
+                this_paper['clean']['location']['country'] = str(backup_coords['country'])
+
+                print("Coordinates added from backup file.")
+                logging.info("Coordinates added from backup file.")
+                locations_found += 1
+                found_coords = True
+
+            except:
+                logging.warn("Not in backup file either.")
+                print("Not in backup file either.")
 
     print("locations found: " + str(locations_found) + "/" + str(len(papers)))
