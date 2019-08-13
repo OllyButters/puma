@@ -45,7 +45,7 @@ def dumpFile(filename, data, filetype=''):
 # get a list of all filenames in directory cache[/filetype]
 def getCacheList(filetype=''):
     cachefiles = []
-    filetype = re.sub('[\.]{2,}', '', filetype)
+    filetype = re.sub('[.]{2,}', '', filetype)
     for root, dirs, files in os.walk(config.cache_dir+filetype):
         for name in files:
             cachefiles.append(name)
