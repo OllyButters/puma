@@ -32,8 +32,8 @@ import networks.author_network as author_network
 import analyse.coverage_report as coverage_report
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
-__date__ = 19/7/19
-__version__ = '0.11.0'
+__date__ = 21/8/19
+__version__ = '0.12.0'
 
 # Lets figure out some paths that everything is relative to
 # global root_dir
@@ -46,6 +46,7 @@ config.build_config_variables(root_dir)
 
 # Delete any unneeded data hanging around in the cache
 setup.tidy_existing_file_tree()
+setup.clean_old_scopus_cache_file()
 
 # Build the file tree relative to the root_dir
 setup.build_file_tree()
@@ -131,7 +132,7 @@ analyse.journals(papers)
 # Figure out the word frequecies
 analyse.word_frequencies(papers, 'title')
 analyse.word_frequencies(papers, 'keywords')
-papers_with_abstract_text = analyse.word_frequencies(papers, 'abstract')
+#papers_with_abstract_text = analyse.word_frequencies(papers, 'abstract')
 
 network = analyse.authors(papers)
 analyse.first_authors(papers)
@@ -148,7 +149,7 @@ html.build_htmlv2.build_mesh(papers)
 html.build_htmlv2.build_country_map(papers, config.google_maps_api_key)
 html.build_htmlv2.build_institute_map(papers)
 html.build_htmlv2.build_metrics(papers, cohort_rating, cohort_rating_data_from, config.metrics_study_start_year, config.metrics_study_current_year)
-html.build_htmlv2.build_abstract_word_cloud(papers, papers_with_abstract_text)
+#html.build_htmlv2.build_abstract_word_cloud(papers, papers_with_abstract_text)
 html.build_htmlv2.build_author_network(papers, network)
 html.build_htmlv2.build_help()
 html.build_htmlv2.build_search(papers)
