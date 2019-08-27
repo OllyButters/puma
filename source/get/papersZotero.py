@@ -86,9 +86,9 @@ class zotPaper (zotero.Zotero):
     def fieldsToExtra(self, paper, fields):
         extra = paper['extra']
         for field in fields:
-            value = ''
-            if field in paper:
-                value = paper[field]
+            #value = ''
+            #if field in paper:
+            #    value = paper[field]
             extra += '%s:%s\n' % (field, paper[field])
         return extra
 
