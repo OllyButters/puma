@@ -68,9 +68,12 @@ def main(argv):
     
     #get doi data if relevant
     if 'DOI' in paper:
+      print 'Found DOI: '+paper['DOI']
+      print 'Getting data...'
       paper_doi = getDoi.getDoi(paper['DOI'])
       if paper_doi is not None:
-        print paper
+        print 'Data retrieved for DOI: '+paper['DOI']
+        #print paper
         paper = paper_doi
       else:
         error = "DOI: "+paper['DOI']+" data not obtained"
@@ -101,39 +104,6 @@ def main(argv):
         print error 
       except RuntimeError, e:
         error = "Pubmed search for DOI: "+paper['DOI']+" error: "+str(e)
-        get_errors.append(error)
-        print error 
-
-    if 'PMID' in extra_ids:
-      #if PMID is in extra_ids (i.e. extracted from 'Notes') get the data from pubmed. Note that this overrides the above doi data, so if both doi and pubmed present in original source data the pubmed is used; this isn't currently the case but may be in future so the pubmed data may need to be merged with the doi as per get.collate
-      try:
-        pubmed_data = getPubmed.getPubmed(extra_ids['PMID'])
-
-        template_file = open(config.config_dir+'/data-doi-template', 'r')
-        template = json.load(template_file)
-        template_file.close()
-
-        mgr = pMerge.Merge()
-        map_file = open(config.config_dir+'/data-pubmed-doi-jsonpath', 'r')
-        mgr.mapping = json.load(map_file)
-        map_file.close()
-
-        mgr.src = pubmed_data
-        mgr.dest = copy.deepcopy(template)
-        mgr.mapSrc()
-        pubmed_paper = copy.deepcopy(mgr.dest)
-
-        mgr.src = paper
-        mgr.dest = copy.deepcopy(pubmed_paper)
-        mgr.mapSrc()
-        paper = copy.deepcopy(mgr.dest)
-
-      except ValueError, e:
-        error = "Pubmed search for PMID: "+extra_ids['PMID']+" error: "+str(e)
-        get_errors.append(error)
-        print error 
-      except RuntimeError, e:
-        error = "Pubmed search for PMID: "+extra_ids['PMID']+" error: "+str(e)
         get_errors.append(error)
         print error 
 

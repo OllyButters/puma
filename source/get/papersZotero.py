@@ -127,10 +127,10 @@ class zotPaper (zotero.Zotero):
     # used for quick conversions of lists of papers (as dicts) to zotero format ready for upload
     # for complex conversions use the Merge class in papersMerge
     def mapFields(self, paper, item_type='journalArticle', src_type='doi'):
-        fields = self.item_type_fields(item_type)
-        creator_types = self.item_creator_types(item_type)
-        creator_fields = self.creator_fields()
-        all_fields = self.item_fields()
+        #fields = self.item_type_fields(item_type)
+        #creator_types = self.item_creator_types(item_type)
+        #creator_fields = self.creator_fields()
+        #all_fields = self.item_fields()
 
         creator_mappings = {
             'doi': {
