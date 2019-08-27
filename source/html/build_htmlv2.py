@@ -315,7 +315,12 @@ def draw_paper(this_paper):
     html += '<tr>'
     try:
         # Try to display citation count with link to scopus page
-        html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + str(this_paper['IDs']['scopus']) + '&origin=inward&txGid=0">' + str(this_paper['clean']['citations']['scopus']['count']) + '</a></td>'
+        scopus_links = this_paper['raw']['scopus_data']['search-results']['entry'][0]['link']
+        for this_link in scopus_links:
+            if this_link['@ref'] == 'scopus-citedby':
+                html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: <a href="' + this_link['@href'] + '" target="_blank">' + str(this_paper['clean']['citations']['scopus']['count']) + '</a></td>'
+
+        # html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + str(this_paper['IDs']['scopus']) + '&origin=inward&txGid=0">' + str(this_paper['clean']['citations']['scopus']['count']) + '</a></td>'
     except:
         try:
             html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: ' + str(this_paper['clean']['citations']['scopus']['count']) + '</td>'

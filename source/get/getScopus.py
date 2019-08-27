@@ -29,6 +29,7 @@ def getScopus(zotero_ID, PMID, DOI):
                 error = scopus_object['search-results']['entry'][0]['error']
                 if error == 'Result set was empty':
                     logging.info('Result set empty for ' + str(PMID))
+                    logging.warn(scopus_object)
                     del(scopus_object)
             except:
                 pass
@@ -54,6 +55,7 @@ def getScopus(zotero_ID, PMID, DOI):
                         error = scopus_object['search-results']['entry'][0]['error']
                         if error == 'Result set was empty':
                             logging.info('Result set empty for ' + str(DOI))
+                            logging.warn(scopus_object)
                             del(scopus_object)
                     except:
                         pass
@@ -71,9 +73,6 @@ def getScopus(zotero_ID, PMID, DOI):
         if scopus_object != "":
             # Require a scopus ID
             try:
-                # scopus_id = scopus_object['search-results']['entry'][0]['eid']
-                # cannot guarantee format of scopus ID so do an md5 of it for the filename
-                # filename = hashlib.md5(scopus_id).hexdigest()
                 filename = zotero_ID + '.scopus'
                 pc.dumpJson(filename, scopus_object, filetype='raw/scopus')
                 return scopus_object
