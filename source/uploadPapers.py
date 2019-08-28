@@ -4,13 +4,14 @@ import get.getDoi as getDoi
 import get.getPubmed as getPubmed
 import copy
 import json
-import get.papersMerge as pMerge
 import sys
 import getopt
 import config.config as config
 from Bio import Entrez
 from pprint import pprint
 import os
+from setup.setup import build_file_tree
+from shutil import copy
 
 def main(argv):
     # Lets figure out some paths that everything is relative to
@@ -18,6 +19,7 @@ def main(argv):
     path_to_papers_py = os.path.abspath(sys.argv[0])
     root_dir = os.path.dirname(os.path.dirname(path_to_papers_py))
     print 'Root directory = ' + root_dir
+
     try:
         opts, args = getopt.getopt(argv, "i:t:g:", ["input=", "type=", "collection="])
     except Exception as e:
@@ -33,18 +35,33 @@ def main(argv):
     src_type = None
     collection = None
 
+    # setup dir structure if not already present
+    build_file_tree()
+    if not os.path.exists(os.path.join(config.cache_dir, 'upload')):
+        os.mkdir(os.path.join(config.cache_dir, 'upload'))
+    if not os.path.exists(os.path.join(config.cache_dir, 'processed', 'upload')):
+        os.mkdir(os.path.join(config.cache_dir, 'processed', 'upload'))
+
     print opts
 
     for opt, arg in opts:
         if opt in ('i', '--input'):
-            cache_file = arg
+            cache_file_path = arg
         elif opt in ('t', '--type'):
             src_type = arg
         #elif opt in ('c', '--collection'):
         #    collection = arg
 
-    if cache_file is not None and src_type is not None:
+    if cache_file_path is not None and src_type is not None:
+        # copy cache file to upload dir and read in
+        cache_file = os.path.split(cache_file_path)[-1] 
+        if os.path.isfile(cache_file_path):
+            copy(cache_file_path, os.path.join(config.cache_dir, 'upload', cache_file))
+	else:
+            print 'Cache file does not exist'
+            sys.exit(2)
         papers = pc.getCacheData(filetype='upload', filenames = [cache_file,])[cache_file]
+        print papers
     else:
         sys.exit(2)
 
