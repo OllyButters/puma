@@ -1,9 +1,6 @@
 import get.papersCache as pc
 import get.papersZotero as pz
 import get.getDoi as getDoi
-import get.getPubmed as getPubmed
-import copy
-import json
 import sys
 import getopt
 import config.config as config
@@ -13,6 +10,19 @@ import os
 from setup.setup import build_file_tree
 from shutil import copy
 
+# upload papers to a zotero lib
+# options:
+# --input the input file - a json file containing a list of objects,
+# each having a DOI - e.g. [{"DOI": "10.12123/hdjs.103"},{"DOI":  ... }, ...]
+# --type currently only supports 'doi'
+# a config.ini file in config /must/ be present with the correct Zotero api
+# key and library identifier
+#
+# the script will setup the folder structure and then copy the input file to
+# the upload folder in cache
+# it will then attempt to download the doi metadata for each paper, cache
+# it and then upload to Zotero
+# logs are stored in [cache_dir]/processed/upload
 def main(argv):
     # Lets figure out some paths that everything is relative to
     # global root_dir
@@ -54,10 +64,10 @@ def main(argv):
 
     if cache_file_path is not None and src_type is not None:
         # copy cache file to upload dir and read in
-        cache_file = os.path.split(cache_file_path)[-1] 
+        cache_file = os.path.split(cache_file_path)[-1]
         if os.path.isfile(cache_file_path):
             copy(cache_file_path, os.path.join(config.cache_dir, 'upload', cache_file))
-	else:
+        else:
             print 'Cache file does not exist'
             sys.exit(2)
         papers = pc.getCacheData(filetype='upload', filenames = [cache_file,])[cache_file]
