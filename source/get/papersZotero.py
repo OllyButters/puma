@@ -176,6 +176,9 @@ class zotPaper (zotero.Zotero):
                 # hacky fix for issn
                 if (field == 'issn' or field == 'ISSN') and isinstance(paper[field], list):
                     zot_paper[field_map[field]] = ','.join(paper[field])
+                # hacky fix for publicationTitle which can sometimes be an empty array in doi data
+                elif field == 'container-title' and isinstance(paper[field], list) and len(paper[field]) == 0:
+                    zot_paper[field_map[field]] = ''
                 else:
                     zot_paper[field_map[field]] = paper[field]
             elif field == creator_field:
