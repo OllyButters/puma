@@ -87,7 +87,7 @@ def collate():
 
         logging.info('\nWorking on '+paper['title']+' (zotero key: '+paper['key']+')')
         logging.info('Getting doi/pubmed/scopus data.')
-        print('Getting doi/pubmed/scopus data for paper: ' + paper['title'].encode("ascii", "ignore") + ' (zotero key: '+paper['key']+')')
+        print('Getting doi/pubmed/scopus data for paper: ' + paper['title'] + ' (zotero key: ' + paper['key'] + ')')
 
         # Couple of placeholders
         this_merged_paper['raw'] = {}
@@ -107,7 +107,7 @@ def collate():
                 doi = paper['DOI']
 
             # as doi's use '/' chars, we do an md5 of the doi as the filename
-            print('DOI:' + (doi).encode("ascii", "ignore"))
+            print('DOI:' + doi)
             doi_filename = hashlib.md5((doi).encode("ascii", "ignore")).hexdigest()
             # doi_filename = hashlib.md5(paper['DOI']).hexdigest()
 

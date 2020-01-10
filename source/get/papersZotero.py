@@ -48,7 +48,11 @@ class zotPaper (zotero.Zotero):
             zot_keys = self.collection_items(format='keys', limit=999999)
         else:
             zot_keys = self.items(format='keys', limit=999999)
-        self.papers_keys = str(zot_keys).split('\n')
+        print(zot_keys)
+        print(type(zot_keys))
+        self.papers_keys = zot_keys.decode('ascii').split('\n')
+        print(type(self.papers_keys))
+        print(self.papers_keys)
         return self.papers_keys
 
     # populate self.papers list with all papers in self.collection

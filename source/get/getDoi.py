@@ -1,10 +1,8 @@
 import json
-# import urllib2
-# import papersCache as pc
 from . import papersCache as pc
 import re
 import hashlib
-import urllib.request, urllib.parse, urllib.error
+import urllib
 
 
 # retrieve the metadata available at doi.org
@@ -24,7 +22,7 @@ def getDoi(doi):
         html_raw = response.read()
         json_data = json.loads(html_raw)
         # as doi's use '/' chars, we do an md5 of the doi as the filename
-        filename = hashlib.md5(doi).hexdigest()
+        filename = hashlib.md5(doi.encode()).hexdigest()
         pc.dumpJson(filename, json_data, filetype='raw/doi')
         return json_data
     except urllib.error.HTTPError as e:

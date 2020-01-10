@@ -454,15 +454,14 @@ def clean_first_author(this_paper):
 # standard name.
 ################################################################################
 def clean_institution(papers):
-    import unicodecsv
     logging.info('Starting institute cleaning')
 
     # Read in config file
     pattern = []
     replacements = []
     with open(config.config_dir + '/institute_cleaning.csv', 'rb') as csvfile:
-        f = unicodecsv.reader(csvfile,  encoding='utf-8')  # Handle extra unicode characters
-        for row in f:
+        # f = reader(csvfile,  encoding='utf-8')
+        for row in csvfile:
             try:
                 # Check it is not a comment string first.
                 if re.match('#', row[0]):
