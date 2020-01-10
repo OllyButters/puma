@@ -1,5 +1,6 @@
 import logging
-import papersCache as pc
+# import papersCache as pc
+from . import papersCache as pc
 import config.config as config
 
 from Bio import Entrez
@@ -30,8 +31,8 @@ def getPubmed(this_pmid):
         if isinstance(pmid_data, list):
             pmid_data = pmid_data[0]
         # print pmid_data
-        if 'MedlineCitation' not in pmid_data.keys():
-            if 'PubmedArticle' in pmid_data.keys() and 'MedlineCitation' in pmid_data['PubmedArticle'][0].keys():
+        if 'MedlineCitation' not in list(pmid_data.keys()):
+            if 'PubmedArticle' in list(pmid_data.keys()) and 'MedlineCitation' in list(pmid_data['PubmedArticle'][0].keys()):
                 pmid_data = pmid_data['PubmedArticle'][0]
             else:
                 raise ValueError("Can't find MedlineCitation for paper "+this_pmid)

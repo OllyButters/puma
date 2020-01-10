@@ -1,8 +1,13 @@
-import papersZotero as pz
-import papersCache as pc
-import getDoi as pd
-import getPubmed as pm
-import getScopus as ps
+# import papersZotero as pz
+# import papersCache as pc
+# import getDoi as pd
+# import getPubmed as pm
+# import getScopus as ps
+from . import papersZotero as pz
+from . import papersCache as pc
+from . import getDoi as pd
+from . import getPubmed as pm
+from . import getScopus as ps
 import hashlib
 import re
 import config.config as config

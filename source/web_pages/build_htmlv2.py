@@ -1,10 +1,10 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import json
 import shutil
 import os.path
 import csv
-import htmlentities
+# import htmlentities
 import time
 import codecs
 import os
@@ -132,7 +132,9 @@ def build_home(papers):
     temp += build_common_body("", "", "")
     temp += '<h1 id="pagetitle">Summary by Year</h1>'
 
-    print >>html_file, temp
+    html_file.write(temp)
+
+    # print(temp, file = html_file)
 
     # Calculate the number of papers for each year
     for this_paper in papers:
@@ -165,7 +167,7 @@ def build_home(papers):
                     pass
 
     # Add in some zeros when there is no papers for this year
-    years = summary.keys()
+    years = list(summary.keys())
     first_year = min(years)
     last_year = max(years)
     for this_year in range(int(first_year), int(last_year)):
@@ -187,16 +189,22 @@ def build_home(papers):
     # Make a data file that we can plot
 
     # Cumulative first
-    print >>data_file, 'var cumulative =([[\'Year\', \'Number of papers\'],'
+    # print >>data_file, 'var cumulative =([[\'Year\', \'Number of papers\'],'
+    data_file.write('var cumulative =([[\'Year\', \'Number of papers\'],')
     for this_year in sorted(summary, reverse=False):
-        print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['cumulative']) + '],'
-    print >>data_file, ']);'
+        # print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['cumulative']) + '],'
+        data_file.write('[\''+this_year+'\','+str(summary[this_year]['cumulative']) + '],')
+    # print >>data_file, ']);'
+    data_file.write(']);')
 
     # Number per year now
-    print >>data_file, 'var papers_per_year=([[\'Year\', \'Number of papers\'],'
+    # print >>data_file, 'var papers_per_year=([[\'Year\', \'Number of papers\'],'
+    data_file.write('var papers_per_year=([[\'Year\', \'Number of papers\'],')
     for this_year in sorted(summary, reverse=False):
-        print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['num_papers']) + '],'
-    print >>data_file, ']);'
+        # print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['num_papers']) + '],'
+        data_file.write('[\''+this_year+'\','+str(summary[this_year]['num_papers']) + '],')
+    # print >>data_file, ']);'
+    data_file.write(']);')
 
     # Cohort-Rating calculation
     cr_current_year = float(config.metrics_study_current_year)
@@ -205,8 +213,10 @@ def build_home(papers):
 
     # print summary
     # Make a page with the headings on it
-    print >>html_file, '<table>'
-    print >>html_file, '<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>Citations* for papers published in this year</th><th>Cumulative citations* for papers published in this year</th></tr>'
+    # print >>html_file, '<table>'
+    # print >>html_file, '<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>Citations* for papers published in this year</th><th>Cumulative citations* for papers published in this year</th></tr>'
+    html_file.write('<table>')
+    html_file.write('<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>Citations* for papers published in this year</th><th>Cumulative citations* for papers published in this year</th></tr>')
     for this_year in sorted(summary, reverse=True):
         # Skip the years where nothing was published
         if summary[this_year]['num_papers'] == 0:
@@ -225,7 +235,8 @@ def build_home(papers):
         temp += '<td>' + str(summary[this_year]['cumulative']) + '</td>'
         temp += '<td>' + intWithCommas(summary[this_year]['citations']) + '</td>'
         temp += '<td>' + intWithCommas(summary[this_year]['cumulative_citations']) + '</td></tr>'
-        print >>html_file, temp
+        # print >>html_file, temp
+        html_file.write(temp)
 
     # Unknown Row
     if missing_year['num_papers'] > 0:
@@ -236,14 +247,17 @@ def build_home(papers):
         temp += '<td>' + intWithCommas(missing_year['citations']) + '</td>'
         temp += '<td>-</td>'
         temp += '</tr>'
-        print >>html_file, temp
-    print >>html_file, '</table>'
+        # print >>html_file, temp
+        html_file.write(temp)
+    # print >>html_file, '</table>'
+    html_file.write('</table>')
 
     temp = "<p>Publication year known for " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications</p>"
     temp += "<p>* Citation data from Scopus.</p>"
 
     temp += build_common_foot()
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
     cr_sum = cr_sum / len(papers)
     return cr_sum, cr_data_from
@@ -345,7 +359,7 @@ def draw_paper(this_paper):
 ############################################################
 def build_papers(papers):
 
-    print "\n###HTML papers list###"
+    print("\n###HTML papers list###")
 
     yearly_papers = {}
     html_file = open(config.html_dir + '/papers/index.html', 'w')
@@ -365,7 +379,8 @@ def build_papers(papers):
     temp += '<h1 id="pagetitle">Papers List</h1>'
     temp += "<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>"
 
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
     main = "<p>"
 
     # Build the text needed for each paper
@@ -418,17 +433,21 @@ def build_papers(papers):
         temp += "<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>"
 
         temp += '<h2>' + str(len(yearly_papers[this_year])) + ' Publications From ' + this_year + '</h2>'
-        print >>year_file, temp
+        # print >>year_file, temp
+        year_file.write(temp)
         # This is a list
         for this_item in yearly_papers[this_year]:
-            temp = this_item.values()
-            print >>year_file, temp[0].encode('utf-8')
+            temp = list(this_item.values())
+            # print >>year_file, temp[0].encode('utf-8')
+            year_file.write(temp[0].encode('utf-8'))
 
         temp = build_common_foot()
-        print >>year_file, temp
+        # print >>year_file, temp
+        year_file.write(temp)
 
     main += "</p>" + build_common_foot()
-    print >>html_file, main
+    # print >>html_file, main
+    html_file.write(main)
 
     # == Publications from unknown years ==
     if not os.path.exists(config.html_dir + '/papers/unknown'):
@@ -465,7 +484,8 @@ def build_papers(papers):
 
     temp += build_common_foot()
 
-    print >>unknown_file, temp.encode('utf-8')
+    # print >>unknown_file, temp.encode('utf-8')
+    unknown_file.write(temp.encode('utf-8'))
 
 
 ############################################################
@@ -613,17 +633,22 @@ def build_mesh(papers):
     temp += '<h1 id="pagetitle">All Keywords</h1>'
     temp += '<p>' + str(len(mesh_papers_all)) + ' Keywords</p>'
 
-    print >>html_file_all, temp
+    # print >>html_file_all, temp
+    html_file_all.write(temp)
 
     # Make a page with ALL the headings on it
-    print >>html_file_all, '<ul>'
+    # print >>html_file_all, '<ul>'
+    html_file_all.write('<ul>')
     for this_mesh in sorted(mesh_papers_all):
         temp = '<li><a href="../mesh/' + this_mesh.replace(" ", "%20") + '/index.html">' + this_mesh + '</a></li>'
-        print >>html_file_all, temp
-    print >>html_file_all, '</ul>'
+        # print >>html_file_all, temp
+        html_file_all.write(temp)
+    # print >>html_file_all, '</ul>'
+    html_file_all.write('</ul>')
 
     temp = build_common_foot()
-    print >>html_file_all, temp
+    # print >>html_file_all, temp
+    html_file_all.write(temp)
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -640,17 +665,22 @@ def build_mesh(papers):
     temp += '<h1 id="pagetitle">Major Keywords (MeSH)</h1>'
     temp += '<p>' + str(len(mesh_papers_major)) + ' Keywords</p>'
 
-    print >>html_file_major, temp
+    # print >>html_file_major, temp
+    html_file_major.write(temp)
 
     # Make a page with the MAJOR headings on it
-    print >>html_file_major, '<ul>'
+    # print >>html_file_major, '<ul>'
+    html_file_major.write('<ul>')
     for this_mesh in sorted(mesh_papers_major):
         temp = '<li><a href="../mesh/' + this_mesh.replace(" ", "%20") + '/index.html">' + this_mesh + '</a></li>'
-        print >>html_file_major, temp
-    print >>html_file_major, '</ul>'
+        # print >>html_file_major, temp
+        html_file_major.write(temp)
+    # print >>html_file_major, '</ul>'
+    html_file_major.write('</ul>')
 
     temp = build_common_foot()
-    print >>html_file_major, temp
+    # print >>html_file_major, temp
+    html_file_major.write(temp)
 
     word_cloud_list = "["
     word_cloud_n = 0
@@ -764,7 +794,7 @@ def build_mesh(papers):
                         pass
 
                 # Add in some zeros when there is no papers for this year
-                years = summary.keys()
+                years = list(summary.keys())
                 first_year = min(years)
                 last_year = max(years)
                 for this_year in range(int(first_year), int(last_year)):
@@ -775,15 +805,21 @@ def build_mesh(papers):
 
             # Print data to file
             data_file = open(config.html_dir + '/mesh/' + this_mesh + '.js', 'w')
-            print >>data_file, 'var papers =([[\'Year\', \'Number of papers\'],'
+            # print >>data_file, 'var papers =([[\'Year\', \'Number of papers\'],'
+            data_file.write('var papers =([[\'Year\', \'Number of papers\'],')
             for this_year in sorted(summary, reverse=False):
-                print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['num_papers'])+'],'
-            print >>data_file, ']);'
+                # print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['num_papers'])+'],'
+                data_file.write('[\''+this_year+'\','+str(summary[this_year]['num_papers'])+'],')
+            # print >>data_file, ']);'
+            data_file.write(']);')
 
-            print >>data_file, 'var citations =([[\'Year\', \'Number of Citations\'],'
+            # print >>data_file, 'var citations =([[\'Year\', \'Number of Citations\'],'
+            data_file.write('var citations =([[\'Year\', \'Number of Citations\'],')
             for this_year in sorted(summary, reverse=False):
-                print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['citations'])+'],'
-            print >>data_file, ']);'
+                # print >>data_file, '[\''+this_year+'\','+str(summary[this_year]['citations'])+'],'
+                data_file.write('[\''+this_year+'\','+str(summary[this_year]['citations'])+'],')
+            # print >>data_file, ']);'
+            data_file.write(']);')
 
             temp += '<div id="papers_chart_div"></div>'
             temp += '<div id="citations_chart_div"></div>'
@@ -792,7 +828,8 @@ def build_mesh(papers):
             temp += '<h2>Publications</h2>'
             temp += '<p><em>' + str(len(mesh_papers_all[this_mesh])) + ' publications with this keyword</em></p>'
 
-            print >>fo, temp
+            # print >>fo, temp
+            fo.write(temp)
 
             # Build the text needed for each paper
             for this_paper in mesh_papers_all[this_mesh]:
@@ -818,7 +855,8 @@ def build_mesh(papers):
                     pass
 
             temp = build_common_foot()
-            print >>fo, temp
+            # print >>fo, temp
+            fo.write(temp)
 
         fo.close()
 
@@ -831,7 +869,7 @@ def build_mesh(papers):
 ###########################################################
 def build_google_map(papers):
 
-    print "\n###HTML - Insititutions Map###"
+    print("\n###HTML - Insititutions Map###")
 
     info = []
     number_of_points = 0
@@ -851,7 +889,8 @@ def build_google_map(papers):
     kml += ']'
 
     kml_file = codecs.open(config.html_dir + '/map/map.kml', 'w', 'utf-8')
-    print >>kml_file, kml
+    # print >>kml_file, kml
+    kml_file.write(kml)
 
     html_file = codecs.open(config.html_dir + '/map/index.html', 'w', 'utf-8')
 
@@ -882,10 +921,12 @@ def build_google_map(papers):
     temp += "<div id='map_canvas'></div>"
     temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
 
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
     temp = build_common_foot()
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
 
 ###########################################################
@@ -893,7 +934,7 @@ def build_google_map(papers):
 ###########################################################
 def build_country_map(papers, api_key):
 
-    print "\n###HTML - Country Map###"
+    print("\n###HTML - Country Map###")
 
     countries = {}
     number_of_points = 0
@@ -909,7 +950,7 @@ def build_country_map(papers, api_key):
             pass
 
     country_string = ""
-    for country in countries.keys():
+    for country in list(countries.keys()):
         # country_string += ",['" + country + "'," + str(countries[country]) + "]"
         country_string += ',["' + country + '",' + str(countries[country]) + ']'
 
@@ -941,10 +982,12 @@ def build_country_map(papers, api_key):
     temp += '<div id="regions_div" style="width: 900px; height: 500px;"><img src="loading.gif" alt="Loading"></div>'
     temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
 
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
     temp = build_common_foot()
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
 
 ###########################################################
@@ -971,7 +1014,7 @@ def build_institute_map(papers):
             pass
 
     institute_string = ""
-    for this_institute in institutes.keys():
+    for this_institute in list(institutes.keys()):
         print(this_institute)
         institute_string += ',[' + institutes[this_institute]['lat'] + ',' + institutes[this_institute]['lon'] + ',"' + str(this_institute.encode('ascii', 'ignore')) + '",' + str(institutes[this_institute]['count']) + ']'
 
@@ -1011,7 +1054,7 @@ def build_institute_map(papers):
 # Util to stick in commas between 1000s in big integers
 ###########################################################
 def intWithCommas(x):
-    if type(x) not in [type(0), type(0L)]:
+    if type(x) not in type(0):
         raise TypeError("Parameter must be an integer.")
     if x < 0:
         return '-' + intWithCommas(-x)
@@ -1253,10 +1296,12 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
         temp += '<div id="papers_per_high_citation_count_div"></div>'
         temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
 
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
     temp = build_common_foot()
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
 
 ###########################################################
@@ -1264,7 +1309,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
 ###########################################################
 def build_word_cloud(papers, list, data_from_count):
 
-    print "\n###HTML - Keyword Cloud###"
+    print("\n###HTML - Keyword Cloud###")
 
     html_file = open(config.html_dir + '/wordcloud/index.html', 'w')
 
@@ -1297,10 +1342,12 @@ def build_word_cloud(papers, list, data_from_count):
 
     temp += '<script src="d3wordcloud.js"></script>'
 
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
     temp = build_common_foot()
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
 
 ###########################################################
@@ -1308,7 +1355,7 @@ def build_word_cloud(papers, list, data_from_count):
 ###########################################################
 def build_abstract_word_cloud(papers, data_from_count):
 
-    print "\n###HTML - Abstract Word Cloud###"
+    print("\n###HTML - Abstract Word Cloud###")
 
     f = open(config.data_dir + "/abstract_raw.csv", 'rt')
 
@@ -1334,7 +1381,8 @@ def build_abstract_word_cloud(papers, data_from_count):
 
     list += "];"
     list_file = open(config.html_dir + '/abstractwordcloud/list.js', 'w')
-    print >>list_file, " var word_list = " + list
+    # print >>list_file, " var word_list = " + list
+    list_file.write(" var word_list = " + list)
 
     html_file = open(config.html_dir + '/abstractwordcloud/index.html', 'w')
 
@@ -1368,10 +1416,12 @@ def build_abstract_word_cloud(papers, data_from_count):
     temp += '<script src="d3wordcloud.js"></script>'
     temp += "<p>Data from " + intWithCommas(data_from_count) + " publications</p>"
 
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
     temp = build_common_foot()
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
 
 ###########################################################
@@ -1397,7 +1447,8 @@ def build_author_network(papers, network):
     net_json = '{'
     net_json += '"nodes":['
     n = 0
-    print >>net_file, net_json
+    # print >>net_file, net_json
+    net_file.write(net_json)
 
     for author in network['authors']:
         # print network['authors'][author]
@@ -1406,11 +1457,13 @@ def build_author_network(papers, network):
             net_json += ","
         net_json += '{"id": "' + network['authors'][author]['clean'] + '", "group":1}'
 
-        print >>net_file, net_json
+        # print >>net_file, net_json
+        net_file.write(net_json)
         n += 1
 
     net_json = '],"links": ['
-    print >>net_file, net_json
+    # print >>net_file, net_json
+    net_file.write(net_json)
 
     n = 0
     for con in network['connections']:
@@ -1426,14 +1479,16 @@ def build_author_network(papers, network):
 
             net_json += '{"source": "' + author_0 + '", "target": "' + author_1 + '", "value": ' + str(n_con) + '}'
 
-            print >>net_file, net_json
+            # print >>net_file, net_json
+            net_file.write(net_json)
             n += 1
         except:
             pass
 
     net_json = ']'
     net_json += '}'
-    print >>net_file, net_json
+    # print >>net_file, net_json
+    net_file.write(net_json)
 
     html_file = open(config.html_dir + '/authornetwork/index.html', 'w')
 
@@ -1466,17 +1521,20 @@ def build_author_network(papers, network):
     # Print nodes to csv
     nodes_csv = open(config.html_dir + '/authornetwork/nodes.csv', 'w')
 
-    print >>nodes_csv, 'id,Label'
+    # print >>nodes_csv, 'id,Label'
+    nodes_csv.write('id,Label')
     n = 0
 
     for author in network['authors']:
-        print >>nodes_csv, author + "," + network['authors'][author]['clean']
+        # print >>nodes_csv, author + "," + network['authors'][author]['clean']
+        nodes_csv.write(author + "," + network['authors'][author]['clean'])
         n += 1
 
     # Print conections to csv
     connections_csv = open(config.html_dir + '/authornetwork/connections.csv', 'w')
 
-    print >>connections_csv, 'Source,Target'
+    # print >>connections_csv, 'Source,Target'
+    connections_csv.write('Source,Target')
 
     n = 0
     for con in network['connections']:
@@ -1487,7 +1545,8 @@ def build_author_network(papers, network):
 
             n_con = network['connections'][con]['num_connections']/2
 
-            print >>connections_csv, '"' + author_0 + '","' + author_1 + '"'
+            # print >>connections_csv, '"' + author_0 + '","' + author_1 + '"'
+            connections_csv.write('"' + author_0 + '","' + author_1 + '"')
 
         except:
             pass
@@ -1497,10 +1556,12 @@ def build_author_network(papers, network):
     temp += '<p style="display:none;" id="no_network">No Author Network Image.</p>'
     temp += "<script>var xmlhttp = new XMLHttpRequest();xmlhttp.onreadystatechange = function() {if (xmlhttp.readyState == 4 && xmlhttp.status == 404) {document.getElementById('network').style.display = 'none';document.getElementById('no_network').style.display = 'block';}};xmlhttp.open('GET', 'author_network.png', true);xmlhttp.send();</script>"
 
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
     temp = build_common_foot()
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
 
 ###########################################################
@@ -1508,7 +1569,7 @@ def build_author_network(papers, network):
 ###########################################################
 def build_help():
 
-    print "\n###HTML - Help/Information page###"
+    print("\n###HTML - Help/Information page###")
 
     html_file = open(config.html_dir + '/help/index.html', 'w')
 
@@ -1555,10 +1616,12 @@ def build_help():
     temp += '<li>This project has been funded by: <ul><li>CLOSER, whose mission is to maximise the use, value and impact of longitudinal studies. CLOSER is funded by the Economic and Social Research Council (ESRC) and Medical Research Council (MRC) (grant reference: ES/K000357/1).</li><li>Becca Wilson is a UKRI Innovation Fellow with HDR UK [MR/S003959/1].</li><li>We have also had funding by the Nuffield Foundation research placement program.</li></ul></li>'
     temp += '</li>'
 
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
     temp = build_common_foot()
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
 
 ###########################################################
@@ -1636,10 +1699,12 @@ def build_search(papers):
 
     temp += '<script id="search_data">var papers = ' + str(json.dumps(searchable_data)).replace("<", "&lt;").replace(">", "&gt;") + ';</script>'
 
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
     temp = build_common_foot()
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)
 
 
 ###########################################################
@@ -1713,4 +1778,5 @@ def build_css_colour_scheme():
     temp += "a:link {color:#" + config.project_details['colour_hex_primary'] + "}"
     temp += "a:visited {color:#" + config.project_details['colour_hex_primary'] + "}"
 
-    print >>html_file, temp
+    # print >>html_file, temp
+    html_file.write(temp)

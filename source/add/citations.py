@@ -1,6 +1,7 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
-import urllib2
+# import urllib2
+import urllib.request, urllib.error, urllib.parse
 import json
 import datetime
 import time
@@ -51,7 +52,8 @@ def citations(papers, api_key, citation_max_life, force_update):
         except:
             try:
                 request_string = 'http://www.ebi.ac.uk/europepmc/webservices/rest/search?format=JSON&query=' + this_paper['IDs']['PMID']
-                response = urllib2.urlopen(request_string).read()
+                # response = urllib2.urlopen(request_string).read()
+                response = urllib.request.urlopen(request_string).read()
                 t = json.loads(response)
 
                 time.sleep(0.4)

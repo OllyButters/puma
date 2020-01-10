@@ -1,5 +1,5 @@
-#!/usr/bin/env python2
-import ConfigParser
+#!/usr/bin/env python3
+import configparser
 import sys
 import argparse
 import os.path
@@ -62,7 +62,7 @@ def build_config_variables(root_dir):
         print('Config file doesnt exist!: ' + config_file_path)
         sys.exit()
 
-    config = ConfigParser.ConfigParser()
+    config = configparser.ConfigParser()
     config.read(config_file_path)
     try:
         # Project Details
