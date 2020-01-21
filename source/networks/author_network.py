@@ -1,6 +1,8 @@
 import config.config as config
-import gen_author_network
-import gen_html
+# import gen_author_network
+# import gen_html
+from . import gen_author_network
+from . import gen_html
 import os
 
 

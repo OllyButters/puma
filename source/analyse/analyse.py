@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import csv
 import config.config as config
@@ -211,7 +211,7 @@ def word_frequencies(papers, item):
     # Words as rows
 
     # Get the list of years. This may have gaps
-    years = all_words_by_year.keys()
+    years = list(all_words_by_year.keys())
 
     # Might be a zero year if a year was not set in the clean data.
     # Drop the zero for now, otherwise we have a list from 0-max(years).
@@ -443,8 +443,8 @@ def mesh(papers):
     coverage = 0
     for this_paper in papers:
 
-        if 'keywords' in this_paper['clean']['keywords'].keys():
-            if 'mesh' in this_paper['clean']['keywords'].keys():
+        if 'keywords' in list(this_paper['clean']['keywords'].keys()):
+            if 'mesh' in list(this_paper['clean']['keywords'].keys()):
                 coverage = coverage + 1
 
                 try:

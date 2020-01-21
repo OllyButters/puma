@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import re
 import logging
@@ -454,15 +454,14 @@ def clean_first_author(this_paper):
 # standard name.
 ################################################################################
 def clean_institution(papers):
-    import unicodecsv
     logging.info('Starting institute cleaning')
 
     # Read in config file
     pattern = []
     replacements = []
     with open(config.config_dir + '/institute_cleaning.csv', 'rb') as csvfile:
-        f = unicodecsv.reader(csvfile,  encoding='utf-8')  # Handle extra unicode characters
-        for row in f:
+        # f = reader(csvfile,  encoding='utf-8')
+        for row in csvfile:
             try:
                 # Check it is not a comment string first.
                 if re.match('#', row[0]):
@@ -475,8 +474,10 @@ def clean_institution(papers):
                 # Retype both to unicode, this will parse any \u1234 bits to their
                 # actual unicode.
                 # Make pattern lowercase so it matches better.
-                pattern.append(unicode(row[0]).lower())
-                replacements.append(unicode(row[1]))
+                # pattern.append(unicode(row[0]).lower())
+                # replacements.append(unicode(row[1]))
+                pattern.append(str(row[0]).lower())
+                replacements.append(str(row[1]))
             except:
                 pass
 
@@ -492,7 +493,7 @@ def clean_institution(papers):
     for this_paper in papers:
 
         # add location key in clean if not present
-        if 'location' not in this_paper['clean'].keys():
+        if 'location' not in list(this_paper['clean'].keys()):
             this_paper['clean']['location'] = {}
 
         hasAffiliation = False
@@ -535,7 +536,8 @@ def clean_institution(papers):
                 # logging.debug('%s %s %s', institute, pattern[y], replacements[y])
 
                 # Check pattern in institite. These are both unicode and lowercase
-                temp = pattern[y] in unicode(candidate_institute).lower()
+                # temp = pattern[y] in unicode(candidate_institute).lower()
+                temp = pattern[y] in str(candidate_institute).lower()
                 if temp > 0:
                     logging.info(
                         'ID:%s. %s MATCHES %s REPLACEDBY %s',
@@ -558,7 +560,7 @@ def clean_institution(papers):
 # return this_paper with this_paper['clean']['journal'] set
 ################################################################################
 def clean_journal(this_paper):
-    if not('journal' in this_paper['clean'].keys() and this_paper['clean']['journal'] is not None):
+    if not('journal' in list(this_paper['clean'].keys()) and this_paper['clean']['journal'] is not None):
         this_paper['clean']['journal'] = {
           'journal_name': '',
           'volume': '',
@@ -568,7 +570,7 @@ def clean_journal(this_paper):
         # PMID first
         try:
             candidate_journal = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['Journal']['ISOAbbreviation']
-            if isinstance(candidate_journal, unicode):
+            if isinstance(candidate_journal, str):
                 this_paper['clean']['journal']['journal_name'] = candidate_journal
             elif isinstance(candidate_journal, list):
                 this_paper['clean']['journal']['journal_name'] = candidate_journal[0]
@@ -588,7 +590,7 @@ def clean_journal(this_paper):
         except:
             try:
                 candidate_journal = this_paper['raw']['doi_data']['container-title']
-                if isinstance(candidate_journal, unicode):
+                if isinstance(candidate_journal, str):
                     this_paper['clean']['journal']['journal_name'] = candidate_journal
                 elif isinstance(candidate_journal, list):
                     this_paper['clean']['journal']['journal_name'] = candidate_journal[0]
@@ -653,7 +655,7 @@ def clean_mesh(this_paper):
 
     # Might not be any pmid data at all.
     try:
-        if 'MeshHeadingList' in this_paper['raw']['pmid_data']['MedlineCitation'].keys():
+        if 'MeshHeadingList' in list(this_paper['raw']['pmid_data']['MedlineCitation'].keys()):
             try:
                 for this_mesh in this_paper['raw']['pmid_data']['MedlineCitation']['MeshHeadingList']:
                     this_paper['clean']['keywords']['mesh'].append(

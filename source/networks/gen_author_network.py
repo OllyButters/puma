@@ -1,5 +1,5 @@
 import json
-import unicodecsv
+# import unicodecsv
 import os
 import re
 import sys
@@ -68,14 +68,15 @@ def output_network():
     json.dump(output, f, indent=2)
     f.close()
 
+
 if __name__ == '__main__':
-  # Lets figure out some paths that everything is relative to
-  # global root_dir
-  path_to_papers_py = os.path.abspath(sys.argv[0])
-  root_dir = os.path.dirname(os.path.dirname(os.path.dirname(path_to_papers_py)))
-  print 'Root directory = ' + root_dir
+    # Lets figure out some paths that everything is relative to
+    # global root_dir
+    path_to_papers_py = os.path.abspath(sys.argv[0])
+    root_dir = os.path.dirname(os.path.dirname(os.path.dirname(path_to_papers_py)))
+    print('Root directory = ' + root_dir)
 
-  # Get all the config - these will be a global vars available like config.varname
-  config.build_config_variables(root_dir)
+    # Get all the config - these will be a global vars available like config.varname
+    config.build_config_variables(root_dir)
 
-  output_network()
+    output_network()

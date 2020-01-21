@@ -1,11 +1,12 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import json
 import logging
 
 import config.config as config
-import papersCache as pc
+# import papersCache as pc
+from . import papersCache as pc
 
 
 ################################################################################
@@ -21,7 +22,7 @@ def getScopus(zotero_ID, PMID, DOI):
         if PMID != "":
             request_string = url + '?apiKey=' + config.scopus_api_key + '&query=PMID(' + str(PMID) + ')'
             logging.info(request_string)
-            response = urllib2.urlopen(request_string).read()
+            response = urllib.request.urlopen(request_string).read()
             scopus_object = json.loads(response)
 
             # Check to see if this is just an errorlog
@@ -47,7 +48,7 @@ def getScopus(zotero_ID, PMID, DOI):
                     logging.debug('now here')
                     request_string = url + '?apiKey=' + config.scopus_api_key + '&query=DOI(' + DOI + ')'
                     logging.info(request_string)
-                    response = urllib2.urlopen(request_string).read()
+                    response = urllib.request.urlopen(request_string).read()
                     scopus_object = json.loads(response)
 
                     # Check to see if this is just an errorlog

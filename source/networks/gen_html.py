@@ -1,5 +1,5 @@
 import json
-import unicodecsv
+#import unicodecsv
 import re
 import os
 import getopt
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     from ..config import config as config
     from ..html import build_htmlv2 as build_html
 else:
-  import html.build_htmlv2 as build_html
+  import web_pages.build_htmlv2 as build_html
   import config.config as config
 
 
@@ -66,7 +66,7 @@ if __name__ == '__main__':
   # global root_dir
   path_to_papers_py = os.path.abspath(sys.argv[0])
   root_dir = os.path.dirname(os.path.dirname(os.path.dirname(path_to_papers_py)))
-  print 'Root directory = ' + root_dir
+  print('Root directory = ' + root_dir)
 
   # get the args relevant for script inputs
   try:

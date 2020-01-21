@@ -2,6 +2,7 @@ from pyzotero import zotero
 import config.config as config
 import re
 
+
 # extends the pyzotero Zotero class
 # -
 # adds a setter to retrieve the collection key (if present) when setting collection as a human-readable name
@@ -16,7 +17,12 @@ class zotPaper (zotero.Zotero):
         self.__collection = None
         self.collection_key = None
         self.papers = []
-        super(zotPaper, self).__init__(config.zotero_id, config.zotero_type, config.zotero_api_key, **kwargs)
+        super(zotPaper, self).__init__(
+            config.zotero_id,
+            config.zotero_type,
+            config.zotero_api_key,
+            **kwargs
+        )
 
     @property
     def collection(self):
@@ -31,8 +37,8 @@ class zotPaper (zotero.Zotero):
                 if collection['data']['name'] == self.__collection:
                     self.collection_key = collection['data']['key']
                     break
-            else:
-                self.collection_key = None
+                else:
+                    self.collection_key = None
         else:
             self.collection_key = None
 
@@ -43,11 +49,16 @@ class zotPaper (zotero.Zotero):
             zot_keys = self.collection_items(format='keys', limit=999999)
         else:
             zot_keys = self.items(format='keys', limit=999999)
-        self.papers_keys = zot_keys.split('\n')
+        print(zot_keys)
+        print(type(zot_keys))   
+        #self.papers_keys = zot_keys.split('\n')
+        self.papers_keys = zot_keys.decode('ascii').split('\n')
+        print(type(self.papers_keys))
+        print(self.papers_keys)
         return self.papers_keys
 
     # populate self.papers list with all papers in self.collection
-    def getPapersList(self, key_list = None, *args, **kwargs):
+    def getPapersList(self, key_list=None, *args, **kwargs):
         self.papers = []
 
         if key_list is None:
@@ -59,14 +70,13 @@ class zotPaper (zotero.Zotero):
         # we therefore request individually by key
         for key in key_list:
             if key != '':
-                print 'Getting zotero item '+key
+                print('Getting zotero item ' + key)
                 item = super(zotPaper, self).item(key, *args, **kwargs)
                 self.papers.append(item)
         return self.papers
 
-
     def extraToFields(self, extra):
-        entries = extra.split("\n");
+        entries = extra.split("\n")
         data = {}
         for entry in entries:
             datum = re.search(r'^(.+?):(.+?)$', entry)
@@ -74,24 +84,23 @@ class zotPaper (zotero.Zotero):
                 try:
                     data[datum.group(1)] = datum.group(2)
                 except IndexError:
-                    # if either value is missing just add to the 'extra' value as text
-                    data['extra'] += entry+"\n"
+                    # if either value is missing just add to the 'extra' value
+                    # as text
+                    data['extra'] += entry + "\n"
             else:
-                data['extra'] += entry+"\n"
+                data['extra'] += entry + "\n"
                 # don't raise an error, this will cause any other unformatted extra
                 # to vanish
         return data
 
-    # is this needed? check
     def fieldsToExtra(self, paper, fields):
         extra = paper['extra']
         for field in fields:
-            #value = ''
-            #if field in paper:
-            #    value = paper[field]
+            value = ''
+            if field in paper:
+                value = paper[field]
             extra += '%s:%s\n' % (field, paper[field])
         return extra
-
 
     def uploadExtra(self, paper):
         extra = paper['extra']
@@ -103,13 +112,13 @@ class zotPaper (zotero.Zotero):
             zot_extra_dict = {}
             if 'extra' in zot_paper['data']:
                 zot_extra_dict = self.extraToFields(zot_paper['data']['extra'])
-        except:
+        except BaseException:
             # do logging here
-            print "Error getting paper %s from Zotero" % (key)
+            print("Error getting paper %s from Zotero" % (key))
 
         # compare values and update zot_extra_dict only if key not present
-        for k, v in extra_dict.iteritems():
-            if k not in zot_extra_dict.keys():
+        for k, v in list(extra_dict.items()):
+            if k not in list(zot_extra_dict.keys()):
                 zot_extra_dict[k] = v
 
         # now flatten zot_extra_dict ready for upload
@@ -127,10 +136,10 @@ class zotPaper (zotero.Zotero):
     # used for quick conversions of lists of papers (as dicts) to zotero format ready for upload
     # for complex conversions use the Merge class in papersMerge
     def mapFields(self, paper, item_type='journalArticle', src_type='doi'):
-        #fields = self.item_type_fields(item_type)
-        #creator_types = self.item_creator_types(item_type)
-        #creator_fields = self.creator_fields()
-        #all_fields = self.item_fields()
+        fields = self.item_type_fields(item_type)
+        creator_types = self.item_creator_types(item_type)
+        creator_fields = self.creator_fields()
+        all_fields = self.item_fields()
 
         creator_mappings = {
             'doi': {
@@ -160,13 +169,15 @@ class zotPaper (zotero.Zotero):
         if src_type in field_mappings:
             field_map = field_mappings[src_type]
         else:
-            raise ValueError('(zotPaper::mapFields) src_type not recognised in field_mappings')
+            raise ValueError(
+                '(zotPaper::mapFields) src_type not recognised in field_mappings')
 
         if src_type in creator_mappings:
             creator_field = creator_mappings[src_type]['fieldname']
             creator_map = creator_mappings[src_type]['fields']
         else:
-            raise ValueError('(zotPaper::mapFields) src_type not recognised in creator_mappings')
+            raise ValueError(
+                '(zotPaper::mapFields) src_type not recognised in creator_mappings')
 
         zot_paper = {}
         zot_paper['itemType'] = item_type
