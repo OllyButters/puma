@@ -5,6 +5,8 @@ import config.config as config
 from nltk.stem import WordNetLemmatizer
 import numpy as np
 import pandas as pd
+import nltk
+nltk.download('wordnet')
 
 ############################################################
 # Have all the data now, so do something with it
@@ -34,13 +36,13 @@ def journals(papers):
     print('Top 5')
 
     # print a list of sorted frequencies
-    with open(config.data_dir + '/journals.csv', 'wb') as csvfile:
+    with open(config.data_dir + '/journals.csv', 'w') as csvfile:
         journals_file = csv.writer(csvfile)
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
                 print(w, freq[w])
                 i = i + 1
-            journals_file.writerow([w.encode('utf-8'), freq[w]])
+            journals_file.writerow([w, freq[w]])
 
 
 ############################################################
@@ -158,7 +160,7 @@ def word_frequencies(papers, item):
             lemmatized_all_words_by_year[this_year].append(lemmatizer.lemmatize(this_word))
 
     # Stick this in a log file to check the lemmatizing makes sense
-    with open(config.data_dir + '/' + item + '_lemmatizing_log.csv', 'wb') as csvfile:
+    with open(config.data_dir + '/' + item + '_lemmatizing_log.csv', 'w') as csvfile:
         output_file = csv.writer(csvfile)
         for this_word in all_words:
             output_file.writerow([this_word, lemmatizer.lemmatize(this_word)])
@@ -189,22 +191,22 @@ def word_frequencies(papers, item):
     print('Top 5')
 
     # Output the RAW data to file and print the top 5 to screen.
-    with open(config.data_dir + '/' + item + '_raw.csv', 'wb') as csvfile:
+    with open(config.data_dir + '/' + item + '_raw.csv', 'w') as csvfile:
         output_file = csv.writer(csvfile)
         for w in sorted(raw_freq, key=raw_freq.get, reverse=True):
             if i < 5:
                 print(w, raw_freq[w])
                 i = i+1
-            output_file.writerow([w.encode('utf-8'), raw_freq[w]])
+            output_file.writerow([w, raw_freq[w]])
 
     # Output the LEMMATIZED data to file and print the top 5 to screen.
-    with open(config.data_dir + '/' + item + '_lemmatized.csv', 'wb') as csvfile:
+    with open(config.data_dir + '/' + item + '_lemmatized.csv', 'w') as csvfile:
         output_file = csv.writer(csvfile)
         for w in sorted(lemmatized_freq, key=lemmatized_freq.get, reverse=True):
             if i < 5:
                 print(w, lemmatized_freq[w])
                 i = i+1
-            output_file.writerow([w.encode('utf-8'), lemmatized_freq[w]])
+            output_file.writerow([w, lemmatized_freq[w]])
 
     # Output the LEMMATIZED data by year.
     # Years as columns
@@ -297,14 +299,13 @@ def authors(papers):
     i = 0
     print('Top 5')
 
-    with open(config.data_dir + '/authors.csv', 'wb') as csvfile:
+    with open(config.data_dir + '/authors.csv', 'w') as csvfile:
         authors_file = csv.writer(csvfile)
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
                 print(w, freq[w])
                 i = i + 1
-        # Need to utf-8 encode
-            authors_file.writerow([w.encode('utf-8'), freq[w]])
+            authors_file.writerow([w, freq[w]])
 
     # === Author Network Object ===
     author_network = {}
@@ -391,14 +392,13 @@ def first_authors(papers):
     i = 0
     print('Top 5')
 
-    with open(config.data_dir + '/first_authors.csv', 'wb') as csvfile:
+    with open(config.data_dir + '/first_authors.csv', 'w') as csvfile:
         authors_file = csv.writer(csvfile)
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
                 print(w, freq[w])
                 i = i+1
-            # Need to utf-8 encode
-            authors_file.writerow([w.encode('utf-8'), freq[w]])
+            authors_file.writerow([w, freq[w]])
 
 
 ############################################################
@@ -423,14 +423,14 @@ def inst(papers):
     i = 0
     print('Top 5')
 
-    with open(config.data_dir + '/first_authors_inst.csv', 'wb') as csvfile:
+    with open(config.data_dir + '/first_authors_inst.csv', 'w') as csvfile:
         authors_file = csv.writer(csvfile)
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
                 print(w, freq[w])
                 i = i+1
             # Need to utf-8 encode
-            authors_file.writerow([w.encode('utf-8'), freq[w]])
+            authors_file.writerow([w, freq[w]])
 
 
 ############################################################
@@ -462,14 +462,14 @@ def mesh(papers):
     i = 0
     print('Top 5')
 
-    with open(config.data_dir + '/mesh.csv', 'wb') as csvfile:
+    with open(config.data_dir + '/mesh.csv', 'w') as csvfile:
         mesh_file = csv.writer(csvfile)
         for w in sorted(freq, key=freq.get, reverse=True):
             if i < 5:
                 print(w, freq[w])
                 i = i+1
             # Need to utf-8 encode
-            mesh_file.writerow([w.encode('utf-8'), freq[w]])
+            mesh_file.writerow([w, freq[w]])
 
 
 ################################################################################
@@ -478,7 +478,7 @@ def mesh(papers):
 def output_csv(papers):
 
     print('\n###Outputting CSV file###')
-    with open(config.data_dir + '/all.csv', 'wb') as csvfile:
+    with open(config.data_dir + '/all.csv', 'w') as csvfile:
         all_file = csv.writer(csvfile)
         for this_paper in papers:
             try:
@@ -515,6 +515,6 @@ def output_csv(papers):
                 year = '???'
 
             try:
-                all_file.writerow([year, author_string.encode('utf-8'), title.encode('utf-8'), first_author.encode('utf-8'), journal, citations])
+                all_file.writerow([year, author_string, title, first_author, journal, citations])
             except:
                 pass

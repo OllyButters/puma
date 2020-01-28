@@ -14,14 +14,14 @@ def dumpJson(filename, data, filetype='', process=False):
         if process:
             f.write('[')
             for datum in data:
-                json.dump(datum, f, indent=2)
+                json.dump(datum, f, indent=4)
                 f.write(',')
 
             f.seek(-1, os.SEEK_END)
             f.truncate()
             f.write(']')
         else:
-            json.dump(data, f, indent=2)
+            json.dump(data, f, indent=4)
         f.close()
         return location
     except:

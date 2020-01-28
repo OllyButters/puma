@@ -52,7 +52,7 @@ if __name__ == '__main__':
   if __package__ is None:
     sys.path.append(os.getcwd())
     import config.config as config
-    import html.build_htmlv2 as build_html
+    import web_pages.build_htmlv2 as build_html
   else:
     from ..config import config as config
     from ..html import build_htmlv2 as build_html

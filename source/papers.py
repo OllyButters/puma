@@ -107,14 +107,14 @@ add.geocode.geocode(papers)
 
 # Write papers to summary file
 file_name = root_dir + '/data/' + config.project_details['short_name'] + '/summary_added_to'
-fo = open(file_name, 'wb')
+fo = open(file_name, 'w')
 fo.write(json.dumps(papers, indent=4))
 fo.close()
 
 # Write a copy of each paper to a separate file
 for this_paper in papers:
     this_file_name = config.cache_dir + '/processed/cleaned/' + this_paper['IDs']['zotero'] + '.cleaned'
-    fo = open(this_file_name, 'wb')
+    fo = open(this_file_name, 'w')
     fo.write(json.dumps(this_paper, indent=4))
     fo.close()
 

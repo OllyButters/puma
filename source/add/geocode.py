@@ -21,8 +21,8 @@ def geocode(papers):
     # This is used to make up for old places not being on wikidata or old places
     # being removed because it is difficult to reference them
     institute_coordinates_backup = {}
-    with open(config.config_dir + '/institute_coordinates.csv', 'rb') as csvfile:
-        f = csv.reader(csvfile, encoding='utf-8')
+    with open(config.config_dir + '/institute_coordinates.csv', encoding='utf8') as csvfile:
+        f = csv.reader(csvfile)
         for row in f:
             institute_coordinates_backup[row[0]] = {}
             institute_coordinates_backup[row[0]]['lat'] = row[1]

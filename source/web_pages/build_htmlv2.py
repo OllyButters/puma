@@ -485,7 +485,7 @@ def build_papers(papers):
     temp += build_common_foot()
 
     # print >>unknown_file, temp.encode('utf-8')
-    unknown_file.write(temp.encode('utf-8'))
+    unknown_file.write(temp)
 
 
 ############################################################
@@ -607,14 +607,14 @@ def build_mesh(papers):
     # Make a JSON file for each mesh term, in it put all the PMIDs for this term
     for this_mesh in mesh_papers_all:
         file_name = config.html_dir + '/mesh/all_' + this_mesh
-        fo = open(file_name, 'wb')
+        fo = open(file_name, 'w')
         fo.write(json.dumps(mesh_papers_all[this_mesh], indent=4))
         fo.close()
 
     # Make a JSON file for each major mesh term, in it put all the PMIDs for this term
     for this_mesh in mesh_papers_major:
         file_name = config.html_dir + '/mesh/major_' + this_mesh
-        fo = open(file_name, 'wb')
+        fo = open(file_name, 'w')
         fo.write(json.dumps(mesh_papers_major[this_mesh], indent=4))
         fo.close()
 
@@ -1054,7 +1054,7 @@ def build_institute_map(papers):
 # Util to stick in commas between 1000s in big integers
 ###########################################################
 def intWithCommas(x):
-    if type(x) not in type(0):
+    if not isinstance(x, int):
         raise TypeError("Parameter must be an integer.")
     if x < 0:
         return '-' + intWithCommas(-x)
@@ -1155,7 +1155,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
 
     # Get the median number of citations
     list_of_citation_counts.sort()
-    median_citations = list_of_citation_counts[len(list_of_citation_counts)/2]
+    median_citations = list_of_citation_counts[round(len(list_of_citation_counts)/2)]
 
     # = Low Citations Range =
     # Create data string for plot
@@ -1179,7 +1179,7 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     # High Citations Range, but only if they are above the citation_number_limit
     if(max_citations >= citation_number_limit):
         n_papers_with_x_citations += "var papers_per_high_citation_count = ([['Number of Citations (Scopus)','Number of Papers',{ role: 'style' }]"
-        for this_bin in range(0, (max_citations - citation_number_limit)/citation_bin_size + 1):
+        for this_bin in range(0, round((max_citations - citation_number_limit)/citation_bin_size) + 1):
 
             # Calculate the start and end of the bin
             bin_start = this_bin * citation_bin_size + citation_number_limit + 1
