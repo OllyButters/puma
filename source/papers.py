@@ -104,6 +104,7 @@ clean.clean_institution(papers)
 ###########################################################
 # Add some extra data in - i.e. geocodes and citations
 add.geocode.geocode(papers)
+#add.citations(papers, config.citations_api_key, 14, True)
 
 # Write papers to summary file
 file_name = root_dir + '/data/' + config.project_details['short_name'] + '/summary_added_to'
@@ -132,7 +133,7 @@ analyse.journals(papers)
 # Figure out the word frequecies
 analyse.word_frequencies(papers, 'title')
 analyse.word_frequencies(papers, 'keywords')
-# papers_with_abstract_text = analyse.word_frequencies(papers, 'abstract')
+papers_with_abstract_text = analyse.word_frequencies(papers, 'abstract')
 
 network = analyse.authors(papers)
 analyse.first_authors(papers)
@@ -148,7 +149,8 @@ web_pages.build_htmlv2.build_papers(papers)
 web_pages.build_htmlv2.build_mesh(papers)
 web_pages.build_htmlv2.build_country_map(papers, config.google_maps_api_key)
 web_pages.build_htmlv2.build_metrics(papers, cohort_rating, cohort_rating_data_from, config.metrics_study_start_year, config.metrics_study_current_year)
-# web_pages.build_htmlv2.build_abstract_word_cloud(papers, papers_with_abstract_text)
+web_pages.build_htmlv2.build_abstract_word_cloud(papers, papers_with_abstract_text)
+web_pages.build_htmlv2.build_institute_map(papers)
 web_pages.build_htmlv2.build_author_network(papers, network)
 web_pages.build_htmlv2.build_help()
 web_pages.build_htmlv2.build_search(papers)

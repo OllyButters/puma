@@ -4,6 +4,7 @@ import re
 import logging
 import hashlib
 import config.config as config
+import csv
 
 
 ################################################################################
@@ -496,9 +497,11 @@ def clean_institution(papers):
     # Read in config file
     pattern = []
     replacements = []
-    with open(config.config_dir + '/institute_cleaning.csv', 'rb') as csvfile:
+    with open(config.config_dir + '/institute_cleaning.csv', 'r') as inst_file:
+        inst_file_reader = csv.reader(inst_file)
         # f = reader(csvfile,  encoding='utf-8')
-        for row in csvfile:
+        for row in inst_file_reader:
+            logging.debug(row)
             try:
                 # Check it is not a comment string first.
                 if re.match('#', row[0]):
@@ -515,7 +518,8 @@ def clean_institution(papers):
                 # replacements.append(unicode(row[1]))
                 pattern.append(str(row[0]).lower())
                 replacements.append(str(row[1]))
-            except:
+            except Exception as e:
+                print(e)
                 pass
 
     # Stick a copy of the parsed lookup into the log.

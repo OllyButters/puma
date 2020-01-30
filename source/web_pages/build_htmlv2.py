@@ -5,10 +5,12 @@ import shutil
 import os.path
 import csv
 # import htmlentities
+from html import escape
 import time
 import codecs
 import os
 import logging
+import sys
 
 import config.config as config
 
@@ -291,7 +293,7 @@ def draw_paper(this_paper):
         except:
             logging.debug('This author dropped from author list on webpage for some reason: ' + str(this_author))
 
-    html += htmlentities.encode('; '.join(authors))
+    html += escape('; '.join(authors))
     html += '<br/>'
 
     html += this_paper['clean']['journal']['journal_name']
@@ -400,9 +402,9 @@ def build_papers(papers):
             temp.append({this_paper['IDs']['hash']: html})
             yearly_papers[this_year] = temp
         except:
-            pass
-            # print 'Failing on ' + this_paper['IDs']['hash']
-            # print sys.exc_info()
+            #pass
+            print('Failing on ' + this_paper['IDs']['hash'])
+            print(sys.exc_info())
 
     # Output the info into an HTML file
     # For each year dict item
@@ -439,7 +441,7 @@ def build_papers(papers):
         for this_item in yearly_papers[this_year]:
             temp = list(this_item.values())
             # print >>year_file, temp[0].encode('utf-8')
-            year_file.write(temp[0].encode('utf-8'))
+            year_file.write(temp[0])
 
         temp = build_common_foot()
         # print >>year_file, temp
@@ -892,7 +894,7 @@ def build_google_map(papers):
     # print >>kml_file, kml
     kml_file.write(kml)
 
-    html_file = codecs.open(config.html_dir + '/map/index.html', 'w', 'utf-8')
+    html_file = open(config.html_dir + '/map/index.html', 'w')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -1016,7 +1018,9 @@ def build_institute_map(papers):
     institute_string = ""
     for this_institute in list(institutes.keys()):
         print(this_institute)
-        institute_string += ',[' + institutes[this_institute]['lat'] + ',' + institutes[this_institute]['lon'] + ',"' + str(this_institute.encode('ascii', 'ignore')) + '",' + str(institutes[this_institute]['count']) + ']'
+        # note that we encode as ascii with 'ignore' set so all non-ascii
+        # chars are removed. this is then decoded back into utf-8
+        institute_string += ',[' + institutes[this_institute]['lat'] + ',' + institutes[this_institute]['lon'] + ',"' + str(this_institute.encode('ascii', 'ignore').decode('ascii')) + '",' + str(institutes[this_institute]['count']) + ']'
 
     html_file = open(config.html_dir + '/institute/index.html', 'w')
 
@@ -1044,7 +1048,7 @@ def build_institute_map(papers):
 
     temp += '<div id="regions_div" style="width: 900px; height: 500px;"><img src="loading.gif" alt="Loading"></div>'
     temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
-    html_file.write(temp.encode(encoding='utf_8'))
+    html_file.write(temp)
 
     temp = build_common_foot()
     html_file.write(temp)

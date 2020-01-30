@@ -23,7 +23,8 @@ def citations(papers, api_key, citation_max_life, force_update):
     if force_update is not True:
         logging.info('Reading citation cache in.')
         try:
-            with open(config.cache_dir + '/citations_europePMC.csv', 'rb') as csvfile:
+            # removed 'rb' as no longer need to read bytes (but tbc)
+            with open(config.cache_dir + '/citations_europePMC.csv', 'r') as csvfile:
                 f = csv.reader(csvfile)
                 for row in f:
                     # Parse the date the citation was cached
@@ -74,7 +75,7 @@ def citations(papers, api_key, citation_max_life, force_update):
         counter += 1
 
     # Write to file
-    csvfile = open(config.cache_dir + '/citations_europePMC.csv', 'wb')
+    csvfile = open(config.cache_dir + '/citations_europePMC.csv', 'w')
     citation_file = csv.writer(csvfile)
     for this_citation in cached_citations:
         temp_citation_count = cached_citations[this_citation]['citation_count']
