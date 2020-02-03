@@ -2,9 +2,8 @@
 
 Puma is a pipeline to mine academic publication metadata, creating a valuable research object and visual analytics from a research project publication list.
 
-The technical documentation is at:
-
-[https://github.com/OllyButters/puma/wiki](https://github.com/OllyButters/puma/wiki)
+The technical documentation is at: [https://github.com/OllyButters/puma/wiki](https://github.com/OllyButters/puma/wiki)
+A demo with restricted analytics and functionality is at: [http://d2k-puma.ncl.ac.uk/hdruk/](http://d2k-puma.ncl.ac.uk/hdruk/)
 
 # PUMA project publications
 Butters et al., 2019. DOI: [10.12688/wellcomeopenres.14986.1](https://dx.doi.org/10.12688%2Fwellcomeopenres.14986.1)
