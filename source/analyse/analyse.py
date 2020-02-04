@@ -6,7 +6,12 @@ from nltk.stem import WordNetLemmatizer
 import numpy as np
 import pandas as pd
 import nltk
-nltk.download('wordnet')
+from os import listdir
+
+# check if the 'wordnet' corpora for nltk is installed
+# if not, download it
+if 'wordnet' not in listdir(nltk.data.find('corpora')):
+  nltk.download('wordnet')
 
 ############################################################
 # Have all the data now, so do something with it
