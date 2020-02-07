@@ -9,6 +9,7 @@
 ################################################################################
 
 # core packages
+import datetime
 import json
 import os.path
 from os import listdir
@@ -104,7 +105,7 @@ clean.clean_institution(papers)
 ###########################################################
 # Add some extra data in - i.e. geocodes and citations
 add.geocode.geocode(papers)
-#add.citations(papers, config.citations_api_key, 14, True)
+# add.citations(papers, config.citations_api_key, 14, True)
 
 # Write papers to summary file
 file_name = root_dir + '/data/' + config.project_details['short_name'] + '/summary_added_to'
@@ -162,9 +163,9 @@ if config.network_create_networks:
 # Time Log
 end_time = time.time()
 elapsed_time = end_time - start_time
-elapsed_time_string = str(int(elapsed_time) / 60) + ":" + str(int(elapsed_time) % 60).zfill(2)
+# elapsed_time_string = str(int(elapsed_time) / 60) + ":" + str(int(elapsed_time) % 60).zfill(2)
 print('End Time: ' + str(end_time))
-print('Elapsed Time (mm:ss) - ' + elapsed_time_string)
+print('Elapsed Time (H:mm:ss) - ' + str(datetime.timedelta(seconds=elapsed_time)))
 
 logging.info('Finished at: ' + str(end_time))
-logging.info('Elapsed time (mm:ss) : ' + elapsed_time_string)
+logging.info('Elapsed time (H:mm:ss) : ' + str(datetime.timedelta(seconds=elapsed_time)))
