@@ -255,34 +255,36 @@ def clean_date(this_paper):
 
         # if all fails, return False
         return False
+
     ############################################################################
     # Try the Scopus data
     def _clean_date_scopus(this_paper):
 
         # check if only one result, otherwise return False
         try:
-          if this_paper['raw']['scopus_data']['search-results']['opensearch:totalResults'] != '1':
-              return False
+            if this_paper['raw']['scopus_data']['search-results']['opensearch:totalResults'] != '1':
+                return False
         except:
-          pass
+            pass
 
         # most likely location is the prism:coverDate field
         try:
-          cover_date_str = this_paper['raw']['scopus_data']['search-results']['entry'][0]['prism:coverDate']
-          if cover_date_str != '':
-              cover_date = cover_date_str.split('-')
-              if len(cover_date[0]) == 4:
-                  this_paper['clean']['clean_date']['year'] = cover_date[0]
-                  if len(cover_date) == 3:      
-                      # assume iso date format (yyyy-mm-dd)
-                      this_paper['clean']['clean_date']['month'] = cover_date[1]
-                      this_paper['clean']['clean_date']['day'] = cover_date[2]
-                  return True
-        except Exception(e):
-            raise(e)
+            cover_date_str = this_paper['raw']['scopus_data']['search-results']['entry'][0]['prism:coverDate']
+            if cover_date_str != '':
+                cover_date = cover_date_str.split('-')
+                if len(cover_date[0]) == 4:
+                    this_paper['clean']['clean_date']['year'] = cover_date[0]
+                    if len(cover_date) == 3:
+                        # assume iso date format (yyyy-mm-dd)
+                        this_paper['clean']['clean_date']['month'] = cover_date[1]
+                        this_paper['clean']['clean_date']['day'] = cover_date[2]
+                    return True
+        except:
+            pass
 
         # if all fails, return False
         return False
+
     ############################################################################
     # Parse the zotero dates
     def _clean_date_zotero(this_paper):
