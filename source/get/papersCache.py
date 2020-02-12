@@ -14,14 +14,14 @@ def dumpJson(filename, data, filetype='', process=False):
         if process:
             f.write('[')
             for datum in data:
-                json.dump(datum, f, indent=2)
+                json.dump(datum, f, indent=4)
                 f.write(',')
 
             f.seek(-1, os.SEEK_END)
             f.truncate()
             f.write(']')
         else:
-            json.dump(data, f, indent=2)
+            json.dump(data, f, indent=4)
         f.close()
         return location
     except:
@@ -45,7 +45,7 @@ def dumpFile(filename, data, filetype=''):
 # get a list of all filenames in directory cache[/filetype]
 def getCacheList(filetype=''):
     cachefiles = []
-    filetype = re.sub('[\.]{2,}', '', filetype)
+    filetype = re.sub('[.]{2,}', '', filetype)
     for root, dirs, files in os.walk(config.cache_dir+filetype):
         for name in files:
             cachefiles.append(name)

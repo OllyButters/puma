@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import logging
 
@@ -55,7 +55,7 @@ def bibtex(papers):
             pass
 
     # output to file in data_dir
-    with open(config.data_dir + '/bibtex_list.bib', 'wb') as bibfile:
+    with open(config.data_dir + '/bibtex_list.bib', 'w') as bibfile:
         for a in articles:
-            bibfile.write(a.encode('utf-8'))
+            bibfile.write(a)
             bibfile.write('\n')

@@ -1,5 +1,5 @@
-#!/usr/bin/env python2
-import ConfigParser
+#!/usr/bin/env python3
+import configparser
 import sys
 import argparse
 import os.path
@@ -34,8 +34,6 @@ def build_config_variables(root_dir):
     global zotero_get_all
     global use_doi_pubmed_cache
 
-    global pubmed_email
-
     # Some data cannot be dispayed on a public facing website - e.g. all the data in merged json file.
     global public_facing
 
@@ -62,7 +60,7 @@ def build_config_variables(root_dir):
         print('Config file doesnt exist!: ' + config_file_path)
         sys.exit()
 
-    config = ConfigParser.ConfigParser()
+    config = configparser.ConfigParser()
     config.read(config_file_path)
     try:
         # Project Details
@@ -91,9 +89,6 @@ def build_config_variables(root_dir):
         # collate settings
         zotero_get_all = config.getboolean('collate', 'zotero_get_all')
         use_doi_pubmed_cache = config.getboolean('collate', 'use_doi_pubmed_cache')
-
-        # Pubmed
-        pubmed_email = config.get('pubmed_api', 'pubmed_email')
 
         # logging
         logging_loglevel = config.get('logging', 'loglevel')
@@ -129,5 +124,5 @@ def build_config_variables(root_dir):
     config_dir = root_dir + '/config'
     data_dir = root_dir + '/data/' + project_details['short_name']
     html_dir = root_dir + '/html/' + project_details['short_name']
-    template_dir = root_dir + '/source/html/template'
+    template_dir = root_dir + '/source/web_pages/template'
     log_dir = root_dir + '/logs'

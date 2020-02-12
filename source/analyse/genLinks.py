@@ -16,7 +16,7 @@ class dataNetwork:
   #so a node becomes a group of items sharing a characteristic
   #this could be 'filename', the whole dataset ('all_papers') as now
   #or a specific mesh heading
-  #searches for shared data is in or out of group 
+  #searches for shared data is in or out of group
   #(i.e. all in group or all data)
 
   #define what to search within for linking purposes
@@ -29,23 +29,23 @@ class dataNetwork:
 
   def __init__(self, data_path):
     self.data_path = data_path
-    self.dataset = self.getCacheData() 
+    self.dataset = self.getCacheData()
     self.target_path = ''
     self.search_across = self.search_across_types[0]
     self.ignore_empty_nodes = True
     self.nodes = {}
     self.links = {}
-    
+
     #node_name is a list containing a json path to all the fields
-    #making up the node name (used by processNodeMatch). defaults to ['$'], which will just use the 
+    #making up the node name (used by processNodeMatch). defaults to ['$'], which will just use the
     #value of the found match. can be used to e.g. join an author's
     #first and last names from a node containing all the author data
-    #as in self.node_name = ['$.family', '$.given'] will extract 
+    #as in self.node_name = ['$.family', '$.given'] will extract
     #family and given from the node value {'family':'Smith', 'given':'John'}
     self.node_name = ['$']
 
     #the 'additional_data' list can contain jsonpaths to bits of data we might
-    #want to store with a node. Each entry is of the form 
+    #want to store with a node. Each entry is of the form
     #{'path':'[jsonpath to retrieve]', 'context':'[node|paper]', 'name':'[key name for output], 'clean_function': [cleaning_function]}
     #Specifying context as node means only this node is searched;
     #specifying context as paper searches the whole paper
@@ -54,7 +54,7 @@ class dataNetwork:
     # defaults to 'clean'
     self.additional_data_node = []
 
-    #the below are only used if search_across is set to 'all_data' 
+    #the below are only used if search_across is set to 'all_data'
     self.assoc_node_target_path = None
     self.link_sets = {}
     self.assoc_nodes = {}
@@ -68,7 +68,7 @@ class dataNetwork:
     for root, dirs, files in os.walk(self.data_path):
       for name in files:
         cache_files.append(name)
-     
+
     dataset = {}
 
     for cache_filename in cache_files:
@@ -80,22 +80,22 @@ class dataNetwork:
         raise ValueError('(genLinks.getCacheData) Error, unrecognised output_type')
 
     self.dataset = dataset
-    return dataset    
+    return dataset
 
   def getPath(self, target, target_path):
     #parse the path as json
     json_path = jsonp.parse(target_path)
     #create a list of matches
     matches = [match for match in json_path.find(target)]
-    #return the list of matches (DatumInContext objects, key properties: value, context (another DatumInContext object)) 
+    #return the list of matches (DatumInContext objects, key properties: value, context (another DatumInContext object))
     return matches
 
   def clean(self, value):
     clean_value = value.lower().strip()
     return clean_value
-  
+
   #process the found node
-  #this returns the match value directly by default but may be 
+  #this returns the match value directly by default but may be
   #used to e.g. join multiple subfields of a match together
   def processFoundNode(self, match):
     value = ''
@@ -111,11 +111,11 @@ class dataNetwork:
     nodes = {}
     assoc_nodes = {}
     complete_counter = 0
-    total_items = len(self.dataset.items())
+    total_items = len(list(self.dataset.items()))
     if self.search_across == 'paper':
-      for paper_name, paper in self.dataset.items():
-        print 'Generating nodes for paper {paper_name}'.format(paper_name=paper_name) 
-        print 'Paper {n} out of {total} being processed...'.format(n=complete_counter+1, total=total_items)
+      for paper_name, paper in list(self.dataset.items()):
+        print('Generating nodes for paper {paper_name}'.format(paper_name=paper_name))
+        print('Paper {n} out of {total} being processed...'.format(n=complete_counter+1, total=total_items))
         complete_counter += 1
         node_matches = self.getPath(paper, self.target_path)
         if node_matches is not None and len(node_matches) > 0:
@@ -136,7 +136,7 @@ class dataNetwork:
             except:
               nodes[node_id] = {
                 'value': processed_value,
-                'clean_value': clean_value, 
+                'clean_value': clean_value,
                 'count': 1
               }
 
@@ -153,7 +153,7 @@ class dataNetwork:
                     else:
                       nodes[node_id][add_data_n['name']].append(add_data_match.value)
 
-          print 'Generating links for paper {paper_name}'.format(paper_name=paper_name) 
+          print('Generating links for paper {paper_name}'.format(paper_name=paper_name))
           self.getLinks(node_matches, node_id)
     elif self.search_across == 'all_data':
       # paper ($) is always root of data
@@ -168,20 +168,20 @@ class dataNetwork:
       # for each subject, go through each mesh heading and find in context (in this case paper). end up with count of each mesh heading per subject
       ##
       #search whole dataset to get nodes
-      for paper_name, paper in self.dataset.items():
+      for paper_name, paper in list(self.dataset.items()):
         #get node(s) for this paper
-        print 'Generating nodes for paper {paper_name}'.format(paper_name=paper_name) 
+        print('Generating nodes for paper {paper_name}'.format(paper_name=paper_name))
         paper_nodes = self.genNodes(paper, additional_data = self.additional_data_node)
         nodes.update(paper_nodes)
 
         #get association nodes for this paper
-        print 'Generating association nodes for paper {paper_name}'.format(paper_name=paper_name) 
+        print('Generating association nodes for paper {paper_name}'.format(paper_name=paper_name))
         paper_assoc_nodes = self.genNodes(paper, self.assoc_node_target_path, additional_data = self.additional_data_assoc_node)
         assoc_nodes.update(paper_assoc_nodes)
 
         #now go through nodes and assoc_nodes
         #where context contains both node and assoc_node, +1 to node-assoc_node link
-        self.genNodeAssocLinks(paper_nodes, paper_assoc_nodes) 
+        self.genNodeAssocLinks(paper_nodes, paper_assoc_nodes)
 
 
     else:
@@ -211,7 +211,7 @@ class dataNetwork:
         except:
           nodes[node_id] = {
             'value': processed_value,
-            'clean_value': clean_value, 
+            'clean_value': clean_value,
             'count': 1
           }
 
@@ -232,7 +232,7 @@ class dataNetwork:
 
   def genNodeAssocLinks(self, nodes, assoc_nodes):
     for node_id in nodes:
-      for assoc_node_id in assoc_nodes:  
+      for assoc_node_id in assoc_nodes:
         if node_id < assoc_node_id:
           link_id = node_id+assoc_node_id
         else:
@@ -246,7 +246,7 @@ class dataNetwork:
             'target_id': assoc_node_id,
             'count': 1
           }
-    return self.links     
+    return self.links
 
   def getLinks(self, matches, linking_node_id):
     for match in matches:
@@ -273,7 +273,7 @@ class dataNetwork:
             'target_id': node_id,
             'count': 1
           }
-    return self.links     
+    return self.links
 
   def processOutput(self):
     output = {
@@ -291,8 +291,3 @@ class dataNetwork:
       self.links[link_id]['id'] = link_id
       output['links'].append(self.links[link_id])
     return output
-      
-
-
-
-

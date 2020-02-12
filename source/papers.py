@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 ################################################################################
 # The publications metadata augmentor!
@@ -9,6 +9,7 @@
 ################################################################################
 
 # core packages
+import datetime
 import json
 import os.path
 from os import listdir
@@ -23,17 +24,16 @@ import config.config as config
 import setup.setup as setup
 import clean.clean as clean
 import add.geocode
-import add.citations
 import analyse.analyse as analyse
-import html.build_htmlv2
+import web_pages.build_htmlv2
 import bibliography.bibtex
 import get.simple_collate
 import networks.author_network as author_network
 import analyse.coverage_report as coverage_report
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
-__date__ = 21/8/19
-__version__ = '0.12.0'
+__date__ = 12/2/20
+__version__ = '0.14.0'
 
 # Lets figure out some paths that everything is relative to
 # global root_dir
@@ -104,17 +104,18 @@ clean.clean_institution(papers)
 ###########################################################
 # Add some extra data in - i.e. geocodes and citations
 add.geocode.geocode(papers)
+# add.citations(papers, config.citations_api_key, 14, True)
 
 # Write papers to summary file
 file_name = root_dir + '/data/' + config.project_details['short_name'] + '/summary_added_to'
-fo = open(file_name, 'wb')
+fo = open(file_name, 'w')
 fo.write(json.dumps(papers, indent=4))
 fo.close()
 
 # Write a copy of each paper to a separate file
 for this_paper in papers:
     this_file_name = config.cache_dir + '/processed/cleaned/' + this_paper['IDs']['zotero'] + '.cleaned'
-    fo = open(this_file_name, 'wb')
+    fo = open(this_file_name, 'w')
     fo.write(json.dumps(this_paper, indent=4))
     fo.close()
 
@@ -142,17 +143,17 @@ analyse.output_csv(papers)
 
 ###########################################################
 # Make some web pages
-html.build_htmlv2.build_css_colour_scheme()
-cohort_rating, cohort_rating_data_from = html.build_htmlv2.build_home(papers)
-html.build_htmlv2.build_papers(papers)
-html.build_htmlv2.build_mesh(papers)
-html.build_htmlv2.build_country_map(papers, config.google_maps_api_key)
-html.build_htmlv2.build_institute_map(papers)
-html.build_htmlv2.build_metrics(papers, cohort_rating, cohort_rating_data_from, config.metrics_study_start_year, config.metrics_study_current_year)
-#html.build_htmlv2.build_abstract_word_cloud(papers, papers_with_abstract_text)
-html.build_htmlv2.build_author_network(papers, network)
-html.build_htmlv2.build_help()
-html.build_htmlv2.build_search(papers)
+web_pages.build_htmlv2.build_css_colour_scheme()
+cohort_rating, cohort_rating_data_from = web_pages.build_htmlv2.build_home(papers)
+web_pages.build_htmlv2.build_papers(papers)
+web_pages.build_htmlv2.build_mesh(papers)
+web_pages.build_htmlv2.build_country_map(papers, config.google_maps_api_key)
+web_pages.build_htmlv2.build_metrics(papers, cohort_rating, cohort_rating_data_from, config.metrics_study_start_year, config.metrics_study_current_year)
+#web_pages.build_htmlv2.build_abstract_word_cloud(papers, papers_with_abstract_text)
+web_pages.build_htmlv2.build_institute_map(papers)
+web_pages.build_htmlv2.build_author_network(papers, network)
+web_pages.build_htmlv2.build_help()
+web_pages.build_htmlv2.build_search(papers)
 
 if config.network_create_networks:
     # generate and dump the html for author network
@@ -161,9 +162,8 @@ if config.network_create_networks:
 # Time Log
 end_time = time.time()
 elapsed_time = end_time - start_time
-elapsed_time_string = str(int(elapsed_time) / 60) + ":" + str(int(elapsed_time) % 60).zfill(2)
 print('End Time: ' + str(end_time))
-print('Elapsed Time (mm:ss) - ' + elapsed_time_string)
+print('Elapsed Time (H:mm:ss) - ' + str(datetime.timedelta(seconds=elapsed_time)))
 
 logging.info('Finished at: ' + str(end_time))
-logging.info('Elapsed time (mm:ss) : ' + elapsed_time_string)
+logging.info('Elapsed time (H:mm:ss) : ' + str(datetime.timedelta(seconds=elapsed_time)))

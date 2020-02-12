@@ -3,15 +3,17 @@
 import json
 import unicodecsv
 import re
+import os
+import csv
 
-def loadCleaning():
+def loadCleaning(config_dir):
   # Read in config file
   global pattern
   pattern = []
   global replacements
   replacements = []
-  with open('/home/lishy/repos/papers.origin/config/institute_cleaning.csv', 'rb') as csvfile:
-    f = unicodecsv.reader(csvfile,  encoding='utf-8')  # Handle extra unicode characters
+  with open(os.path.join(config_dir, 'institute_cleaning.csv'), 'r') as csvfile:
+    f = csv.reader(csvfile,  encoding='utf-8')  # Handle extra unicode characters
     for row in f:
       try:
         # Check it is not a comment string first.
@@ -64,7 +66,7 @@ if __name__ == '__main__':
   #setup a new instance of dataNetwork, specifying source of data
   dn = gl.dataNetwork(os.path.join(config.cache_dir, 'processed/merged'))
 
-  loadCleaning()
+  loadCleaning(config.config_dir)
   dn.target_path = '$.merged.author.[0]'
   dn.node_name = ['$.family', '$.given']
   dn.additional_data_node.append({'path': '$.affiliation.[0].name', 'context': 'node', 'name':'affiliation', 'clean': cleanInstitution})
