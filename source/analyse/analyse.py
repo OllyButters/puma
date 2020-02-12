@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import nltk
 from os import listdir
+import re
 
 # check if the 'wordnet' corpora for nltk is installed
 # if not, download it
@@ -71,6 +72,9 @@ def word_frequencies(papers, item):
         split = line.split()
         if len(split) > 0 and split[0] != "|" and "|" not in split[0]:
             stop_words.append(split[0])
+
+    print(stop_words)
+    # exit(0)
 
 
     # initialize lemmatizer
@@ -142,13 +146,26 @@ def word_frequencies(papers, item):
             text = text.replace('national child development survey', '')
 
             # Remove stop words
-            for this_stop_word in stop_words:
-                text = text.replace(this_stop_word, '')
+            # for this_stop_word in stop_words:
+            #    text = text.replace(str(this_stop_word), '')
+                # text = text.replace('the', '')
+                # text = re.sub(this_stop_word, '', text)
 
-            # Add item words into list of all words
-            temp = text.split()
-            all_words.extend(temp)
-            all_words_by_year[this_year].extend(temp)
+            # split the text up for this paper using space
+            temp_words = text.split()
+            keep_words = []
+            print("########################")
+            print(temp_words)
+            for this_word in temp_words:
+                if this_word not in stop_words:
+                    keep_words.append(this_word)
+                else:
+                    print("removing " + this_word)
+            print(keep_words)
+            print("########################")
+
+            all_words.extend(keep_words)
+            all_words_by_year[this_year].extend(keep_words)
             data_from_count += 1
         except:
             pass
