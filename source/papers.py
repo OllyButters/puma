@@ -53,7 +53,7 @@ setup.build_file_tree()
 
 # Time Log
 start_time = time.time()
-print('Start Time: ' + str(start_time))
+print('Start Time: ' + str(datetime.datetime.now().strftime("%H:%M")))
 
 # Set up the logging. Level can be DEBUG|.....
 log_file = root_dir + '/logs/'+config.project_details['short_name']+'.log'
@@ -66,7 +66,8 @@ print('Run something like: tail -f ' + log_file)
 
 # Output some info to the log file to help with debugging
 logging.info('Running version: ' + __version__)
-logging.info('Started at: ' + str(start_time))
+logging.info('Started at: ' + str(datetime.datetime.now().strftime("%H:%M")))
+
 
 ###########################################################
 # Get the papers. This will get all the metadata and store
@@ -161,9 +162,9 @@ if config.network_create_networks:
 
 # Time Log
 end_time = time.time()
-elapsed_time = end_time - start_time
-print('End Time: ' + str(end_time))
+elapsed_time = int(end_time - start_time)
+print('End Time: ' + str(datetime.datetime.now().strftime("%H:%M")))
 print('Elapsed Time (H:mm:ss) - ' + str(datetime.timedelta(seconds=elapsed_time)))
 
-logging.info('Finished at: ' + str(end_time))
+logging.info('End Time: ' + str(datetime.datetime.now().strftime("%H:%M")))
 logging.info('Elapsed time (H:mm:ss) : ' + str(datetime.timedelta(seconds=elapsed_time)))
