@@ -34,8 +34,6 @@ def build_config_variables(root_dir):
     global zotero_get_all
     global use_doi_pubmed_cache
 
-    global pubmed_email
-
     # Some data cannot be dispayed on a public facing website - e.g. all the data in merged json file.
     global public_facing
 
@@ -91,9 +89,6 @@ def build_config_variables(root_dir):
         # collate settings
         zotero_get_all = config.getboolean('collate', 'zotero_get_all')
         use_doi_pubmed_cache = config.getboolean('collate', 'use_doi_pubmed_cache')
-
-        # Pubmed
-        pubmed_email = config.get('pubmed_api', 'pubmed_email')
 
         # logging
         logging_loglevel = config.get('logging', 'loglevel')

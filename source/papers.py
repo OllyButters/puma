@@ -24,7 +24,6 @@ import config.config as config
 import setup.setup as setup
 import clean.clean as clean
 import add.geocode
-import add.citations
 import analyse.analyse as analyse
 import web_pages.build_htmlv2
 import bibliography.bibtex
@@ -33,8 +32,8 @@ import networks.author_network as author_network
 import analyse.coverage_report as coverage_report
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
-__date__ = 10/1/20
-__version__ = '0.13.0'
+__date__ = 12/2/20
+__version__ = '0.14.0'
 
 # Lets figure out some paths that everything is relative to
 # global root_dir
@@ -134,7 +133,7 @@ analyse.journals(papers)
 # Figure out the word frequecies
 analyse.word_frequencies(papers, 'title')
 analyse.word_frequencies(papers, 'keywords')
-papers_with_abstract_text = analyse.word_frequencies(papers, 'abstract')
+#papers_with_abstract_text = analyse.word_frequencies(papers, 'abstract')
 
 network = analyse.authors(papers)
 analyse.first_authors(papers)
@@ -150,7 +149,7 @@ web_pages.build_htmlv2.build_papers(papers)
 web_pages.build_htmlv2.build_mesh(papers)
 web_pages.build_htmlv2.build_country_map(papers, config.google_maps_api_key)
 web_pages.build_htmlv2.build_metrics(papers, cohort_rating, cohort_rating_data_from, config.metrics_study_start_year, config.metrics_study_current_year)
-web_pages.build_htmlv2.build_abstract_word_cloud(papers, papers_with_abstract_text)
+#web_pages.build_htmlv2.build_abstract_word_cloud(papers, papers_with_abstract_text)
 web_pages.build_htmlv2.build_institute_map(papers)
 web_pages.build_htmlv2.build_author_network(papers, network)
 web_pages.build_htmlv2.build_help()
@@ -163,7 +162,6 @@ if config.network_create_networks:
 # Time Log
 end_time = time.time()
 elapsed_time = end_time - start_time
-# elapsed_time_string = str(int(elapsed_time) / 60) + ":" + str(int(elapsed_time) % 60).zfill(2)
 print('End Time: ' + str(end_time))
 print('Elapsed Time (H:mm:ss) - ' + str(datetime.timedelta(seconds=elapsed_time)))
 
