@@ -1,8 +1,3 @@
-# import papersZotero as pz
-# import papersCache as pc
-# import getDoi as pd
-# import getPubmed as pm
-# import getScopus as ps
 from . import papersZotero as pz
 from . import papersCache as pc
 from . import getDoi as pd

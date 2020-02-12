@@ -1,5 +1,4 @@
 import logging
-# import papersCache as pc
 from . import papersCache as pc
 import config.config as config
 
@@ -12,18 +11,24 @@ from Bio import Entrez
 # store as json in cache (raw/pubmed)
 # return data processed from xml (json-type)
 def getPubmed(this_pmid):
-    logging.info('Working on %s', this_pmid)
+    logging.info('PMID: Working on %s', this_pmid)
 
-    logging.info('Downloading %s', this_pmid)
+    logging.info('PMID: Downloading %s', this_pmid)
     Entrez.email = config.pubmed_email     # Always tell NCBI who you are
 
-    # Look at the PubModel. See http://www.nlm.nih.gov/bsd/licensee/elements_article_source.html
-    # override_pubmodel = False
-    handle = Entrez.efetch(db="pubmed", id=this_pmid, retmode="xml")
+    # Try to get the data from pubmed
+    try:
+        # Look at the PubModel. See http://www.nlm.nih.gov/bsd/licensee/elements_article_source.html
+        # override_pubmodel = False
+        handle = Entrez.efetch(db="pubmed", id=this_pmid, retmode="xml")
 
-    pmid_xml_data = handle.read()
+        pmid_xml_data = handle.read()
 
-    xml_file_loc = pc.dumpFile(this_pmid+'.xml', pmid_xml_data, 'raw/pubmed/xml')
+        xml_file_loc = pc.dumpFile(this_pmid+'.xml', pmid_xml_data, 'raw/pubmed/xml')
+    except:
+        logging.warn("PMID download timed out for %s", this_pmid)
+        print("PMID download timed out for %s", this_pmid)
+        return None
 
     try:
         xml_file = open(xml_file_loc, 'r')
