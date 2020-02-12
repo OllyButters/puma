@@ -11,7 +11,7 @@ from os import listdir
 # check if the 'wordnet' corpora for nltk is installed
 # if not, download it
 if 'wordnet' not in listdir(nltk.data.find('corpora')):
-  nltk.download('wordnet')
+    nltk.download('wordnet')
 
 ############################################################
 # Have all the data now, so do something with it
@@ -77,8 +77,6 @@ def word_frequencies(papers, item):
         except:
             this_year = '0'
 
-        # print('this year = ' + str(this_year))
-
         # Increment the number of papers this year, or if we don't have one yet
         # initialize it to ONE!
         try:
@@ -99,19 +97,20 @@ def word_frequencies(papers, item):
             # Remove punctuation and esacpe characters that will cause a problem
             text = text.lower()
             text = text.replace("u'", "")
-            text = text.replace("'", "")
             text = text.replace("{", "")
             text = text.replace("}", "")
-            text = text.replace(",", " ")
-            text = text.replace(".", " ")
-            text = text.replace(":", " ")
-            text = text.replace(";", " ")
-            text = text.replace("'", "\'")
-            text = text.replace('"', ' ')
             text = text.replace('[', ' ')
             text = text.replace(']', ' ')
             text = text.replace("(", "")
             text = text.replace(")", "")
+            text = text.replace(",", " ")
+            text = text.replace(".", " ")
+            text = text.replace(":", " ")
+            text = text.replace(";", " ")
+            text = text.replace("'", "")
+            text = text.replace('"', ' ')
+            text = text.replace("?", "")
+            text = text.replace("!", "")
 
             # Might want to dump numbers?
 
@@ -135,8 +134,6 @@ def word_frequencies(papers, item):
             temp = text.split()
             all_words.extend(temp)
             all_words_by_year[this_year].extend(temp)
-            # all_words_by_year[this_year].extend(text.split())
-            # all_words.extend(text.split())
             data_from_count += 1
         except:
             pass
