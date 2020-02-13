@@ -540,6 +540,7 @@ def clean_institution(papers):
             this_paper['clean']['location'] = {}
 
         hasAffiliation = False
+
         #####
         # PubMed and DOI from first
         if not hasAffiliation:
