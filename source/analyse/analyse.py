@@ -162,10 +162,8 @@ def word_frequencies(papers, item):
                         keep_words.append(this_word)
                     else:
                         logging.debug("Removing: " + str(this_word))
-                        print("Removing: " + str(this_word))
                 else:
                     logging.debug("Removing: " + str(this_word))
-                    print("Removing: " + str(this_word))
 
             logging.debug("Keeping: " + str(keep_words))
             all_words.extend(keep_words)
