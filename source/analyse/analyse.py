@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import nltk
 from os import listdir
+import re
 
 # check if the 'wordnet' corpora for nltk is installed
 # if not, download it
@@ -67,9 +68,7 @@ def word_frequencies(papers, item):
     stop_lines = tuple(open(config.config_dir + "/stopwords", "r"))
     stop_words = []
     for line in stop_lines:
-        split = line.split()
-        if len(split) > 0 and split[0] != "|" and "|" not in split[0]:
-            stop_words.append(split[0])
+        stop_words.append(line.strip())
 
     logging.debug(stop_words)
     print(stop_words)
@@ -109,23 +108,21 @@ def word_frequencies(papers, item):
 
             # Remove punctuation and esacpe characters that will cause a problem
             text = text.lower()
-            text = text.replace("u'", "")
-            text = text.replace("{", "")
-            text = text.replace("}", "")
-            text = text.replace('[', ' ')
-            text = text.replace(']', ' ')
-            text = text.replace("(", "")
-            text = text.replace(")", "")
-            text = text.replace(",", " ")
-            text = text.replace(".", " ")
-            text = text.replace(":", " ")
-            text = text.replace(";", " ")
-            text = text.replace("'", "")
-            text = text.replace('"', ' ')
-            text = text.replace("?", "")
-            text = text.replace("!", "")
-
-            # Might want to dump numbers?
+            text = text.replace("u'", '')
+            text = text.replace('{', '')
+            text = text.replace('}', '')
+            text = text.replace('[', '')
+            text = text.replace(']', '')
+            text = text.replace('(', '')
+            text = text.replace(')', '')
+            text = text.replace(',', '')
+            text = text.replace('.', '')
+            text = text.replace(':', '')
+            text = text.replace(';', '')
+            text = text.replace("'", '')
+            text = text.replace('"', '')
+            text = text.replace('?', '')
+            text = text.replace('!', '')
 
             # The MeSH terms have things like major, and minor in them.
             if item == 'keywords':
@@ -141,28 +138,42 @@ def word_frequencies(papers, item):
             text = text.replace('avon longitudinal study of pregnancy and childbirth', '')
             text = text.replace('avon longitudinal study of pregnancy and childhood', '')
             text = text.replace('avon longitudinal study of parents and children', '')
+            text = text.replace('children of the nineties', '')
             text = text.replace('1958 birth cohort', '')
             text = text.replace('ncds', '')
             text = text.replace('national child development survey', '')
 
             # split the text up for this paper using spaces
             temp_words = text.split()
-            logging.debug(temp_words)
+            logging.debug("\nInitial words: " + str(temp_words))
 
-            # Only keep the word if it is not in the stop words file
+            # Only keep the word if it is just a word (i.e. not numbers or symbols)
+            # and its not in the stop words file
             keep_words = []
             for this_word in temp_words:
-                if this_word not in stop_words:
-                    keep_words.append(this_word)
+                # Do a regex to make sure it uses a-z'-
+                if re.search("^[a-z'-]+$", this_word):
+                    # Note that the output of lemmatizing may make a new word
+                    # that is in the stopwords, but as that is run later
+                    # it will not be removed. i.e. if you think this isn't
+                    # working it is likely because the word is being added
+                    # later on.
+                    if this_word not in stop_words:
+                        keep_words.append(this_word)
+                    else:
+                        logging.debug("Removing: " + str(this_word))
+                        print("Removing: " + str(this_word))
                 else:
-                    logging.debug(this_word)
-                    print("removing " + this_word)
+                    logging.debug("Removing: " + str(this_word))
+                    print("Removing: " + str(this_word))
 
-            logging.debug(keep_words)
+            logging.debug("Keeping: " + str(keep_words))
             all_words.extend(keep_words)
             all_words_by_year[this_year].extend(keep_words)
             data_from_count += 1
-        except:
+        except Exception as e:
+            logging.debug(e)
+            print(e)
             pass
 
     print('all words (by year)')
