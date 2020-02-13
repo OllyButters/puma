@@ -3,11 +3,11 @@
 import csv
 import config.config as config
 from nltk.stem import WordNetLemmatizer
+import logging
 import numpy as np
 import pandas as pd
 import nltk
 from os import listdir
-import re
 
 # check if the 'wordnet' corpora for nltk is installed
 # if not, download it
@@ -61,10 +61,8 @@ def journals(papers):
 #   the number of papers published that year
 ############################################################
 def word_frequencies(papers, item):
-    print("\n###" + item + "###")
+    print("\n### Doing word frequency on: " + item + "###")
 
-
-    # = Remove stop words from the list of all words =
     # Read stop words from file
     stop_lines = tuple(open(config.config_dir + "/stopwords", "r"))
     stop_words = []
@@ -73,9 +71,9 @@ def word_frequencies(papers, item):
         if len(split) > 0 and split[0] != "|" and "|" not in split[0]:
             stop_words.append(split[0])
 
+    logging.debug(stop_words)
     print(stop_words)
     # exit(0)
-
 
     # initialize lemmatizer
     lemmatizer = WordNetLemmatizer()
@@ -136,7 +134,9 @@ def word_frequencies(papers, item):
                 text = text.replace('minor', '')
                 text = text.replace('term', '')
 
-            # Get rid of the names of the studies. This should be in a config file REALLY.
+            # Get rid of the names of the studies. This is done at this stage
+            # as the whole string needs to be deleted, not individual words in itself.
+            # This should be in a config file.
             text = text.replace('alspac', '')
             text = text.replace('avon longitudinal study of pregnancy and childbirth', '')
             text = text.replace('avon longitudinal study of pregnancy and childhood', '')
@@ -145,25 +145,20 @@ def word_frequencies(papers, item):
             text = text.replace('ncds', '')
             text = text.replace('national child development survey', '')
 
-            # Remove stop words
-            # for this_stop_word in stop_words:
-            #    text = text.replace(str(this_stop_word), '')
-                # text = text.replace('the', '')
-                # text = re.sub(this_stop_word, '', text)
-
-            # split the text up for this paper using space
+            # split the text up for this paper using spaces
             temp_words = text.split()
+            logging.debug(temp_words)
+
+            # Only keep the word if it is not in the stop words file
             keep_words = []
-            print("########################")
-            print(temp_words)
             for this_word in temp_words:
                 if this_word not in stop_words:
                     keep_words.append(this_word)
                 else:
+                    logging.debug(this_word)
                     print("removing " + this_word)
-            print(keep_words)
-            print("########################")
 
+            logging.debug(keep_words)
             all_words.extend(keep_words)
             all_words_by_year[this_year].extend(keep_words)
             data_from_count += 1
@@ -178,15 +173,6 @@ def word_frequencies(papers, item):
     # should always return real words.
     lemmatized_all_words = []
     lemmatized_all_words_by_year = {}
-
-
-    # TEMP OUTPUT TO SEE WHAT LEMMATIZER DOING
-    with open(config.data_dir + '/' + item + '_lemmy_lookup.csv', 'w') as csvfile:
-        output_file = csv.writer(csvfile)
-        for this_word in all_words:
-            temp = lemmatizer.lemmatize(this_word)
-            output_file.writerow([this_word, temp])
-
 
     for this_word in all_words:
         lemmatized_all_words.append(lemmatizer.lemmatize(this_word))
@@ -215,20 +201,6 @@ def word_frequencies(papers, item):
     lemmatized_freq_by_year = {}
     for this_year in all_words_by_year:
         lemmatized_freq_by_year[this_year] = dict((x, lemmatized_all_words_by_year[this_year].count(x)) for x in set(lemmatized_all_words_by_year[this_year]))
-
-    # = Remove stop words from the list of all words =
-    # Read stop words from file
-#    stop_lines = tuple(open(config.config_dir + "/stopwords", "r"))
-#    stop_words = []
-#    for line in stop_lines:
-#        split = line.split()
-#        if len(split) > 0 and split[0] != "|" and "|" not in split[0]:
-#            stop_words.append(split[0])
-
-    # Remove stop words
-#    for stp in stop_words:
-#        raw_freq.pop(stp, None)
-#        lemmatized_freq.pop(stp, None)
 
     i = 0
     print('Top 5')
