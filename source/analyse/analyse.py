@@ -70,9 +70,8 @@ def word_frequencies(papers, item):
     for line in stop_lines:
         stop_words.append(line.strip())
 
+    logging.debug('Stop words:')
     logging.debug(stop_words)
-    print(stop_words)
-    # exit(0)
 
     # initialize lemmatizer
     lemmatizer = WordNetLemmatizer()
@@ -103,8 +102,12 @@ def word_frequencies(papers, item):
             all_words_by_year[this_year] = []
 
         try:
-            # Get item text - this will be a long string of words
-            text = str(this_paper['clean'][item])
+            try:
+                # Get item text - this will be a long string of words
+                text = str(this_paper['clean'][item])
+            except:
+                logging.debug('No ' + item + ' text for this paper.')
+                continue
 
             # Remove punctuation and esacpe characters that will cause a problem
             text = text.lower()
@@ -145,7 +148,8 @@ def word_frequencies(papers, item):
 
             # split the text up for this paper using spaces
             temp_words = text.split()
-            logging.debug("\nInitial words: " + str(temp_words))
+            logging.debug('\n')
+            logging.debug("Initial words: " + str(temp_words))
 
             # Only keep the word if it is just a word (i.e. not numbers or symbols)
             # and its not in the stop words file
@@ -170,13 +174,12 @@ def word_frequencies(papers, item):
             all_words_by_year[this_year].extend(keep_words)
             data_from_count += 1
         except Exception as e:
-            logging.debug(e)
-            print(e)
+            logging.error('Uncaught error in word_frequencies: ' + str(e))
+            print('Uncaught error in word_frequencies: ' + str(e))
             pass
 
-    print('all words (by year)')
-    print(len(all_words))
-    print(len(all_words_by_year))
+    print('Total number of ' + item + ' words to keep: ' + str(len(all_words)))
+    logging.debug('Total number of ' + item + ' words to keep: ' + str(len(all_words)))
 
     # Parse all_words through a lemmatizer. This is like finding the stem, but
     # should always return real words.
@@ -211,17 +214,14 @@ def word_frequencies(papers, item):
     for this_year in all_words_by_year:
         lemmatized_freq_by_year[this_year] = dict((x, lemmatized_all_words_by_year[this_year].count(x)) for x in set(lemmatized_all_words_by_year[this_year]))
 
-    i = 0
-    print('Top 5')
-
-    # Output the RAW data to file and print the top 5 to screen.
+    # Output the RAW data to file.
     with open(config.data_dir + '/' + item + '_raw.csv', 'w') as csvfile:
         output_file = csv.writer(csvfile)
         for w in sorted(raw_freq, key=raw_freq.get, reverse=True):
-            if i < 5:
-                print(w, raw_freq[w])
-                i = i+1
             output_file.writerow([w, raw_freq[w]])
+
+    i = 0
+    print('Top 5 Lemmatized words:')
 
     # Output the LEMMATIZED data to file and print the top 5 to screen.
     with open(config.data_dir + '/' + item + '_lemmatized.csv', 'w') as csvfile:
@@ -257,8 +257,7 @@ def word_frequencies(papers, item):
     # Make a zero filled array
     len_years = int(len(set(all_years)))
     len_words = int(len(set(lemmatized_all_words)))
-    print('years= ' + str(len_years))
-    print('words= ' + str(len_words))
+    print('Unique Lemmatized words: ' + str(len_words))
     A = np.zeros(len_years * len_words, dtype=int).reshape(len_words, len_years)
 
     # Make the DataFrame of the zeroes

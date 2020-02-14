@@ -10,7 +10,7 @@ import shutil
 ################################################################################
 def coverage_report(papers):
 
-    print('Building coverage report')
+    print('\n### Building coverage report ###')
 
     cov_css = '''
                 .missing_required {background-color: red;}

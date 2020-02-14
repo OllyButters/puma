@@ -48,7 +48,7 @@ def geocode(papers):
         # If there is no clean_institute then there really is no point trying this one.
         try:
             clean_institute = this_paper['clean']['location']['clean_institute']
-            print("\n" + clean_institute)
+            logging.info(clean_institute)
         except:
             logging.warn('No clean_institute for ' + this_paper['IDs']['hash'])
             continue
@@ -70,7 +70,6 @@ def geocode(papers):
                 this_paper['clean']['location']['postal_town'] = split[3]
 
                 locations_found += 1
-                print("Added via cache.")
                 logging.info("Added via cache file.")
                 continue
 

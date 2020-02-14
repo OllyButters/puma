@@ -884,15 +884,12 @@ def build_google_map(papers):
         except:
             pass
 
-    # print info
-
     kml = "var locations =["
     for this_info in info:
         kml += '["' + this_info['name'] + '",' + str(this_info['lat']) + ',' + str(this_info['long']) + '],'
     kml += ']'
 
     kml_file = codecs.open(config.html_dir + '/map/map.kml', 'w', 'utf-8')
-    # print >>kml_file, kml
     kml_file.write(kml)
 
     html_file = open(config.html_dir + '/map/index.html', 'w')
@@ -912,7 +909,6 @@ def build_google_map(papers):
     temp += '<script type="text/javascript" src="map.js"></script>'
 
     shutil.copyfile(config.template_dir + '/map.js', config.html_dir + '/map/map.js')
-    # shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/map/loading.gif')
     shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/css/map.css')
 
     temp += '</head>'
@@ -924,11 +920,9 @@ def build_google_map(papers):
     temp += "<div id='map_canvas'></div>"
     temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
 
-    # print >>html_file, temp
     html_file.write(temp)
 
     temp = build_common_foot()
-    # print >>html_file, temp
     html_file.write(temp)
 
 
@@ -954,7 +948,6 @@ def build_country_map(papers, api_key):
 
     country_string = ""
     for country in list(countries.keys()):
-        # country_string += ",['" + country + "'," + str(countries[country]) + "]"
         country_string += ',["' + country + '",' + str(countries[country]) + ']'
 
     html_file = open(config.html_dir + '/country/index.html', 'w')
@@ -985,11 +978,9 @@ def build_country_map(papers, api_key):
     temp += '<div id="regions_div" style="width: 900px; height: 500px;"><img src="loading.gif" alt="Loading"></div>'
     temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
 
-    # print >>html_file, temp
     html_file.write(temp)
 
     temp = build_common_foot()
-    # print >>html_file, temp
     html_file.write(temp)
 
 
@@ -1018,7 +1009,6 @@ def build_institute_map(papers):
 
     institute_string = ""
     for this_institute in list(institutes.keys()):
-        print(this_institute)
         # note that we encode as ascii with 'ignore' set so all non-ascii
         # chars are removed. this is then decoded back into utf-8
         institute_string += ',[' + institutes[this_institute]['lat'] + ',' + institutes[this_institute]['lon'] + ',"' + str(this_institute.encode('ascii', 'ignore').decode('ascii')) + '",' + str(institutes[this_institute]['count']) + ']'
@@ -1301,11 +1291,9 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
         temp += '<div id="papers_per_high_citation_count_div"></div>'
         temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
 
-    # print >>html_file, temp
     html_file.write(temp)
 
     temp = build_common_foot()
-    # print >>html_file, temp
     html_file.write(temp)
 
 
@@ -1347,11 +1335,9 @@ def build_word_cloud(papers, list, data_from_count):
 
     temp += '<script src="d3wordcloud.js"></script>'
 
-    # print >>html_file, temp
     html_file.write(temp)
 
     temp = build_common_foot()
-    # print >>html_file, temp
     html_file.write(temp)
 
 
@@ -1386,7 +1372,6 @@ def build_abstract_word_cloud(papers, data_from_count):
 
     list += "];"
     list_file = open(config.html_dir + '/abstractwordcloud/list.js', 'w')
-    # print >>list_file, " var word_list = " + list
     list_file.write(" var word_list = " + list)
 
     html_file = open(config.html_dir + '/abstractwordcloud/index.html', 'w')
@@ -1421,11 +1406,9 @@ def build_abstract_word_cloud(papers, data_from_count):
     temp += '<script src="d3wordcloud.js"></script>'
     temp += "<p>Data from " + intWithCommas(data_from_count) + " publications</p>"
 
-    # print >>html_file, temp
     html_file.write(temp)
 
     temp = build_common_foot()
-    # print >>html_file, temp
     html_file.write(temp)
 
 
@@ -1452,22 +1435,18 @@ def build_author_network(papers, network):
     net_json = '{'
     net_json += '"nodes":['
     n = 0
-    # print >>net_file, net_json
     net_file.write(net_json)
 
     for author in network['authors']:
-        # print network['authors'][author]
         net_json = ""
         if n > 0:
             net_json += ","
         net_json += '{"id": "' + network['authors'][author]['clean'] + '", "group":1}'
 
-        # print >>net_file, net_json
         net_file.write(net_json)
         n += 1
 
     net_json = '],"links": ['
-    # print >>net_file, net_json
     net_file.write(net_json)
 
     n = 0
@@ -1526,19 +1505,16 @@ def build_author_network(papers, network):
     # Print nodes to csv
     nodes_csv = open(config.html_dir + '/authornetwork/nodes.csv', 'w')
 
-    # print >>nodes_csv, 'id,Label'
     nodes_csv.write('id,Label')
     n = 0
 
     for author in network['authors']:
-        # print >>nodes_csv, author + "," + network['authors'][author]['clean']
         nodes_csv.write(author + "," + network['authors'][author]['clean'])
         n += 1
 
     # Print conections to csv
     connections_csv = open(config.html_dir + '/authornetwork/connections.csv', 'w')
 
-    # print >>connections_csv, 'Source,Target'
     connections_csv.write('Source,Target')
 
     n = 0
@@ -1550,7 +1526,6 @@ def build_author_network(papers, network):
 
             n_con = network['connections'][con]['num_connections']/2
 
-            # print >>connections_csv, '"' + author_0 + '","' + author_1 + '"'
             connections_csv.write('"' + author_0 + '","' + author_1 + '"')
 
         except:
@@ -1561,11 +1536,9 @@ def build_author_network(papers, network):
     temp += '<p style="display:none;" id="no_network">No Author Network Image.</p>'
     temp += "<script>var xmlhttp = new XMLHttpRequest();xmlhttp.onreadystatechange = function() {if (xmlhttp.readyState == 4 && xmlhttp.status == 404) {document.getElementById('network').style.display = 'none';document.getElementById('no_network').style.display = 'block';}};xmlhttp.open('GET', 'author_network.png', true);xmlhttp.send();</script>"
 
-    # print >>html_file, temp
     html_file.write(temp)
 
     temp = build_common_foot()
-    # print >>html_file, temp
     html_file.write(temp)
 
 
@@ -1621,11 +1594,9 @@ def build_help():
     temp += '<li>This project has been funded by: <ul><li>CLOSER, whose mission is to maximise the use, value and impact of longitudinal studies. CLOSER is funded by the Economic and Social Research Council (ESRC) and Medical Research Council (MRC) (grant reference: ES/K000357/1).</li><li>Becca Wilson is a UKRI Innovation Fellow with HDR UK [MR/S003959/1].</li><li>We have also had funding by the Nuffield Foundation research placement program.</li></ul></li>'
     temp += '</li>'
 
-    # print >>html_file, temp
     html_file.write(temp)
 
     temp = build_common_foot()
-    # print >>html_file, temp
     html_file.write(temp)
 
 
@@ -1704,11 +1675,9 @@ def build_search(papers):
 
     temp += '<script id="search_data">var papers = ' + str(json.dumps(searchable_data)).replace("<", "&lt;").replace(">", "&gt;") + ';</script>'
 
-    # print >>html_file, temp
     html_file.write(temp)
 
     temp = build_common_foot()
-    # print >>html_file, temp
     html_file.write(temp)
 
 
@@ -1783,5 +1752,4 @@ def build_css_colour_scheme():
     temp += "a:link {color:#" + config.project_details['colour_hex_primary'] + "}"
     temp += "a:visited {color:#" + config.project_details['colour_hex_primary'] + "}"
 
-    # print >>html_file, temp
     html_file.write(temp)
