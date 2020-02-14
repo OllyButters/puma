@@ -77,6 +77,7 @@ def collate():
           'DOI': '',
           'DOI_filename': '',
           'PMID': '',
+          'scopus': '',
           'hash': '',
         }
 
@@ -164,6 +165,12 @@ def collate():
             else:
                 print('Scopus: Getting from cache.')
                 this_merged_paper['raw']['scopus_data'] = pc.getCacheData(filetype='/raw/scopus', filenames=scopus_cache_filename)[scopus_cache_filename]
+
+            try:
+                # Lets grab the scopus ID while we are here
+                this_merged_paper['IDs']['scopus'] = this_merged_paper['raw']['scopus_data']['search-results']['entry'][0]['eid']
+            except:
+                pass
 
         # May as well just write out the whole merged file everytime.
         merged_filename = this_merged_paper['IDs']['zotero'] + '.merged'

@@ -722,7 +722,6 @@ def clean_citations_scopus(this_paper):
     # Do i really need this?
     this_paper['clean']['citations'] = {}
     this_paper['clean']['citations']['scopus'] = {}
-    this_paper['clean']['citations']['PMC'] = {}
 
     try:
         # sometimes this returns multiple entries e.g. 22935244
@@ -733,9 +732,6 @@ def clean_citations_scopus(this_paper):
         if len(this_paper['raw']['scopus_data']['search-results']['entry']) == 1:
             this_paper['clean']['citations']['scopus']['count'] = this_paper['raw']['scopus_data']['search-results']['entry'][0]['citedby-count']
             logging.info('Citation added.')
-
-            # Lets grab the scopus ID while we are here
-            this_paper['IDs']['scopus'] = this_paper['raw']['scopus_data']['search-results']['entry'][0]['eid']
             return True
 
         if len(this_paper['raw']['scopus_data']['search-results']['entry']) == 0:

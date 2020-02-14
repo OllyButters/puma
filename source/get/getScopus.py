@@ -5,7 +5,6 @@ import json
 import logging
 
 import config.config as config
-# import papersCache as pc
 from . import papersCache as pc
 
 
