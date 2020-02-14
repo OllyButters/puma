@@ -152,7 +152,7 @@ def coverage_report(papers):
         try:
             title = this_paper['clean']['title']
             if title != '':
-                ascii_title = this_paper['clean']['title'].encode("ascii", "ignore")
+                ascii_title = this_paper['clean']['title']
                 cov_html += '<td><a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=' + ascii_title + '" target="_blank">Do lookup</a></td>'
             else:
                 raise Exception()
@@ -525,11 +525,14 @@ def coverage_report(papers):
     # Title
     title = '<h1>' + config.project_details['short_name'] + '</h1>'
 
+    # Key
+    key = '<table><tr><td class="missing_good_to_have">&nbsp;</td><td>Missing</td></tr><tr><td class="missing_required">&nbsp;</td><td>Required</td></tr></table>'
+
     scripts = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>'
     scripts += '<script type="text/javascript" src="jquery.tablesorter.js"></script>'
     scripts += "<script>$(function(){$('table').tablesorter({widgets        : ['zebra', 'columns'],usNumberFormat : false,sortReset      : true,sortRestart    : true});});</script>"
 
-    output_text = '<html><head><style>' + cov_css + '</style>' + scripts + '</head><body>' + title + status_table + '\n<br/><br/>' + cov_html + '</body></html>'
+    output_text = '<html><head><style>' + cov_css + '</style>' + scripts + '</head><body>' + title + status_table + key + '\n<br/><br/>' + cov_html + '</body></html>'
     coverage_file = open(config.html_dir + '/coverage_report.html', 'w')
     coverage_file.write(output_text)
 

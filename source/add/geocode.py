@@ -117,7 +117,7 @@ def geocode(papers):
             logging.debug(query)
 
             try:
-                sparql = SPARQLWrapper(url, agent="PUMA/0.1 (https://github.com/OllyButters/puma) Python2/SPARQLWrapper")
+                sparql = SPARQLWrapper(url, agent="PUMA/0.1 (https://github.com/OllyButters/puma) Python3/SPARQLWrapper")
                 sparql.setQuery(query)
                 sparql.setReturnFormat(JSON)
                 data = sparql.query().convert()
@@ -144,8 +144,8 @@ def geocode(papers):
                         this_paper['clean']['location']['latitude'] = data['results']['bindings'][0]['hqLat']['value']
                         this_paper['clean']['location']['longitude'] = data['results']['bindings'][0]['hqLon']['value']
                     except:
-                        logging.info("No suitable coordinates found from wikidata.")
-                        print("No suitable coordinates found from wikidata.")
+                        logging.info("No suitable coordinates found from wikidata. (" + clean_institute + ")")
+                        print("No suitable coordinates found from wikidata. (" + clean_institute + ")")
 
                 try:
                     print(this_paper['clean']['location']['country'])
