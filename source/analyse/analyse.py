@@ -12,7 +12,9 @@ import re
 
 # check if the 'wordnet' corpora for nltk is installed
 # if not, download it
-if 'wordnet' not in listdir(nltk.data.find('corpora')):
+try:
+    nltk.data.find('corpora/wordnet')
+except:
     nltk.download('wordnet')
 
 ############################################################

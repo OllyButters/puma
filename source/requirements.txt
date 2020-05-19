@@ -1,0 +1,7 @@
+biopython
+jsonpath_rw
+nltk
+numpy
+pandas
+pyzotero
+SPARQLWrapper
