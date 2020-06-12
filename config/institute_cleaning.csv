@@ -21,6 +21,7 @@ cardiff.ac,Cardiff University
 chop.edu,The Children's Hospital of Philadelphia
 city.ac.uk,"City, University of London"
 cmuh.org.tw,China Medical University Hospital
+durham.ac.uk,Durham University
 dartmouth.edu,Dartmouth College
 ex.ac.uk,University of Essex
 ehesp.fr,"EHESP"
@@ -34,6 +35,7 @@ harvard.edu,Harvard University
 helmholtz-muenchen.de,Helmholtz Zentrum München
 helmholtzmuenchen.de,Helmholtz Zentrum München
 hitachi.com,Hitachi
+hua.gr,Harokopio University of Athens
 iarc.fr,International Agency for Research on Cancer
 idc.ac.il,Interdisciplinary Center Herzliya
 inserm.fr,Centre for research in epidemiology and population health
@@ -98,7 +100,7 @@ washington.edu,University of Washington
 wisc.edu,University of Wisconsin
 vumc.nl,VU University Medical Center
 wfubmc.edu,Wake Forest University
-wustl.edu,Washington University in St. Louis
+wustl.edu,Washington University in Saint Louis
 ,
 ,
 ################################################################################################,
@@ -129,7 +131,8 @@ Coventry University,Coventry University
 #D,
 DeMontfort University,De Montfort University
 University of Dundee,University of Dundee
-University of Durham,University of Durham
+University of Durham,Durham University
+Durham University,Durham University 
 #E,
 University of Edinburgh,University of Edinburgh
 University of Essex,University of Essex
@@ -552,7 +555,7 @@ Vanda Pharmaceuticals Inc,Vanda Pharmaceuticals Inc.
 University of Victoria,University of Victoria
 Virginia Commonwealth University,Virginia Commonwealth University
 University of Virginia,University of Virginia
-VU University,Vrije Universiteit
+VU University,Vrije Universiteit Amsterdam
 #W,
 University of Washington,University of Washington
 Medical University of Warsaw,Medical University of Warsaw
