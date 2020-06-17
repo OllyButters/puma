@@ -365,7 +365,7 @@ def clean_author_list(this_paper):
                     pass
 
             # now go through authors and clean name then append to clean full_author_list
-            # Some pmid files dont actually have an authorlist e.g. 2587412
+            # Some pmid files don't actually have an authorlist e.g. 2587412
             try:
                 for this_author in authors:
                     # There are some entries in the author list that are not actually authors e.g. 21379325 last author
@@ -469,7 +469,7 @@ def clean_author_list(this_paper):
 
 ################################################################################
 # The clean first author is not necessarily the first one in the clean author list
-# it could have come from the zotero field clean_first_author, but that doesnt
+# it could have come from the zotero field clean_first_author, but that doesn't
 # make sense to put in the list as it implies an author list of one which is
 # probably not true.
 ################################################################################
@@ -513,11 +513,7 @@ def clean_institution(papers):
                 if row[0] == '':
                     continue
 
-                # Retype both to unicode, this will parse any \u1234 bits to their
-                # actual unicode.
                 # Make pattern lowercase so it matches better.
-                # pattern.append(unicode(row[0]).lower())
-                # replacements.append(unicode(row[1]))
                 pattern.append(str(row[0]).lower())
                 replacements.append(str(row[1]))
             except Exception as e:
@@ -549,7 +545,7 @@ def clean_institution(papers):
                 if candidate_institute != '':
                     hasAffiliation = True
             except:
-                logging.info('No affil from PubMed for %s', this_paper['IDs']['zotero'])
+                logging.info('No affiliation from PubMed for %s', this_paper['IDs']['zotero'])
 
         #####
         # Try scopus
@@ -559,7 +555,7 @@ def clean_institution(papers):
                 if candidate_institute != '':
                     hasAffiliation = True
             except:
-                logging.info('No affil from Scopus for %s', this_paper['IDs']['zotero'])
+                logging.info('No affiliation from Scopus for %s', this_paper['IDs']['zotero'])
 
         #####
         # Try zotero
@@ -570,17 +566,18 @@ def clean_institution(papers):
                 candidate_institute = this_paper['clean']['zotero_data']['extra']['clean_institute']
                 hasAffiliation = True
             except:
-                logging.info('No affil from zotero for %s', this_paper['IDs']['zotero'])
+                logging.info('No affiliation from zotero for %s', this_paper['IDs']['zotero'])
 
+        #####
+        # Lookup our candidate_institute in the 
         if hasAffiliation and candidate_institute != '':
-            # Let's keep our candidate institite
+            # Let's keep our candidate institute_cleaning file.
             this_paper['clean']['location']['candidate_institute'] = candidate_institute
 
             for y in range(0, len(pattern)):
                 # logging.debug('%s %s %s', institute, pattern[y], replacements[y])
 
-                # Check pattern in institite. These are both unicode and lowercase
-                # temp = pattern[y] in unicode(candidate_institute).lower()
+                # Check pattern in institute. These are both lowercase
                 temp = pattern[y] in str(candidate_institute).lower()
                 if temp > 0:
                     logging.info(
@@ -630,7 +627,7 @@ def clean_journal(this_paper):
             except:
                 pass
 
-        # Try DOI if PMID didnt work
+        # Try DOI if PMID didn't work
         except:
             try:
                 candidate_journal = this_paper['raw']['doi_data']['container-title']
@@ -735,7 +732,7 @@ def clean_citations_scopus(this_paper):
             return True
 
         if len(this_paper['raw']['scopus_data']['search-results']['entry']) == 0:
-            logging.warn("0 citatons counts found!")
+            logging.warn("0 citations counts found!")
             return False
     except:
         pass

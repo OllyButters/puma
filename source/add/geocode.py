@@ -54,7 +54,7 @@ def geocode(papers):
             continue
 
         # Check if the location data is already cached.
-        # Each cached location is held in a seperate file
+        # Each cached location is held in a separate file
         try:
             clean_institute = this_paper['clean']['location']['clean_institute']
             logging.info(str(this_paper['IDs']['hash']) + " geocode: " + clean_institute)
