@@ -7,7 +7,6 @@ import logging
 import numpy as np
 import pandas as pd
 import nltk
-from os import listdir
 import re
 
 # check if the 'wordnet' corpora for nltk is installed
@@ -22,9 +21,10 @@ except:
 ############################################################
 
 
-################################################################################
+############################################################
 # Build a list of all journals and count frequencies of each.
 # output this to a csv file so it can be analysed by someone else.
+############################################################
 def journals(papers):
     print("\n###Journals###")
 
@@ -111,7 +111,7 @@ def word_frequencies(papers, item):
                 logging.debug('No ' + item + ' text for this paper.')
                 continue
 
-            # Remove punctuation and esacpe characters that will cause a problem
+            # Remove punctuation and escape characters that will cause a problem
             text = text.lower()
             text = text.replace("u'", '')
             text = text.replace('{', '')
@@ -300,7 +300,7 @@ def word_frequencies(papers, item):
 
 
 ############################################################
-# Try with the authors - these are in a nested dict
+# Calculate frequency of all authors and output to file
 ############################################################
 def authors(papers):
 
@@ -395,7 +395,7 @@ def authors(papers):
 
 
 ############################################################
-# Try with the FIRST authors - these are in a nested dict
+# Calculate frequency of first authors and output to file
 ############################################################
 def first_authors(papers):
 
@@ -427,7 +427,7 @@ def first_authors(papers):
 
 
 ############################################################
-# Try with the FIRST authors INSTITUTE- these are in a nested dict
+# Calculate frequency of first authors' institutes and output to file
 ############################################################
 def inst(papers):
     num_papers = len(papers)
@@ -459,7 +459,7 @@ def inst(papers):
 
 
 ############################################################
-# Try with the mesh headings - these are in a nested dict
+# Calculate frequency of all mesh and output to file
 ############################################################
 def mesh(papers):
     num_papers = len(papers)
@@ -498,7 +498,7 @@ def mesh(papers):
 
 
 ################################################################################
-# output a csv file with some info in
+# output a csv file with some general info in
 ################################################################################
 def output_csv(papers):
 

@@ -35,6 +35,10 @@ __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
 __date__ = 12/2/20
 __version__ = '0.14.0'
 
+# Time Log
+start_time = time.time()
+print('Start Time: ' + str(datetime.datetime.now().strftime("%H:%M")))
+
 # Lets figure out some paths that everything is relative to
 # global root_dir
 path_to_papers_py = os.path.abspath(sys.argv[0])
@@ -51,11 +55,7 @@ setup.clean_old_scopus_cache_file()
 # Build the file tree relative to the root_dir
 setup.build_file_tree()
 
-# Time Log
-start_time = time.time()
-print('Start Time: ' + str(datetime.datetime.now().strftime("%H:%M")))
-
-# Set up the logging. Level can be DEBUG|.....
+# Set up the logging. Level is set in config and can be DEBUG, INFO, WARNING, ERROR, CRITICAL.
 log_file = root_dir + '/logs/'+config.project_details['short_name']+'.log'
 logging.basicConfig(filename=log_file,
                     filemode='w',
@@ -70,13 +70,14 @@ logging.info('Started at: ' + str(datetime.datetime.now().strftime("%H:%M")))
 
 
 ###########################################################
-# Get the papers. This will get all the metadata and store
-# it in a cache directory.
-# papers will be the giant LIST that has all the papers in it, each as a dictionary
-papers = []
-
-# Collate does not do anything with the papers object.
+# Get the metadata from external sources. This will store the raw metadata
+# in a cache directory and the raw/merged metadata in the merged directory.
 get.simple_collate.collate()
+
+
+# Now read in all the cached merged metadata.
+# 'papers' will be the giant LIST that has all the papers in it, each as a dictionary.
+papers = []
 
 # Get list of files in merged directory
 merged_files_list = listdir(config.cache_dir + '/processed/merged/')
@@ -99,13 +100,12 @@ print(str(len(papers)) + ' papers to process.')
 # Clean the data - e.g. tidy dates and institute names
 clean.clean(papers)
 
-# should probably move clean_institution into clean directly
+# should probably move clean_institution into main clean directly
 clean.clean_institution(papers)
 
 ###########################################################
 # Add some extra data in - i.e. geocodes and citations
 add.geocode.geocode(papers)
-# add.citations(papers, config.citations_api_key, 14, True)
 
 # Write papers to summary file
 file_name = root_dir + '/data/' + config.project_details['short_name'] + '/summary_added_to'
@@ -124,6 +124,7 @@ for this_paper in papers:
 if not config.public_facing:
     coverage_report.coverage_report(papers)
 
+# Output a BibTeX file with all the papers in it.
 bibliography.bibtex.bibtex(papers)
 
 ###########################################################
@@ -131,7 +132,7 @@ bibliography.bibtex.bibtex(papers)
 # some CSV type files that can be analysed.
 analyse.journals(papers)
 
-# Figure out the word frequecies
+# Figure out the word frequencies
 analyse.word_frequencies(papers, 'title')
 analyse.word_frequencies(papers, 'keywords')
 papers_with_abstract_text = analyse.word_frequencies(papers, 'abstract')

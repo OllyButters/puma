@@ -10,7 +10,6 @@ import logging
 
 
 # Needs a tidy up and more logging.
-# Assuming this works all of the templating stuff and papersMerge from the old collate can go.
 
 def collate():
     # first, check for new papers from zotero repo
@@ -31,7 +30,7 @@ def collate():
     zotero_papers = []
 
     # we may want to re-download the data from zotero
-    # if config has the 'zotero_get_all' flag set to True, make sure we get all papers not just new ones (i.e. load from cached file)
+    # if config has the 'zotero_get_all' flag set to True, make sure we get all papers not just new ones
     if config.zotero_get_all is True:
         new_keys = zot.papers_keys
     else:
@@ -58,7 +57,7 @@ def collate():
             zotero_papers.append(paper['data'])
 
     # zotero_papers will have ALL zotero data in it based on cache and newly downloaded data.
-    # now check zotero_papers for doi, pubmed id, scopus data  and retrieve if required.
+    # now check zotero_papers for doi, pubmed id, scopus data and retrieve if required.
     counter = 0
     total_number_zotero_papers = str(len(zotero_papers))
 
@@ -102,7 +101,7 @@ def collate():
             else:
                 doi = paper['DOI']
 
-            # as doi's use '/' chars, we do an md5 of the doi as the filename
+            # as dois use '/' chars, we do an md5 of the doi as the filename
             print('DOI:' + doi)
             doi_filename = hashlib.md5((doi).encode("ascii", "ignore")).hexdigest()
             # doi_filename = hashlib.md5(paper['DOI']).hexdigest()
