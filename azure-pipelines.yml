@@ -40,7 +40,7 @@ jobs:
   - bash: |
 
       cd config
-      ln -s $(Pipeline.Workspace)/puma_config/config_ALSPAC.ini_master ALSPAC.ini
+      ln -s $(Pipeline.Workspace)/configs/config_ALSPAC.ini_master ALSPAC.ini
 
       cd ../source
       ./papers.py --config ALSPAC.ini
