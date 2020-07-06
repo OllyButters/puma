@@ -39,8 +39,10 @@ jobs:
 
   - bash: |
 
-      cd source
+      cd config
       ln -s $(Pipeline.Workspace)/puma_config/config_ALSPAC.ini_master ALSPAC.ini
+
+      cd ../source
       ./papers.py --config ALSPAC.ini
 
     workingDirectory: $(Pipeline.Workspace)/puma
