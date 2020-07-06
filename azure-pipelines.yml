@@ -10,7 +10,7 @@ jobs:
 - job: RUN_PUMA
   timeoutInMinutes: 120
   pool:
-    vmImage: 'Ubuntu 18.04'
+    vmImage: 'Ubuntu 20.04'
 
 
   steps:
