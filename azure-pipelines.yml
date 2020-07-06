@@ -1,3 +1,10 @@
+resources:
+  repositories:
+  - repository: puma_configs
+    type: github
+    endpoint: puma_gh_deployment
+    name: OllyButters/puma_configs
+
 schedules:
   - cron: "32 1 * * *"
     displayName: Nightly build
@@ -23,10 +30,19 @@ jobs:
       cd source
       sudo -H pip3 install -r requirements.txt
   
+    workingDirectory: $(Pipeline.Workspace)/puma
+    displayName: 'Install Python deps'
+    condition: succeeded()
+
+
+  - bash: |
+
+      cd source
+  
       ./papers.py
 
     workingDirectory: $(Pipeline.Workspace)/puma
-    displayName: 'Run PUMA'
+    displayName: 'Run the pipeline'
     condition: succeeded()
 
 
