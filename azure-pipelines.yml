@@ -45,6 +45,12 @@ jobs:
       cd ../source
       ./papers.py --config ALSPAC.ini
 
+      sudo apt install tree -y
+      pwd
+      echo -e "\n#############################"
+      echo -e "File tree: ##################"
+      tree $(Pipeline.Workspace)
+
     workingDirectory: $(Pipeline.Workspace)/puma
     displayName: 'Run the pipeline'
     condition: succeeded()
