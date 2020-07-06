@@ -1,9 +1,9 @@
 import json
-# import unicodecsv
 import os
 import re
 import sys
 import csv
+
 
 def loadCleaning(config_dir):
     # Read in config file
@@ -12,7 +12,8 @@ def loadCleaning(config_dir):
     global replacements
     replacements = []
     with open(os.path.join(config_dir, 'institute_cleaning.csv'), 'r') as csvfile:
-        f = csv.reader(csvfile,  encoding='utf-8')  # Handle extra unicode characters
+        # f = csv.reader(csvfile,  encoding='utf-8')  # Handle extra unicode characters
+        f = csv.reader(csvfile)
         for row in f:
             try:
                 # Check it is not a comment string first.
@@ -28,6 +29,7 @@ def loadCleaning(config_dir):
                 replacements.append(row[1])
             except:
                 pass
+
 
 def cleanInstitution(value):
     # Cycle through institute checking the whole substitution list.
@@ -78,4 +80,4 @@ if __name__ == '__main__':
     # Get all the config - these will be a global vars available like config.varname
     config.build_config_variables(root_dir)
 
-    output_network()
+    output_network(config)

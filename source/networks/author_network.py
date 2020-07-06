@@ -8,8 +8,10 @@ import os
 
 def build_network():
 
+    print("### Building author network ###")
+
     # first generate the network datafile
-    gen_author_network.output_network()
+    gen_author_network.output_network(config)
 
     # this dumps the output to processed/authorlinks.cleaned.json
 

@@ -341,9 +341,12 @@ def authors(papers):
             # CREATE NODES
             for this_author in this_paper['clean']['full_author_list']:
                 # Create author hash
-                hash_object = hashlib.sha256(this_author)
-                author_hash = hash_object.hexdigest()
 
+                # hash_object = hashlib.sha256(this_author)
+                # author_hash = hash_object.hexdigest()
+
+                author_hash = hashlib.sha256(this_author['clean'].encode('ascii', 'ignore')).hexdigest()
+                
                 # Store author details
                 try:
                     author_network['authors'][author_hash]
@@ -360,18 +363,21 @@ def authors(papers):
                 for con_author in this_paper['clean']['full_author_list']:
 
                     if not this_author == con_author:
-                        con_hash_object = hashlib.sha256(con_author)
-                        con_author_hash = con_hash_object.hexdigest()
+                        # con_hash_object = hashlib.sha256(con_author)
+                        # con_author_hash = con_hash_object.hexdigest()
 
+                        con_author_hash = hashlib.sha256(this_author['clean'].encode('ascii', 'ignore')).hexdigest()
+               
                         con_id = ""
                         if author_hash > con_author_hash:
                             con_id = author_hash + "" + con_author_hash
                         else:
                             con_id = con_author_hash + "" + author_hash
 
-                        con_id_hash_object = hashlib.sha256(con_id)
-                        con_hash = con_id_hash_object.hexdigest()
-
+                        # con_id_hash_object = hashlib.sha256(con_id)
+                        # con_hash = con_id_hash_object.hexdigest()
+                        con_hash = hashlib.sha256(con_id.encode('ascii', 'ignore')).hexdigest()
+               
                         try:
                             author_network['connections'][con_hash]
                         except:
@@ -385,7 +391,8 @@ def authors(papers):
                         except:
                             author_network['connections'][con_hash]['num_connections'] = 1
 
-        except:
+        except Exception as e:
+            print('Uncaught error: ' + str(e))
             pass
 
     print("\n###Author network###")
