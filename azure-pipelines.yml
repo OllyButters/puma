@@ -7,7 +7,7 @@ schedules:
     always: true
 
 jobs:
-- job: RUN PUMA
+- job: RUN_PUMA
   timeoutInMinutes: 120
   pool:
     vmImage: 'Ubuntu 18.04'
@@ -20,11 +20,12 @@ jobs:
 
   - bash: |
 
-      cd puma/source
+      cd source
       sudo pip3 install -r requirements.txt
   
       ./papers.py
 
+    workingDirectory: $(Pipeline.Workspace)/puma
     displayName: 'Run PUMA'
     condition: succeeded()
 
