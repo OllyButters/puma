@@ -40,8 +40,8 @@ jobs:
   - bash: |
 
       cd source
-  
-      ./papers.py --config /$(Pipeline.Workspace)/puma_config/config_ALSPAC.ini_master
+      ln -s $(Pipeline.Workspace)/puma_config/config_ALSPAC.ini_master ALSPAC.ini
+      ./papers.py --config ALSPAC.ini
 
     workingDirectory: $(Pipeline.Workspace)/puma
     displayName: 'Run the pipeline'
