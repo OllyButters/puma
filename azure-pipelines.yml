@@ -41,7 +41,7 @@ jobs:
 
       cd source
   
-      ./papers.py
+      ./papers.py --config $(Pipeline.Workspace)/puma_config/config_ALSPAC.ini_master
 
     workingDirectory: $(Pipeline.Workspace)/puma
     displayName: 'Run the pipeline'
