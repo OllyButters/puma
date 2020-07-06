@@ -346,7 +346,7 @@ def authors(papers):
                 # author_hash = hash_object.hexdigest()
 
                 author_hash = hashlib.sha256(this_author['clean'].encode('ascii', 'ignore')).hexdigest()
-                
+
                 # Store author details
                 try:
                     author_network['authors'][author_hash]
@@ -366,7 +366,7 @@ def authors(papers):
                         # con_hash_object = hashlib.sha256(con_author)
                         # con_author_hash = con_hash_object.hexdigest()
 
-                        con_author_hash = hashlib.sha256(this_author['clean'].encode('ascii', 'ignore')).hexdigest()
+                        con_author_hash = hashlib.sha256(con_author['clean'].encode('ascii', 'ignore')).hexdigest()
                
                         con_id = ""
                         if author_hash > con_author_hash:
