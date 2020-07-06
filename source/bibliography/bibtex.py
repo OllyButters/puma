@@ -7,6 +7,7 @@ import config.config as config
 
 # Output a bibtex file of the publications
 def bibtex(papers):
+    print("### Building BibTeX file ###")
 
     articles = []
 
@@ -51,7 +52,7 @@ def bibtex(papers):
             articles.append(this_article)
 
         except:
-            logging.error("Cannot create bibtex output" + this_paper)
+            logging.error("Cannot create bibtex output" + str(this_paper))
             pass
 
     # output to file in data_dir
