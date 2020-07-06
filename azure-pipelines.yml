@@ -25,6 +25,7 @@ jobs:
   
       ./papers.py
 
+    workingDirectory: $(Pipeline.Workspace)/puma
     displayName: 'Run PUMA'
     condition: succeeded()
 
