@@ -24,6 +24,8 @@ jobs:
   - checkout: self
     path: 'puma'
 
+  - checkout: puma_configs
+    path: 'configs'
 
   - bash: |
 
