@@ -1,0 +1,31 @@
+schedules:
+  - cron: "32 1 * * *"
+    displayName: Nightly build
+    branches:
+     include:
+      - master
+    always: true
+
+jobs:
+- job: RUN PUMA
+  timeoutInMinutes: 120
+  pool:
+    vmImage: 'Ubuntu 18.04'
+
+
+  steps:
+  - checkout: self
+    path: 'puma'
+
+
+  - bash: |
+
+      cd puma/source
+      sudo pip3 install -r requirements.txt
+  
+      ./papers.py
+
+    displayName: 'Run PUMA'
+    condition: succeeded()
+
+
