@@ -20,7 +20,7 @@ jobs:
 
   - bash: |
 
-      cd /puma/source
+      cd source
       sudo pip3 install -r requirements.txt
   
       ./papers.py
