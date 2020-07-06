@@ -1,3 +1,10 @@
+resources:
+  repositories:
+  - repository: puma_configs
+    type: github
+    endpoint: puma_gh_deployment
+    name: OllyButters/puma_configs
+
 schedules:
   - cron: "32 1 * * *"
     displayName: Nightly build
@@ -10,23 +17,42 @@ jobs:
 - job: RUN_PUMA
   timeoutInMinutes: 120
   pool:
-    vmImage: 'Ubuntu 18.04'
+    vmImage: 'Ubuntu 20.04'
 
 
   steps:
   - checkout: self
     path: 'puma'
 
+  - checkout: puma_configs
+    path: 'configs'
 
   - bash: |
 
       cd source
-      sudo pip3 install -r requirements.txt
+      sudo -H pip3 install -r requirements.txt
   
-      ./papers.py
+    workingDirectory: $(Pipeline.Workspace)/puma
+    displayName: 'Install Python deps'
+    condition: succeeded()
+
+
+  - bash: |
+
+      cd config
+      ln -s $(Pipeline.Workspace)/configs/config_ALSPAC.ini_master ALSPAC.ini
+
+      cd ../source
+      ./papers.py --config ALSPAC.ini
+
+      sudo apt install tree -y
+      pwd
+      echo -e "\n#############################"
+      echo -e "File tree: ##################"
+      tree $(Pipeline.Workspace)
 
     workingDirectory: $(Pipeline.Workspace)/puma
-    displayName: 'Run PUMA'
+    displayName: 'Run the pipeline'
     condition: succeeded()
 
 
