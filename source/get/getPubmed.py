@@ -24,8 +24,8 @@ def getPubmed(this_pmid):
         print("a")
         pmid_xml_data = handle.read()
         print("b")
-        if isinstance(pmid_xml_data, bytes):
-            pmid_xml_data = pmid_xml_data.decode('utf-8')
+        #if isinstance(pmid_xml_data, bytes):
+        #    pmid_xml_data = pmid_xml_data.decode('utf-8')
         print("c")
         xml_file_loc = pc.dumpFile(this_pmid+'.xml', pmid_xml_data, 'raw/pubmed/xml')
         print("d")
