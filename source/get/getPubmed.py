@@ -22,7 +22,7 @@ def getPubmed(this_pmid):
         # override_pubmodel = False
         handle = Entrez.efetch(db="pubmed", id=this_pmid, retmode="xml")
 
-        pmid_xml_data = handle.read()
+        pmid_xml_data = str(handle.read())
 
         xml_file_loc = pc.dumpFile(this_pmid+'.xml', pmid_xml_data, 'raw/pubmed/xml')
     except:
