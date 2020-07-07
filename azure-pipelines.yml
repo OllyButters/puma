@@ -5,6 +5,11 @@ resources:
     endpoint: puma_gh_deployment
     name: OllyButters/puma_configs
 
+  - repository: puma_web
+    type: github
+    endpoint: puma_gh_deployment
+    name: OllyButters/puma_web
+
 schedules:
   - cron: "32 1 * * *"
     displayName: Nightly build
@@ -27,6 +32,10 @@ jobs:
   - checkout: puma_configs
     path: 'configs'
 
+  - checkout: puma_web
+    path: 'web'
+
+
   - bash: |
 
       cd source
@@ -45,14 +54,18 @@ jobs:
       cd ../source
       ./papers.py --config ALSPAC.ini
 
+    workingDirectory: $(Pipeline.Workspace)/puma
+    displayName: 'Run the pipeline'
+    condition: succeeded()
+
+
+
+  - bash: |
+
       sudo apt install tree -y
       pwd
       echo -e "\n#############################"
       echo -e "File tree: ##################"
       tree $(Pipeline.Workspace)
 
-    workingDirectory: $(Pipeline.Workspace)/puma
-    displayName: 'Run the pipeline'
-    condition: succeeded()
-
-
+    displayName: 'Diagnostics'
