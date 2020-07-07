@@ -24,6 +24,9 @@ def getPubmed(this_pmid):
 
         pmid_xml_data = handle.read()
 
+        if isinstance(pmid_xml_data, bytes):
+            pmid_xml_data = pmid_xml_data.decode('utf-8')
+
         xml_file_loc = pc.dumpFile(this_pmid+'.xml', pmid_xml_data, 'raw/pubmed/xml')
     except:
         logging.warn("PMID download timed out for %s", this_pmid)
