@@ -1,3 +1,19 @@
+#####################################################################
+# PUMA Azure run.
+# Checks out all the various codes (source, config, web), runs the
+# pipeline then commits the HTML files back to GitHub to display at
+# https://ollybutters.github.io/puma_web/
+# Set to run regularly so the citations are updated as mandated by
+# Scopus.
+#
+# TODO: This builds a VM from scratch, so caching is non-existent. This
+#       seems a bit wasteful. Maybe I could commit the cache somewhere?
+#####################################################################
+
+
+#########################################################################################
+# Need to define all the GH repos and their access tokens, see:
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml
 resources:
   repositories:
   - repository: puma_configs
@@ -12,6 +28,14 @@ resources:
     name: OllyButters/puma_web
     ref: master
 
+
+#########################################################################################
+# Don't start a run when code is committed. You can do this manually in Azure. 
+trigger: none
+
+
+#########################################################################################
+# Do run on a schedule though.
 schedules:
   - cron: "32 1 * * *"
     displayName: Nightly build
@@ -20,6 +44,7 @@ schedules:
       - master
     always: true
 
+
 jobs:
 - job: RUN_PUMA
   timeoutInMinutes: 120
@@ -27,7 +52,13 @@ jobs:
     vmImage: 'Ubuntu 20.04'
 
 
+
   steps:
+    #####################################################################################
+    # Checkout the source code to a subfolder.
+    # This may give an error in the logs like:
+    # [warning]Unable move and reuse existing repository to required location
+    # This is an Azure bug - https://github.com/microsoft/azure-pipelines-yaml/issues/403
   - checkout: self
     path: 'puma'
 
@@ -38,6 +69,10 @@ jobs:
     path: 'web'
     persistCredentials: true
 
+
+
+    #####################################################################################
+    # Install all the Python dependencies from the requirements.txt file.
   - bash: |
 
       cd source
@@ -48,6 +83,9 @@ jobs:
     condition: succeeded()
 
 
+
+    #####################################################################################
+    # Soft link to the config file from the configs repo, then run the code.
   - bash: |
 
       cd config
@@ -61,6 +99,10 @@ jobs:
     condition: succeeded()
 
 
+
+    #####################################################################################
+    # Commit the generated HTML files to the puma_web repo. This makes them available
+    # (after some caching time) at https://ollybutters.github.io/puma_web
   - bash: |
       
       # Git needs some config set to be able to push to a repo. 
@@ -87,8 +129,33 @@ jobs:
 
 
 
-
+    #####################################################################################
+    # Output some diagnostics in case something went wrong.
   - bash: |
+
+      echo -e "\n#############################"
+      echo -e "python /: ######################"
+      python3 --version
+
+      echo -e "\n#############################"
+      echo -e "python modules/: ######################"
+      pip3 freeze
+
+      echo -e "\n#############################"
+      echo -e "ls /: ######################"
+      ls $(Pipeline.Workspace)
+    
+      echo -e "\n#############################"
+      echo -e "lscpu: ######################"
+      lscpu
+      
+      echo -e "\n#############################"
+      echo -e "memory: #####################"
+      free -m
+      
+      echo -e "\n#############################"
+      echo -e "env: ########################"
+      env
 
       sudo apt install tree -y
       pwd
