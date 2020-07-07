@@ -36,9 +36,10 @@ def getPubmed(this_pmid):
 
     try:
         print("e")
-        xml_file = open(xml_file_loc, 'r')
+        xml_file = open(xml_file_loc, 'rb')
         print("f")
         pmid_data = Entrez.read(xml_file)
+        print("g")
         if isinstance(pmid_data, list):
             pmid_data = pmid_data[0]
         # print pmid_data
@@ -49,7 +50,7 @@ def getPubmed(this_pmid):
                 raise ValueError("Can't find MedlineCitation for paper "+this_pmid)
         xml_file.close()
 
-        print("g")
+        print("h")
         ###
         # data processing
         # some dp is required as Entrez.read returns a subclassed Dict type with additonal xml data as attributes. These are not serialised by the json dump so we need to include them in another way.
@@ -72,5 +73,5 @@ def getPubmed(this_pmid):
         return pmid_data
     except Exception as e:
         logging.warn('Unable to read pmid %s', this_pmid)
-        print(str(e))
+        print("Uncaught error" + str(e))
         return None
