@@ -92,7 +92,7 @@ jobs:
       ln -s $(Pipeline.Workspace)/configs/config_ALSPAC.ini_master ALSPAC.ini
 
       cd ../source
-      ./papers.py --config ALSPAC.ini
+      sudo ./papers.py --config ALSPAC.ini
 
     workingDirectory: $(Pipeline.Workspace)/puma
     displayName: 'Run the pipeline'
