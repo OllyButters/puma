@@ -36,7 +36,7 @@ def dumpFile(filename, data, filetype=''):
         print("location:" + str(type(location)))
         print(location)
         print("data:" + str(type(data)))
-        print(data)
+        print(data.decode())
         f = open(location, 'wb')
         f.write(data)
         f.close()
