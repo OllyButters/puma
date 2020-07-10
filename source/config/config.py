@@ -20,8 +20,6 @@ def build_config_variables(root_dir):
 
     global logging_loglevel
 
-    global google_maps_api_key
-
     global metrics_study_start_year
     global metrics_study_current_year
 
