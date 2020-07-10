@@ -39,9 +39,6 @@ scopus_api_key:
 scopus_citation_max_age_days: 30
 scopus_run_citation: True
 
-[google_apis]
-google_maps_api_key:
-
 [logging]
 loglevel: DEBUG
 
