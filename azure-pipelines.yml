@@ -50,8 +50,15 @@ jobs:
   timeoutInMinutes: 120
   pool:
     vmImage: 'Ubuntu 20.04'
-
-
+  strategy:
+    matrix:
+      ALSPAC:
+        config_file_name: 'config_ALSPAC.ini_master'
+        html_output_dir: 'alspac'
+      HDRUK:
+        config_file_name: 'config_HDRUK.ini_master'
+        html_output_dir: 'hdruk'
+    maxParallel: 2
 
   steps:
     #####################################################################################
@@ -85,14 +92,15 @@ jobs:
 
 
     #####################################################################################
-    # Soft link to the config file from the configs repo, then run the code.
+    # Soft link to the config file from the configs repo, then run the code. The pipeline
+    # assumes config.ini if no name specified.
   - bash: |
 
       cd config
-      ln -s $(Pipeline.Workspace)/configs/config_ALSPAC.ini_master ALSPAC.ini
+      ln -s $(Pipeline.Workspace)/configs/$(config_file_name) config.ini
 
       cd ../source
-      sudo ./papers.py --config ALSPAC.ini
+      sudo ./papers.py
 
     workingDirectory: $(Pipeline.Workspace)/puma
     displayName: 'Run the pipeline'
@@ -116,16 +124,28 @@ jobs:
       # was checked out. i.e. other pipeline runs might have finished.
       git pull
 
-      cp -r $(Pipeline.Workspace)/puma/html/alspac .
+      cp -r $(Pipeline.Workspace)/puma/html/$(html_output_dir) .
 
       git add .
-      git commit -m "Automatically updating web files"
+      git commit -m "Automatically updating web files for $(html_output_dir)"
       git push
 
     workingDirectory: $(Pipeline.Workspace)/web
     displayName: 'Commit web files'
     condition: succeeded()
 
+
+    #####################################################################################
+    # Output the log file for debug
+  - bash: |
+      
+      ls
+
+      cat *.log
+
+      displayName: 'Print logfile'
+      workingDirectory: $(Pipeline.Workspace)/puma/logs
+      condition: always()
 
 
 
@@ -164,3 +184,4 @@ jobs:
       tree $(Pipeline.Workspace)
 
     displayName: 'Diagnostics'
+    condition: always()
