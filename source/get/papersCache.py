@@ -33,10 +33,6 @@ def dumpJson(filename, data, filetype='', process=False):
 def dumpFile(filename, data, filetype=''):
     try:
         location = '/'.join(filter(None, [config.cache_dir, filetype, filename]))
-        print("location:" + str(type(location)))
-        print(location)
-        print("data:" + str(type(data)))
-        print(data)
         f = open(location, 'wb')
         f.write(data)
         f.close()

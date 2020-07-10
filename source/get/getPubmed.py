@@ -21,25 +21,17 @@ def getPubmed(this_pmid):
         # Look at the PubModel. See http://www.nlm.nih.gov/bsd/licensee/elements_article_source.html
         # override_pubmodel = False
         handle = Entrez.efetch(db="pubmed", id=this_pmid, retmode="xml")
-        print("a")
         pmid_xml_data = handle.read()
-        print("b")
-        #if isinstance(pmid_xml_data, bytes):
-        #    pmid_xml_data = pmid_xml_data.decode('utf-8')
-        print("c")
+        
         xml_file_loc = pc.dumpFile(this_pmid+'.xml', pmid_xml_data, 'raw/pubmed/xml')
-        print("d")
     except:
         logging.warn("PMID download timed out for %s", this_pmid)
         print("PMID download timed out for %s", this_pmid)
         return None
 
     try:
-        print("e")
         xml_file = open(xml_file_loc, 'rb')
-        print("f")
         pmid_data = Entrez.read(xml_file)
-        print("g")
         if isinstance(pmid_data, list):
             pmid_data = pmid_data[0]
         # print pmid_data
@@ -50,7 +42,6 @@ def getPubmed(this_pmid):
                 raise ValueError("Can't find MedlineCitation for paper "+this_pmid)
         xml_file.close()
 
-        print("h")
         ###
         # data processing
         # some dp is required as Entrez.read returns a subclassed Dict type with additonal xml data as attributes. These are not serialised by the json dump so we need to include them in another way.
