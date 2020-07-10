@@ -99,7 +99,7 @@ if __name__ == '__main__':
 
     network_html = build_network_page(network_title=title, network_datafile=datafile_name, script_name=script_name)
 
-    copy_files(outputdir=outputdir, network_datafile=datafile, script_name=script_name)
+    copy_network_files(outputdir=outputdir, network_datafile=datafile, script_name=script_name)
 
     with open(os.path.join(config.html_dir, outputdir, datafile_name + '.html'), 'w') as outputfile:
         outputfile.write(network_html)
