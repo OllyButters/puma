@@ -56,7 +56,7 @@ jobs:
         config_file_name: 'config_ALSPAC.ini_master'
         html_output_dir: 'alspac'
       HDRUK:
-        config_file_name: 'config_HDRUK.ini_master'
+        config_file_name: 'config_HDRUK.ini'
         html_output_dir: 'hdruk'
     maxParallel: 2
 
@@ -142,10 +142,10 @@ jobs:
       ls
 
       cat *.log
-
-      displayName: 'Print logfile'
-      workingDirectory: $(Pipeline.Workspace)/puma/logs
-      condition: always()
+      
+    workingDirectory: $(Pipeline.Workspace)/puma/logs
+    displayName: 'Print logfile'
+    condition: always()
 
 
 
