@@ -21,8 +21,23 @@ def getScopus(zotero_ID, PMID, DOI):
         if PMID != "":
             request_string = url + '?apiKey=' + config.scopus_api_key + '&query=PMID(' + str(PMID) + ')'
             logging.info(request_string)
-            response = urllib.request.urlopen(request_string).read()
+            try:
+                response = urllib.request.urlopen(request_string).read()
+            except Exception as e:
+                if e.code == 429:
+                    print("Too many Scopus requests")
+                    print(str(e))
+                    logging.warn("Too many Scopus requests")
+                    logging.warn(str(e))
+                    return "QUOTAEXCEEDED"
+                else:
+                    print("Uncaught error" + str(e))
+                    logging.warn("Uncaught error" + str(e))
+                    return
+
             scopus_object = json.loads(response)
+
+            print(scopus_object)
 
             # Check to see if this is just an errorlog
             try:
@@ -33,6 +48,7 @@ def getScopus(zotero_ID, PMID, DOI):
                     del(scopus_object)
             except:
                 pass
+
             if scopus_object:
                 logging.info('Scopus data got via PMID.')
             else:
@@ -44,10 +60,23 @@ def getScopus(zotero_ID, PMID, DOI):
         try:
             if DOI != "":
                 try:
-                    logging.debug('now here')
                     request_string = url + '?apiKey=' + config.scopus_api_key + '&query=DOI(' + DOI + ')'
                     logging.info(request_string)
-                    response = urllib.request.urlopen(request_string).read()
+
+                    try:
+                        response = urllib.request.urlopen(request_string).read()
+                    except Exception as e:
+                        if e.code == 429:
+                            print("Too many Scopus requests")
+                            print(str(e))
+                            logging.warn("Too many Scopus requests")
+                            logging.warn(str(e))
+                            return "QUOTAEXCEEDED"
+                        else:
+                            print("Uncaught error" + str(e))
+                            logging.warn("Uncaught error" + str(e))
+                            return
+
                     scopus_object = json.loads(response)
 
                     # Check to see if this is just an errorlog
@@ -59,6 +88,7 @@ def getScopus(zotero_ID, PMID, DOI):
                             del(scopus_object)
                     except:
                         pass
+
                     if scopus_object:
                         logging.info('Scopus data got via DOI.')
                 except:

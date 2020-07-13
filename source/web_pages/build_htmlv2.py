@@ -1092,8 +1092,14 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
                 c20_index += 1
         except:
             pass
-
-    average_citations = float(total_citations)/float(total_citations_data_from_count)
+    
+    # We might not have any citattions - e.g. if quotas hit.
+    if total_citations > 0 and total_citations_data_from_count > 0:
+        average_citations = float(total_citations)/float(total_citations_data_from_count)
+    else:
+        average_citations = 0
+    
+    
     i20_index_per_year = float(c20_index)/float(study_duration)
 
     # cal h-index
@@ -1148,8 +1154,11 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
             pass
 
     # Get the median number of citations
-    list_of_citation_counts.sort()
-    median_citations = list_of_citation_counts[round(len(list_of_citation_counts)/2)]
+    if len(list_of_citation_counts) > 0:
+        list_of_citation_counts.sort()
+        median_citations = list_of_citation_counts[round(len(list_of_citation_counts)/2)]
+    else:
+        median_citations = 0
 
     # = Low Citations Range =
     # Create data string for plot

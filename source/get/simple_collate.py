@@ -60,6 +60,7 @@ def collate():
     # now check zotero_papers for doi, pubmed id, scopus data and retrieve if required.
     counter = 0
     total_number_zotero_papers = str(len(zotero_papers))
+    scopus_quota_reached = False
 
     for paper in zotero_papers:
 
@@ -148,28 +149,37 @@ def collate():
                     this_merged_paper['raw']['pmid_data'] = pc.getCacheData(filetype='/raw/pubmed', filenames=[paper['pmid']])[paper['pmid']]
 
         # Do scopus data now
-        if this_merged_paper['IDs']['PMID'] != '' or this_merged_paper['IDs']['DOI'] != '':
-            # check if paper data in scopus cache
-            scopus_cache_filename = this_merged_paper['IDs']['zotero'] + '.scopus'
-            if scopus_cache_filename not in scopus_cache:
-                print('Scopus: Downloading.')
-                logging.debug('Downloading (or redownloading) Scopus data.')
-                logging.debug(this_merged_paper['IDs']['zotero'])
-                logging.debug(this_merged_paper['IDs']['PMID'])
-                logging.debug(this_merged_paper['IDs']['DOI'])
-                scopus_paper = ps.getScopus(this_merged_paper['IDs']['zotero'], this_merged_paper['IDs']['PMID'], this_merged_paper['IDs']['DOI'])
-                this_merged_paper['raw']['scopus_data'] = scopus_paper
-                print('Scopus: Success')
-                # data is automatically cached by getScopus
-            else:
-                print('Scopus: Getting from cache.')
-                this_merged_paper['raw']['scopus_data'] = pc.getCacheData(filetype='/raw/scopus', filenames=scopus_cache_filename)[scopus_cache_filename]
+        if not scopus_quota_reached:
+            if this_merged_paper['IDs']['PMID'] != '' or this_merged_paper['IDs']['DOI'] != '':
+                # check if paper data in scopus cache
+                scopus_cache_filename = this_merged_paper['IDs']['zotero'] + '.scopus'
+                if scopus_cache_filename not in scopus_cache:
+                    print('Scopus: Downloading.')
+                    logging.debug('Downloading (or redownloading) Scopus data.')
+                    logging.debug(this_merged_paper['IDs']['zotero'])
+                    logging.debug(this_merged_paper['IDs']['PMID'])
+                    logging.debug(this_merged_paper['IDs']['DOI'])
+                    scopus_paper = ps.getScopus(this_merged_paper['IDs']['zotero'], this_merged_paper['IDs']['PMID'], this_merged_paper['IDs']['DOI'])
+                    
+                    # If the scopus quota is hit then stop querying it
+                    if scopus_paper == "QUOTAEXCEEDED":
+                        scopus_quota_reached = True
+                        print("Scopus API quota exceeded. No more Scopus queries for this run.")
+                        logging.info("Scopus API quota exceeded. No more Scopus queries for this run.")
+                        continue
+                    
+                    this_merged_paper['raw']['scopus_data'] = scopus_paper
+                    print('Scopus: Success')
+                    # data is automatically cached by getScopus
+                else:
+                    print('Scopus: Getting from cache.')
+                    this_merged_paper['raw']['scopus_data'] = pc.getCacheData(filetype='/raw/scopus', filenames=scopus_cache_filename)[scopus_cache_filename]
 
-            try:
-                # Lets grab the scopus ID while we are here
-                this_merged_paper['IDs']['scopus'] = this_merged_paper['raw']['scopus_data']['search-results']['entry'][0]['eid']
-            except:
-                pass
+                try:
+                    # Lets grab the scopus ID while we are here
+                    this_merged_paper['IDs']['scopus'] = this_merged_paper['raw']['scopus_data']['search-results']['entry'][0]['eid']
+                except:
+                    pass
 
         # May as well just write out the whole merged file everytime.
         merged_filename = this_merged_paper['IDs']['zotero'] + '.merged'
