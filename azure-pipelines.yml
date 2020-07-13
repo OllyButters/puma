@@ -2,12 +2,10 @@
 # PUMA Azure run.
 # Checks out all the various codes (source, config, web), runs the
 # pipeline then commits the HTML files back to GitHub to display at
-# https://ollybutters.github.io/puma_web/
+# https://ollybutters.github.io/puma/
 # Set to run regularly so the citations are updated as mandated by
 # Scopus.
 #
-# TODO: This builds a VM from scratch, so caching is non-existent. This
-#       seems a bit wasteful. Maybe I could commit the cache somewhere?
 #####################################################################
 
 
@@ -16,7 +14,7 @@
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml
 resources:
   repositories:
-  # Where all the configs are
+  # Where all the configs are (private repo)
   - repository: puma_configs
     type: github
     endpoint: puma_gh_deployment
@@ -30,7 +28,7 @@ resources:
     name: OllyButters/puma
     ref: gh-pages
 
-  # Cache repo
+  # Cache repo (private repo)
   - repository: puma_cache
     type: github
     endpoint: puma_gh_deployment
@@ -64,9 +62,9 @@ jobs:
       ALSPAC:
         config_file_name: 'config_ALSPAC.ini_master'
         project_short_name: 'alspac'
-      #HDRUK:
-      #  config_file_name: 'config_HDRUK.ini'
-      #  project_short_name: 'hdruk'
+      HDRUK:
+        config_file_name: 'config_HDRUK.ini'
+        project_short_name: 'hdruk'
     maxParallel: 2
 
   steps:
@@ -165,7 +163,7 @@ jobs:
       git push
 
     workingDirectory: $(Pipeline.Workspace)/cache
-    displayName: 'Commit web files'
+    displayName: 'Commit cache files'
     condition: succeeded()
 
 
