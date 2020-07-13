@@ -55,9 +55,9 @@ jobs:
       ALSPAC:
         config_file_name: 'config_ALSPAC.ini_master'
         html_output_dir: 'alspac'
-      HDRUK:
-        config_file_name: 'config_HDRUK.ini'
-        html_output_dir: 'hdruk'
+      #HDRUK:
+      #  config_file_name: 'config_HDRUK.ini'
+      #  html_output_dir: 'hdruk'
     maxParallel: 2
 
   steps:
