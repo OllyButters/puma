@@ -147,7 +147,7 @@ jobs:
 
 
     #####################################################################################
-    # Update cache
+    # Update cache. Always do this so if it fails mid way through all is not lost.
   - bash: |
 
       # Git needs some config set to be able to push to a repo. 
@@ -164,7 +164,7 @@ jobs:
 
     workingDirectory: $(Pipeline.Workspace)/cache
     displayName: 'Commit cache files'
-    condition: succeeded()
+    condition: always()
 
 
 
