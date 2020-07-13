@@ -16,24 +16,26 @@
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml
 resources:
   repositories:
+  # Where all the configs are
   - repository: puma_configs
     type: github
     endpoint: puma_gh_deployment
     name: OllyButters/puma_configs
     ref: master
 
-  #- repository: puma_web
-  #  type: github
-  #  endpoint: puma_gh_deployment
-  #  name: OllyButters/puma_web
-  #  ref: master
-
+  # The gh-pages branch of main puma repo
   - repository: puma_web
     type: github
     endpoint: puma_gh_deployment
     name: OllyButters/puma
     ref: gh-pages
 
+  # Cache repo
+  - repository: puma_cache
+    type: github
+    endpoint: puma_gh_deployment
+    name: OllyButters/puma_cache
+    ref: master
 
 
 #########################################################################################
@@ -61,10 +63,10 @@ jobs:
     matrix:
       ALSPAC:
         config_file_name: 'config_ALSPAC.ini_master'
-        html_output_dir: 'alspac'
+        project_short_name: 'alspac'
       #HDRUK:
       #  config_file_name: 'config_HDRUK.ini'
-      #  html_output_dir: 'hdruk'
+      #  project_short_name: 'hdruk'
     maxParallel: 2
 
   steps:
@@ -83,6 +85,9 @@ jobs:
     path: 'web'
     persistCredentials: true
 
+  - checkout: puma_cache
+    path: 'cache'
+    persistCredentials: true
 
 
     #####################################################################################
@@ -99,10 +104,13 @@ jobs:
 
 
     #####################################################################################
-    # Soft link to the config file from the configs repo, then run the code. The pipeline
-    # assumes config.ini if no name specified.
+    # Some minor set up, then run the code. The pipeline assumes config.ini if no name specified.
   - bash: |
 
+      # Soft link to the checked out cache dir.
+      ln -s $(Pipeline.Workspace)/cache cache
+
+      # Soft link to the config file from the configs repo
       cd config
       ln -s $(Pipeline.Workspace)/configs/$(config_file_name) config.ini
 
@@ -112,6 +120,54 @@ jobs:
     workingDirectory: $(Pipeline.Workspace)/puma
     displayName: 'Run the pipeline'
     condition: succeeded()
+
+
+
+
+    #####################################################################################
+    # Commit the generated HTML files to the gh-pages. This makes them available
+    # (after some caching time) at https://ollybutters.github.io/puma/$(project_short_name)
+  - bash: |
+
+      # Git needs some config set to be able to push to a repo. 
+      git config --global user.email "you@example.com"
+      git config --global user.name "Azure pipeline"
+      
+      # Checkout again - stuff may have changed in this branch from elsewhere
+      git checkout gh-pages    
+      git pull
+
+      cp -r $(Pipeline.Workspace)/puma/html/$(project_short_name) .
+
+      git add .
+      git commit -m "Automatically updating web files for $(project_short_name)"
+      git push
+
+    workingDirectory: $(Pipeline.Workspace)/web
+    displayName: 'Commit web files'
+    condition: succeeded()
+
+
+    #####################################################################################
+    # Update cache
+  - bash: |
+
+      # Git needs some config set to be able to push to a repo. 
+      git config --global user.email "you@example.com"
+      git config --global user.name "Azure pipeline"
+      
+      # Checkout again - stuff may have changed from elsewhere
+      git checkout master
+      git pull
+
+      git add .
+      git commit -m "Automatically updating cache files for $(project_short_name)"
+      git push
+
+    workingDirectory: $(Pipeline.Workspace)/cache
+    displayName: 'Commit web files'
+    condition: succeeded()
+
 
 
     #####################################################################################
@@ -125,37 +181,6 @@ jobs:
     workingDirectory: $(Pipeline.Workspace)/puma/logs
     displayName: 'Print logfile'
     condition: always()
-
-
-    #####################################################################################
-    # Commit the generated HTML files to the puma_web repo. This makes them available
-    # (after some caching time) at https://ollybutters.github.io/puma_web
-  - bash: |
-
-      # Copy the html files to outside of the file tree as they will get trashed on checking out the gh-pages branch
-      #mkdir $(Pipeline.Workspace)/temp_html
-      #mv $(Pipeline.Workspace)/puma/html/$(html_output_dir) $(Pipeline.Workspace)/temp_html/
-
-      # Git needs some config set to be able to push to a repo. 
-      git config --global user.email "you@example.com"
-      git config --global user.name "Azure pipeline"
-      
-      # Checkout the gh-pages branch - this will trash everything here
-      git checkout gh-pages    
-      git pull
-
-      cp -r $(Pipeline.Workspace)/puma/html/$(html_output_dir) .
-
-      git add .
-      git commit -m "Automatically updating web files for $(html_output_dir)"
-      git push
-
-    workingDirectory: $(Pipeline.Workspace)/web
-    displayName: 'Commit web files'
-    condition: succeeded()
-
-
-
 
 
     #####################################################################################
