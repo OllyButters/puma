@@ -107,34 +107,6 @@ jobs:
     condition: succeeded()
 
 
-
-    #####################################################################################
-    # Commit the generated HTML files to the puma_web repo. This makes them available
-    # (after some caching time) at https://ollybutters.github.io/puma_web
-  - bash: |
-      
-      # Git needs some config set to be able to push to a repo. 
-      git config --global user.email "you@example.com"
-      git config --global user.name "Azure pipeline"
-      
-      # This repo is checked out in detatched head state, so reconnect it here.
-      git checkout web
-      
-      # It is possible that other commits have been made to the testStatus repo since it 
-      # was checked out. i.e. other pipeline runs might have finished.
-      git pull
-
-      cp -r $(Pipeline.Workspace)/puma/html/$(html_output_dir) .
-
-      git add .
-      git commit -m "Automatically updating web files for $(html_output_dir)"
-      git push
-
-    workingDirectory: $(Pipeline.Workspace)/web
-    displayName: 'Commit web files'
-    condition: succeeded()
-
-
     #####################################################################################
     # Output the log file for debug
   - bash: |
@@ -146,6 +118,36 @@ jobs:
     workingDirectory: $(Pipeline.Workspace)/puma/logs
     displayName: 'Print logfile'
     condition: always()
+
+
+    #####################################################################################
+    # Commit the generated HTML files to the puma_web repo. This makes them available
+    # (after some caching time) at https://ollybutters.github.io/puma_web
+  - bash: |
+
+      # Copy the html files to outside of the file tree as they will get trashed on checking out the gh-pages branch
+      mkdir $(Pipeline.Workspace)/temp_html
+      mv $(Pipeline.Workspace)/puma/html/$(html_output_dir) $(Pipeline.Workspace)/temp_html/
+
+      # Git needs some config set to be able to push to a repo. 
+      git config --global user.email "you@example.com"
+      git config --global user.name "Azure pipeline"
+      
+      # Checkout the gh-pages branch - this will trash everything here
+      git checkout gh-pages    
+      git pull
+
+      mv $(Pipeline.Workspace)/temp_html/$(html_output_dir) .
+
+      git add .
+      git commit -m "Automatically updating web files for $(html_output_dir)"
+      git push
+
+    workingDirectory: $(Pipeline.Workspace)/puma
+    displayName: 'Commit web files'
+    condition: succeeded()
+
+
 
 
 
