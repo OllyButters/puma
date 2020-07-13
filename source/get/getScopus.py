@@ -37,8 +37,6 @@ def getScopus(zotero_ID, PMID, DOI):
 
             scopus_object = json.loads(response)
 
-            print(scopus_object)
-
             # Check to see if this is just an errorlog
             try:
                 error = scopus_object['search-results']['entry'][0]['error']
