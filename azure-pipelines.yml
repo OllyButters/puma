@@ -22,11 +22,18 @@ resources:
     name: OllyButters/puma_configs
     ref: master
 
+  #- repository: puma_web
+  #  type: github
+  #  endpoint: puma_gh_deployment
+  #  name: OllyButters/puma_web
+  #  ref: master
+
   - repository: puma_web
     type: github
     endpoint: puma_gh_deployment
-    name: OllyButters/puma_web
-    ref: master
+    name: OllyButters/puma
+    ref: gh-pages
+
 
 
 #########################################################################################
@@ -126,8 +133,8 @@ jobs:
   - bash: |
 
       # Copy the html files to outside of the file tree as they will get trashed on checking out the gh-pages branch
-      mkdir $(Pipeline.Workspace)/temp_html
-      mv $(Pipeline.Workspace)/puma/html/$(html_output_dir) $(Pipeline.Workspace)/temp_html/
+      #mkdir $(Pipeline.Workspace)/temp_html
+      #mv $(Pipeline.Workspace)/puma/html/$(html_output_dir) $(Pipeline.Workspace)/temp_html/
 
       # Git needs some config set to be able to push to a repo. 
       git config --global user.email "you@example.com"
@@ -137,13 +144,13 @@ jobs:
       git checkout gh-pages    
       git pull
 
-      mv $(Pipeline.Workspace)/temp_html/$(html_output_dir) .
+      mv $(Pipeline.Workspace)/puma/html/$(html_output_dir) .
 
       git add .
       git commit -m "Automatically updating web files for $(html_output_dir)"
       git push
 
-    workingDirectory: $(Pipeline.Workspace)/puma
+    workingDirectory: $(Pipeline.Workspace)/web
     displayName: 'Commit web files'
     condition: succeeded()
 
