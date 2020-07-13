@@ -149,7 +149,10 @@ def collate():
                     this_merged_paper['raw']['pmid_data'] = pc.getCacheData(filetype='/raw/pubmed', filenames=[paper['pmid']])[paper['pmid']]
 
         # Do scopus data now
-        if not scopus_quota_reached:
+        if scopus_quota_reached:
+            print("Skipping Scopus as API quota reached")
+            logging.warn("Skipping Scopus as API quota reached")
+        else:
             if this_merged_paper['IDs']['PMID'] != '' or this_merged_paper['IDs']['DOI'] != '':
                 # check if paper data in scopus cache
                 scopus_cache_filename = this_merged_paper['IDs']['zotero'] + '.scopus'
