@@ -144,7 +144,7 @@ jobs:
       git checkout gh-pages    
       git pull
 
-      mv $(Pipeline.Workspace)/puma/html/$(html_output_dir) .
+      cp -r $(Pipeline.Workspace)/puma/html/$(html_output_dir) .
 
       git add .
       git commit -m "Automatically updating web files for $(html_output_dir)"
