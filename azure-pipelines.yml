@@ -118,7 +118,7 @@ jobs:
       git config --global user.name "Azure pipeline"
       
       # This repo is checked out in detatched head state, so reconnect it here.
-      git checkout master
+      git checkout web
       
       # It is possible that other commits have been made to the testStatus repo since it 
       # was checked out. i.e. other pipeline runs might have finished.
