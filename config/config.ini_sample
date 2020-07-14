@@ -1,20 +1,34 @@
 [project_details]
+# Long name as referred to in literature etc.
 name:
+
+# Short name used internally for paths etc.
 short_name:
 
-colour_hex_primary: 1d294d
-colour_hex_secondary: 9e9e9e
+# Colours for the output html pages. These are required for the plots to work.
+colour_hex_primary: c9002f
+colour_hex_secondary: FFB612
 
-header_image_url:
-header_institution:
-header_institution_url:
+# Main institute name. Assume logo in config directory
+header_institution_logo_filename: d2k_logo.png
+header_institution_name: D2K
+header_institution_url: https://github.com/OllyButters/puma
 
+# Logo of the study. Safely ignored if left blank. Assume logo in config directory.
 side_image_url:
 side_image_link:
 side_image_filename:
 
-header_institution_name:
-header_institution_logo_filename:
+
+[collate]
+# Settings specifying which (if any) old data to re-download and/or re-merge
+
+# Get all zotero data regardless of cache contents. True = get all, False = only if not in cache
+zotero_get_all: False
+
+# Use the cached versions (if any) of pubmed/doi data. True = use cache, False = don't (i.e. re-download)
+use_doi_pubmed_cache: True
+
 
 [zotero_api]
 zotero_api_key:
@@ -22,34 +36,31 @@ zotero_id:
 zotero_type: group
 zotero_collection:
 
-[collate]
-#settings specifying which (if any) old data to re-download and/or re-merge
-
-#zotero_get_all: get all zotero data regardless of cache contents. True = get all, False = only if not in cache
-zotero_get_all: False
-#use_doi_pubmed_cache: use the cached versions (if any) of pubmed/doi data. True = use cache, False = don't (i.e. re-download)
-use_doi_pubmed_cache: True
 
 [pubmed_api]
 pubmed_email:
 
 [scopus]
+# If displaying publicly then citations need to be updated at least weekly.
 scopus_force_citation_update: False
 scopus_api_key:
-scopus_citation_max_age_days: 30
+scopus_citation_max_age_days: 7
 scopus_run_citation: True
 
 [logging]
 loglevel: DEBUG
 
 [metrics]
-metrics_study_start_year: 1958
+metrics_study_start_year: 1989
 metrics_study_current_year: 2015
 
 [pages]
 page_show_author_network = False
+public_facing: True
+
 
 [networks]
+# In development - not yet safe for general use.
 # generate networks using scripts in networks (plus analyse/genLinks)
 # currently produces author network json file
 # plus html/js visualisation (caution - potentially slow, requires decent machine to run)
