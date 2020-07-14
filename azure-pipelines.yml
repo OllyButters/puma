@@ -60,7 +60,7 @@ jobs:
   strategy:
     matrix:
       ALSPAC:
-        config_file_name: 'config_ALSPAC.ini_master'
+        config_file_name: 'config_ALSPAC.ini'
         project_short_name: 'alspac'
       HDRUK:
         config_file_name: 'config_HDRUK.ini'
