@@ -367,7 +367,7 @@ def authors(papers):
                         # con_author_hash = con_hash_object.hexdigest()
 
                         con_author_hash = hashlib.sha256(con_author['clean'].encode('ascii', 'ignore')).hexdigest()
-               
+
                         con_id = ""
                         if author_hash > con_author_hash:
                             con_id = author_hash + "" + con_author_hash
@@ -377,7 +377,7 @@ def authors(papers):
                         # con_id_hash_object = hashlib.sha256(con_id)
                         # con_hash = con_id_hash_object.hexdigest()
                         con_hash = hashlib.sha256(con_id.encode('ascii', 'ignore')).hexdigest()
-               
+
                         try:
                             author_network['connections'][con_hash]
                         except:

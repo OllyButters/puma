@@ -163,14 +163,14 @@ def collate():
                     logging.debug(this_merged_paper['IDs']['PMID'])
                     logging.debug(this_merged_paper['IDs']['DOI'])
                     scopus_paper = ps.getScopus(this_merged_paper['IDs']['zotero'], this_merged_paper['IDs']['PMID'], this_merged_paper['IDs']['DOI'])
-                    
+
                     # If the scopus quota is hit then stop querying it
                     if scopus_paper == "QUOTAEXCEEDED":
                         scopus_quota_reached = True
                         print("Scopus API quota exceeded. No more Scopus queries for this run.")
                         logging.info("Scopus API quota exceeded. No more Scopus queries for this run.")
                         continue
-                    
+
                     this_merged_paper['raw']['scopus_data'] = scopus_paper
                     print('Scopus: Success')
                     # data is automatically cached by getScopus

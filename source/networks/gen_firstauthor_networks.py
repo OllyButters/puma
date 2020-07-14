@@ -4,6 +4,7 @@ import json
 import re
 import os
 import csv
+import sys
 
 
 def loadCleaning(config_dir):

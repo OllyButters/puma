@@ -22,7 +22,7 @@ def getPubmed(this_pmid):
         # override_pubmodel = False
         handle = Entrez.efetch(db="pubmed", id=this_pmid, retmode="xml")
         pmid_xml_data = handle.read()
-        
+
         if not isinstance(pmid_xml_data, bytes):
             pmid_xml_data = pmid_xml_data.encode()
 

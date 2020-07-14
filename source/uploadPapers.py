@@ -10,6 +10,7 @@ import os
 from setup.setup import build_file_tree
 from shutil import copy
 
+
 # upload papers to a zotero lib
 # options:
 # --input the input file - a json file containing a list of objects,
@@ -28,7 +29,7 @@ def main(argv):
     # global root_dir
     path_to_papers_py = os.path.abspath(sys.argv[0])
     root_dir = os.path.dirname(os.path.dirname(path_to_papers_py))
-    print 'Root directory = ' + root_dir
+    print('Root directory = ' + root_dir)
 
     try:
         opts, args = getopt.getopt(argv, "i:t:g:", ["input=", "type=", "collection="])
@@ -36,7 +37,7 @@ def main(argv):
         pprint(str(e))
         sys.exit(2)
     # only pass config arg to config.ini
-    sys.argv = [sys.argv[0]] + [[v, sys.argv[i+1]] for i,v in enumerate(sys.argv) if v == 'config' or v == 'c']
+    sys.argv = [sys.argv[0]] + [[v, sys.argv[i+1]] for i, v in enumerate(sys.argv) if v == 'config' or v == 'c']
 
     config.build_config_variables(root_dir)
 
@@ -52,14 +53,14 @@ def main(argv):
     if not os.path.exists(os.path.join(config.cache_dir, 'processed', 'upload')):
         os.mkdir(os.path.join(config.cache_dir, 'processed', 'upload'))
 
-    print opts
+    print(opts)
 
     for opt, arg in opts:
         if opt in ('i', '--input'):
             cache_file_path = arg
         elif opt in ('t', '--type'):
             src_type = arg
-        #elif opt in ('c', '--collection'):
+        # elif opt in ('c', '--collection'):
         #    collection = arg
 
     if cache_file_path is not None and src_type is not None:
@@ -68,45 +69,45 @@ def main(argv):
         if os.path.isfile(cache_file_path):
             copy(cache_file_path, os.path.join(config.cache_dir, 'upload', cache_file))
         else:
-            print 'Cache file does not exist'
+            print('Cache file does not exist')
             sys.exit(2)
-        papers = pc.getCacheData(filetype='upload', filenames = [cache_file,])[cache_file]
-        print papers
+        papers = pc.getCacheData(filetype='upload', filenames=[cache_file, ])[cache_file]
+        print(papers)
     else:
         sys.exit(2)
 
     zot = pz.zotPaper()
-    #zot.collection = collection
+    # zot.collection = collection
 
     zot_papers = []
 
     get_errors = []
-    #zot_upload_errors = []
+    # zot_upload_errors = []
 
     n = 1
 
     for paper in papers:
-        print "Processing paper "+str(n)
+        print("Processing paper "+str(n))
         extra_ids = {}
         if 'Notes' in paper:
             paper['notes'] = paper['Notes']
             extra_ids = {val.split(':')[0]: val.split(':')[1] for val in paper['notes'].split('\n') if len(val.split(':')) > 1}
 
-        #get doi data if relevant
+        # get doi data if relevant
         if 'DOI' in paper:
-            print 'Found DOI: '+paper['DOI']
-            print 'Getting data...'
+            print('Found DOI: '+paper['DOI'])
+            print('Getting data...')
             paper_doi = getDoi.getDoi(paper['DOI'])
             if paper_doi is not None:
-                print 'Data retrieved for DOI: '+paper['DOI']
-                #print paper
+                print('Data retrieved for DOI: '+paper['DOI'])
+                # print paper
                 paper = paper_doi
             else:
                 error = "DOI: "+paper['DOI']+" data not obtained"
                 get_errors.append(error)
-                print error
+                print(error)
 
-            #search pubmed for doi and get pmid
+            # search pubmed for doi and get pmid
             try:
                 Entrez.email = config.pubmed_email       # Always tell NCBI who you are
                 handle = Entrez.esearch(db="pubmed", term=paper['DOI']+'[Location ID]')
@@ -127,30 +128,31 @@ def main(argv):
             except ValueError, e:
                 error = "Pubmed search for DOI: "+paper['DOI']+" error: "+str(e)
                 get_errors.append(error)
-                print error
+                print(error)
             except RuntimeError, e:
                 error = "Pubmed search for DOI: "+paper['DOI']+" error: "+str(e)
                 get_errors.append(error)
-                print error
+                print(error)
 
-        zot_paper = zot.mapFields(paper, src_type = src_type)
+        zot_paper = zot.mapFields(paper, src_type=src_type)
         zot_papers.append(zot_paper)
         pc.dumpJson(filename=cache_file+'-'+str(n)+'-zotero-upload', data=zot_papers[-1], filetype='processed/upload')
         print zot_papers[-1].get('title')
         n += 1
 
-        #dump errors to file
+        # dump errors to file
         pc.dumpFile(filename=cache_file+'upload-errors', filetype='processed/upload', data='\n'.join(get_errors))
 
-        #now try uploading and dump zotero output
+        # now try uploading and dump zotero output
         try:
-            print "Uploading paper "+str(n)+" to collection "+str(zot.collection)
+            print("Uploading paper "+str(n)+" to collection "+str(zot.collection))
             created = zot.create_items([zot_papers[-1]])
             pprint(created)
             pc.dumpJson(filename=cache_file+'-'+str(n)+'-zotero-upload-response', data=created, filetype='processed/upload', process=False)
         except Exception, e:
-            print str(e)
+            print(str(e))
             sys.exit(2)
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])

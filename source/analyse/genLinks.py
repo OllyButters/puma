@@ -1,10 +1,6 @@
-# import re
 import json
 import jsonpath_rw as jsonp
-# from pprint import pprint
-# import copy
-# import logging
-import config.config as config
+# import config.config as config
 import os
 import hashlib
 

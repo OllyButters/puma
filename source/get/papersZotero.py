@@ -50,8 +50,8 @@ class zotPaper (zotero.Zotero):
         else:
             zot_keys = self.items(format='keys', limit=999999)
         print(zot_keys)
-        print(type(zot_keys))   
-        #self.papers_keys = zot_keys.split('\n')
+        print(type(zot_keys))
+        # self.papers_keys = zot_keys.split('\n')
         self.papers_keys = zot_keys.decode('ascii').split('\n')
         print(type(self.papers_keys))
         print(self.papers_keys)

@@ -569,7 +569,7 @@ def clean_institution(papers):
                 logging.info('No affiliation from zotero for %s', this_paper['IDs']['zotero'])
 
         #####
-        # Lookup our candidate_institute in the 
+        # Lookup our candidate_institute
         if hasAffiliation and candidate_institute != '':
             # Let's keep our candidate institute_cleaning file.
             this_paper['clean']['location']['candidate_institute'] = candidate_institute
