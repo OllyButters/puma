@@ -6,7 +6,7 @@ PUMA is a python pipeline which aggregates third party metadata about journal ar
 
 The technical documentation with screenshots is at: [https://github.com/OllyButters/puma/wiki](https://github.com/OllyButters/puma/wiki)
 
-A demo with restricted analytics and functionality is at: [http://d2k-puma.ncl.ac.uk/hdruk/](http://d2k-puma.ncl.ac.uk/hdruk/)
+A demo with some of the functionality is at: [https://ollybutters.github.io/puma](https://ollybutters.github.io/puma)
 
 ## Running the code
 
@@ -18,7 +18,7 @@ The wiki (<https://github.com/OllyButters/puma/wiki>) has the best instructions,
     `pip3 install -r requirements.txt`
 - Edit the config.ini file in the config folder so it has your API keys etc.
 - Run the pipeline with a command like:
-  `./papers.py` 
+  `./papers.py`
 - Once it has finished, have a look at the HTML pages in the web_pages folder. Pay particular attention to the coverage_report.html file.
 
 ## PUMA project publications
@@ -46,3 +46,4 @@ Puma has been running for a couple of years and has been funded by a few differe
 - [CLOSER](https://closer.ac.uk)
 - [D2K, Newcastle University](https://research.ncl.ac.uk/d2k/)
 - UKRI Innovation Fellowship with HDR UK
+- NIHR ARC NWC
