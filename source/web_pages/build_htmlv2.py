@@ -97,7 +97,7 @@ def build_common_foot():
     html = '</div>'
     html += '</div>'
     html += '<div class="foot">'
-    html += 'Stats last updated on ' + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
+    html += ' Stats last updated on ' + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
     html += '</div>'
     html += '</body>'
     html += '</html>'
@@ -357,6 +357,7 @@ def build_papers(papers):
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Papers List</p>', "../", "")
 
     temp += '<h1 id="pagetitle">Papers List</h1>'
+    # Altmetric include
     temp += "<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>"
 
     html_file.write(temp)
@@ -441,6 +442,7 @@ def build_papers(papers):
     temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; <a href="../index.html">Papers List</a> &gt; Unknown Year</p>', "../../", "")
 
     temp += '<h1 id="pagetitle">Papers List - Unknown Year</h1>'
+    # Altmetric include
     temp += "<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>"
 
     n = 0
