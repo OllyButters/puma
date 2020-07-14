@@ -858,7 +858,7 @@ def build_google_map(papers):
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
     temp += '<link rel="stylesheet" href="../css/map.css">'
 
-    temp += '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js"></script>'
+    temp += '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>'
     temp += '<script type="text/javascript" src="map.kml"></script>'
     temp += '<script type="text/javascript" src="map.js"></script>'
 
@@ -1281,7 +1281,7 @@ def build_word_cloud(papers, list, data_from_count):
     shutil.copyfile(config.template_dir + '/d3.layout.cloud.js', config.html_dir + '/wordcloud/d3.layout.cloud.js')
 
     temp += '<script>var word_list = ' + list + '</script>'
-    temp += '<script src="http://d3js.org/d3.v3.min.js"></script>'
+    temp += '<script src="https://d3js.org/d3.v3.min.js"></script>'
     temp += '<script src="d3.layout.cloud.js"></script>'
 
     temp += '</head>'
@@ -1352,7 +1352,7 @@ def build_abstract_word_cloud(papers, data_from_count):
     shutil.copyfile(config.template_dir + '/d3.layout.cloud.js', config.html_dir + '/abstractwordcloud/d3.layout.cloud.js')
 
     temp += '<script src="list.js"></script>'
-    temp += '<script src="http://d3js.org/d3.v3.min.js"></script>'
+    temp += '<script src="https://d3js.org/d3.v3.min.js"></script>'
     temp += '<script src="d3.layout.cloud.js"></script>'
 
     temp += '</head>'
