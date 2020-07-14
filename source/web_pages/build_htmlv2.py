@@ -198,7 +198,7 @@ def build_home(papers):
         data_file.write('[\''+this_year+'\','+str(summary[this_year]['num_papers']) + '],')
     data_file.write(']);')
 
-    # Cohort-Rating calculation
+    # Cohort age weighted citation calculation
     cr_current_year = float(config.metrics_study_current_year)
     cr_sum = 0.0
     cr_data_from = 0
@@ -1014,7 +1014,7 @@ def intWithCommas(x):
 ###########################################################
 # Build metrics page
 ###########################################################
-def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_year, study_current_year):
+def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, study_start_year, study_current_year):
 
     print("\n###HTML - Metrics###")
 
@@ -1044,14 +1044,13 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
                 c20_index += 1
         except:
             pass
-    
+
     # We might not have any citattions - e.g. if quotas hit.
     if total_citations > 0 and total_citations_data_from_count > 0:
         average_citations = float(total_citations)/float(total_citations_data_from_count)
     else:
         average_citations = 0
-    
-    
+
     i20_index_per_year = float(c20_index)/float(study_duration)
 
     # cal h-index
@@ -1203,8 +1202,8 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>Age-weighted Mean Citations Per Publication</div>"
-    temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(cohort_rating, 3))) + "</div>"
-    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(cohort_rating_data_from) + " Publications</div>"
+    temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(age_weighted_citation, 3))) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(age_weighted_citation_data) + " Publications</div>"
     temp += "<div class='metric_description'>Age-weighted Mean Citations Per Publication.</div>"
     temp += "</div>"
 
@@ -1239,9 +1238,9 @@ def build_metrics(papers, cohort_rating, cohort_rating_data_from, study_start_ye
     temp += "<div class='clear'></div>"
 
     temp += '<div id="cumulative_div"></div>'
-    temp += "<p style='text-align:center;'>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
+    temp += "<p style='text-align:center;'>Data from " + intWithCommas(age_weighted_citation_data) + " publications</p>"
     temp += '<div id="papers_per_year_div"></div>'
-    temp += "<p style='text-align:center;'>Data from " + intWithCommas(cohort_rating_data_from) + " publications</p>"
+    temp += "<p style='text-align:center;'>Data from " + intWithCommas(age_weighted_citation_data) + " publications</p>"
     temp += '<div id="papers_per_citation_count_div"></div>'
     temp += "<div style='margin-left:auto;margin-right:auto;'><div class='average_citations' style='height:15px; width:33px; float:left; background:#" + config.project_details['colour_hex_secondary'] + "'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Mean number of citations</div></div>"
     temp += "<div style='margin-left:auto;margin-right:auto;margin-top:5px;'><div class='average_citations' style='height:15px; width:33px; float:left; background:green'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Median number of citations</div></div>"
