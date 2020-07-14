@@ -5,7 +5,7 @@
 # This is the starting point of a pipeline that tries to augment a list of
 # publications with metadata from places like PubMed and DOI.org to build a
 # reporting tool and some pretty web pages.
-# Go read the docs: https://github.com/OllyButters/papers/wiki
+# Go read the docs: https://github.com/OllyButters/puma/wiki
 ################################################################################
 
 # core packages
@@ -17,7 +17,6 @@ import os
 import logging
 import time
 import sys
-# from pprint import pprint
 
 # Internal packages
 import config.config as config
@@ -32,8 +31,8 @@ import networks.author_network as author_network
 import analyse.coverage_report as coverage_report
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
-__date__ = 10/7/20
-__version__ = '0.15.0'
+__date__ = 14/7/2020
+__version__ = '1.0.0'
 
 # Time Log
 start_time = time.time()
@@ -146,19 +145,21 @@ analyse.output_csv(papers)
 ###########################################################
 # Make some web pages
 web_pages.build_htmlv2.build_css_colour_scheme()
-cohort_rating, cohort_rating_data_from = web_pages.build_htmlv2.build_home(papers)
+age_weighted_citations, age_weighted_citations_data = web_pages.build_htmlv2.build_home(papers)
 web_pages.build_htmlv2.build_papers(papers)
 web_pages.build_htmlv2.build_mesh(papers)
 web_pages.build_htmlv2.build_country_map(papers)
-web_pages.build_htmlv2.build_metrics(papers, cohort_rating, cohort_rating_data_from, config.metrics_study_start_year, config.metrics_study_current_year)
+web_pages.build_htmlv2.build_metrics(papers, age_weighted_citations, age_weighted_citations_data, config.metrics_study_start_year, config.metrics_study_current_year)
 web_pages.build_htmlv2.build_abstract_word_cloud(papers, papers_with_abstract_text)
 web_pages.build_htmlv2.build_institute_map(papers)
-web_pages.build_htmlv2.build_author_network(papers, network)
 web_pages.build_htmlv2.build_help()
 web_pages.build_htmlv2.build_search(papers)
 
+
+# Generate and dump the html for author network.
+# Currently in development, not ready for general use.
 if config.network_create_networks:
-    # generate and dump the html for author network
+    web_pages.build_htmlv2.build_author_network(papers, network)
     author_network.build_network()
 
 # Time Log
