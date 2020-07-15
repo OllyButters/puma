@@ -19,7 +19,7 @@ The wiki (<https://github.com/OllyButters/puma/wiki>) has the best instructions,
 - Edit the config.ini file in the config folder so it has your API keys etc.
 - Run the pipeline with a command like:
   `./papers.py`
-- Once it has finished, have a look at the HTML pages in the web_pages folder. Pay particular attention to the coverage_report.html file.
+- Once it has finished, have a look at the web pages in the html folder. Pay particular attention to the coverage_report.html file.
 
 ## PUMA project publications
 
