@@ -492,17 +492,19 @@ def build_mesh(papers):
     # Build a dict of ONLY MAJOR mesh headings with a list of each pmid in each
     data_from_count = 0
     for this_paper in papers:
+        got_major_mesh = 0
         try:
             # Look at all the mesh headings for this paper
             for this_mesh in this_paper['clean']['keywords']['mesh']:
-                # Only interested in majoy topics
+                # Only interested in major topics
                 if this_mesh['major'] == 'Y':
+                    got_major_mesh = 1
                     # If this mesh term is not in the dict then add it
                     if this_mesh['term'] not in mesh_papers_major:
                         mesh_papers_major[this_mesh['term']] = list()
                     mesh_papers_major[this_mesh['term']].append(this_paper['IDs']['hash'])
 
-            data_from_count += 1
+            data_from_count += got_major_mesh
         except:
             pass
 
