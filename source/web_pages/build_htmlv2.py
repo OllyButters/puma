@@ -906,6 +906,10 @@ def build_country_map(papers):
     for country in list(countries.keys()):
         country_string += ',["' + country + '",' + str(countries[country]) + ']'
 
+    # Google charts uses different names than wikidata for some countries.
+    country_string = country_string.replace("People's Republic of China", "China")
+    country_string = country_string.replace("United States of America", "United States")
+    
     html_file = open(config.html_dir + '/country/index.html', 'w')
 
     # Put html together for this page
