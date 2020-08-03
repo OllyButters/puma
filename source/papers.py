@@ -56,8 +56,8 @@ setup.build_file_tree()
 
 # Set up the logging. Level is set in config and can be DEBUG, INFO, WARNING, ERROR, CRITICAL.
 log_file = root_dir + '/logs/'+config.project_details['short_name']+'.log'
-logging.basicConfig(filename=log_file,
-                    filemode='w',
+
+logging.basicConfig(handlers=[logging.FileHandler(log_file, 'w', 'utf-8')],
                     level=config.logging_loglevel)
 
 print('Log file: ' + log_file)
