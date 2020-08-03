@@ -1317,18 +1317,18 @@ def build_abstract_word_cloud(papers, data_from_count):
 
     f = open(config.data_dir + "/abstract_raw.csv", 'rt')
 
-    list = "["
+    word_list = "["
     n = 0
     try:
         reader = csv.reader(f)
         for row in reader:
             if n > 0:
-                list += ","
+                word_list += ","
 
             if row[0] != "":
-                # list += '["' + row[0].replace("'","\'").replace('"','\"') + '",' + str(row[1]) +  ']'
-                list += '{"text":"' + row[0].replace("'", "\'").replace('"', '\"') + '","size":' + str(math.sqrt(int(row[1]))*1.5) + '}'
-                # list += '{"text":"' + row[0].replace("'", "\'").replace('"', '\"') + '","size":' + str(row[1]) + '}'
+                # word_list += '["' + row[0].replace("'","\'").replace('"','\"') + '",' + str(row[1]) +  ']'
+                word_list += '{"text":"' + row[0].replace("'", "\'").replace('"', '\"') + '","size":' + str(math.sqrt(int(row[1]))*1.5) + '}'
+                # word_list += '{"text":"' + row[0].replace("'", "\'").replace('"', '\"') + '","size":' + str(row[1]) + '}'
                 n += 1
 
             if n > 200:
@@ -1337,9 +1337,9 @@ def build_abstract_word_cloud(papers, data_from_count):
     finally:
         f.close()
 
-    list += "];"
+    word_list += "];"
     list_file = open(config.html_dir + '/abstractwordcloud/list.js', 'w')
-    list_file.write(" var word_list = " + list)
+    list_file.write(" var word_list = " + word_list)
 
     html_file = open(config.html_dir + '/abstractwordcloud/index.html', 'w')
 
