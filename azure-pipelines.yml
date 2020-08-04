@@ -68,7 +68,7 @@ jobs:
       HDRUK:
         config_file_name: 'config_HDRUK.ini'
         project_short_name: 'hdruk'
-      maxParallel: 2
+    maxParallel: 2
 
   steps:
     #####################################################################################
