@@ -65,6 +65,9 @@ jobs:
       HDRUK:
         config_file_name: 'config_HDRUK.ini'
         project_short_name: 'hdruk'
+      OLLY:
+        config_file_name: 'config_olly.ini'
+        project_short_name: 'olly'
     maxParallel: 2
 
   steps:
