@@ -62,12 +62,12 @@ jobs:
       OLLY:
         config_file_name: 'config_olly.ini'
         project_short_name: 'olly'
-      #ALSPAC:
-      #  config_file_name: 'config_ALSPAC.ini'
-      #  project_short_name: 'alspac'
-      #HDRUK:
-      #  config_file_name: 'config_HDRUK.ini'
-      #  project_short_name: 'hdruk'
+      ALSPAC:
+        config_file_name: 'config_ALSPAC.ini'
+        project_short_name: 'alspac'
+      HDRUK:
+        config_file_name: 'config_HDRUK.ini'
+        project_short_name: 'hdruk'
     maxParallel: 2
 
   steps:
