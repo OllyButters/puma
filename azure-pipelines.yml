@@ -95,7 +95,7 @@ jobs:
     # from github they have a modification date of now (according to the OS).
   - bash: |
 
-      files=*/raw/scopus/*
+      files=$(project_short_name)/raw/scopus/*
 
       let allowed_dif=7*24*60*60
     
