@@ -93,7 +93,7 @@ jobs:
     #####################################################################################
     # Clear scopus cache files if they are old. Need to do it here as when checked out
     # from github they have a modification date of now (according to the OS).
-    - bash: |
+  - bash: |
 
       files=*/raw/scopus/
 
