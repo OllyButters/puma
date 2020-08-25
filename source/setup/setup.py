@@ -17,6 +17,8 @@ def clean_old_scopus_cache_file():
     if os.path.exists(config.cache_dir + '/raw/scopus'):
         cached_scopus_files_list = os.listdir(config.cache_dir + '/raw/scopus/')
         for this_file in cached_scopus_files_list:
+            print(this_file)
+            print(str(os.stat(config.cache_dir + '/raw/scopus/' + this_file)))
             if abs(datetime.datetime.now() - datetime.datetime.fromtimestamp(os.stat(config.cache_dir + '/raw/scopus/' + this_file).st_mtime)) > datetime.timedelta(days=config.scopus_citation_max_age_days):
                 file_path = config.cache_dir + '/raw/scopus/' + this_file
                 print('Deleting: ' + file_path)
