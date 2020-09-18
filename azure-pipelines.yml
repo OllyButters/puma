@@ -59,15 +59,15 @@ jobs:
     vmImage: 'Ubuntu 20.04'
   strategy:
     matrix:
-      #OLLY:
-      #  config_file_name: 'config_olly.ini'
-      #  project_short_name: 'olly'
-      #ALSPAC:
-      #  config_file_name: 'config_ALSPAC.ini'
-      #  project_short_name: 'alspac'
-      #HDRUK:
-      #  config_file_name: 'config_HDRUK.ini'
-      #  project_short_name: 'hdruk'
+      OLLY:
+        config_file_name: 'config_olly.ini'
+        project_short_name: 'olly'
+      ALSPAC:
+        config_file_name: 'config_ALSPAC.ini'
+        project_short_name: 'alspac'
+      HDRUK:
+        config_file_name: 'config_HDRUK.ini'
+        project_short_name: 'hdruk'
       CLAHRC:
         config_file_name: 'config_clahrc.ini'
         project_short_name: 'clahrc'
