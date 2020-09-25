@@ -14,7 +14,7 @@ from . import papersCache as pc
 ################################################################################
 def getScopus(zotero_ID, PMID, DOI):
 
-    url = 'http://api.elsevier.com/content/search/scopus'
+    url = 'https://api.elsevier.com/content/search/scopus'
 
     try:
         # query scopus with a pmid
