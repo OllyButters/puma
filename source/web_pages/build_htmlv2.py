@@ -145,7 +145,7 @@ def build_home(papers):
             if this_year not in summary:
                 summary[this_year] = {'num_papers': 0, 'cumulative': 0, 'citations': 0, 'cumulative_citations': 0}
 
-            # increment the number of citaitons by one
+            # increment the number of citations by one
             summary[this_year]['num_papers'] += 1
 
             # add the citations for this paper to the year running total
@@ -240,7 +240,7 @@ def build_home(papers):
     html_file.write('</table>')
 
     temp = "<p>Publication year known for " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications</p>"
-    temp += "<p>* Citation data from Scopus.</p>"
+    temp += '<p>* Citation data from <a href="https://www.scopus.com">Scopus</a>.</p>'
 
     temp += build_common_foot()
     html_file.write(temp)
@@ -828,7 +828,7 @@ def build_mesh(papers):
 ###########################################################
 def build_google_map(papers):
 
-    print("\n###HTML - Insititutions Map###")
+    print("\n###HTML - Instititutions Map###")
 
     info = []
     number_of_points = 0
@@ -909,7 +909,7 @@ def build_country_map(papers):
     # Google charts uses different names than wikidata for some countries.
     country_string = country_string.replace("People's Republic of China", "China")
     country_string = country_string.replace("United States of America", "United States")
-    
+
     html_file = open(config.html_dir + '/country/index.html', 'w')
 
     # Put html together for this page
@@ -1185,6 +1185,8 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
 
     temp += '<h1 id="pagetitle">Study Metrics</h1>'
 
+    temp += '(All citation calculations based on <a href="https://www.scopus.com">Scopus</a> data.)'
+
     # Output Metrics
     temp += "<div class='metric_con'>"
     temp += "<div class='metric'>"
@@ -1337,10 +1339,10 @@ def build_abstract_word_cloud(papers, data_from_count):
 
                 if n > 200:
                     break
-            
+           
             except:
                 pass    
-            
+           
     word_list += "];"
     list_file = open(config.html_dir + '/abstractwordcloud/list.js', 'w')
     list_file.write(" var word_list = " + word_list)
