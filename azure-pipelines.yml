@@ -162,6 +162,26 @@ jobs:
     condition: succeeded()
 
 
+    #####################################################################################
+    # Prettify the output HTML (i.e. put on new lines and indent)
+  - bash: |
+
+      sudo apt install tidy -y
+
+      OIFS="$IFS"
+      IFS=$'\n'
+
+      for f in `find . -type f -name "*.html"`
+      do
+        echo "$f" 
+        tidy --quiet true --indent true --indent-spaces 4 --wrap 0 -m "$f"
+      done
+
+      IFS="$OIFS"
+    
+    workingDirectory: $(Pipeline.Workspace)/puma/html/$(project_short_name)
+    displayName: 'Prettify HTML'
+    condition: succeeded()
 
 
     #####################################################################################
