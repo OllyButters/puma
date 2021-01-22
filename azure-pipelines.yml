@@ -174,7 +174,7 @@ jobs:
       for f in `find . -type f -name "*.html"`
       do
         echo "$f" 
-        sudo tidy --quiet true --indent true --indent-spaces 4 --wrap 0 -m "$(Pipeline.Workspace)/puma/html/$(project_short_name)/$f"
+        sudo tidy --quiet true --indent true --indent-spaces 4 --wrap 0 --tidy-mark false -m "$(Pipeline.Workspace)/puma/html/$(project_short_name)/$f"
       done
 
       IFS="$OIFS"
