@@ -129,7 +129,7 @@ def collate():
 
         # get pubmed data
         if 'extra' in paper:
-            pmid_matches = re.search(r'PMID: ([0-9]{1,8})', paper['extra'])
+            pmid_matches = re.search(r'PMID\s*:\s*([0-9]{1,8})', paper['extra'])
             if pmid_matches is not None:
                 paper['pmid'] = pmid_matches.group(1)
                 print('PMID: ' + paper['pmid'])
@@ -147,6 +147,8 @@ def collate():
                 else:
                     print('PMID: Getting from cache.')
                     this_merged_paper['raw']['pmid_data'] = pc.getCacheData(filetype='/raw/pubmed', filenames=[paper['pmid']])[paper['pmid']]
+            else:
+                logging.debug("No PMID found in: " + paper['extra'])
 
         # Do scopus data now
         if scopus_quota_reached:

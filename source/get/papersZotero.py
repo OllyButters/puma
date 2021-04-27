@@ -111,7 +111,9 @@ class zotPaper (zotero.Zotero):
             zot_paper = self.item(key)
             zot_extra_dict = {}
             if 'extra' in zot_paper['data']:
-                zot_extra_dict = self.extraToFields(zot_paper['data']['extra'])
+                if zot_paper['data']['extra']:
+                    zot_extra_dict = self.extraToFields(zot_paper['data']['extra'])
+                    print(zot_extra_dict)
         except BaseException:
             # do logging here
             print("Error getting paper %s from Zotero" % (key))
@@ -123,8 +125,8 @@ class zotPaper (zotero.Zotero):
 
         # now flatten zot_extra_dict ready for upload
         zot_extra = ''
-        for k, v in zot_extra_dict.iteritems():
-            zot_extra += '%s="%s"\n' % (k, v)
+        for k, v in zot_extra_dict.items():
+            zot_extra += '%s: %s\n' % (k, v)
 
         zot_paper['data']['extra'] = zot_extra
 
