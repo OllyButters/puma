@@ -23,6 +23,7 @@ city.ac.uk,"City, University of London"
 cmuh.org.tw,China Medical University Hospital
 durham.ac.uk,Durham University
 dartmouth.edu,Dartmouth College
+edgehill.ac.uk,Edge Hill University
 ex.ac.uk,University of Essex
 ehesp.fr,"EHESP"
 einstein.yu.edu,Albert Einstein College of Medicine
@@ -47,6 +48,7 @@ kuleuven.be,KU Leuven
 landspitali.is,Landspitali-University Hospital
 leeds.ac.uk,University of Leeds
 liverpool.ac.uk,University of Liverpool
+liv.ac.uk,University of Liverpool
 lrz.tum.de,Technical University of Munich
 lse.ac.uk,London School of Economics and Political Science
 lshtm.ac.uk,London School of Hygiene & Tropical Medicine
@@ -165,6 +167,7 @@ University of Leicester,University of Leicester
 University of Lincoln,University of Lincoln
 University of Liverpool,University of Liverpool
 Liverpool Women's Hospital,Liverpool Women's Hospital
+Liverpool John Moores University,Liverpool John Moores University
 London Metropolitan University,London Metropolitan University
 London School of Hygiene and Tropical Medicine,London School of Hygiene & Tropical Medicine
 London School of Hygiene & Tropical Medicine,London School of Hygiene & Tropical Medicine
@@ -225,6 +228,7 @@ University College London,University College London
 Royal Free and University College Hospital Medical School,University College London
 Medical Research Council National Survey of Health and Development,University College London
 University of East Anglia,University of East Anglia
+Ulster University,Ulster University
 #V,
 Centre for Research in Epidemiology and Population Health - Villejuif,Centre for research in epidemiology and population health
 #W,
@@ -243,6 +247,7 @@ Addenbrooke's Hospital,Addenbrooke's Hospital
 Addenbrooke's NHS Foundation Trust,Addenbrooke's Hospital
 University Hospital of Birmingham,University Hospital of Birmingham
 Black Country NHS Foundation Trust,Black Country Healthcare NHS Foundation Trust
+Bradford District Care NHS Foundation Trust,Bradford District Care NHS Foundation Trust
 Bristol Royal Hospital for Children,Bristol Royal Hospital for Children
 Royal Hospital for Sick Children,Bristol Royal Hospital for Children
 Bristol Children's Hospital,Bristol Royal Hospital for Children
@@ -260,6 +265,7 @@ Leeds General Infirmary,Leeds General Infirmary
 Liverpool School of Tropical Medicine,Liverpool School of Tropical Medicine
 Ty Bryn Unit,"St Cadoc's Hospital"
 Mersey Care NHS Foundation Trust,Mersey Care NHS Foundation Trust
+NICE,National Institute for Health and Care Excellence
 Ninewells Hospital,Ninewells Hospital
 North Bristol NHS Trust,North Bristol NHS Trust
 Northlands R & D Unit,Northlands R & D Unit
@@ -292,7 +298,8 @@ Taunton and Somerset Hospital,Taunton and Somerset NHS Foundation Trust
 Medical Research Council Prion Unit and Department of Neurodegenerative Disease,University College London
 "Institute of Child Health, London","Institute of Child Health, London"
 United Bristol Healthcare Trust,University of Bristol
-The Walton Centre for Neurology & Neurosurgery NHS Foundation Trust,Walton Centre
+The Walton Centre for Neurology & Neurosurgery NHS Foundation Trust,The Walton Centre NHS Foundation Trust
+The Walton Centre NHS Foundation Trust,The Walton Centre NHS Foundation Trust
 "Elsie Widdowson Laboratory, Cambridge","Elsie Widdowson Laboratory, Cambridge"
 International Longevity Centre UK,International Longevity Centre UK
 ,
