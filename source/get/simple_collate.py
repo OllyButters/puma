@@ -41,7 +41,7 @@ def collate():
                 # get the previously downloaded papers from the cache
                 cached_zotero_data = pc.getCacheData(filetype='/raw/zotero', filenames=[paper_key])[paper_key]
                 # check itemType - if it's 'note', or 'attachment' we can ignore
-                if cached_zotero_data['data']['itemType'] not in ('attachment', 'note'):
+                if cached_zotero_data['data']['itemType'] not in ('attachment', 'note', 'book', 'bookSection'):
                     zotero_papers.append(cached_zotero_data['data'])
 
     # get all new papers. Note this will not write any to disk until it has got all of them.
