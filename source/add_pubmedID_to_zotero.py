@@ -72,12 +72,15 @@ def main(argv):
             # Extra
             # PMID: ####
 
-        if pmid:
+        try:
+            pmid
             update = {}
             update['key'] = paper['key']
             update['extra'] = 'PMID:'+pmid
 
             zot.uploadExtra(update)
+        except:
+            pass
 
 
 if __name__ == '__main__':
