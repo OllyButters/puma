@@ -6,12 +6,12 @@
 
 import sys
 import os
+import re
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from Bio import Entrez
-# from pprint import pprint
-import get.papersZotero as pz
-import get.papersZotero as pz
+from pprint import pprint
 import config.config as config
+from pyzotero import zotero
 
 # Note the sys.path stuff here is so it picks up the files in parent directories
 # Need to figure out how to do this properly
@@ -34,67 +34,88 @@ def main(argv):
 
     config.build_config_variables(root_dir)
 
-    # instantiate the class
-    zot = pz.zotPaper()
+    # Connect to zotero and see what's on it
+    zot = zotero.Zotero(config.zotero_id, config.zotero_type, config.zotero_api_key,)
 
-    zot.collection = config.zotero_collection
+    print("Items in zotero: " + str(zot.count_items()))
 
-    # get list of ALL keys in this zotero library instance
-    zot.getPapersKeys()
+    #zotero_data = zot.items(limit=10)
+    zotero_data = zot.everything(zot.items())
 
-    new_keys = []
-    new_keys = zot.papers_keys
+    # pprint(zotero_data[0])
 
-    # get all new papers. Note this will not write anything to disk
-    zot.getPapersList(key_list=new_keys)
+    print("Items downloaded from zotero: " + str(len(zotero_data)))
 
-    num_papers = len(zot)
-    print(str(num_papers) + " to process.")
+    number_of_items = len(zotero_data)
+    n = 0
 
-    for num, paper in enumerate(zot.papers):
-        print("\nWorking on " + str(num) + "/" + str(num_papers))
-        # pprint(paper)
+    for this_item in zotero_data:
 
-        # Don't care about attachment or note items
-        if paper['data']['itemType'] in ('attachment', 'note'):
-            print("itemType: " + paper['data']['itemType'] + " skipping")
+        n = n + 1
+        print("\n" + str(n) + "/" + str(number_of_items))
+        print(this_item['key'])
+        # Not interested in attachment or note itemTypes
+        if this_item['data']['itemType'] in ('attachment', 'note', 'book', 'bookSection'):
+            print("itemType: " + this_item['data']['itemType'] + " skipping")
             continue
 
-        print(paper['key'])
-        print(paper['data']['DOI'])
-        print(paper['data']['extra'])
-
-        ######################
-        # search pubmed for doi and get pmid
-        try:
-            Entrez.email = config.pubmed_email       # Always tell NCBI who you are
-            handle = Entrez.esearch(db="pubmed", term=paper['data']['DOI']+'[Location ID]')
-
-            pmid_data = {}
-            pmid_data = Entrez.read(handle)
-            handle.close()
-
-            if pmid_data.get('Count') == "1":
-                pmid = pmid_data['IdList'][0]
-                print("PMID from PubMed: " + pmid)
-
-        except ValueError as e:
-            error = "Pubmed search for DOI: "+paper['data']['DOI']+" error: "+str(e)
-            print(error)
-        except RuntimeError as e:
-            error = "Pubmed search for DOI: "+paper['data']['DOI']+" error: "+str(e)
-            print(error)
+        # If there is already a pmid in the extra field then skip this one
+        if re.search(r'PMID:', this_item['data']['extra']):
+            print("PMID already exists for " + this_item['key'])
+            continue
 
         try:
-            pmid
-            update = {}
-            update['key'] = paper['key']
-            update['extra'] = 'PMID:'+pmid
+            print("This DOI: " + this_item['data']['DOI'])
 
-            zot.uploadExtra(update)
+            ######################
+            # search pubmed for doi and get pmid
+            try:
+                Entrez.email = config.pubmed_email       # Always tell NCBI who you are
+                handle = Entrez.esearch(db="pubmed", term=this_item['data']['DOI']+'[Location ID]')
+
+                pmid_data = {}
+                pmid_data = Entrez.read(handle)
+                handle.close()
+
+                if pmid_data.get('Count') == "1":
+                    pmid = pmid_data['IdList'][0]
+                    print("PMID from PubMed: " + pmid)
+
+            except ValueError as e:
+                error = "Pubmed search for DOI: "+this_item['data']['DOI']+" error: "+str(e)
+                print(error)
+            except RuntimeError as e:
+                error = "Pubmed search for DOI: "+this_item['data']['DOI']+" error: "+str(e)
+                print(error)
+
+            try:
+                # If there isn't a valid new pmid this will throw
+                pmid
+                
+                # Append the PMID to whatever is there
+                this_item['data']['extra'] = 'PMID:' + pmid + "\n" + this_item['data']['extra']
+
+                try:
+                    # Note that this seems to require the whole item - just putting
+                    # the extra field in fails
+                    status = zot.update_item(this_item)
+
+                    if status:
+                        print("PMID added successfully")
+                except:
+                    print(status)
+            except:
+                print("No PMID found")
+                pass
         except:
-            pass
+            print("No DOI for: ")
+            print(this_item)
+
+
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    try:
+        main(sys.argv[1:])
+    except KeyboardInterrupt:
+        sys.exit(0)
