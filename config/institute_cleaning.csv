@@ -8,6 +8,7 @@ anu.edu.au,Australian National University
 bahcesehir.edu.tr,Bahçeşehir University
 bathspa.ac.uk,Bath Spa University
 bthft.nhs.uk,Bradford Royal Infirmary
+uni-bremen.de,University of Bremen
 bbk.ac.uk,"Birkbeck, University of London"
 bristol.ac.uk,University of Bristol
 bris.ac.uk,University of Bristol
@@ -142,6 +143,7 @@ University of Edinburgh,University of Edinburgh
 University of Essex,University of Essex
 University of Exeter,University of Exeter
 Erasmus University,Erasmus University Rotterdam
+Edge Hill University,Edge Hill University
 #F,
 Institute for Fiscal Studies,Institute for Fiscal Studies
 #G,
@@ -153,6 +155,8 @@ University of Hertfordshire,University of Hertfordshire
 Imperial,Imperial College London
 Institute of Education,UCL Institute of Education
 Institute of Cancer Research,Institute of Cancer Research
+#J,
+John Innes Centre,John Innes Centre
 #K,
 King's College,King's College London
 King’s College,King's College London
@@ -264,6 +268,7 @@ John Radcliffe Hospital,John Radcliffe Hospital
 Leeds General Infirmary,Leeds General Infirmary
 Liverpool School of Tropical Medicine,Liverpool School of Tropical Medicine
 Ty Bryn Unit,"St Cadoc's Hospital"
+University Hospital of South Manchester,University Hospital of South Manchester NHS Foundation Trust
 Mersey Care NHS Foundation Trust,Mersey Care NHS Foundation Trust
 NICE,National Institute for Health and Care Excellence
 Ninewells Hospital,Ninewells Hospital
@@ -308,6 +313,7 @@ International Longevity Centre UK,International Longevity Centre UK
 ##,
 23andMe,23andMe
 #A,
+Aalborg University Hospital,Aalborg University Hospital
 Aarhus University,Aarhus University
 University of Adelaide,North Terrace campus
 University of Alabama,University of Alabama
@@ -347,6 +353,7 @@ St. Clare's Mercy Hospital,St. Clare's Mercy Hospital
 University of Colorado,University of Colorado
 Columbia University,Columbia University
 University of Copenhagen,University of Copenhagen
+Copenhagen University,University of Copenhagen
 Københavns Universitet,University of Copenhagen
 Cork University Maternity Hospital,Cork University Hospital
 Cornell University,Cornell University
