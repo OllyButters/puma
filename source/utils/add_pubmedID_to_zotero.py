@@ -7,6 +7,7 @@
 import sys
 import os
 import re
+import urllib.parse
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from Bio import Entrez
 from pprint import pprint
@@ -72,7 +73,8 @@ def main(argv):
             # search pubmed for doi and get pmid
             try:
                 Entrez.email = config.pubmed_email       # Always tell NCBI who you are
-                handle = Entrez.esearch(db="pubmed", term=this_item['data']['DOI']+'[Location ID]')
+                # handle = Entrez.esearch(db="pubmed", term=this_item['data']['DOI']+'[Location ID]')
+                handle = Entrez.esearch(db="pubmed", term=urllib.parse.quote(this_item['data']['DOI']))
 
                 pmid_data = {}
                 pmid_data = Entrez.read(handle)
