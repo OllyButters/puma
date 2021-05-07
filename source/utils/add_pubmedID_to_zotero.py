@@ -54,6 +54,7 @@ def main(argv):
         n = n + 1
         print("\n" + str(n) + "/" + str(number_of_items))
         print(this_item['key'])
+        pmid = None
         # Not interested in attachment or note itemTypes
         if this_item['data']['itemType'] in ('attachment', 'note', 'book', 'bookSection'):
             print("itemType: " + this_item['data']['itemType'] + " skipping")
@@ -89,21 +90,20 @@ def main(argv):
                 print(error)
 
             try:
-                # If there isn't a valid new pmid this will throw
-                pmid
-                
-                # Append the PMID to whatever is there
-                this_item['data']['extra'] = 'PMID:' + pmid + "\n" + this_item['data']['extra']
+                if pmid is not None:
+                    
+                    # Append the PMID to whatever is there
+                    this_item['data']['extra'] = 'PMID:' + pmid + "\n" + this_item['data']['extra']
 
-                try:
-                    # Note that this seems to require the whole item - just putting
-                    # the extra field in fails
-                    status = zot.update_item(this_item)
+                    try:
+                        # Note that this seems to require the whole item - just putting
+                        # the extra field in fails
+                        status = zot.update_item(this_item)
 
-                    if status:
-                        print("PMID added successfully")
-                except:
-                    print(status)
+                        if status:
+                            print("PMID added successfully (" + stc(pmid) + ")")
+                    except:
+                        print(status)
             except:
                 print("No PMID found")
                 pass
