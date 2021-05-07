@@ -93,11 +93,20 @@ def build_common_body(breadcrumb, nav_path, body):
 # Build a common footer for all the pages.
 ###########################################################
 def build_common_foot():
-    # This function builds the common footer for all pages.
+
+    # Output the timestamp to file
+    timestamp_file = open(config.html_dir + '/timestamp.html', 'w')
+    timestamp_file.write(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
+    timestamp_file.close()
+
     html = '</div>'
     html += '</div>'
     html += '<div class="foot">'
-    html += ' Stats last updated on ' + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
+    # Put a link to the timestamp file, but update it to the content via JS. This means
+    # there will be a mechanism to see this when running locally and COS stops JS calls.
+    html += '<span id="update_timestamp"><a href="' + config.html_dir + '/timestamp.html">Update time</a></span>'
+    html += '<script>update_timestamp()</script>'
+    # html += ' Stats last updated on ' + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
     html += '</div>'
     html += '</body>'
     html += '</html>'
@@ -121,6 +130,9 @@ def build_home(papers):
     # Copy CSS files
     shutil.copyfile(config.template_dir + '/style_main.css', config.html_dir + '/css/style_main.css')
 
+    shutil.copyfile(config.template_dir + '/timestamp.js', config.html_dir + '/timestamp.js')
+
+
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
 
@@ -129,6 +141,7 @@ def build_home(papers):
     temp += '<title>' + site_second_title + '</title>'
     temp += '<link rel="stylesheet" href="css/style_main.css">'
     temp += '<link rel="stylesheet" href="css/colour_scheme.css">'
+    temp += '<script src="timestamp.js"></script>'
     temp += '</head>'
 
     temp += build_common_body("", "", "")
