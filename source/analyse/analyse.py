@@ -157,8 +157,8 @@ def word_frequencies(papers, item):
             # and its not in the stop words file
             keep_words = []
             for this_word in temp_words:
-                # Do a regex to make sure it uses a-z'-
-                if re.search("^[a-z'-]+$", this_word):
+                # Do a regex to make sure it uses a-z and optionally '-0-9
+                if re.search("^[a-z]+['\-0-9]*$", this_word):
                     # Note that the output of lemmatizing may make a new word
                     # that is in the stopwords, but as that is run later
                     # it will not be removed. i.e. if you think this isn't
