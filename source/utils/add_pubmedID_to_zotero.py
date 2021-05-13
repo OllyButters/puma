@@ -73,12 +73,18 @@ def main(argv):
             # search pubmed for doi and get pmid
             try:
                 Entrez.email = config.pubmed_email       # Always tell NCBI who you are
-                # handle = Entrez.esearch(db="pubmed", term=this_item['data']['DOI']+'[Location ID]')
-                handle = Entrez.esearch(db="pubmed", term=urllib.parse.quote(this_item['data']['DOI']))
+                # [Location ID] or [AID] seem to be the best field to search for DOIs on.
+                # https://pubmed.ncbi.nlm.nih.gov/help/#search-tags
+                # Note that some punctuation in DOIs causes problems with search - brackets () particularly
+                # seem to break things. URL escaping doesn't seem to fix this, but hardcoding quotation marks
+                # around the DOI does work.
+                handle = Entrez.esearch(db="pubmed", term="\""+this_item['data']['DOI']+"\"[AID]")
 
                 pmid_data = {}
                 pmid_data = Entrez.read(handle)
                 handle.close()
+
+                pprint(pmid_data)
 
                 if pmid_data.get('Count') == "1":
                     pmid = pmid_data['IdList'][0]
@@ -93,6 +99,7 @@ def main(argv):
 
             try:
                 if pmid is not None:
+                    
                     
                     # Append the PMID to whatever is there
                     this_item['data']['extra'] = 'PMID:' + pmid + "\n" + this_item['data']['extra']
