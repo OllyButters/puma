@@ -134,13 +134,13 @@ def geocode(papers):
 
                 # Try the main location
                 try:
-                    this_paper['clean']['location']['postal_town'] = data['results']['bindings'][0]['mainTownLabel']['value']
+                    # this_paper['clean']['location']['postal_town'] = data['results']['bindings'][0]['mainTownLabel']['value']
                     this_paper['clean']['location']['latitude'] = data['results']['bindings'][0]['mainLat']['value']
                     this_paper['clean']['location']['longitude'] = data['results']['bindings'][0]['mainLon']['value']
                 except:
                     # Fall back to the HQ location if there is one
                     try:
-                        this_paper['clean']['location']['postal_town'] = data['results']['bindings'][0]['hqTownLabel']['value']
+                        # this_paper['clean']['location']['postal_town'] = data['results']['bindings'][0]['hqTownLabel']['value']
                         this_paper['clean']['location']['latitude'] = data['results']['bindings'][0]['hqLat']['value']
                         this_paper['clean']['location']['longitude'] = data['results']['bindings'][0]['hqLon']['value']
                     except:
@@ -150,8 +150,8 @@ def geocode(papers):
                 try:
                     print(this_paper['clean']['location']['country'])
                     logging.info(this_paper['clean']['location']['country'])
-                    print(this_paper['clean']['location']['postal_town'])
-                    logging.info(this_paper['clean']['location']['postal_town'])
+                    # print(this_paper['clean']['location']['postal_town'])
+                    # logging.info(this_paper['clean']['location']['postal_town'])
                 except:
                     pass
 
