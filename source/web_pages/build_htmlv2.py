@@ -1824,6 +1824,9 @@ def build_css_colour_scheme():
     temp += "color:#" + config.project_details['colour_hex_primary'] + ";"
     temp += "}"
 
+    # Hide the description text by default
+    temp += "div#content div.metric div.metric_description {display: none;}"
+
     temp += "div#content div.metric:hover {"
     temp += "background:#" + config.project_details['colour_hex_primary'] + ";"
     temp += "}"
@@ -1836,8 +1839,8 @@ def build_css_colour_scheme():
     temp += "color:#f2f2f2;"
     temp += "}"
 
-    temp += "div#content div.metric div.metric_description {"
-    temp += "color:#efede9;"
+    temp += "div#content div.metric:hover div.metric_description {"
+    temp += "color:#efede9; display: block;"
     temp += "}"
 
     temp += "a:link {color:#" + config.project_details['colour_hex_primary'] + "}"
