@@ -103,8 +103,9 @@ def build_common_foot():
     html += '</div>'
     html += '<div class="foot">'
     # Put a link to the timestamp file, but update it to the content via JS. This means
-    # there will be a mechanism to see this when running locally and COS stops JS calls.
+    # there will be a mechanism to see this when running locally as COS stops JS calls.
     html += '<span id="update_timestamp"><a href="' + config.html_dir + '/timestamp.html">Update time</a></span>'
+    html += "<script type='text/javascript' src='../timestamp.js'></script>"
     html += '<script>update_timestamp()</script>'
     # html += ' Stats last updated on ' + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
     html += '</div>'
@@ -1650,7 +1651,7 @@ def build_help():
     temp += '<title>' + site_second_title + '</title>'
     temp += '<link rel="stylesheet" href="../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
-    temp += '<link rel="stylesheet" href="../css/map.css">'
+    # temp += '<link rel="stylesheet" href="../css/map.css">'
 
     temp += '</head>'
 
@@ -1662,28 +1663,49 @@ def build_help():
     temp += '<h3>Publication Data</h3>'
     temp += '<p>Data and metadata for the publications are downloaded using the PubMed and DOI APIs.</p>'
 
+    temp += '<h3>What does PubMed, DOI and API mean?</h3>'
+    temp += '<p>PubMed is an online search engine which contains journal articles on lifesciences and biomedical topics. DOI is short for Digital Object Identifier and is the de facto way of referring to journal articles, they look like  <a href="https://doi.org/10.12688/f1000research.25484.2">https://doi.org/10.12688/f1000research.25484.2</a> and <a href="http://doi.org">http://doi.org</a> are in charge of them. An API is an Application Programming Interface, which is a fancy way of saying that computer programs can send and receive data to a service. So here we send and receive data to/from PubMed and doi.org.</p>'
+
     temp += '<h3>Citations Data</h3>'
     temp += '<p>Citation data is retrieved from the <a href="https://www.elsevier.com/solutions/scopus">Scopus</a> API provided by Elsevier and from the <a href="https://europepmc.org/">Europe PMC</a> API.</p>'
 
     temp += '<h3>Geodata</h3>'
     temp += '<p>The coordinate location and town of institutions is retrieved from the free project <a href="https://www.wikidata.org">Wikidata</a>.</p>'
 
+    temp += '<h2>What are the circles with numbers in them?</h2>'
+    temp += '<p>Journal article citations are one way to track how an article is being used. Another way is by considering a wider set of metrics, such as if it is mentioned in news articles, or on social media. This is what <a href"https://www.altmetric.com">https://www.altmetric.com</a> does, and by hovering your mouse over one of the circles (or clicking on it) you can get an overview of where this article is being talked about.</p>'
+
     temp += "<h2>Why don't some statistics use data from all publications?</h2>"
 
-    temp += '<p>Data can be missing because some publications are very old. There are many different ways to track publications'
+    temp += '<p>Data can be missing because some publications are very old and the data about it just doesn\'t exist, or sometimes a recent paper may not have the data about it available <em>yet</em>. There are many different ways to track publications'
     temp += ' and prior to the introduction of DOIs in 2000 there was no standard method. This means some metadata on old publications could have been lost or not recorded.</p>'
 
     temp += '<p>The data used for the statistics are gathered from databases which only collect data from particular journals.'
     temp += ' This problem is most obvious for citation data from Scopus and Europe PMC. Although they have a particular publication on record,'
-    temp += ' there may be citations for this publication from a journal that they do not index and therefore these will not be in the citation count. This is why citiation counts from different sources are not always the same.</p>'
+    temp += ' there may be citations for this publication from a journal that they do not index and therefore these will not be in the citation count. This is why citation counts from different sources are not always the same.</p>'
+
+    temp += '<h2>What\' the difference between "All keywords" and "Major keywords (MeSH)"?</h2>'
+    temp += '<p>These keywords are assigned to journal articles when they are published. MeSH (Medical Subject Headings) is a commonly used hierarchical controlled vocabulary. This means that there is a list of well defined terms which are allowed to be used (controlled vocabulary), and they are related to one another (hierarchical) e.g. "finger" belongs to "hand". So the Major Keywords are the broader areas, and all keywords will be more fine grained. </p>'
+
+
 
     temp += '<h2>I want to know more!</h2>'
     temp += '<ul>'
     temp += '<li>The source code is at <a href="https://github.com/OllyButters/puma">https://github.com/OllyButters/puma</a></li>'
     temp += '<li>Some documentation is at <a href="https://github.com/OllyButters/puma/wiki">https://github.com/OllyButters/puma/wiki</a></li>'
-    temp += '<li>You can talk to us at: <a href="https://twitter.com/DrOllyButters">@DrOllyButters</a>, <a href="https://twitter.com/DrBeccaWilson">@DrBeccaWilson</a> and <a href="https://twitter.com/_hugh_garner_">@_hugh_garner_</a></li>'
-    temp += '<li>This project has been funded by: <ul><li>CLOSER, whose mission is to maximise the use, value and impact of longitudinal studies. CLOSER is funded by the Economic and Social Research Council (ESRC) and Medical Research Council (MRC) (grant reference: ES/K000357/1).</li><li>Becca Wilson is a UKRI Innovation Fellow with HDR UK [MR/S003959/1].</li><li>We have also had funding by the Nuffield Foundation research placement program.</li></ul></li>'
-    temp += '</li>'
+    temp += '<li>There is even a paper written about it: <a href="https://f1000research.com/articles/9-1095/v2">https://f1000research.com/articles/9-1095/v2</a></li>'
+    temp += '<li>You can talk to us at: <a href="https://twitter.com/DrOllyButters">@DrOllyButters</a>, <a href="https://twitter.com/DrBeccaWilson">@DrBeccaWilson</a> and <a href="https://twitter.com/_hugh_garner_">@_hugh_garner_</a></li></ul>'
+    
+    temp += '<h2>Funding</h2>'
+    temp += 'This project has been funded by:'
+    temp += '<ul>'
+    temp += '<li>CLOSER, whose mission is to maximise the use, value and impact of longitudinal studies. CLOSER is funded by the Economic and Social Research Council (ESRC) and Medical Research Council (MRC) (grant reference: ES/K000357/1).</li>'
+    temp += '<li>Becca Wilson is a UKRI Innovation Fellow with HDR UK [MR/S003959/1].</li>'
+    temp += '<li>The Nuffield Foundation research placement program.</li>'
+    temp += '<li>The Wellcome Trust and Medical Research Council (grant number 108439/Z/15/Z).</li>'
+    temp += '<li>The European Union’s Horizon 2020 research and innovation programme under grant agreement No 824989 and the Canadian Institutes of Health Research (CIHR).</li>'
+    temp += '<li>The National Institute for Health Research Applied Research Collaboration.</li>'
+    temp += '</ul>'
 
     html_file.write(temp)
 
