@@ -17,6 +17,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
+    - name: Checkout tools repo
+      uses: actions/checkout@v2
+      with:
+       repository: OllyButters/opal-twitter
+       path: my-tools
+    
     - uses: OllyButters/python@main
     
     - name: Set up Python 3.9
