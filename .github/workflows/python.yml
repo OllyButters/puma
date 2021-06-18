@@ -22,9 +22,7 @@ jobs:
       with:
        repository: OllyButters/opal-twitter
        path: my-tools
-    
-    - uses: OllyButters/python@main
-    
+        
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
