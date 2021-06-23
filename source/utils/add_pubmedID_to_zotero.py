@@ -110,7 +110,7 @@ def main(argv):
                         status = zot.update_item(this_item)
 
                         if status:
-                            print("PMID added successfully (" + stc(pmid) + ")")
+                            print("PMID added successfully (" + str(pmid) + ")")
                     except:
                         print(status)
             except:
