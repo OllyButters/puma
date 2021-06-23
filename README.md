@@ -44,6 +44,7 @@ The wiki (<https://github.com/OllyButters/puma/wiki>) has the best instructions,
 ## PUMA project publications
 
 Butters et al., 2019. DOI: [10.12688/wellcomeopenres.14986.1](https://dx.doi.org/10.12688%2Fwellcomeopenres.14986.1)
+Butters et al., 2021. DOI: [10.12688/f1000research.25484.2](https://doi.org/10.12688/f1000research.25484.2)
 
 ## Project Leads
 
