@@ -1,5 +1,5 @@
-function update_timestamp() {
-    fetch("https://ollybutters.github.io/puma/timestamp.html")
+function update_timestamp(timestamp_path) {
+    fetch(timestamp_path)
     .then(response => {
         return response.text()
     })

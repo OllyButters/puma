@@ -95,7 +95,7 @@ def build_common_body(breadcrumb, nav_path, body):
 def build_common_foot():
 
     # Output the timestamp to file
-    timestamp_file = open(config.html_dir + '/timestamp.html', 'w')
+    timestamp_file = open(config.html_dir + '/timestamp.txt', 'w')
     timestamp_file.write(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
     timestamp_file.close()
 
@@ -106,7 +106,7 @@ def build_common_foot():
     # there will be a mechanism to see this when running locally as COS stops JS calls.
     html += '<span id="update_timestamp"><a href="' + config.html_dir + '/timestamp.html">Update time</a></span>'
     html += "<script type='text/javascript' src='../timestamp.js'></script>"
-    html += '<script>update_timestamp()</script>'
+    html += '<script>update_timestamp("/puma/' + config.project_details['short_name'] + '/timestamp.txt")</script>'
     # html += ' Stats last updated on ' + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
     html += '</div>'
     html += '</body>'
