@@ -40,7 +40,8 @@ div.logo-additional {
 
 /* ==== MAIN PAGE CONTENT ==== */
 div#wrapper{
-  min-height: calc( 100% - 107px - 2.75em - 2em - 1px - 50px - 39px)
+  /*min-height: calc( 100% - 107px - 2.75em - 2em - 1px - 50px - 39px)*/
+  min-height: 200px;
 }
 
 div#content {

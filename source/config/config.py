@@ -36,6 +36,8 @@ def build_config_variables(root_dir):
 
     # Some data cannot be dispayed on a public facing website - e.g. all the data in merged json file.
     global public_facing
+    global is_in_iframe
+    global show_institute_country_map
 
     global page_show_author_network
 
@@ -103,6 +105,8 @@ def build_config_variables(root_dir):
         # Pages
         page_show_author_network = config.get('pages', 'page_show_author_network')
         public_facing = config.getboolean('pages', 'public_facing')
+        is_in_iframe = config.getboolean('pages', 'is_in_iframe')
+        show_institute_country_map = config.getboolean('pages', 'show_institute_country_map')
 
         # Networks
         network_create_networks = config.getboolean('networks', 'create_networks')
