@@ -26,7 +26,7 @@ def main(argv):
 
     config.build_config_variables(root_dir)
 
-    doi_list_path = "/home/olly/phps_dois.csv"
+    doi_list_path = "/home/olly/arc_puma_mockup/arc_dois.csv"
 
     # Get the list of DOIs in the input file
     input_dois = []
