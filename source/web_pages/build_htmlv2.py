@@ -10,7 +10,6 @@ import codecs
 import os
 import logging
 import sys
-import math
 
 import config.config as config
 
@@ -27,7 +26,7 @@ def build_common_head(nav_path, extra_head_content):
 
     # Copy files across
     shutil.copyfile(config.template_dir + '/style_main.css', config.html_dir + '/css/style_main.css')
-    shutil.copyfile(config.template_dir + '/timestamp.js', config.html_dir + '/timestamp.js') 
+    shutil.copyfile(config.template_dir + '/timestamp.js', config.html_dir + '/timestamp.js')
     shutil.copyfile(config.template_dir + '/iframe.js', config.html_dir + '/iframe.js')
 
     # Put html together for this page
@@ -79,10 +78,10 @@ def build_common_body(breadcrumb, nav_path):
     html += '<li><a href="' + nav_path + 'search/index.html">Search</a></li>'
     html += '<li><a href="' + nav_path + 'all_keywords/index.html">All Keywords</a></li>'
     html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords (MeSH)</a></li>'
-    
+
     if config.show_institute_country_map:
         html += '<li><a href="' + nav_path + 'country/index.html">Map by Country</a></li>'
-    
+
     html += '<li><a href="' + nav_path + 'institute/index.html">Map by UK institute</a></li>'
 
     if config.page_show_author_network:
@@ -157,23 +156,6 @@ def build_home(papers):
 
     html_file = open(config.html_dir + '/index.html', 'w')
     data_file = open(config.html_dir + '/data.js', 'w')
-
-    # Copy CSS files
-    #shutil.copyfile(config.template_dir + '/style_main.css', config.html_dir + '/css/style_main.css')
-
-    #shutil.copyfile(config.template_dir + '/timestamp.js', config.html_dir + '/timestamp.js')
-
-
-    # # Put html together for this page
-    # temp = '<!DOCTYPE html><html lang="en-GB">'
-
-    # html head
-    # temp += '<head>'
-    # temp += '<title>' + site_second_title + '</title>'
-    # temp += '<link rel="stylesheet" href="css/style_main.css">'
-    # temp += '<link rel="stylesheet" href="css/colour_scheme.css">'
-    # temp += '<script src="timestamp.js"></script>'
-    # temp += '</head>'
 
     temp = build_common_head("", "")
     temp += build_common_body("", "")
@@ -389,16 +371,6 @@ def build_papers(papers):
     yearly_papers = {}
     html_file = open(config.html_dir + '/papers/index.html', 'w')
 
-    # Put html together for this page
-    # temp = '<!DOCTYPE html><html lang="en-GB">'
-
-    # # html head
-    # temp += '<head>'
-    # temp += '<title>' + site_second_title + '</title>'
-    # temp += '<link rel="stylesheet" href="../css/style_main.css">'
-    # temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
-    # temp += '</head>'
-
     temp = build_common_head("../", "")
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Papers List</p>', "../")
 
@@ -441,16 +413,6 @@ def build_papers(papers):
         if not os.path.exists(config.html_dir + '/papers/' + this_year):
             os.mkdir(config.html_dir + '/papers/' + this_year)
         year_file = open(config.html_dir + '/papers/' + this_year + '/index.html', 'w')
-
-        # # Put html together for this page
-        # temp = '<!DOCTYPE html><html lang="en-GB">'
-
-        # # html head
-        # temp += '<head>'
-        # temp += '<title>' + site_second_title + '</title>'
-        # temp += '<link rel="stylesheet" href="../../css/style_main.css">'
-        # temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
-        # temp += '</head>'
 
         temp = build_common_head("../../", "")
         temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; <a href="../index.html">Papers List</a> &gt; ' + this_year + '</p>', "../../")
@@ -672,17 +634,8 @@ def build_mesh(papers):
     html_file_all.write(temp)
     ######################################
 
-
     ######################################
     # Make HTML index page for MAJOR MESH headings
-    # temp = '<!DOCTYPE html><html lang="en-GB">'
-
-    # # html head
-    # temp += '<head>'
-    # temp += '<title>' + site_second_title + '</title>'
-    # temp += '<link rel="stylesheet" href="../css/style_main.css">'
-    # temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
-    # temp += '</head>'
 
     temp = build_common_head("../", "")
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keywords (MeSH)</p>', "../")
@@ -709,8 +662,6 @@ def build_mesh(papers):
 
     # word_cloud_raw = ""
 
-  
-
     ############################################
     # Make an HTML page for ALL MESH terms
     for this_mesh in mesh_papers_all:
@@ -721,7 +672,7 @@ def build_mesh(papers):
             ############################################
             # Calculate keyword usage and citations over time.
             # Saved to a json file for google chart to use
- 
+
             summary = {}
             # Calculate the number of papers for each year
             for this_paper in mesh_papers_all[this_mesh]:
@@ -780,14 +731,7 @@ def build_mesh(papers):
         file_name = config.html_dir + '/mesh/' + this_mesh + '/index.html'
         with codecs.open(file_name, 'wb', "utf-8") as fo:
 
-            # # Put html together for this page
-            # temp = '<!DOCTYPE html><html lang="en-GB">'
-
-            # # html head
-            # temp += '<head>'
-            # temp += '<title>' + site_second_title + '</title>'
-            # temp += '<link rel="stylesheet" href="../../css/style_main.css">'
-            # temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
+            # Put html together for this page
 
             # extra JS needed for the plots of keywords
             extra_head = '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
@@ -795,8 +739,6 @@ def build_mesh(papers):
             extra_head += '<script>var primary_colour = "#' + config.project_details['colour_hex_primary'] + '";</script>'
             extra_head += '<script>var secondary_colour = "#' + config.project_details['colour_hex_secondary'] + '";</script>'
             extra_head += '<script type="text/javascript" src="../keyword_history.js"></script>'
-
-            # temp += '</head>'
 
             temp = build_common_head("../../", extra_head)
             temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; Keyword &gt; ' + this_mesh + '</p>', "../../")
@@ -840,7 +782,6 @@ def build_mesh(papers):
             fo.write(temp)
 
         fo.close()
-
 
     # # MAJOR KEYWORD CLOUD
     # # Get first x MAJOR keywords in order
@@ -887,66 +828,6 @@ def build_mesh(papers):
 
 
 ###########################################################
-# Build a google map based on the lat longs provided before.
-###########################################################
-# def build_google_map(papers):
-
-#     print("\n###HTML - Instititutions Map###")
-
-#     info = []
-#     number_of_points = 0
-#     for this_paper in papers:
-#         try:
-#             this_place = {'lat': this_paper['clean']['location']['latitude'], 'long': this_paper['clean']['location']['longitude'], 'name': this_paper['clean']['location']['clean_institute']}
-#             info.append(this_place)
-#             number_of_points += 1
-#         except:
-#             pass
-
-#     kml = "var locations =["
-#     for this_info in info:
-#         kml += '["' + this_info['name'] + '",' + str(this_info['lat']) + ',' + str(this_info['long']) + '],'
-#     kml += ']'
-
-#     kml_file = codecs.open(config.html_dir + '/map/map.kml', 'w', 'utf-8')
-#     kml_file.write(kml)
-
-#     html_file = open(config.html_dir + '/map/index.html', 'w')
-
-#     # # Put html together for this page
-#     # temp = '<!DOCTYPE html><html lang="en-GB">'
-
-#     # # html head
-#     # temp += '<head>'
-#     # temp += '<title>' + site_second_title + '</title>'
-#     # temp += '<link rel="stylesheet" href="../css/style_main.css">'
-#     # temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
-#     # temp += '<link rel="stylesheet" href="../css/map.css">'
-
-#     shutil.copyfile(config.template_dir + '/map.js', config.html_dir + '/map/map.js')
-#     shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/css/map.css')
-
-#     extra_head = '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>'
-#     extra_head += '<script type="text/javascript" src="map.kml"></script>'
-#     extra_head += '<script type="text/javascript" src="map.js"></script>'
-
-#     # temp += '</head>'
-
-#     temp = build_common_head("../", extra_head)
-#     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Institutions Map</p>', "../", "onload='initialize()'")
-
-#     temp += '<h1 id="pagetitle">Institutions Map</h1>'
-
-#     temp += "<div id='map_canvas'></div>"
-#     temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
-
-#     html_file.write(temp)
-
-#     temp = build_common_foot()
-#     html_file.write(temp)
-
-
-###########################################################
 # Publications by country
 ###########################################################
 def build_country_map(papers):
@@ -977,24 +858,13 @@ def build_country_map(papers):
     html_file = open(config.html_dir + '/country/index.html', 'w')
 
     # Put html together for this page
-    # temp = '<!DOCTYPE html><html lang="en-GB">'
-
-    # # html head
-    # temp += '<head>'
-    # temp += '<title>' + site_second_title + '</title>'
-    # temp += '<link rel="stylesheet" href="../css/style_main.css">'
-    # temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
 
     shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/country/loading.gif')
     shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/css/map.css')
 
-
     extra_head = '<link rel="stylesheet" href="../css/map.css">'
     extra_head += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     extra_head += '<script type="text/javascript">' + "google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawRegionsMap);function drawRegionsMap() {var data = google.visualization.arrayToDataTable([ ['Country', 'Publications']" + country_string + "]); var options = { colorAxis: {colors: ['#" + config.project_details['colour_hex_secondary'] + "', '#" + config.project_details['colour_hex_primary'] + "']} }; var chart = new google.visualization.GeoChart(document.getElementById('regions_div')); chart.draw(data, options); }</script>"
-
-
-    # temp += '</head>'
 
     temp = build_common_head("../", extra_head)
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by Country</p>', "../")
@@ -1042,22 +912,13 @@ def build_institute_map(papers):
     html_file = open(config.html_dir + '/institute/index.html', 'w')
 
     # # Put html together for this page
-    # temp = '<!DOCTYPE html><html lang="en-GB">'
 
-    # # html head
-    # temp += '<head>'
-    # temp += '<title>' + site_second_title + '</title>'
-    # temp += '<link rel="stylesheet" href="../css/style_main.css">'
-    # temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
-    
     shutil.copyfile(config.template_dir + '/loading.gif', config.html_dir + '/institute/loading.gif')
     shutil.copyfile(config.template_dir + '/map.css', config.html_dir + '/css/map.css')
 
     extra_head = '<link rel="stylesheet" href="../css/map.css">'
     extra_head += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>'
     extra_head += "<script>google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['lat', 'lon', 'Institute','Publication count']" + institute_string + " ]); var options = {magnifyingGlass: {zoomFactor: '15.0'}, region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#" + config.project_details['colour_hex_secondary'] + "', '#" + config.project_details['colour_hex_primary'] + "']}}; var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));chart.draw(data, options); };</script>"
-  
-    #temp += '</head>'
 
     temp = build_common_head("../", extra_head)
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by UK City</p>', "../")
@@ -1229,14 +1090,6 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
         n_papers_with_x_citations += "]);"
 
     # Put html together for this page
-    # temp = '<!DOCTYPE html><html lang="en-GB">'
-
-    # # html head
-    # temp += '<head>'
-    # temp += '<title>' + site_second_title + '</title>'
-    # temp += '<link rel="stylesheet" href="../css/style_main.css">'
-    # temp += '<link rel="stylesheet" href="../css/map.css">'
-    # temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
 
     shutil.copyfile(config.template_dir + '/metrics.js', config.html_dir + '/metrics/metrics.js')
 
@@ -1246,8 +1099,6 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     extra_head += '<script type="text/javascript" src="../map/map.js"></script>'
     extra_head += '<script>var primary_colour = "#' + config.project_details['colour_hex_primary'] + '";</script>'
     extra_head += '<script type="text/javascript" src="metrics.js"></script>'
-
-    # temp += '</head>'
 
     temp = build_common_head("../", extra_head)
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Study Metrics</p>', "../")
@@ -1335,50 +1186,6 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     html_file.write(temp)
 
 
-# ###########################################################
-# # Build keyword word cloud
-# ###########################################################
-# def build_word_cloud(papers, list, data_from_count):
-
-#     print("\n###HTML - Keyword Cloud###")
-
-#     html_file = open(config.html_dir + '/wordcloud/index.html', 'w')
-
-#     # Put html together for this page
-#     temp = '<!DOCTYPE html><html lang="en-GB">'
-
-#     # html head
-#     temp += '<head>'
-#     temp += '<title>' + site_second_title + '</title>'
-#     temp += '<link rel="stylesheet" href="../css/style_main.css">'
-#     temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
-#     temp += '<link rel="stylesheet" href="../css/map.css">'
-
-#     shutil.copyfile(config.template_dir + '/d3wordcloud.js', config.html_dir + '/wordcloud/d3wordcloud.js')
-#     shutil.copyfile(config.template_dir + '/d3.layout.cloud.js', config.html_dir + '/wordcloud/d3.layout.cloud.js')
-
-#     temp += '<script>var word_list = ' + list + '</script>'
-#     temp += '<script src="https://d3js.org/d3.v3.min.js"></script>'
-#     temp += '<script src="d3.layout.cloud.js"></script>'
-
-#     temp += '</head>'
-
-#     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keyword Cloud</p>', "../", "")
-
-#     temp += '<h1 id="pagetitle">Major Keyword Cloud</h1>'
-
-#     temp += '<cloud id="sourrounding_div" style="width:100%;height:500px">'
-#     temp += '</cloud>'
-#     temp += "<p>Data from " + intWithCommas(data_from_count) + " publications</p>"
-
-#     temp += '<script src="d3wordcloud.js"></script>'
-
-#     html_file.write(temp)
-
-#     temp = build_common_foot()
-#     html_file.write(temp)
-
-
 ###########################################################
 # Build abstract word cloud
 ###########################################################
@@ -1431,22 +1238,13 @@ def build_abstract_word_cloud(papers, data_from_count):
     html_file = open(config.html_dir + '/abstractwordcloud/index.html', 'w')
 
     # Put html together for this page
-    # temp = '<!DOCTYPE html><html lang="en-GB">'
 
-    # # html head
-    # temp += '<head>'
-    # temp += '<title>' + site_second_title + '</title>'
-    # temp += '<link rel="stylesheet" href="../css/style_main.css">'
-    # temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
-    
     shutil.copyfile(config.template_dir + '/d3wordcloud.js', config.html_dir + '/abstractwordcloud/d3wordcloud.js')
     shutil.copyfile(config.template_dir + '/d3.layout.cloud.js', config.html_dir + '/abstractwordcloud/d3.layout.cloud.js')
 
     extra_head = '<script src="list.js"></script>'
     extra_head += '<script src="https://d3js.org/d3.v3.min.js"></script>'
     extra_head += '<script src="d3.layout.cloud.js"></script>'
-
-    # temp += '</head>'
 
     temp = build_common_head("../", extra_head)
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Abstract Word Cloud</p>', "../")
@@ -1463,7 +1261,6 @@ def build_abstract_word_cloud(papers, data_from_count):
 
     temp = build_common_foot("../")
     html_file.write(temp)
-
 
 
 ###########################################################
@@ -1513,23 +1310,13 @@ def build_keyword_word_cloud(papers, data_from_count):
     html_file = open(config.html_dir + '/keyword_wordcloud/index.html', 'w')
 
     # # Put html together for this page
-    # temp = '<!DOCTYPE html><html lang="en-GB">'
 
-    # # html head
-    # temp += '<head>'
-    # temp += '<title>' + site_second_title + '</title>'
-    # temp += '<link rel="stylesheet" href="../css/style_main.css">'
-    # temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
-    # temp += '<link rel="stylesheet" href="../css/map.css">'
-    
     shutil.copyfile(config.template_dir + '/d3wordcloud.js', config.html_dir + '/keyword_wordcloud/d3wordcloud.js')
     shutil.copyfile(config.template_dir + '/d3.layout.cloud.js', config.html_dir + '/keyword_wordcloud/d3.layout.cloud.js')
 
     extra_head = '<script src="list.js"></script>'
     extra_head += '<script src="https://d3js.org/d3.v3.min.js"></script>'
     extra_head += '<script src="d3.layout.cloud.js"></script>'
-
-    # temp += '</head>'
 
     temp = build_common_head("../", extra_head)
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Keyword Word Cloud</p>', "../")
@@ -1619,18 +1406,9 @@ def build_author_network(papers, network):
             logging.warn("Not Author Network Image")
 
     # Put html together for this page
-    # temp = '<!DOCTYPE html><html lang="en-GB">'
 
-    # # html head
-    # temp += '<head>'
-    # temp += '<title>' + site_second_title + '</title>'
-    # temp += '<link rel="stylesheet" href="../css/style_main.css">'
-    # temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
-    
     extra_head = '<style>.links line {  stroke: #999;  stroke-opacity: 0.6;} .nodes circle {  stroke: #fff;  stroke-width: 1.5px;} </style>'
     extra_head += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>'
-
-    # temp += '</head>'
 
     temp = build_common_head("../", extra_head)
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Author Network</p>', "../")
@@ -1687,14 +1465,6 @@ def build_help():
     html_file = open(config.html_dir + '/help/index.html', 'w')
 
     # # Put html together for this page
-    # temp = '<!DOCTYPE html><html lang="en-GB">'
-
-    # # html head
-    # temp += '<head>'
-    # temp += '<title>' + site_second_title + '</title>'
-    # temp += '<link rel="stylesheet" href="../css/style_main.css">'
-    # temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
-    # temp += '</head>'
 
     temp = build_common_head("../", "")
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Information</p>', "../")
@@ -1729,15 +1499,13 @@ def build_help():
     temp += '<h2>What\' the difference between "All keywords" and "Major keywords (MeSH)"?</h2>'
     temp += '<p>These keywords are assigned to journal articles when they are published. MeSH (Medical Subject Headings) is a commonly used hierarchical controlled vocabulary. This means that there is a list of well defined terms which are allowed to be used (controlled vocabulary), and they are related to one another (hierarchical) e.g. "finger" belongs to "hand". So the Major Keywords are the broader areas, and all keywords will be more fine grained. </p>'
 
-
-
     temp += '<h2>I want to know more!</h2>'
     temp += '<ul>'
     temp += '<li>The source code is at <a href="https://github.com/OllyButters/puma">https://github.com/OllyButters/puma</a></li>'
     temp += '<li>Some documentation is at <a href="https://github.com/OllyButters/puma/wiki">https://github.com/OllyButters/puma/wiki</a></li>'
     temp += '<li>There is even a paper written about it: <a href="https://f1000research.com/articles/9-1095/v2">https://f1000research.com/articles/9-1095/v2</a></li>'
     temp += '<li>You can talk to us at: <a href="https://twitter.com/DrOllyButters">@DrOllyButters</a>, <a href="https://twitter.com/DrBeccaWilson">@DrBeccaWilson</a> and <a href="https://twitter.com/_hugh_garner_">@_hugh_garner_</a></li></ul>'
-    
+
     temp += '<h2>Funding</h2>'
     temp += 'This project has been funded by:'
     temp += '<ul>'
@@ -1766,24 +1534,10 @@ def build_search(papers):
     shutil.copyfile(config.template_dir + '/search.js', config.html_dir + '/search/search.js')
 
     # Put html together for this page
-    # temp = '<!DOCTYPE html><html lang="en-GB">'
 
-    # # html head
-    # temp += '<head>'
-    # temp += '<title>' + site_second_title + '</title>'
-    # temp += '<link rel="stylesheet" href="../css/style_main.css">'
-    # temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
-
-    
-    #temp += '<script>var primary_colour = "' + config.project_details['colour_hex_primary'] + '";</script>'
-    #temp += '<script>var secondary_colour = "' + config.project_details['colour_hex_secondary'] + '";</script>'
-    
-    
     extra_head = '<script>var name = "' + config.project_details['name'] + '";</script>'
     extra_head += '<script src="search.js"></script>'
     extra_head += '<style> button { height:2em; font-size:1em; margin-left:5px; } input#search { width:50%; }</style>'
-
-    # temp += '</head>'
 
     temp = build_common_head("../", extra_head)
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Search</p>', "../")
@@ -1912,9 +1666,5 @@ def build_css_colour_scheme():
 
     temp += "a:link {color:#" + config.project_details['colour_hex_primary'] + "}"
     temp += "a:visited {color:#" + config.project_details['colour_hex_primary'] + "}"
-
-    # # If we are being displayed in an iframe then get rid of the header
-    # if config.is_in_iframe:
-    #     temp += ".header-container {display:none}"
 
     html_file.write(temp)

@@ -103,7 +103,7 @@ def build_config_variables(root_dir):
         metrics_study_current_year = int(config.get('metrics', 'metrics_study_current_year'))
 
         # Pages
-        page_show_author_network = config.get('pages', 'page_show_author_network')
+        page_show_author_network = config.getboolean('pages', 'page_show_author_network')
         public_facing = config.getboolean('pages', 'public_facing')
         is_in_iframe = config.getboolean('pages', 'is_in_iframe')
         show_institute_country_map = config.getboolean('pages', 'show_institute_country_map')
