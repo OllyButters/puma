@@ -53,7 +53,8 @@ def build_common_body(breadcrumb, nav_path, body):
     html += '<li><a href="' + nav_path + 'search/index.html">Search</a></li>'
     html += '<li><a href="' + nav_path + 'all_keywords/index.html">All Keywords</a></li>'
     html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords (MeSH)</a></li>'
-    html += '<li><a href="' + nav_path + 'country/index.html">Map by Country</a></li>'
+    if config.show_institute_country_map == "True":
+        html += '<li><a href="' + nav_path + 'country/index.html">Map by Country</a></li>'
     html += '<li><a href="' + nav_path + 'institute/index.html">Map by UK institute</a></li>'
 
     if config.page_show_author_network == "True":
