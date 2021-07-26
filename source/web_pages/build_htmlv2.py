@@ -25,19 +25,26 @@ site_second_title = " Data Set Publications"
 ############################################################
 def build_common_head(nav_path, extra_head_content):
 
-    # Copy CSS files
+    # Copy files across
     shutil.copyfile(config.template_dir + '/style_main.css', config.html_dir + '/css/style_main.css')
     shutil.copyfile(config.template_dir + '/timestamp.js', config.html_dir + '/timestamp.js')
 
+    if config.is_in_iframe:
+        shutil.copyfile(config.template_dir + '/iframe.js', config.html_dir + '/iframe.js')
 
     # Put html together for this page
     head = '<!DOCTYPE html><html lang="en-GB">'
 
     head += '<head>'
     head += '<title>' + site_second_title + '</title>'
+    head += '<meta charset="UTF-8">'
     head += '<link rel="stylesheet" href="' + nav_path + 'css/style_main.css">'
     head += '<link rel="stylesheet" href="' + nav_path + 'css/colour_scheme.css">'
     head += '<script src="' + nav_path + 'timestamp.js"></script>'
+
+    if config.is_in_iframe:
+        head += '<script src="' + nav_path + 'iframe.js"></script>'
+
     head += extra_head_content
     head += '</head>'
 
