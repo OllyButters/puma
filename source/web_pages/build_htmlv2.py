@@ -1604,7 +1604,7 @@ def build_css_colour_scheme():
 
     html_file = open(config.html_dir + '/css/colour_scheme.css', 'w')
 
-    temp = ".header-container {background: #" + config.project_details['colour_hex_primary'] + ";}"
+    temp = "#header-container {background: #" + config.project_details['colour_hex_primary'] + ";}"
 
     temp += "/* h1 */"
     temp += "#pagetitle {"
@@ -1619,18 +1619,14 @@ def build_css_colour_scheme():
     temp += "border-left: 1px solid rgba(255, 255, 255, 0.2);"
     temp += "}"
 
-    temp += ".header-container:before,"
-    temp += ".header-container:after {"
+    temp += "#header-container:before,"
+    temp += "#header-container:after {"
     temp += "display: block;"
     temp += "visibility: visible;"
     temp += "}"
 
     temp += ".nav-users a {"
     temp += "color: #fff;"
-    temp += "}"
-
-    temp += "color: rgba(255,255,255,0.4)!important;"
-    temp += ".nav-users .icon-arrow-right:after {"
     temp += "}"
 
     temp += "/* keywords list */"
