@@ -390,7 +390,7 @@ img {
 }
 
 /* #HEADER */
-.header-container {
+#header-container {
   background:#FFF;
   color:#333;
   min-height:95px;

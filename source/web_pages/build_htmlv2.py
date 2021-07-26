@@ -27,10 +27,8 @@ def build_common_head(nav_path, extra_head_content):
 
     # Copy files across
     shutil.copyfile(config.template_dir + '/style_main.css', config.html_dir + '/css/style_main.css')
-    shutil.copyfile(config.template_dir + '/timestamp.js', config.html_dir + '/timestamp.js')
-
-    if config.is_in_iframe:
-        shutil.copyfile(config.template_dir + '/iframe.js', config.html_dir + '/iframe.js')
+    shutil.copyfile(config.template_dir + '/timestamp.js', config.html_dir + '/timestamp.js') 
+    shutil.copyfile(config.template_dir + '/iframe.js', config.html_dir + '/iframe.js')
 
     # Put html together for this page
     head = '<!DOCTYPE html><html lang="en-GB">'
@@ -41,9 +39,7 @@ def build_common_head(nav_path, extra_head_content):
     head += '<link rel="stylesheet" href="' + nav_path + 'css/style_main.css">'
     head += '<link rel="stylesheet" href="' + nav_path + 'css/colour_scheme.css">'
     head += '<script src="' + nav_path + 'timestamp.js"></script>'
-
-    if config.is_in_iframe:
-        head += '<script src="' + nav_path + 'iframe.js"></script>'
+    head += '<script src="' + nav_path + 'iframe.js"></script>'
 
     head += extra_head_content
     head += '</head>'
@@ -54,14 +50,13 @@ def build_common_head(nav_path, extra_head_content):
 ############################################################
 # Build common body for all pages
 ############################################################
-def build_common_body(breadcrumb, nav_path, body):
+def build_common_body(breadcrumb, nav_path):
     # This function builds the common header and nav bar for all pages.
     # nav_path used for changes to relative pathing depending on the page (i.e. Home does not need anything but next level down needs leading ../)
-    # body is used for putting extra attributes into the body tag (e.g. onload="function();")
 
-    html = "<body " + body + ">"
+    html = '<body>'
 
-    html += "<div class='header-container'>"
+    html += "<div id='header-container'>"
     html += "<div class='header width-master' role='banner'>"
 
     if os.path.isfile(config.config_dir + '/' + config.project_details['header_institution_logo_filename']):
@@ -181,7 +176,7 @@ def build_home(papers):
     # temp += '</head>'
 
     temp = build_common_head("", "")
-    temp += build_common_body("", "", "")
+    temp += build_common_body("", "")
     temp += '<h1 id="pagetitle">Summary by Year</h1>'
 
     html_file.write(temp)
@@ -346,14 +341,14 @@ def draw_paper(this_paper):
     # PMID
     try:
         if this_paper['IDs']['PMID']:
-            html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'">' + str(this_paper['IDs']['PMID']) + '</a>&nbsp;'
+            html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'" target="_blank>' + str(this_paper['IDs']['PMID']) + '</a>&nbsp;'
     except:
         pass
 
     # DOI
     try:
         if this_paper['IDs']['DOI']:
-            html += 'DOI: <a href="https://doi.org/' + this_paper['IDs']['DOI'] + '">' + this_paper['IDs']['DOI'] + '</a>&nbsp;'
+            html += 'DOI: <a href="https://doi.org/' + this_paper['IDs']['DOI'] + '" target="_blank">' + this_paper['IDs']['DOI'] + '</a>&nbsp;'
     except:
         pass
 
@@ -405,7 +400,7 @@ def build_papers(papers):
     # temp += '</head>'
 
     temp = build_common_head("../", "")
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Papers List</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Papers List</p>', "../")
 
     temp += '<h1 id="pagetitle">Papers List</h1>'
     # Altmetric include
@@ -458,7 +453,7 @@ def build_papers(papers):
         # temp += '</head>'
 
         temp = build_common_head("../../", "")
-        temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; <a href="../index.html">Papers List</a> &gt; ' + this_year + '</p>', "../../", "")
+        temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; <a href="../index.html">Papers List</a> &gt; ' + this_year + '</p>', "../../")
 
         temp += '<h1 id="pagetitle">Papers List - ' + this_year + '</h1>'
         temp += "<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>"
@@ -491,7 +486,7 @@ def build_papers(papers):
     temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
     temp += '</head>'
 
-    temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; <a href="../index.html">Papers List</a> &gt; Unknown Year</p>', "../../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; <a href="../index.html">Papers List</a> &gt; Unknown Year</p>', "../../")
 
     temp += '<h1 id="pagetitle">Papers List - Unknown Year</h1>'
     # Altmetric include
@@ -659,7 +654,7 @@ def build_mesh(papers):
     # temp += '</head>'
 
     temp = build_common_head("../", "")
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; All Keywords</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; All Keywords</p>', "../")
 
     temp += '<h1 id="pagetitle">All Keywords</h1>'
     temp += '<p>' + str(len(mesh_papers_all)) + ' Keywords</p>'
@@ -690,7 +685,7 @@ def build_mesh(papers):
     # temp += '</head>'
 
     temp = build_common_head("../", "")
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keywords (MeSH)</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keywords (MeSH)</p>', "../")
 
     temp += '<h1 id="pagetitle">Major Keywords (MeSH)</h1>'
     temp += '<p>' + str(len(mesh_papers_major)) + ' Keywords</p>'
@@ -804,7 +799,7 @@ def build_mesh(papers):
             # temp += '</head>'
 
             temp = build_common_head("../../", extra_head)
-            temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; Keyword &gt; ' + this_mesh + '</p>', "../../", "")
+            temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; Keyword &gt; ' + this_mesh + '</p>', "../../")
 
             temp += '<h1 id="pagetitle">Keyword - ' + this_mesh + '</h1>'
             temp += '<h2>Keyword History</h2>'
@@ -1002,7 +997,7 @@ def build_country_map(papers):
     # temp += '</head>'
 
     temp = build_common_head("../", extra_head)
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by Country</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by Country</p>', "../")
 
     temp += '<h1 id="pagetitle">Publications by Country</h1>'
 
@@ -1065,7 +1060,7 @@ def build_institute_map(papers):
     #temp += '</head>'
 
     temp = build_common_head("../", extra_head)
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by UK City</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by UK City</p>', "../")
 
     temp += '<h1 id="pagetitle">Publications by UK Institute</h1>'
 
@@ -1255,7 +1250,7 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     # temp += '</head>'
 
     temp = build_common_head("../", extra_head)
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Study Metrics</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Study Metrics</p>', "../")
 
     temp += '<h1 id="pagetitle">Study Metrics</h1>'
 
@@ -1454,7 +1449,7 @@ def build_abstract_word_cloud(papers, data_from_count):
     # temp += '</head>'
 
     temp = build_common_head("../", extra_head)
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Abstract Word Cloud</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Abstract Word Cloud</p>', "../")
 
     temp += '<h1 id="pagetitle">Abstract Word Cloud</h1>'
 
@@ -1537,7 +1532,7 @@ def build_keyword_word_cloud(papers, data_from_count):
     # temp += '</head>'
 
     temp = build_common_head("../", extra_head)
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Keyword Word Cloud</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Keyword Word Cloud</p>', "../")
 
     temp += '<h1 id="pagetitle">Keyword Word Cloud</h1>'
 
@@ -1638,7 +1633,7 @@ def build_author_network(papers, network):
     # temp += '</head>'
 
     temp = build_common_head("../", extra_head)
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Author Network</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Author Network</p>', "../")
 
     temp += '<h1 id="pagetitle">Author Network</h1>'
 
@@ -1702,7 +1697,7 @@ def build_help():
     # temp += '</head>'
 
     temp = build_common_head("../", "")
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Information</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Information</p>', "../")
 
     temp += '<h1 id="pagetitle">Information</h1>'
 
@@ -1791,7 +1786,7 @@ def build_search(papers):
     # temp += '</head>'
 
     temp = build_common_head("../", extra_head)
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Search</p>', "../", "")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Search</p>', "../")
 
     temp += '<h1 id="pagetitle">Search</h1>'
 
@@ -1918,8 +1913,8 @@ def build_css_colour_scheme():
     temp += "a:link {color:#" + config.project_details['colour_hex_primary'] + "}"
     temp += "a:visited {color:#" + config.project_details['colour_hex_primary'] + "}"
 
-    # If we are being displayed in an iframe then get rid of the header
-    if config.is_in_iframe:
-        temp += ".header-container {display:none}"
+    # # If we are being displayed in an iframe then get rid of the header
+    # if config.is_in_iframe:
+    #     temp += ".header-container {display:none}"
 
     html_file.write(temp)
