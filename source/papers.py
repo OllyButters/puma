@@ -120,7 +120,7 @@ for this_paper in papers:
     fo.close()
 
 # Generate the coverage report, but only if not to be shown publicly
-if not config.public_facing:
+if not config.web_page_public_facing:
     coverage_report.coverage_report(papers)
 
 # Output a BibTeX file with all the papers in it.
@@ -156,6 +156,9 @@ web_pages.build_htmlv2.build_institute_map(papers)
 web_pages.build_htmlv2.build_help()
 web_pages.build_htmlv2.build_search(papers)
 
+
+if config.web_page_show_zotero_tags:
+    web_pages.build_htmlv2.build_zotero_tags(papers)
 
 # Generate and dump the html for author network.
 # Currently in development, not ready for general use.

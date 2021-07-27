@@ -35,11 +35,11 @@ def build_config_variables(root_dir):
     global pubmed_email
 
     # Some data cannot be dispayed on a public facing website - e.g. all the data in merged json file.
-    global public_facing
-    global is_in_iframe
-    global show_institute_country_map
-
-    global page_show_author_network
+    global web_page_public_facing
+    global web_page_is_in_iframe
+    global web_page_show_institute_country_map
+    global web_page_show_author_network
+    global web_page_show_zotero_tags
 
     global network_create_networks
 
@@ -103,10 +103,12 @@ def build_config_variables(root_dir):
         metrics_study_current_year = int(config.get('metrics', 'metrics_study_current_year'))
 
         # Pages
-        page_show_author_network = config.getboolean('pages', 'page_show_author_network')
-        public_facing = config.getboolean('pages', 'public_facing')
-        is_in_iframe = config.getboolean('pages', 'is_in_iframe')
-        show_institute_country_map = config.getboolean('pages', 'show_institute_country_map')
+        web_page_show_author_network = config.getboolean('pages', 'web_page_show_author_network')
+        web_page_show_institute_country_map = config.getboolean('pages', 'web_page_show_institute_country_map')
+        web_page_show_zotero_tags = config.getboolean('pages', 'web_page_show_zotero_tags')
+        web_page_public_facing = config.getboolean('pages', 'web_page_public_facing')
+        web_page_is_in_iframe = config.getboolean('pages', 'web_page_is_in_iframe')
+        
 
         # Networks
         network_create_networks = config.getboolean('networks', 'create_networks')

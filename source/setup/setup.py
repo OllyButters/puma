@@ -59,6 +59,11 @@ def tidy_existing_file_tree():
     if os.path.exists(config.cache_dir + '/processed/cleaned'):
         shutil.rmtree(config.cache_dir + '/processed/cleaned')
 
+    if os.path.exists(config.html_dir):
+        shutil.rmtree(config.html_dir)
+
+
+
 
 ################################################################################
 # Make sure the directory structure is set up first.
@@ -113,7 +118,7 @@ def build_file_tree():
     if not os.path.exists(config.html_dir):
         os.makedirs(config.html_dir)
 
-    html_directories = {"/mesh", "/css", "/papers", "/all_keywords", "/major_keywords", "/country", "/institute", "/metrics", "/keyword_wordcloud", "/abstractwordcloud", "/authornetwork", "/help", "/search", "/status"}
+    html_directories = {"/mesh", "/css", "/papers", "/tags", "/all_keywords", "/major_keywords", "/country", "/institute", "/metrics", "/keyword_wordcloud", "/abstractwordcloud", "/authornetwork", "/help", "/search", "/status"}
 
     for direct in html_directories:
         if not os.path.exists(config.html_dir + direct):

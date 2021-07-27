@@ -76,22 +76,26 @@ def build_common_body(breadcrumb, nav_path):
     html += '<li><a href="' + nav_path + 'index.html">Home</a></li>'
     html += '<li><a href="' + nav_path + 'help/index.html">About</a></li>'
     html += '<li><a href="' + nav_path + 'search/index.html">Search</a></li>'
+    
+    if config.web_page_show_zotero_tags:
+        html += '<li><a href="' + nav_path + 'tags/index.html">Tags</a></li>'
+    
     html += '<li><a href="' + nav_path + 'all_keywords/index.html">All Keywords</a></li>'
     html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords (MeSH)</a></li>'
 
-    if config.show_institute_country_map:
+    if config.web_page_show_institute_country_map:
         html += '<li><a href="' + nav_path + 'country/index.html">Map by Country</a></li>'
 
     html += '<li><a href="' + nav_path + 'institute/index.html">Map by UK institute</a></li>'
 
-    if config.page_show_author_network:
+    if config.web_page_show_author_network:
         html += '<li><a href="' + nav_path + 'authornetwork/index.html">Author Network</a></li>'
 
     html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
     html += '<li><a href="' + nav_path + 'keyword_wordcloud/index.html">Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
 
-    if not config.public_facing:
+    if not config.web_page_public_facing:
         html += '<li><a href="' + nav_path + 'coverage_report.html">Coverage report</a></li>'
 
     html += '</ul>'
@@ -473,7 +477,7 @@ def build_papers(papers):
 
 
 ############################################################
-# Build a list of all mesh keywords
+# Build a list of all mesh keywords and make a page for each
 ############################################################
 def build_mesh(papers):
 
@@ -608,13 +612,6 @@ def build_mesh(papers):
     # Make HTML index page for ALL MESH headings
     # temp = '<!DOCTYPE html><html lang="en-GB">'
 
-    # # html head
-    # temp += '<head>'
-    # temp += '<title>' + site_second_title + '</title>'
-    # temp += '<link rel="stylesheet" href="../css/style_main.css">'
-    # temp += '<link rel="stylesheet" href="../css/colour_scheme.css">'
-    # temp += '</head>'
-
     temp = build_common_head("../", "")
     temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; All Keywords</p>', "../")
 
@@ -655,12 +652,6 @@ def build_mesh(papers):
     temp = build_common_foot("../")
     html_file_major.write(temp)
     ######################################
-
-    # word_cloud_list = "["
-    # word_cloud_n = 0
-    # word_cloud_max = 0
-
-    # word_cloud_raw = ""
 
     ############################################
     # Make an HTML page for ALL MESH terms
@@ -736,6 +727,7 @@ def build_mesh(papers):
             # extra JS needed for the plots of keywords
             extra_head = '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
             extra_head += '<script type="text/javascript" src="stats.js"></script>'
+            extra_head += '<script>var title="keyword";</script>'
             extra_head += '<script>var primary_colour = "#' + config.project_details['colour_hex_primary'] + '";</script>'
             extra_head += '<script>var secondary_colour = "#' + config.project_details['colour_hex_secondary'] + '";</script>'
             extra_head += '<script type="text/javascript" src="../keyword_history.js"></script>'
@@ -783,48 +775,181 @@ def build_mesh(papers):
 
         fo.close()
 
-    # # MAJOR KEYWORD CLOUD
-    # # Get first x MAJOR keywords in order
-    # # Prepare variables
-    # ordered_mesh_papers_all = {}
-    # mesh_papers_all_temp = {}
-    # for this_mesh in mesh_papers_major:
-    #     mesh_papers_all_temp[this_mesh] = mesh_papers_all[this_mesh]
 
-    # # Sort and get x words
-    # for x in range(1, 150):
-    #     max_val = -1
-    #     max_mesh = None
-    #     for this_mesh in mesh_papers_all_temp:
-    #         if len(mesh_papers_all_temp[this_mesh]) > max_val:
-    #             max_val = len(mesh_papers_all_temp[this_mesh])
-    #             max_mesh = this_mesh
 
-    #     if max_mesh is not None:
-    #         ordered_mesh_papers_all[max_mesh] = mesh_papers_all_temp[max_mesh]
-    #         mesh_papers_all_temp.pop(max_mesh, None)
+############################################################
+# Build a list of all zotero tags, and make a page for each
+############################################################
+def build_zotero_tags(papers):
 
-    # # Make papers list for headings pages
-    # for this_mesh in ordered_mesh_papers_all:
+    print("\n###HTML - Zotero tags###")
 
-    #     # Word cloud
-    #     if word_cloud_n > 0:
-    #         word_cloud_list += ','
-    #     word_cloud_n += 1
+    # plotting routine
+    shutil.copyfile(config.template_dir + '/keyword_history.js', config.html_dir + '/tags/keyword_history.js')
 
-    #     number = len(mesh_papers_all[this_mesh])
+    zotero_tags = {}
+    html_file = open(config.html_dir + '/tags/index.html', 'w')
 
-    #     if number > word_cloud_max:
-    #         word_cloud_max = number
+    # Build a dict of ALL zotero tags with a list of each hash (paper) that has this mesh term
+    for this_paper in papers:
+        try:
+            # Look at all the zotero tags for this paper
+            for this_tag in this_paper['clean']['zotero_tags']:
+                # If this tag is not already in the dict then add it
+                if this_tag['tag'] not in zotero_tags:
+                    zotero_tags[this_tag['tag']] = list()
+                zotero_tags[this_tag['tag']].append(this_paper['IDs']['hash'])
+        except:
+            pass
 
-    #     word_cloud_list += '{"text":"' + this_mesh + '", "size":' + str(math.sqrt(number)*2.5) + '}'
-    #     # word_cloud_list += '{"text":"' + this_mesh + '", "size":' + str(number*5) + '}'
 
-    #     for x in range(0, number):
-    #         word_cloud_raw += " " + this_mesh
 
-    # # word_cloud_list += "]"
-    # # build_word_cloud(papers, word_cloud_list, data_from_count)
+    ######################################
+    # Make HTML index page for all tags
+
+    html = build_common_head("../", "")
+    html += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Tags</p>', "../")
+
+    html += '<h1 id="pagetitle">Tags</h1>'
+    html += '<p>' + str(len(zotero_tags)) + ' tags</p>'
+
+    html_file.write(html)
+
+    # Make a page with ALL the headings on it
+    html_file.write('<ul>')
+    for this_tag in sorted(zotero_tags):
+        html = '<li><a href="../tags/' + this_tag.replace(" ", "%20") + '/index.html">' + this_tag + '</a></li>'
+        html_file.write(html)
+    html_file.write('</ul>')
+
+    html = build_common_foot("../")
+    html_file.write(html)
+    ######################################
+
+    ############################################
+    # Make an HTML page for all tags
+    for this_tag in zotero_tags:
+
+        if not os.path.exists(config.html_dir + '/tags/' + this_tag):
+            os.mkdir(config.html_dir + '/tags/' + this_tag)
+
+            ############################################
+            # Calculate keyword usage and citations over time.
+            # Saved to a json file for google chart to use
+
+            summary = {}
+            # Calculate the number of papers for each year
+            for this_paper in zotero_tags[this_tag]:
+
+                # Get paper object from the hash
+                paper_obj = None
+                for p in papers:
+                    if this_paper == p['IDs']['hash']:
+                        paper_obj = p
+                        break
+
+                if paper_obj is not None:
+                    this_paper = paper_obj
+                    try:
+                        this_year = this_paper['clean']['clean_date']['year']
+                        # Make sure there is a dict item for this year
+                        if this_year not in summary:
+                            summary[this_year] = {'num_papers': 0, 'citations': 0}
+
+                        # increment the number of citations by one
+                        summary[this_year]['num_papers'] += 1
+
+                        # add the citations for this paper to the year running total
+                        try:
+                            summary[this_year]['citations'] += int(this_paper['clean']['citations']['scopus']['count'])
+                        except:
+                            pass
+
+                    except:
+                        pass
+
+            # Add in some zeros when there is no papers for this year
+            years = list(summary.keys())
+            first_year = min(years)
+            last_year = max(years)
+            for this_year in range(int(first_year), int(last_year)):
+                try:
+                    summary[str(this_year)]['num_papers']
+                except:
+                    summary[str(this_year)] = {'num_papers': 0, 'citations': 0}
+
+            print(this_tag)
+            print(summary)
+
+            # Print data to file
+            data_file = open(config.html_dir + '/tags/' + this_tag + '/stats.js', 'w')
+            
+            data_file.write('var papers =([[\'Year\', \'Number of papers\'],')
+            for this_year in sorted(summary, reverse=False):
+                data_file.write('[\''+this_year+'\','+str(summary[this_year]['num_papers'])+'],')
+            data_file.write(']);')
+
+            data_file.write('var citations =([[\'Year\', \'Number of Citations\'],')
+            for this_year in sorted(summary, reverse=False):
+                data_file.write('[\''+this_year+'\','+str(summary[this_year]['citations'])+'],')
+            data_file.write(']);')
+
+        # Output the HTML for this mesh term
+        file_name = config.html_dir + '/tags/' + this_tag + '/index.html'
+        with codecs.open(file_name, 'wb', "utf-8") as fo:
+
+            # Put html together for this page
+
+            # extra JS needed for the plots of tags
+            extra_head = '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
+            extra_head += '<script type="text/javascript" src="stats.js"></script>'
+            extra_head += '<script>var title="tag";</script>'
+            extra_head += '<script>var primary_colour = "#' + config.project_details['colour_hex_primary'] + '";</script>'
+            extra_head += '<script>var secondary_colour = "#' + config.project_details['colour_hex_secondary'] + '";</script>'
+            extra_head += '<script type="text/javascript" src="../keyword_history.js"></script>'
+
+            html = build_common_head("../../", extra_head)
+            html += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; Tags &gt; ' + this_tag + '</p>', "../../")
+
+            html += '<h1 id="pagetitle">Tag - ' + this_tag + '</h1>'
+            html += '<h2>Tag History</h2>'
+
+            # Placeholers for the charts
+            html += '<div id="papers_chart_div"></div>'
+            html += '<div id="citations_chart_div"></div>'
+
+            # List publications
+            html += '<h2>Publications</h2>'
+            html += '<p><em>' + str(len(zotero_tags[this_tag])) + ' publications with this tag</em></p>'
+
+            fo.write(html)
+
+            # Build the text needed for each paper
+            for this_paper in zotero_tags[this_tag]:
+
+                try:
+                    # Get paper object
+                    paper_obj = None
+                    for p in papers:
+                        if this_paper == p['IDs']['hash']:
+                            paper_obj = p
+                            break
+
+                    if paper_obj is not None:
+                        this_paper = paper_obj
+
+                    # Call draw paper function
+                    html = draw_paper(this_paper)
+
+                    fo.write(html)
+
+                except:
+                    pass
+
+            html = build_common_foot("../../")
+            fo.write(html)
+
+        fo.close()
 
 
 ###########################################################

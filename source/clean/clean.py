@@ -35,6 +35,9 @@ def clean(papers):
         # Figure out the first author (from the list or zotero)
         clean_first_author(this_paper)
 
+        # Get the tags from zotero
+        clean_zotero_tags(this_paper)
+
         # clean mesh headings into 'clean'
         clean_mesh(this_paper)
 
@@ -734,6 +737,18 @@ def clean_citations_scopus(this_paper):
         if len(this_paper['raw']['scopus_data']['search-results']['entry']) == 0:
             logging.warn("0 citations counts found!")
             return False
+    except:
+        pass
+################################################################################
+
+
+################################################################################
+# Grab the zotero tags. Should be a list of dicts with "tag" as the key in each
+################################################################################
+def clean_zotero_tags(this_paper):
+    this_paper['clean']['zotero_tags'] = ''
+    try:
+        this_paper['clean']['zotero_tags'] = this_paper['raw']['zotero_data']['tags']
     except:
         pass
 ################################################################################
