@@ -80,8 +80,8 @@ def build_common_body(breadcrumb, nav_path):
     if config.web_page_show_zotero_tags:
         html += '<li><a href="' + nav_path + 'tags/index.html">Tags</a></li>'
     
-    html += '<li><a href="' + nav_path + 'all_keywords/index.html">All Keywords</a></li>'
-    html += '<li><a href="' + nav_path + 'major_keywords/index.html">Major Keywords (MeSH)</a></li>'
+    html += '<li><a href="' + nav_path + 'keywords/index.html">All Keywords</a></li>'
+    html += '<li><a href="' + nav_path + 'mesh/index.html">Major Keywords (MeSH)</a></li>'
 
     if config.web_page_show_institute_country_map:
         html += '<li><a href="' + nav_path + 'country/index.html">Map by Country</a></li>'
@@ -483,12 +483,12 @@ def build_mesh(papers):
 
     print("\n###HTML - mesh###")
 
-    shutil.copyfile(config.template_dir + '/keyword_history.js', config.html_dir + '/mesh/keyword_history.js')
 
     mesh_papers_all = {}
     mesh_papers_major = {}
-    html_file_all = open(config.html_dir + '/all_keywords/index.html', 'w')
-    html_file_major = open(config.html_dir + '/major_keywords/index.html', 'w')
+    other_keywords = {}
+    html_file_all = open(config.html_dir + '/keywords/index.html', 'w')
+    html_file_major = open(config.html_dir + '/mesh/index.html', 'w')
 
     # Build a dict of ALL mesh headings with a list of each hash (paper) that has this mesh term
     for this_paper in papers:
@@ -521,144 +521,102 @@ def build_mesh(papers):
         except:
             pass
 
-    # # Read in mesh tree hierarchy
-    # f = open(config.config_dir + "/mesh_tree_hierarchy.csv", 'rt')
-    # mesh_tree = {}
-    # mesh_tree_reverse = {}
-    # try:
-    #     reader = csv.reader(f)
-    #     for row in reader:
-    #         mesh_tree[row[2]] = row[0]
-    #         mesh_tree_reverse[row[0]] = row[2]
+    # Build a dict of OTHER keywords with a list of each hash (paper) that has this keyword
+    for this_paper in papers:
+        try:
+            # Look at all the OTHER keywords for this paper
+            for this_keyword in this_paper['clean']['keywords']['other']:
+                # If this keyword is not already in the dict then add it
+                if this_keyword not in other_keywords:
+                    other_keywords[this_keyword] = list()
+                other_keywords[this_keyword].append(this_paper['IDs']['hash'])
+        except:
+            pass
 
-    # finally:
-    #     f.close()
+    # Merge the MESH and other keywords together. Note that there are a load of
+    # formatting issues to deal with, e.g. other keywords seem to be lower case.
+    all_keywords = {}
+    for this_mesh in mesh_papers_all:
 
-    # f = open(config.config_dir + "/mesh_categories.csv", 'rt')
-    # mesh_categories = {}
-    # try:
-    #     reader = csv.reader(f)
-    #     for row in reader:
-    #         mesh_categories[row[0]] = row[1]
+        formatted_mesh = this_mesh[0].capitalize() + this_mesh[1:]
 
-    # finally:
-    #     f.close()
+        all_keywords[formatted_mesh] = mesh_papers_all[this_mesh]
 
-    # # Make list of second level mesh headings
-    # second_found = 0
-    # top_found = 0
-    # total = 0
-    # mesh_second_level_headings = {}
-    # mesh_top_level_headings = {}
-    # for this_mesh in mesh_papers_major:
-    #     try:
-    #         tree_number = mesh_tree[this_mesh]
-    #         # Get Second Level
-    #         tree_number_split = tree_number.split(".")
-    #         second_level = mesh_tree_reverse[tree_number_split[0]]
+    for this_keyword in other_keywords:
 
-    #         try:
-    #             mesh_second_level_headings[second_level] += len(mesh_papers_major[this_mesh])
-    #         except:
-    #             mesh_second_level_headings[second_level] = len(mesh_papers_major[this_mesh])
-    #         second_found += len(mesh_papers_major[this_mesh])
+        formatted_keyword = this_keyword[0].capitalize() + this_keyword[1:]
 
-    #         # Get Top Level
-    #         top_level = tree_number[0]
-    #         try:
-    #             mesh_top_level_headings[mesh_categories[top_level]] += len(mesh_papers_major[this_mesh])
-    #         except:
-    #             mesh_top_level_headings[mesh_categories[top_level]] = len(mesh_papers_major[this_mesh])
-    #         top_found += len(mesh_papers_major[this_mesh])
-    #     except:
-    #         pass
+        if formatted_keyword in all_keywords.keys():
+            all_keywords[formatted_keyword].extend(other_keywords[this_keyword])
 
-    #     total += len(mesh_papers_major[this_mesh])
+        else:
+            all_keywords[formatted_keyword] = other_keywords[this_keyword]
 
-    # print "MeSH Second Level Found: " + str(second_found) + "/" + str(total)
-    # print "Unique MeSH Second Level: " + str(len(mesh_second_level_headings))
-    # print "MeSH Top Level Found: " + str(top_found) + "/" + str(total)
-    # print "Unique MeSH Top Level: " + str(len(mesh_top_level_headings))
+    mesh_papers_all = all_keywords
 
-    # print "\n" + str(mesh_top_level_headings)
-    # print "\n" + str(mesh_second_level_headings)
-
-    # print "Second Level MeSH"
-    # for mesh in mesh_second_level_headings:
-        # print mesh + "\t" + str(mesh_second_level_headings[mesh])
-
-    # print "\n\n"
-
-    # print "Top Level MeSH"
-    # for mesh in mesh_top_level_headings:
-        # print mesh + "\t" + str(mesh_top_level_headings[mesh])
-
-    # # Print mesh_papers
-    # # Make a JSON file for each mesh term, in it put all the PMIDs for this term
-    # for this_mesh in mesh_papers_all:
-    #     file_name = config.html_dir + '/mesh/all_' + this_mesh
-    #     fo = open(file_name, 'w')
-    #     fo.write(json.dumps(mesh_papers_all[this_mesh], indent=4))
-    #     fo.close()
-
-    # # Make a JSON file for each major mesh term, in it put all the PMIDs for this term
-    # for this_mesh in mesh_papers_major:
-    #     file_name = config.html_dir + '/mesh/major_' + this_mesh
-    #     fo = open(file_name, 'w')
-    #     fo.write(json.dumps(mesh_papers_major[this_mesh], indent=4))
-    #     fo.close()
 
     ######################################
-    # Make HTML index page for ALL MESH headings
-    # temp = '<!DOCTYPE html><html lang="en-GB">'
+    # Make HTML index page for ALL keywords
 
-    temp = build_common_head("../", "")
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; All Keywords</p>', "../")
+    html = build_common_head("../", "")
+    html += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; All Keywords</p>', "../")
 
-    temp += '<h1 id="pagetitle">All Keywords</h1>'
-    temp += '<p>' + str(len(mesh_papers_all)) + ' Keywords</p>'
+    html += '<h1 id="pagetitle">All Keywords</h1>'
+    html += '<p>' + str(len(all_keywords)) + ' Keywords</p>'
 
-    html_file_all.write(temp)
+    html_file_all.write(html)
 
     # Make a page with ALL the headings on it
     html_file_all.write('<ul>')
-    for this_mesh in sorted(mesh_papers_all):
-        temp = '<li><a href="../mesh/' + this_mesh.replace(" ", "%20") + '/index.html">' + this_mesh + '</a></li>'
-        html_file_all.write(temp)
+    for this_keyword in sorted(all_keywords):
+        html = '<li><a href="../keywords/' + this_keyword.replace(" ", "%20") + '/index.html">' + this_keyword + '</a></li>'
+        html_file_all.write(html)
     html_file_all.write('</ul>')
 
-    temp = build_common_foot("../")
-    html_file_all.write(temp)
+    html = build_common_foot("../")
+    html_file_all.write(html)
     ######################################
 
     ######################################
     # Make HTML index page for MAJOR MESH headings
 
-    temp = build_common_head("../", "")
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keywords (MeSH)</p>', "../")
+    html = build_common_head("../", "")
+    html += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keywords (MeSH)</p>', "../")
 
-    temp += '<h1 id="pagetitle">Major Keywords (MeSH)</h1>'
-    temp += '<p>' + str(len(mesh_papers_major)) + ' Keywords</p>'
+    html += '<h1 id="pagetitle">Major Keywords (MeSH)</h1>'
+    html += '<p>' + str(len(mesh_papers_major)) + ' Keywords</p>'
 
-    html_file_major.write(temp)
+    html_file_major.write(html)
 
     # Make a page with the MAJOR headings on it
     html_file_major.write('<ul>')
     for this_mesh in sorted(mesh_papers_major):
-        temp = '<li><a href="../mesh/' + this_mesh.replace(" ", "%20") + '/index.html">' + this_mesh + '</a></li>'
-        html_file_major.write(temp)
+        html = '<li><a href="../mesh/' + this_mesh.replace(" ", "%20") + '/index.html">' + this_mesh + '</a></li>'
+        html_file_major.write(html)
     html_file_major.write('</ul>')
 
-    temp = build_common_foot("../")
-    html_file_major.write(temp)
+    html = build_common_foot("../")
+    html_file_major.write(html)
     ######################################
+
+    _make_keywords_pages(papers, mesh_papers_major, "mesh")
+    _make_keywords_pages(papers, all_keywords, "keywords")
+
+
+
+def _make_keywords_pages(papers, keywords, url_part):
+
+    shutil.copyfile(config.template_dir + '/keyword_history.js', config.html_dir + '/' + url_part + '/keyword_history.js')
 
     ############################################
     # Make an HTML page for ALL MESH terms
-    for this_mesh in mesh_papers_all:
+    for this_keyword in keywords:
+        
+        if this_keyword == "Lifestyle/obesity programmes":
+            continue
 
-        if not os.path.exists(config.html_dir + '/mesh/' + this_mesh):
-            os.mkdir(config.html_dir + '/mesh/' + this_mesh)
+        if not os.path.exists(config.html_dir + '/' + url_part + '/' + this_keyword):
+            os.mkdir(config.html_dir + '/' + url_part + '/' + this_keyword)
 
             ############################################
             # Calculate keyword usage and citations over time.
@@ -666,8 +624,8 @@ def build_mesh(papers):
 
             summary = {}
             # Calculate the number of papers for each year
-            for this_paper in mesh_papers_all[this_mesh]:
-
+            for this_paper in keywords[this_keyword]:
+       
                 # Get paper object from the hash
                 paper_obj = None
                 for p in papers:
@@ -706,7 +664,7 @@ def build_mesh(papers):
                         summary[str(this_year)] = {'num_papers': 0, 'citations': 0}
 
             # Print data to file
-            data_file = open(config.html_dir + '/mesh/' + this_mesh + '/stats.js', 'w')
+            data_file = open(config.html_dir + '/' + url_part + '/' + this_keyword + '/stats.js', 'w')
             # print >>data_file, 'var papers =([[\'Year\', \'Number of papers\'],'
             data_file.write('var papers =([[\'Year\', \'Number of papers\'],')
             for this_year in sorted(summary, reverse=False):
@@ -719,7 +677,7 @@ def build_mesh(papers):
             data_file.write(']);')
 
         # Output the HTML for this mesh term
-        file_name = config.html_dir + '/mesh/' + this_mesh + '/index.html'
+        file_name = config.html_dir + '/' + url_part + '/' + this_keyword + '/index.html'
         with codecs.open(file_name, 'wb', "utf-8") as fo:
 
             # Put html together for this page
@@ -733,9 +691,9 @@ def build_mesh(papers):
             extra_head += '<script type="text/javascript" src="../keyword_history.js"></script>'
 
             temp = build_common_head("../../", extra_head)
-            temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; Keyword &gt; ' + this_mesh + '</p>', "../../")
+            temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; Keyword &gt; ' + this_keyword + '</p>', "../../")
 
-            temp += '<h1 id="pagetitle">Keyword - ' + this_mesh + '</h1>'
+            temp += '<h1 id="pagetitle">Keyword - ' + this_keyword + '</h1>'
             temp += '<h2>Keyword History</h2>'
 
             # Placeholers for the charts
@@ -744,12 +702,12 @@ def build_mesh(papers):
 
             # List publications
             temp += '<h2>Publications</h2>'
-            temp += '<p><em>' + str(len(mesh_papers_all[this_mesh])) + ' publications with this keyword</em></p>'
+            temp += '<p><em>' + str(len(keywords[this_keyword])) + ' publications with this keyword</em></p>'
 
             fo.write(temp)
 
             # Build the text needed for each paper
-            for this_paper in mesh_papers_all[this_mesh]:
+            for this_paper in keywords[this_keyword]:
 
                 try:
                     # Get paper object
@@ -877,9 +835,6 @@ def build_zotero_tags(papers):
                     summary[str(this_year)]['num_papers']
                 except:
                     summary[str(this_year)] = {'num_papers': 0, 'citations': 0}
-
-            print(this_tag)
-            print(summary)
 
             # Print data to file
             data_file = open(config.html_dir + '/tags/' + this_tag + '/stats.js', 'w')

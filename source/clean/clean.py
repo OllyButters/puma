@@ -674,10 +674,9 @@ def clean_keywords(this_paper):
         this_paper['clean']['keywords']['other'] = []
 
     try:
-        for this_tag in this_paper['raw']['pmid_data']['MedlineCitation']['KeywordList']:
-            this_paper['clean']['keywords']['other'].append(
-                this_tag['tag'],
-            )
+        for this_list_of_keywords in this_paper['raw']['pmid_data']['MedlineCitation']['KeywordList']:
+            for this_keyword in this_list_of_keywords:
+                this_paper['clean']['keywords']['other'].append(this_keyword)
     except:
         pass
 ################################################################################
