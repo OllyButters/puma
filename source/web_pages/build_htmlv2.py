@@ -76,10 +76,10 @@ def build_common_body(breadcrumb, nav_path):
     html += '<li><a href="' + nav_path + 'index.html">Home</a></li>'
     html += '<li><a href="' + nav_path + 'help/index.html">About</a></li>'
     html += '<li><a href="' + nav_path + 'search/index.html">Search</a></li>'
-    
+
     if config.web_page_show_zotero_tags:
         html += '<li><a href="' + nav_path + 'tags/index.html">Tags</a></li>'
-    
+
     html += '<li><a href="' + nav_path + 'keywords/index.html">All Keywords</a></li>'
     html += '<li><a href="' + nav_path + 'mesh/index.html">Major Keywords (MeSH)</a></li>'
 
@@ -327,7 +327,7 @@ def draw_paper(this_paper):
     # PMID
     try:
         if this_paper['IDs']['PMID']:
-            html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'" target="_blank>' + str(this_paper['IDs']['PMID']) + '</a>&nbsp;'
+            html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'" target="_blank">' + str(this_paper['IDs']['PMID']) + '</a>&nbsp;'
     except:
         pass
 
@@ -483,7 +483,6 @@ def build_mesh(papers):
 
     print("\n###HTML - mesh###")
 
-
     mesh_papers_all = {}
     mesh_papers_major = {}
     other_keywords = {}
@@ -554,7 +553,6 @@ def build_mesh(papers):
 
     mesh_papers_all = all_keywords
 
-
     ######################################
     # Make HTML index page for ALL keywords
 
@@ -603,7 +601,8 @@ def build_mesh(papers):
     _make_keywords_pages(papers, all_keywords, "keywords")
 
 
-
+# Helper function to build the list of papers that have this keyword. Note that
+# a mesh heading is consider a keyword here.
 def _make_keywords_pages(papers, keywords, url_part):
 
     shutil.copyfile(config.template_dir + '/keyword_history.js', config.html_dir + '/' + url_part + '/keyword_history.js')
@@ -611,7 +610,7 @@ def _make_keywords_pages(papers, keywords, url_part):
     ############################################
     # Make an HTML page for ALL MESH terms
     for this_keyword in keywords:
-        
+
         if this_keyword == "Lifestyle/obesity programmes":
             continue
 
@@ -625,7 +624,7 @@ def _make_keywords_pages(papers, keywords, url_part):
             summary = {}
             # Calculate the number of papers for each year
             for this_paper in keywords[this_keyword]:
-       
+
                 # Get paper object from the hash
                 paper_obj = None
                 for p in papers:
@@ -689,6 +688,8 @@ def _make_keywords_pages(papers, keywords, url_part):
             extra_head += '<script>var primary_colour = "#' + config.project_details['colour_hex_primary'] + '";</script>'
             extra_head += '<script>var secondary_colour = "#' + config.project_details['colour_hex_secondary'] + '";</script>'
             extra_head += '<script type="text/javascript" src="../keyword_history.js"></script>'
+            extra_head += "<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>"
+
 
             temp = build_common_head("../../", extra_head)
             temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; Keyword &gt; ' + this_keyword + '</p>', "../../")
@@ -734,7 +735,6 @@ def _make_keywords_pages(papers, keywords, url_part):
         fo.close()
 
 
-
 ############################################################
 # Build a list of all zotero tags, and make a page for each
 ############################################################
@@ -759,8 +759,6 @@ def build_zotero_tags(papers):
                 zotero_tags[this_tag['tag']].append(this_paper['IDs']['hash'])
         except:
             pass
-
-
 
     ######################################
     # Make HTML index page for all tags
@@ -838,7 +836,7 @@ def build_zotero_tags(papers):
 
             # Print data to file
             data_file = open(config.html_dir + '/tags/' + this_tag + '/stats.js', 'w')
-            
+
             data_file.write('var papers =([[\'Year\', \'Number of papers\'],')
             for this_year in sorted(summary, reverse=False):
                 data_file.write('[\''+this_year+'\','+str(summary[this_year]['num_papers'])+'],')
@@ -1148,7 +1146,9 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     n_papers_with_x_citations += "]);"
 
     # High Citations Range, but only if they are above the citation_number_limit
+    plot_high_citation_chart = False
     if(max_citations >= citation_number_limit):
+        plot_high_citation_chart = True
         n_papers_with_x_citations += "var papers_per_high_citation_count = ([['Number of Citations (Scopus)','Number of Papers',{ role: 'style' }]"
         for this_bin in range(0, round((max_citations - citation_number_limit)/citation_bin_size) + 1):
 
@@ -1177,7 +1177,9 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     extra_head += '<script type="text/javascript" src="../data.js"></script>'
     extra_head += '<script>' + n_papers_with_x_citations + '</script>'
     extra_head += '<script type="text/javascript" src="../map/map.js"></script>'
+    extra_head += '<script>var plot_high_citation_chart = "' + str(plot_high_citation_chart) + '";</script>'
     extra_head += '<script>var primary_colour = "#' + config.project_details['colour_hex_primary'] + '";</script>'
+
     extra_head += '<script type="text/javascript" src="metrics.js"></script>'
 
     temp = build_common_head("../", extra_head)
@@ -1256,7 +1258,7 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     temp += "<div style='margin-left:auto;margin-right:auto;margin-top:5px;'><div class='average_citations' style='height:15px; width:33px; float:left; background:green'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Median number of citations</div></div>"
     temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
 
-    if(max_citations >= citation_number_limit):
+    if plot_high_citation_chart:
         temp += '<div id="papers_per_high_citation_count_div"></div>'
         temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
 
@@ -1269,7 +1271,7 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
 ###########################################################
 # Build abstract word cloud
 ###########################################################
-def build_abstract_word_cloud(papers, data_from_count):
+def build_abstract_word_cloud(data_from_count):
 
     print("\n###HTML - Abstract Word Cloud###")
 
@@ -1346,7 +1348,7 @@ def build_abstract_word_cloud(papers, data_from_count):
 ###########################################################
 # Build keyword word cloud
 ###########################################################
-def build_keyword_word_cloud(papers, data_from_count):
+def build_keyword_word_cloud(data_from_count):
 
     print("\n###HTML - Abstract Word Cloud###")
 

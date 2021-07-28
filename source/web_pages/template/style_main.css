@@ -150,7 +150,8 @@ table.citation_table th {
 /* --- Metrics --- */
 div#content div.metric {
   width:calc( 100%/4 - 1px);
-  height:calc( 25vh - 1px);
+  /*height:calc( 25vh - 1px);*/
+  height: 200px;
   border-top: 1px solid #dedcd2;
   border-left: 1px solid #dedcd2;
   background:#efede9;
@@ -184,8 +185,8 @@ div#content div.metric:hover {
 
 div#content div.metric div.metric_name {
   font-size:13px;
-  position: absolute;
-  top:calc( 25vh/2 - 45px );
+  /*position: absolute;
+  top:calc( 25vh/2 - 45px );*/
   width:100%;
   transition: color 500ms, top 500ms;
 }
@@ -197,8 +198,8 @@ div#content div.metric:hover div.metric_name {
 
 div#content div.metric div.metric_value {
   font-size:40px;
-  position: absolute;
-  top:calc( 25vh/2 - 40px + 30px );
+  /*position: absolute;
+  top:calc( 25vh/2 - 40px + 30px );*/
   width:100%;
   transition: color 500ms, top 500ms;
 }
@@ -210,8 +211,8 @@ div#content div.metric:hover div.metric_value {
 
 div#content div.metric div.metric_stats_data {
    font-size:9px;
-   position: absolute;
-   top:calc( 25vh/2 - 40px + 30px + 55px );
+   /*position: absolute;
+   top:calc( 25vh/2 - 40px + 30px + 55px );*/
    width:100%;
    text-transform: uppercase;
 }
