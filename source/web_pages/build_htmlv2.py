@@ -38,7 +38,7 @@ def build_common_head(nav_path, extra_head_content):
     head += '<link rel="stylesheet" href="' + nav_path + 'css/style_main.css">'
     head += '<link rel="stylesheet" href="' + nav_path + 'css/colour_scheme.css">'
     head += '<script src="' + nav_path + 'timestamp.js"></script>'
-    head += '<script src="' + nav_path + 'iframe.js"></script>'
+    head += '<script src="' + nav_path + 'iframe.js" defer></script>'
 
     head += extra_head_content
     head += '</head>'
@@ -291,7 +291,7 @@ def draw_paper(this_paper):
     # altmetric data
     try:
         if this_paper['IDs']['DOI']:
-            html += '<div style="float:right;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
+            html += '<div style="float:right; width:64px; height:64px;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
     except:
         pass
 
@@ -860,6 +860,8 @@ def build_zotero_tags(papers):
             extra_head += '<script>var primary_colour = "#' + config.project_details['colour_hex_primary'] + '";</script>'
             extra_head += '<script>var secondary_colour = "#' + config.project_details['colour_hex_secondary'] + '";</script>'
             extra_head += '<script type="text/javascript" src="../keyword_history.js"></script>'
+            extra_head += "<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>"
+
 
             html = build_common_head("../../", extra_head)
             html += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; Tags &gt; ' + this_tag + '</p>', "../../")
