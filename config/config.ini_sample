@@ -55,8 +55,11 @@ metrics_study_start_year: 1989
 metrics_study_current_year: 2015
 
 [pages]
-page_show_author_network = False
-public_facing: True
+web_page_public_facing: True
+web_page_is_in_iframe: False
+web_page_show_institute_country_map: True
+web_page_show_zotero_tags: False
+web_page_show_author_network: False
 
 
 [networks]
