@@ -87,20 +87,11 @@ def geocode(papers):
                     ?item wdt:P17 ?country
                     OPTIONAL
                     {
-                        ?item wdt:P131 ?mainTown
-                    }
-                    OPTIONAL
-                    {
                         # Main location
                         ?item p:P625 ?mainLocation.
                         ?mainLocation psv:P625 ?mainCoordinateNode.
                         ?mainCoordinateNode wikibase:geoLongitude ?mainLon.
                         ?mainCoordinateNode wikibase:geoLatitude ?mainLat.
-                    }
-                    OPTIONAL
-                    {
-                        # HQ location
-                        ?item wdt:P159 ?hqTown.
                     }
                     OPTIONAL
                     {
@@ -134,13 +125,11 @@ def geocode(papers):
 
                 # Try the main location
                 try:
-                    # this_paper['clean']['location']['postal_town'] = data['results']['bindings'][0]['mainTownLabel']['value']
                     this_paper['clean']['location']['latitude'] = data['results']['bindings'][0]['mainLat']['value']
                     this_paper['clean']['location']['longitude'] = data['results']['bindings'][0]['mainLon']['value']
                 except:
                     # Fall back to the HQ location if there is one
                     try:
-                        # this_paper['clean']['location']['postal_town'] = data['results']['bindings'][0]['hqTownLabel']['value']
                         this_paper['clean']['location']['latitude'] = data['results']['bindings'][0]['hqLat']['value']
                         this_paper['clean']['location']['longitude'] = data['results']['bindings'][0]['hqLon']['value']
                     except:
@@ -148,18 +137,16 @@ def geocode(papers):
                         print("No suitable coordinates found from wikidata. (" + clean_institute + ")")
 
                 try:
-                    print(this_paper['clean']['location']['country'])
+                    # print(this_paper['clean']['location']['country'])
                     logging.info(this_paper['clean']['location']['country'])
-                    # print(this_paper['clean']['location']['postal_town'])
-                    # logging.info(this_paper['clean']['location']['postal_town'])
                 except:
                     pass
 
                 # If I can print them then they must exist
                 try:
-                    print(this_paper['clean']['location']['latitude'])
+                    # print(this_paper['clean']['location']['latitude'])
                     logging.info(this_paper['clean']['location']['latitude'])
-                    print(this_paper['clean']['location']['longitude'])
+                    # print(this_paper['clean']['location']['longitude'])
                     logging.info(this_paper['clean']['location']['longitude'])
                     found_coords = True
                 except:

@@ -41,7 +41,6 @@ def coverage_report(papers):
                     <th>First<br/>Author<br/>affil &uarr;&darr;</th>
                     <th>Clean<br/>Inst.<br/>&uarr;&darr;</th>
                     <th>Geocoded<br/>&uarr;&darr;</th>
-                    <th>Town<br/>&uarr;&darr;</th>
                     <th>Country<br/>&uarr;&darr;</th>
                     <th>Clean<br/>Date &uarr;&darr;</th>
                     <th>Journal<br/>&uarr;&darr;</th>
@@ -66,7 +65,6 @@ def coverage_report(papers):
     status['first_author_affiliation'] = 0
     status['clean_institution'] = 0
     status['geocoded'] = 0
-    status['town'] = 0
     status['country'] = 0
     status['clean_date'] = 0
     status['journal'] = 0
@@ -304,26 +302,6 @@ def coverage_report(papers):
                 cov_html += '<td class="missing_good_to_have">???</!d>'
 
         #####
-        # Town
-        try:
-            town = this_paper['clean']['location']['postal_town']
-            if town != '':
-                cov_html += '<td>OK</td>'
-                status['town'] = status['town'] + 1
-            else:
-                raise Exception()
-        except:
-            # Check to see if we have a clean institute, if we do then we should have a geocode
-            try:
-                clean_institution = this_paper['clean']['location']['clean_institute']
-                if clean_institution != '':
-                    cov_html += '<td class="missing_required">???</td>'
-                else:
-                    raise Exception()
-            except:
-                cov_html += '<td class="missing_good_to_have">???</!d>'
-
-        #####
         # Country
         try:
             country = this_paper['clean']['location']['country']
@@ -461,7 +439,6 @@ def coverage_report(papers):
                     <th>First<br/>Author<br/>affil</th>
                     <th>Clean<br/>Inst</th>
                     <th>Geocoded</th>
-                    <th>Town</th>
                     <th>Country</th>
                     <th>Clean<br/>Date</th>
                     <th>Journal</th>
@@ -488,7 +465,6 @@ def coverage_report(papers):
     status_table += '<td>' + str(status['first_author_affiliation']) + '</td>'
     status_table += '<td>' + str(status['clean_institution']) + '</td>'
     status_table += '<td>' + str(status['geocoded']) + '</td>'
-    status_table += '<td>' + str(status['town']) + '</td>'
     status_table += '<td>' + str(status['country']) + '</td>'
     status_table += '<td>' + str(status['clean_date']) + '</td>'
     status_table += '<td>' + str(status['journal']) + '</td>'
@@ -513,7 +489,6 @@ def coverage_report(papers):
     status_table += '<td>' + str(int(round(100*status['first_author_affiliation']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['clean_institution']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['geocoded']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['town']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['country']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['clean_date']/number_of_papers))) + '</td>'
     status_table += '<td>' + str(int(round(100*status['journal']/number_of_papers))) + '</td>'
