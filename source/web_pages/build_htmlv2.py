@@ -291,7 +291,7 @@ def draw_paper(this_paper):
     # altmetric data
     try:
         if this_paper['IDs']['DOI']:
-            html += '<div style="float:right; width:64px; height:64px;" data-badge-popover="right" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
+            html += '<div style="float:right; width:64px; height:64px;" data-badge-popover="left" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
     except:
         pass
 
