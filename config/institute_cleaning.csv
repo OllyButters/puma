@@ -261,6 +261,7 @@ Bristol Royal Infirmary,Bristol Royal Infirmary
 University of British Columbia,University of British Columbia
 "University Dental Hospital, Heath Park",Cardiff Hospital
 Cheshire and Wirral Partnership NHS Foundation Trust,Cheshire and Wirral Partnership NHS Foundation Trust
+East Lancashire Hospitals NHS Trust,East Lancashire Hospitals NHS Trust
 Frenchay Hospital,Frenchay Hospital
 Great Ormond Street Hospital,Great Ormond Street Hospital
 Guy's and St Thomas',Guy's and St Thomas' NHS Foundation Trust
@@ -274,6 +275,7 @@ Liverpool School of Tropical Medicine,Liverpool School of Tropical Medicine
 Ty Bryn Unit,"St Cadoc's Hospital"
 University Hospital of South Manchester,University Hospital of South Manchester NHS Foundation Trust
 Mersey Care NHS Foundation Trust,Mersey Care NHS Foundation Trust
+University Hospitals of Morecambe Bay NHS Trust,University Hospitals of Morecambe Bay NHS Trust
 NICE,National Institute for Health and Care Excellence
 Ninewells Hospital,Ninewells Hospital
 North Bristol NHS Trust,North Bristol NHS Trust
@@ -569,6 +571,7 @@ IdISSC,Health Research Institute of the Hospital Clínico San Carlos
 Saarland University Hospital,Saarland University
 "Smith College, Northampton, MA",Smith College
 University of Social Welfare and Rehabilitation Sciences,University of Social Welfare and Rehabilitation Sciences
+Casa Sollievo della Sofferenza,Casa Sollievo della Sofferenza
 #T,
 University of Tampere,University of Tampere
 The University of Texas,The University of Texas
@@ -606,6 +609,9 @@ World Health Organization,World Health Organization
 Yale University,Yale University
 Yamagata University,Yamagata University
 Yongin University,Yong In University
+,
+#Companoes,
+Perspectum,Perspectum
 ,
 #Some special ALSPAC munging,
 Oakfield Grove,University of Bristol
