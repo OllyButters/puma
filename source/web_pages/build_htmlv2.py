@@ -1638,32 +1638,43 @@ def build_search(papers):
     searchable_data = []
     for this_paper in papers:
         this_subset = {}
-        this_subset['IDs'] = this_paper['IDs']
-        this_subset['clean'] = {}
+        this_subset['IDs'] = {}
+        
         try:
-            this_subset['clean']['title'] = this_paper['clean']['title']
+            this_subset['IDs']['DOI'] = this_paper['IDs']['DOI']
+        except:
+            pass
+        
+        try:
+            this_subset['IDs']['PMID'] = this_paper['IDs']['PMID']
+        except:
+            pass
+        
+        #this_subset['clean'] = {}
+        try:
+            this_subset['title'] = this_paper['clean']['title']
         except:
             pass
 
         try:
-            this_subset['clean']['abstract'] = this_paper['clean']['abstract']
+            this_subset['abstract'] = this_paper['clean']['abstract']
         except:
             pass
 
         try:
-            this_subset['clean']['keywords'] = this_paper['clean']['keywords']
+            this_subset['keywords'] = this_paper['clean']['keywords']
         except:
             pass
 
         try:
-            this_subset['clean']['full_author_list'] = []
+            this_subset['full_author_list'] = []
             for this_author in this_paper['clean']['full_author_list']:
-                this_subset['clean']['full_author_list'].append({'clean': this_author['clean']})
+                this_subset['full_author_list'].append(this_author['clean'])
         except:
             pass
 
         try:
-            this_subset['clean']['journal'] = this_paper['clean']['journal']
+            this_subset['journal'] = this_paper['clean']['journal']
         except:
             pass
 
