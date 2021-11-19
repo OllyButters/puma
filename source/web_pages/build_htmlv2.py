@@ -1178,7 +1178,6 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     extra_head = '<script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     extra_head += '<script type="text/javascript" src="../data.js"></script>'
     extra_head += '<script>' + n_papers_with_x_citations + '</script>'
-    extra_head += '<script type="text/javascript" src="../map/map.js"></script>'
     extra_head += '<script>var plot_high_citation_chart = "' + str(plot_high_citation_chart) + '";</script>'
     extra_head += '<script>var primary_colour = "#' + config.project_details['colour_hex_primary'] + '";</script>'
 
