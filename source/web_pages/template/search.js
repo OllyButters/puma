@@ -15,11 +15,7 @@ function search(){
   document.getElementById("num_search_results").innerHTML = "";
 
   // Get the papers and exec data
-  //var raw_data = document.getElementById("search_data").innerHTML;
-  //var data = JSON.parse(raw_data);
   var data = papers;
-//  var raw_exec = document.getElementById("exec_list").innerHTML;
-//  var exec_list = JSON.parse(raw_exec);
 
   // Get the input search query
   var query = document.getElementById("search").value;
@@ -41,35 +37,21 @@ function search(){
       var match = false;
 
       // Check title
-      if( data[i].clean.title.contains( query_components[j] ) ){
+      if( data[i].title.contains( query_components[j] ) ){
         match = true;
       }
 
       // Check abstract
       try{
-        //if(data[i].merged.MedlineCitation.Article.Abstract.AbstractText[0].contains(query_components[j])){
-        if(data[i].clean.abstract.contains(query_components[j])){
+        if(data[i].abstract.contains(query_components[j])){
           match = true;
         }
       } catch(err){}
 
-      // Check subject text
-      //try {
-      //  for( n = 0; n < data[i].merged.subject.length ; n++ ){
-          //if( data[i].merged.subject[n].contains( query_components[j] ) ){
-        //  if( data[i].merged.subject[n].contains( query_components[j] ) ){
-          //    match = true;
-          //}
-        //}
-      //} catch (err){}
-
       // Check keywords
       try {
-//        for( n = 0; n < data[i].merged.MedlineCitation.MeshHeadingList.length ; n++ ){
-  //        if( data[i].merged.MedlineCitation.MeshHeadingList[n].DescriptorName.contains( query_components[j] ) ){
-          for( n = 0; n < data[i].clean.keywords.mesh.length ; n++ ){
-            if( data[i].clean.keywords.mesh[n].term.contains( query_components[j] ) ){
-
+          for( n = 0; n < data[i].keywords.mesh.length ; n++ ){
+            if( data[i].keywords.mesh[n].term.contains( query_components[j] ) ){
             match = true;
           }
         }
@@ -77,9 +59,8 @@ function search(){
 
       // Check author names
       try {
-        for( n = 0; n < data[i].clean.full_author_list.length ; n++ ){
-          //if( data[i].clean.full_author_list[n].family.contains( query_components[j] ) || data[i].clean.full_author_list[n].given.contains( query_components[j] ) ){
-          if( data[i].clean.full_author_list[n].clean.contains( query_components[j] )){
+        for( n = 0; n < data[i].full_author_list.length ; n++ ){
+          if( data[i].full_author_list[n].contains( query_components[j] )){
             match = true;
           }
         }
@@ -103,37 +84,33 @@ function search(){
         } catch (err){}
 
         // Paper title
-        results += '<span style="text-decoration: underline; font-weight:bold;">' + data[i].clean.title + '</span><br/>';
+        results += '<span style="text-decoration: underline; font-weight:bold;">' + data[i].title + '</span><br/>';
 
         // Authors
           authors = [];
-          for( a = 0 ; a < data[i].clean.full_author_list.length; a++ ){
+          for( a = 0 ; a < data[i].full_author_list.length; a++ ){
 
               if( a > 0 ){
                 results += "; ";
               }
-              // results += data[i].clean.full_author_list[a].family + ', ' + data[i].clean.full_author_list[a].given;
-              results += data[i].clean.full_author_list[a].clean;
+              results += data[i].full_author_list[a];
           }
           results += '<br/>'
 
-
         // Journal, volume and issue
         try{
-            //if( "ISOAbbreviation" in data[i].merged.MedlineCitation.Article.Journal ){
-              results += data[i].clean.journal.journal_name;
-            //}
+              results += data[i].journal.journal_name;
         } catch (err){}
 
         try{
-            if( "volume" in data[i].clean.journal && data[i].clean.journal.volume != ''){
-                results += ', Volume ' + data[i].clean.journal.volume;
+            if( "volume" in data[i].journal && data[i].journal.volume != ''){
+                results += ', Volume ' + data[i].journal.volume;
             }
         } catch (err){}
 
         try{
-            if( "issue" in data[i].clean.journal && data[i].clean.journal.issue != ''){
-              results += ', Issue ' + data[i].clean.journal.issue;
+            if( "issue" in data[i].journal && data[i].journal.issue != ''){
+              results += ', Issue ' + data[i].journal.issue;
             }
         } catch (err){}
 
