@@ -270,7 +270,7 @@ def build_home(papers):
         html_file.write(temp)
     html_file.write('</table>')
 
-    temp = "<p>Publication year known for " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications</p>"
+    temp = "<p>Publication year known for " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications. <span class='help_text'>(<a href='help/index.html#missing_data'>What does this mean?</a>)</span></p>"
     temp += '<p>* Citation data from <a href="https://www.scopus.com">Scopus</a>.</p>'
 
     temp += build_common_foot("./")
@@ -952,7 +952,7 @@ def build_country_map(papers):
     temp += '<h1 id="pagetitle">Publications by Country</h1>'
 
     temp += '<div id="regions_div" style="width: 900px; height: 500px;"><img src="loading.gif" alt="Loading"></div>'
-    temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
+    temp += "<p>Data from " + intWithCommas(number_of_points) + " publications. <span class='help_text'>(<a href='help/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     html_file.write(temp)
 
@@ -1006,7 +1006,7 @@ def build_institute_map(papers):
     temp += '<h1 id="pagetitle">Publications by UK Institute</h1>'
 
     temp += '<div id="regions_div" style="width: 100%; min-width:500px; min-height: 500px;"><img src="loading.gif" alt="Loading"></div>'
-    temp += "<p>Data from " + intWithCommas(number_of_points) + " publications</p>"
+    temp += "<p>Data from " + intWithCommas(number_of_points) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
     html_file.write(temp)
 
     temp = build_common_foot("../")
@@ -1251,19 +1251,19 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     temp += "<div class='clear'></div>"
 
     temp += '<div id="cumulative_div"></div>'
-    temp += "<p style='text-align:center;'>Data from " + intWithCommas(age_weighted_citation_data) + " publications</p>"
+    temp += "<p style='text-align:center;'>Data from " + intWithCommas(age_weighted_citation_data) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     temp += '<div id="papers_per_year_div"></div>'
-    temp += "<p style='text-align:center;'>Data from " + intWithCommas(age_weighted_citation_data) + " publications</p>"
+    temp += "<p style='text-align:center;'>Data from " + intWithCommas(age_weighted_citation_data) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
     
     temp += '<div id="papers_per_citation_count_div"></div>'
     temp += "<div style='margin-left:auto;margin-right:auto;'><div class='average_citations' style='height:15px; width:33px; float:left; background:#" + config.project_details['colour_hex_secondary'] + "'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Mean number of citations</div></div>"
     temp += "<div style='margin-left:auto;margin-right:auto;margin-top:5px;'><div class='average_citations' style='height:15px; width:33px; float:left; background:green'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Median number of citations</div></div>"
-    temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
+    temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     if plot_high_citation_chart:
         temp += '<div id="papers_per_high_citation_count_div"></div>'
-        temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications</p>"
+        temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     html_file.write(temp)
 
@@ -1340,7 +1340,7 @@ def build_abstract_word_cloud(data_from_count):
     temp += '</cloud>'
 
     temp += '<script src="d3wordcloud.js"></script>'
-    temp += "<p>Data from " + intWithCommas(data_from_count) + " publications</p>"
+    temp += "<p>Data from " + intWithCommas(data_from_count) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     html_file.write(temp)
 
@@ -1412,7 +1412,7 @@ def build_keyword_word_cloud(data_from_count):
     temp += '</cloud>'
 
     temp += '<script src="d3wordcloud.js"></script>'
-    temp += "<p>Data from " + intWithCommas(data_from_count) + " publications</p>"
+    temp += "<p>Data from " + intWithCommas(data_from_count) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     html_file.write(temp)
 
@@ -1561,11 +1561,12 @@ def build_help():
     temp += '<li><a href="#what_des_pubmed_doi_and_api_mean">What does PubMed, DOI and API mean?</a></li>'
     temp += '<li><a href="#where_does_citation_data_come_from">Where does the citation data come from?</a></li>'
     temp += '<li><a href="#geo_data">Geolocation data</a></li>'
-    temp += '<li><a href="#altmetric_circles">What are the circles with numbers in them?</a></li>'
     temp += '<li><a href="#missing_data">Why don\'t some statistics use data from all publications?</a></li>'
+    temp += '<li><a href="#altmetric_circles">What are the circles with numbers in them?</a></li>'
     temp += '<li><a href="#all_keywords_vs_mesh">What\'s the difference between "All keywords" and "Major keywords (MeSH)"?</a>>/li>'
     temp += '<li><a href="#missing_from_keywords">Why doesn\'t my paper show up when I click on a keyword which describes it?</a></li>'
     temp += '<li><a href="#publication_dates">What are some publications in a different year to what I would expect?</a></li>'
+    temp += '<li><a href="#what_is_a_word_cloud">What is a word cloud?</a></li>'
     temp += '<li><a href="#i_want_to_know_more">I want to know more!</a></li>'
     temp += '<li><a href="#how_was_this_funded">How was this project funded?</a></li>'
     temp += '</ul>'
@@ -1583,16 +1584,14 @@ def build_help():
     temp += '<p>We use the first author\'s postal address and email address to assign a paper to a location. Sometimes this may not exist in the metadata, which is why not all papers will be plotted on the maps. Occasionally a paper indicate the authors wish a different author to be considered the lead author, we cannot process this information, so the first author is used.</p>'
     temp += '<p>The coordinate location of institutions is retrieved from the free open data project <a href="https://www.wikidata.org">Wikidata</a>.</p>'
 
-    temp += '<h2 id="altmetric_circles">What are the circles with numbers in them?</h2>'
-    temp += '<p>Journal article citations are one way to track how an article is being used. Another way is by considering a wider set of metrics, such as if it is mentioned in news articles, or on social media. This is what <a href"https://www.altmetric.com">https://www.altmetric.com</a> does, and by hovering your mouse over one of the circles (or clicking on it) you can get an overview of where this article is being talked about.</p>'
-
     temp += '<h2 id="missing_data">Why don\'t some statistics use data from all publications?</h2>'
     temp += '<p>Data can be missing because some publications are very old and the data about it just doesn\'t exist, or sometimes a recent paper may not have the data about it available <em>yet</em>. There are many different ways to track publications'
     temp += ' and prior to the introduction of DOIs in 2000 there was no standard method. This means some metadata on old publications could have been lost or not recorded.</p>'
 
-    temp += '<p>The data used for the statistics are gathered from databases which only collect data from particular journals.'
-    temp += ' This problem is most obvious for citation data from Scopus and Europe PMC. Although they have a particular publication on record,'
-    temp += ' there may be citations for this publication from a journal that they do not index and therefore these will not be in the citation count. This is why citation counts from different sources are not always the same.</p>'
+    temp += '<p>The data used for the statistics is gathered from databases which only collect data from particular journals (no one has 100% of the data). This means some statistics shown here are under-reported (e.g. citation counts and their derivatives) or may be missing entirely (e.g. papers with no location assigned to them).'
+
+    temp += '<h2 id="altmetric_circles">What are the circles with numbers in them?</h2>'
+    temp += '<p>Journal article citations are one way to track how an article is being used. Another way is by considering a wider set of metrics, such as if it is mentioned in news articles, or on social media. This is what <a href"https://www.altmetric.com">https://www.altmetric.com</a> does, and by hovering your mouse over one of the circles (or clicking on it) you can get an overview of where this article is being talked about.</p>'
 
     temp += '<h2 id="all_keywords_vs_mesh">What\'s the difference between "All keywords" and "Major keywords (MeSH)"?</h2>'
     temp += '<p>The <em>All keywords</em> page shows author defined keywords and MeSH terms. MeSH (Medical Subject Headings) is a commonly used hierarchical controlled vocabulary. This means that there is a list of well defined terms which are allowed to be used (controlled vocabulary), and they are related to one another (hierarchical) e.g. "finger" belongs to "hand". So the Major Keywords are the broader areas, and all keywords will be more fine grained. MeSH terms are applied retrospectively to a subset of all papers.</p>'
@@ -1603,12 +1602,15 @@ def build_help():
     temp += '<h2 id="publication_dates">What are some publications in a different year to what I would expect?</h2>'
     temp += '<p>How do you define when a paper is published? Is it when it is accepted, or when a pre-print is available, or when it is made available on a journal\'s website, or when it appears in a journal\'s printed volume, or something else? Different journals have different preferences for which they prefer. This will likely mean that some papers appear later here than you may expect them to.</p>'
 
+    temp += '<h2 id="what_is_a_word_cloud">What is a word cloud?</h2>'
+    temp += '<p>A word cloud is a way of showing how often words appear in a list of words. The more frequent a word is the bigger the word appears.</p>'
+
     temp += '<h2 id="i_want_to_know_more">I want to know more!</h2>'
     temp += '<ul>'
-    temp += '<li>The source code is at <a href="https://github.com/OllyButters/puma">https://github.com/OllyButters/puma</a></li>'
-    temp += '<li>Some documentation is at <a href="https://github.com/OllyButters/puma/wiki">https://github.com/OllyButters/puma/wiki</a></li>'
-    temp += '<li>There is even a paper written about it: <a href="https://f1000research.com/articles/9-1095/v2">https://f1000research.com/articles/9-1095/v2</a></li>'
-    temp += '<li>You can talk to us at: <a href="https://twitter.com/DrOllyButters">@DrOllyButters</a>, <a href="https://twitter.com/DrBeccaWilson">@DrBeccaWilson</a> and <a href="https://twitter.com/_hugh_garner_">@_hugh_garner_</a></li></ul>'
+    temp += '<li>The source code is at <a href="https://github.com/OllyButters/puma" target="_blank">https://github.com/OllyButters/puma</a>. You can download and run this yourself!</li>'
+    temp += '<li>Some documentation is at <a href="https://github.com/OllyButters/puma/wiki" target="_blank">https://github.com/OllyButters/puma/wiki</a></li>'
+    temp += '<li>There is even a paper written about it: <a href="https://f1000research.com/articles/9-1095/v2" target="_blank">https://f1000research.com/articles/9-1095/v2</a></li>'
+    temp += '<li>You can talk to us at: <a href="https://twitter.com/DrOllyButters" target="_blank">@DrOllyButters</a>, <a href="https://twitter.com/DrBeccaWilson" target="_blank">@DrBeccaWilson</a> and <a href="https://twitter.com/_hugh_garner_" target="_blank">@_hugh_garner_</a></li></ul>'
 
     temp += '<h2 id="how_was_this_funded">How was this project funded?</h2>'
     temp += 'This project has been funded by:'

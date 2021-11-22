@@ -78,6 +78,10 @@ table a {
 }
 
 
+span.help_text {
+  color: #666;
+}
+
 /* ==== Papers ==== */
 div.paper {
   background: #efede9;
