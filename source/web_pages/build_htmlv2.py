@@ -1092,7 +1092,7 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
         g_index = x
 
     # NUMBER OF PAPERS PER CITATION COUNT
-    citation_number_limit = 200
+    citation_number_limit = 100
     citation_bin_size = 20
 
     num_papers_citations = []
@@ -1252,8 +1252,10 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
 
     temp += '<div id="cumulative_div"></div>'
     temp += "<p style='text-align:center;'>Data from " + intWithCommas(age_weighted_citation_data) + " publications</p>"
+
     temp += '<div id="papers_per_year_div"></div>'
     temp += "<p style='text-align:center;'>Data from " + intWithCommas(age_weighted_citation_data) + " publications</p>"
+    
     temp += '<div id="papers_per_citation_count_div"></div>'
     temp += "<div style='margin-left:auto;margin-right:auto;'><div class='average_citations' style='height:15px; width:33px; float:left; background:#" + config.project_details['colour_hex_secondary'] + "'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Mean number of citations</div></div>"
     temp += "<div style='margin-left:auto;margin-right:auto;margin-top:5px;'><div class='average_citations' style='height:15px; width:33px; float:left; background:green'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Median number of citations</div></div>"
