@@ -1294,7 +1294,10 @@ def build_abstract_word_cloud(data_from_count):
                 pass
 
     # Sort the words
-    abstract_words = sorted(abstract_words.items(), key=lambda x: x[1], reverse=True)
+    # abstract_words = sorted(abstract_words.items(), key=lambda x: x[1], reverse=True)
+    # Sort by word first, then the count. This gives a consistent result as if the cut off is in a band
+    # of words with the same counts it will randomly pick some. This pollutes commits to the web server
+    abstract_words = sorted(dict(sorted(abstract_words.items())).items(), key=lambda x: x[1], reverse=True)
 
     # Only pick the top 200
     abstract_words = abstract_words[:200]
@@ -1370,7 +1373,10 @@ def build_keyword_word_cloud(data_from_count):
                 pass
 
     # Sort the words
-    words = sorted(words.items(), key=lambda x: x[1], reverse=True)
+    # words = sorted(words.items(), key=lambda x: x[1], reverse=True)
+    # Sort by word first, then the count. This gives a consistent result as if the cut off is in a band
+    # of words with the same counts it will randomly pick some. This pollutes commits to the web server
+    words = sorted(dict(sorted(words.items())).items(), key=lambda x: x[1], reverse=True)
 
     # Only pick the top 200
     words = words[:200]
