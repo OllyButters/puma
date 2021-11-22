@@ -376,9 +376,10 @@ img {
   min-width:967px;
 }
 
-#wrapper,.header  {
+/*#wrapper,.header  {
   padding:0 2.08%;
 }
+*/
 
 /* #CLEARFIX */
 #wrapper:after {

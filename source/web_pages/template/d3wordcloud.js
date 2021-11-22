@@ -11,13 +11,13 @@
 
     function draw(words) {
         d3.select("cloud").append("svg")
-                .attr("width", 900)
+                .attr("width", "100%")
                 .attr("height", 550)
                 .attr("class", "wordcloud")
                 .append("g")
                 // without the transform, words words would get cutoff to the left and top, they would
                 // appear outside of the SVG area
-                .attr("transform", "translate(425,250)")
+                .attr("transform", "translate(400,250)")
                 .selectAll("text")
                 .data(words)
                 .enter().append("text")
