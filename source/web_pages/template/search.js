@@ -145,4 +145,10 @@ function search(){
   document.getElementById("search_results").style.display="block";
   document.getElementById("num_search_results").innerHTML = "Matches " + num_results + " of " + data.length + " Papers";
 
+  // If we are in an iframe then it needs to be resized once the results have been rendered.
+  if ( window.location !== window.parent.location )
+  {
+    resize_parent();
+  }  
+
 }
