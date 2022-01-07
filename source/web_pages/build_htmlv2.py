@@ -614,6 +614,10 @@ def _make_keywords_pages(papers, keywords, url_part):
         if this_keyword == "Lifestyle/obesity programmes":
             continue
 
+        if this_keyword == "Imaging/CT MRI etc":
+            continue
+        
+
         if not os.path.exists(config.html_dir + '/' + url_part + '/' + this_keyword):
             os.mkdir(config.html_dir + '/' + url_part + '/' + this_keyword)
 
