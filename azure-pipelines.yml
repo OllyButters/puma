@@ -217,7 +217,7 @@ jobs:
       git config --global user.name "Azure pipeline"
       
       # Checkout again - stuff may have changed from elsewhere
-      git checkout master
+      git checkout main
       git pull
 
       git add .
