@@ -68,9 +68,9 @@ jobs:
       HDRUK:
         config_file_name: 'config_HDRUK.ini'
         project_short_name: 'hdruk'
-      CLAHRC:
-        config_file_name: 'config_clahrc.ini'
-        project_short_name: 'clahrc'
+      #CLAHRC:
+      #  config_file_name: 'config_clahrc.ini'
+      #  project_short_name: 'clahrc'
 
     maxParallel: 2
 
