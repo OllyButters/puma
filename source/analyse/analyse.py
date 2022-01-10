@@ -16,6 +16,13 @@ try:
 except:
     nltk.download('wordnet')
 
+# check if the 'omw-1.4' corpora for nltk is installed
+# if not, download it
+try:
+    nltk.data.find('corpora/omw-1.4')
+except:
+    nltk.download('omw-1.4')
+
 ############################################################
 # Have all the data now, so do something with it
 ############################################################
