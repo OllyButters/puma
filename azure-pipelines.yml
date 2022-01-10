@@ -33,7 +33,7 @@ resources:
     type: github
     endpoint: puma_gh_deployment
     name: OllyButters/puma_cache
-    ref: master
+    ref: main
 
 
 #########################################################################################
