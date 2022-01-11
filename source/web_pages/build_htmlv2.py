@@ -567,7 +567,7 @@ def build_mesh(papers):
     # Make a page with ALL the headings on it
     html_file_all.write('<ul>')
     for this_keyword in sorted(all_keywords):
-        html = '<li><a href="../keywords/' + this_keyword.replace(" ", "%20") + '/index.html">' + this_keyword + '</a></li>'
+        html = '<li><a href="../keywords/' + this_keyword.replace(" ", "%20").replace("/", "-") + '/index.html">' + this_keyword + '</a></li>'
         html_file_all.write(html)
     html_file_all.write('</ul>')
 
@@ -589,7 +589,7 @@ def build_mesh(papers):
     # Make a page with the MAJOR headings on it
     html_file_major.write('<ul>')
     for this_mesh in sorted(mesh_papers_major):
-        html = '<li><a href="../mesh/' + this_mesh.replace(" ", "%20") + '/index.html">' + this_mesh + '</a></li>'
+        html = '<li><a href="../mesh/' + this_mesh.replace(" ", "%20").replace("/", "-") + '/index.html">' + this_mesh + '</a></li>'
         html_file_major.write(html)
     html_file_major.write('</ul>')
 
@@ -611,15 +611,16 @@ def _make_keywords_pages(papers, keywords, url_part):
     # Make an HTML page for ALL MESH terms
     for this_keyword in keywords:
 
-        if this_keyword == "Lifestyle/obesity programmes":
-            continue
 
-        if this_keyword == "Imaging/CT MRI etc":
-            continue
-        
+        # Some keywords have a / in them, which messes with URL and file paths. Just swap it out for a - here.        
+        if this_keyword.find("/") > 0:
+            this_keyword_safe = this_keyword.replace("/", "-")
+        else:
+            this_keyword_safe = this_keyword
 
-        if not os.path.exists(config.html_dir + '/' + url_part + '/' + this_keyword):
-            os.mkdir(config.html_dir + '/' + url_part + '/' + this_keyword)
+
+        if not os.path.exists(config.html_dir + '/' + url_part + '/' + this_keyword_safe):
+            os.mkdir(config.html_dir + '/' + url_part + '/' + this_keyword_safe)
 
             ############################################
             # Calculate keyword usage and citations over time.
@@ -667,8 +668,8 @@ def _make_keywords_pages(papers, keywords, url_part):
                         summary[str(this_year)] = {'num_papers': 0, 'citations': 0}
 
             # Print data to file
-            data_file = open(config.html_dir + '/' + url_part + '/' + this_keyword + '/stats.js', 'w')
-            # print >>data_file, 'var papers =([[\'Year\', \'Number of papers\'],'
+            data_file = open(config.html_dir + '/' + url_part + '/' + this_keyword_safe + '/stats.js', 'w')
+            
             data_file.write('var papers =([[\'Year\', \'Number of papers\'],')
             for this_year in sorted(summary, reverse=False):
                 data_file.write('[\''+this_year+'\','+str(summary[this_year]['num_papers'])+'],')
@@ -680,7 +681,7 @@ def _make_keywords_pages(papers, keywords, url_part):
             data_file.write(']);')
 
         # Output the HTML for this mesh term
-        file_name = config.html_dir + '/' + url_part + '/' + this_keyword + '/index.html'
+        file_name = config.html_dir + '/' + url_part + '/' + this_keyword_safe + '/index.html'
         with codecs.open(file_name, 'wb', "utf-8") as fo:
 
             # Put html together for this page
