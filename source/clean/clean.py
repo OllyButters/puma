@@ -346,6 +346,7 @@ def clean_date(this_paper):
 # pmid_data   - usually present
 # doi_data    - often present
 # scopus_data - often present - NOT USED HERE.
+# zotero_data - used as last resort
 ################################################################################
 def clean_author_list(this_paper):
     # generate the relevant structure in clean
@@ -464,11 +465,72 @@ def clean_author_list(this_paper):
             logging.warn('No AuthorList for ' + this_paper['IDs']['hash'])
     ############################################################################
 
+    ############################################################################
+    # zotero data
+    ############################################################################
+    def _clean_author_list_zotero(this_paper):
+
+        print("here")
+
+        try:
+            # Get the list of authors
+            raw_author_list = this_paper['raw']['zotero_data']['creators']
+
+            print(raw_author_list)
+
+            # First, delete the empty authors.
+            # There must be a more elegant way than this.
+            authors = []
+            for this_author in raw_author_list:
+                try:
+                    if this_author['lastName'] != "":
+                        authors.append(this_author)
+                except:
+                    pass
+
+            # now go through authors and clean name then append to clean full_author_list
+            try:
+                for this_author in authors:
+                    try:
+                        this_family = this_author['lastName']
+                    except:
+                        this_family = ''
+                    try:
+                        this_given = this_author['firstName']
+                    except:
+                        this_given = ''
+                    
+                    # No affiliations in zotero
+                    this_affiliation = ''
+
+                    if (this_family != '') and (this_given != ''):
+                        this_clean = this_family + ' ' + this_given[0]
+
+                    this_clean_author = {'clean': this_clean,
+                                         'family': this_family,
+                                         'given': this_given,
+                                         'affiliation': {'name': this_affiliation}}
+
+                    this_paper['clean']['full_author_list'].append(this_clean_author)
+            except:
+                pass
+
+            # Check to see if we have something, if so we can
+            if len(this_paper['clean']['full_author_list']) > 0:
+                return True
+
+        except:
+            logging.warn('No AuthorList for ' + this_paper['IDs']['hash'])
+    ############################################################################
+
+
     # Actually run some code
     status = _clean_author_list_pmid(this_paper)
 
     if status is not True:
         status = _clean_author_list_doi(this_paper)
+    if status is not True:
+        status = _clean_author_list_zotero(this_paper)
 ################################################################################
 
 
