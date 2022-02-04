@@ -469,14 +469,9 @@ def clean_author_list(this_paper):
     # zotero data
     ############################################################################
     def _clean_author_list_zotero(this_paper):
-
-        print("here")
-
         try:
             # Get the list of authors
             raw_author_list = this_paper['raw']['zotero_data']['creators']
-
-            print(raw_author_list)
 
             # First, delete the empty authors.
             # There must be a more elegant way than this.
@@ -499,7 +494,7 @@ def clean_author_list(this_paper):
                         this_given = this_author['firstName']
                     except:
                         this_given = ''
-                    
+
                     # No affiliations in zotero
                     this_affiliation = ''
 
@@ -522,7 +517,6 @@ def clean_author_list(this_paper):
         except:
             logging.warn('No AuthorList for ' + this_paper['IDs']['hash'])
     ############################################################################
-
 
     # Actually run some code
     status = _clean_author_list_pmid(this_paper)
