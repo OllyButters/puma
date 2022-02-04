@@ -314,14 +314,17 @@ def draw_paper(this_paper):
     html += this_paper['clean']['journal']['journal_name']
 
     try:
-        html += ', Volume ' + this_paper['clean']['journal']['volume']
+        if this_paper['clean']['journal']['volume'] != "":
+            html += ', Volume ' + this_paper['clean']['journal']['volume']
     except:
         pass
 
     try:
-        html += ', Issue ' + this_paper['clean']['journal']['issue']
+        if this_paper['clean']['journal']['issue'] != "":
+            html += ', Issue ' + this_paper['clean']['journal']['issue']
     except:
         pass
+    
     html += '<br/>'
 
     # PMID
