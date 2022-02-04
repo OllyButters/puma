@@ -20,7 +20,7 @@ def clean(papers):
         # Add an clean dict that we add stuff to
         this_paper['clean'] = {}
 
-        # Parse the zotero extras field into clean/zoter_data
+        # Parse the zotero extras field into clean/zotero_data
         parse_zotero_extras(this_paper)
 
         # clean the title
@@ -293,7 +293,7 @@ def clean_date(this_paper):
     def _clean_date_zotero(this_paper):
         # Zotero Notes overide date
         try:
-            date_parts = this_paper['raw']['zotero_data']['extra']['date'].split("/")
+            date_parts = this_paper['clean']['zotero_data']['extra']['date'].split("/")
             this_paper['clean']['clean_date']['day'] = str(date_parts[0])
             this_paper['clean']['clean_date']['month'] = str(date_parts[1])
             this_paper['clean']['clean_date']['year'] = str(date_parts[2])
@@ -303,7 +303,7 @@ def clean_date(this_paper):
 
         # zotero 'date' field (only contains numerical year, word month)
         try:
-            date_parts = this_paper['raw']['zotero_data']['date'].split(" ")
+            date_parts = this_paper['clean']['zotero_data']['date'].split(" ")
             this_paper['clean']['clean_date']['year'] = str(date_parts[-1])
             return True
         except:
@@ -326,7 +326,9 @@ def clean_date(this_paper):
         try:
             this_paper['clean']['year_published'] = this_paper['clean']['clean_date']['year']
         except:
-            logging.warn("Cannot Create Clean Date (Consider using Zotero notes). Hash: " + str(this_paper['IDs']['hash']))
+            logging.warn("Cannot Create Clean year published. Hash: " + str(this_paper['IDs']['hash']))
+    else:
+        logging.warn("Cannot Create Clean Date (Consider using Zotero notes). Hash: " + str(this_paper['IDs']['hash']))
 
 ################################################################################
 
