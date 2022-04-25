@@ -16,7 +16,16 @@ def getDoi(doi):
     # url = 'http://doi.org/' + urllib.quote_plus(doi)
     # request = urllib2.Request(url, headers={"Accept": "application/vnd.citationstyles.csl+json"})
     url = 'http://doi.org/' + urllib.parse.quote_plus(doi)
-    request = urllib.request.Request(url, headers={"Accept": "application/vnd.citationstyles.csl+json"})
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:77.0) Gecko/20100101 Firefox/77.0",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Referer": "https://www.google.com/",
+        "DNT": "1",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1"
+    }
+    request = urllib.request.Request(url, headers=headers)
     try:
         response = urllib.request.urlopen(request)
         html_raw = response.read()
