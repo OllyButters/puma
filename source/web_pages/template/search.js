@@ -119,14 +119,14 @@ function search(){
         // PMID
         try{
             if (data[i].IDs.PMID){
-              results += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + data[i].IDs.PMID + '">' + data[i].IDs.PMID + '</a>&nbsp;';
+              results += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + data[i].IDs.PMID + '" target="_blank">' + data[i].IDs.PMID + '</a>&nbsp;';
             }
         } catch (err){}
 
         // DOI
         try{
             if( data[i].IDs.DOI ){
-                results += 'DOI: <a href="https://doi.org/' + data[i].IDs.DOI + '">' + data[i].IDs.DOI + '</a>&nbsp;';
+                results += 'DOI: <a href="https://doi.org/' + data[i].IDs.DOI + '" target="_blank">' + data[i].IDs.DOI + '</a>&nbsp;';
             }
         } catch (err){}
 
