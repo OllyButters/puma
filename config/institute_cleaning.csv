@@ -189,8 +189,8 @@ Elsie Widdowson Laboratory,MRC Human Nutrition Research
 University of Munich,Ludwig Maximilian University of Munich
 #N,
 National Institute of Economic and Social Research,National Institute of Economic and Social Research
-Newcastle University,Newcastle University
-University of Newcastle,Newcastle University
+Newcastle University,University of Newcastle upon Tyne
+University of Newcastle,University of Newcastle upon Tyne
 Wellcome Centre for Mitochondrial Research,Newcastle University
 University of Nottingham,University of Nottingham
 #O,
@@ -241,6 +241,7 @@ University of Warwick,University of Warwick
 Wellcome Trust Sanger Institute,Wellcome Sanger Institute
 Wellcome Trust,Wellcome Trust
 University of the West of England,"University of the West of England, Bristol"
+University of Winchester,University of Winchester
 University of Wolverhampton,University of Wolverhampton
 #Y,
 University of York,University of York
@@ -279,6 +280,7 @@ Mersey Care NHS Foundation Trust,Mersey Care NHS Foundation Trust
 University Hospitals of Morecambe Bay NHS Trust,University Hospitals of Morecambe Bay NHS Trust
 NICE,National Institute for Health and Care Excellence
 Ninewells Hospital,Ninewells Hospital
+North West Ambulance Service,North West Ambulance Service
 North Bristol NHS Trust,North Bristol NHS Trust
 Northlands R & D Unit,Northlands R & D Unit
 Northwick Park Hospital,Northwick Park Hospital
@@ -290,6 +292,7 @@ University Hospital Nottingham,University Hospital Nottingham
 the Royal College of Surgeons in Ireland,The Royal College of Surgeons in Ireland
 Poole Hospital NHS Foundation Trust,Poole Hospital NHS Foundation Trust
 Public Health Wales,Public Health Wales
+Public Health Scotland,Public Health Scotland
 "Queen Elizabeth Hospital, Woolwich","Queen Elizabeth Hospital, London"
 Royal United Hospital,Royal United Hospital
 Royal Alexandra Children's Hospital,Royal Alexandra Children's Hospital
@@ -343,6 +346,7 @@ Instituto de Salud Global de Barcelona,University of Barcelona
 "Centre for Research in Environmental Epidemiology, Barcelona","Centre for Research in Environmental Epidemiology, Barcelona"
 Baylor College of Medicine,Baylor College of Medicine
 University of Belgrade,University of Belgrade
+University of Bologna,University of Bologna
 Boston University,Boston University
 Children's Hospital Boston,Boston Children's Hospital
 Brigham and Women's Hospital,Brigham and Women's Hospital
