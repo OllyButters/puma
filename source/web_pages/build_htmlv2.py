@@ -870,14 +870,13 @@ def build_zotero_tags(papers):
             extra_head += '<script type="text/javascript" src="../keyword_history.js"></script>'
             extra_head += "<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>"
 
-
             html = build_common_head("../../", extra_head)
             html += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; Tags &gt; ' + this_tag + '</p>', "../../")
 
             html += '<h1 id="pagetitle">Tag - ' + this_tag + '</h1>'
             html += '<h2>Tag History</h2>'
 
-            # Placeholers for the charts
+            # Place holders for the charts
             html += '<div id="papers_chart_div"></div>'
             html += '<div id="citations_chart_div"></div>'
 
