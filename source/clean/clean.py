@@ -731,12 +731,28 @@ def clean_keywords(this_paper):
     except KeyError:
         this_paper['clean']['keywords']['other'] = []
 
+    # Try PubMed first
     try:
         for this_list_of_keywords in this_paper['raw']['pmid_data']['MedlineCitation']['KeywordList']:
             for this_keyword in this_list_of_keywords:
                 this_paper['clean']['keywords']['other'].append(this_keyword)
     except:
         pass
+
+    # If there's nothing from PubMed then try from zotero extra
+    if len(this_paper['clean']['keywords']['other']) == 0:
+        try:
+
+            keyword_text = this_paper['clean']['zotero_data']['extra']['keywords']
+
+            # split the extras data into key/value pairs
+            keywords = keyword_text.split("|")
+            for this_keyword in keywords:
+                this_paper['clean']['keywords']['other'].append(this_keyword)
+
+        except:
+            pass
+
 ################################################################################
 
 
