@@ -106,9 +106,7 @@ def build_config_variables(root_dir):
         web_page_show_author_network = config.getboolean('pages', 'web_page_show_author_network')
         web_page_show_institute_country_map = config.getboolean('pages', 'web_page_show_institute_country_map')
         web_page_show_zotero_tags = config.getboolean('pages', 'web_page_show_zotero_tags')
-        web_page_public_facing = config.getboolean('pages', 'web_page_public_facing')
         web_page_is_in_iframe = config.getboolean('pages', 'web_page_is_in_iframe')
-        
 
         # Networks
         network_create_networks = config.getboolean('networks', 'create_networks')

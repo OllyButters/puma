@@ -59,10 +59,12 @@ def tidy_existing_file_tree():
     if os.path.exists(config.cache_dir + '/processed/cleaned'):
         shutil.rmtree(config.cache_dir + '/processed/cleaned')
 
+    # Delete coverage report if it exists
+    if os.path.exists(config.cache_dir + '/coverage_report.html'):
+        os.remove(config.cache_dir + '/coverage_report.html')
+
     if os.path.exists(config.html_dir):
         shutil.rmtree(config.html_dir)
-
-
 
 
 ################################################################################

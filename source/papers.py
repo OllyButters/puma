@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 ################################################################################
-# The publications metadata augmentor!
+# The publications metadata augmenter!
 # This is the starting point of a pipeline that tries to augment a list of
 # publications with metadata from places like PubMed and DOI.org to build a
 # reporting tool and some pretty web pages.
@@ -114,7 +114,7 @@ fo.close()
 
 # Write a copy of each paper to a separate file
 for this_paper in papers:
-    this_file_name = config.cache_dir + '/processed/cleaned/' + this_paper['IDs']['zotero'] + '.cleaned'
+    this_file_name = config.cache_dir + '/processed/cleaned/' + this_paper['IDs']['zotero'] + '.cleaned.json'
     fo = open(this_file_name, 'w')
     fo.write(json.dumps(this_paper, indent=4))
     fo.close()

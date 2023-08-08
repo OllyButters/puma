@@ -25,6 +25,7 @@ def coverage_report(papers):
 
     cov_html = '<table class="tablesorter">'
     cov_html += '''<thead><tr>
+                    <th></th>
                     <th>Data</th>
                     <th>Zotero &uarr;&darr;</th>
                     <th>DOI &uarr;&darr;</th>
@@ -75,6 +76,9 @@ def coverage_report(papers):
     for this_paper in papers:
         cov_html += '\n<tr class="item">'
 
+        # Put a non-functional checkbox in the first column to help with selecting papers
+        cov_html += '<td><input type="checkbox"></td>'
+
         #####
         # Filename hash - this has to be present!
         try:
@@ -83,8 +87,7 @@ def coverage_report(papers):
         except:
             fn_hash = '???'
 
-        # cov_html += '<td><a href="status/cleaned/' + fn_hash + '" target="_blank">' + fn_hash + '</a></td>'
-        cov_html += '<td><a href="status/cleaned/' + fn_hash + '" target="_blank">data</a></td>'
+        cov_html += '<td><a href="processed/cleaned/' + fn_hash + '" target="_blank">data</a></td>'
 
         #####
         # Zotero ID - this has to be present!
@@ -508,19 +511,8 @@ def coverage_report(papers):
     scripts += "<script>$(function(){$('table').tablesorter({widgets        : ['zebra', 'columns'],usNumberFormat : false,sortReset      : true,sortRestart    : true});});</script>"
 
     output_text = '<html><head><style>' + cov_css + '</style>' + scripts + '</head><body>' + title + status_table + key + '\n<br/><br/>' + cov_html + '</body></html>'
-    coverage_file = open(config.html_dir + '/coverage_report.html', 'w')
+    coverage_file = open(config.cache_dir + '/coverage_report.html', 'w')
     coverage_file.write(output_text)
 
     # Copy the jquery.tablesorter.js file across
-    shutil.copy(config.template_dir + '/jquery.tablesorter.js', config.html_dir + '/jquery.tablesorter.js')
-
-    # put a copy of all the processed files in the web tree
-    if os.path.exists(config.html_dir + '/status/cleaned'):
-        shutil.rmtree(config.html_dir + '/status/cleaned')
-
-    os.mkdir(config.html_dir + '/status/cleaned')
-
-    # shutil.copytree(config.cache_dir + '/processed/cleaned', config.html_dir + '/status/cleaned')
-    # Copy data to web tree, but put json extension on them.
-    for this_file in os.listdir(config.cache_dir + '/processed/cleaned'):
-        shutil.copy(config.cache_dir + '/processed/cleaned/' + this_file, config.html_dir + '/status/cleaned/' + this_file + '.json')
+    shutil.copy(config.template_dir + '/jquery.tablesorter.js', config.cache_dir + '/jquery.tablesorter.js')

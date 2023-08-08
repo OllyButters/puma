@@ -95,9 +95,6 @@ def build_common_body(breadcrumb, nav_path):
     html += '<li><a href="' + nav_path + 'keyword_wordcloud/index.html">Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
 
-    if not config.web_page_public_facing:
-        html += '<li><a href="' + nav_path + 'coverage_report.html">Coverage report</a></li>'
-
     html += '</ul>'
 
     html += '<div class="after-navgroup">'
