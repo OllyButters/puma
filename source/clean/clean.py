@@ -599,6 +599,17 @@ def clean_institution(papers):
         hasAffiliation = False
 
         #####
+        # Try zotero
+        # Doing zotero here means it will still get passed through the matching
+        # below to make sure it is a real place.
+        if not hasAffiliation:
+            try:
+                candidate_institute = this_paper['clean']['zotero_data']['extra']['clean_institute']
+                hasAffiliation = True
+            except:
+                logging.info('No affiliation from zotero for %s', this_paper['IDs']['zotero'])
+
+        #####
         # PubMed and DOI from first
         if not hasAffiliation:
             try:
@@ -617,17 +628,6 @@ def clean_institution(papers):
                     hasAffiliation = True
             except:
                 logging.info('No affiliation from Scopus for %s', this_paper['IDs']['zotero'])
-
-        #####
-        # Try zotero
-        # Doing zotero here means it will still get passed through the matching
-        # below to make sure it is a real place.
-        if not hasAffiliation:
-            try:
-                candidate_institute = this_paper['clean']['zotero_data']['extra']['clean_institute']
-                hasAffiliation = True
-            except:
-                logging.info('No affiliation from zotero for %s', this_paper['IDs']['zotero'])
 
         #####
         # Lookup our candidate_institute
