@@ -119,6 +119,9 @@ for this_paper in papers:
     fo.write(json.dumps(this_paper, indent=4))
     fo.close()
 
+# Generate the coverage report.
+coverage_report.coverage_report(papers)
+
 # Output a BibTeX file with all the papers in it.
 bibliography.bibtex.bibtex(papers)
 
