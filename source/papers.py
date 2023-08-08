@@ -119,10 +119,6 @@ for this_paper in papers:
     fo.write(json.dumps(this_paper, indent=4))
     fo.close()
 
-# Generate the coverage report, but only if not to be shown publicly
-if not config.web_page_public_facing:
-    coverage_report.coverage_report(papers)
-
 # Output a BibTeX file with all the papers in it.
 bibliography.bibtex.bibtex(papers)
 
