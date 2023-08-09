@@ -44,8 +44,8 @@ trigger: none
 #########################################################################################
 # Do run on a schedule though.
 schedules:
-  - cron: "32 1 * * *"
-    displayName: Nightly build
+  - cron: "32 1 * * 0"
+    displayName: Weekly build
     branches:
      include:
       - master
