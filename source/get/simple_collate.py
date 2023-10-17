@@ -9,6 +9,8 @@ import config.config as config
 import logging
 
 
+allowed_item_types = ['journalArticle']
+
 # Needs a tidy up and more logging.
 
 def collate():
@@ -41,7 +43,8 @@ def collate():
                 # get the previously downloaded papers from the cache
                 cached_zotero_data = pc.getCacheData(filetype='/raw/zotero', filenames=[paper_key])[paper_key]
                 # check itemType - if it's 'note', or 'attachment' we can ignore
-                if cached_zotero_data['data']['itemType'] not in ('attachment', 'note', 'book', 'bookSection'):
+                #if cached_zotero_data['data']['itemType'] not in ('attachment', 'note', 'book', 'bookSection'):
+                if cached_zotero_data['data']['itemType'] in allowed_item_types:
                     zotero_papers.append(cached_zotero_data['data'])
 
     # get all new papers. Note this will not write any to disk until it has got all of them.
@@ -50,8 +53,10 @@ def collate():
     for num, paper in enumerate(zot.papers):
         # add to new_papers for later doi/pubmed data retrieval
         # check itemType - if it's 'note', or 'attachment' we can ignore
-        if paper['data']['itemType'] not in ('attachment', 'note'):
+        if paper['data']['itemType'] in allowed_item_types:
             zotero_papers.append(paper['data'])
+        else:
+            logging.warn('Skipping paper with itemType: ' + paper['data']['itemType'] + ' (zotero key: ' + paper['data']['key'] + ')')
 
     # zotero_papers will have ALL zotero data in it based on cache and newly downloaded data.
     # now check zotero_papers for doi, pubmed id, scopus data and retrieve if required.
