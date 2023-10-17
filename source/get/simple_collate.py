@@ -47,10 +47,7 @@ def collate():
     # get all new papers. Note this will not write any to disk until it has got all of them.
     zot.getPapersList(key_list=new_keys)
 
-    # cache the new papers
     for num, paper in enumerate(zot.papers):
-        # cache zotero data
-        pc.dumpJson(paper['key'], paper, 'raw/zotero')
         # add to new_papers for later doi/pubmed data retrieval
         # check itemType - if it's 'note', or 'attachment' we can ignore
         if paper['data']['itemType'] not in ('attachment', 'note'):

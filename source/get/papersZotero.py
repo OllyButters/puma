@@ -1,3 +1,4 @@
+from . import papersCache as pc
 from pyzotero import zotero
 import config.config as config
 import re
@@ -72,6 +73,10 @@ class zotPaper (zotero.Zotero):
             if key != '':
                 print('Getting zotero item ' + key)
                 item = super(zotPaper, self).item(key, *args, **kwargs)
+
+                # cache as we go
+                pc.dumpJson(key, item, 'raw/zotero')
+
                 self.papers.append(item)
         return self.papers
 
