@@ -194,7 +194,7 @@ jobs:
       git config --global user.name "Azure pipeline"
       
       # Checkout again - stuff may have changed in this branch from elsewhere
-      git checkout gh-pages-3    
+      git checkout gh-pages-4    
       git pull
 
       cp -r $(Pipeline.Workspace)/puma/html/$(project_short_name) .
