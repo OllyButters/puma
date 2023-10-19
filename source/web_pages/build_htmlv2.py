@@ -91,7 +91,7 @@ def build_common_body(breadcrumb, nav_path):
     if config.web_page_show_author_network:
         html += '<li><a href="' + nav_path + 'authornetwork/index.html">Author Network</a></li>'
 
-    html += '<li><a href="' + nav_path + 'metrics/index.html">Study Metrics</a></li>'
+    html += '<li><a href="' + nav_path + 'metrics/index.html">Metrics</a></li>'
     html += '<li><a href="' + nav_path + 'keyword_wordcloud/index.html">Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
 
@@ -1228,7 +1228,7 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     temp += "<div class='metric_name'>c" + str(c_index_bound) + "-index</div>"
     temp += "<div class='metric_value'>" + intWithCommas(c20_index) + "</div>"
     temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
-    temp += "<div class='metric_description'>The number of publications from a study that have at least " + str(c_index_bound) + " citations.</div>"
+    temp += "<div class='metric_description'>The number of publications that have at least " + str(c_index_bound) + " citations.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
