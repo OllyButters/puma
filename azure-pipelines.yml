@@ -26,7 +26,7 @@ resources:
     type: github
     endpoint: puma_gh_deployment
     name: OllyButters/puma
-    ref: gh-pages-3
+    ref: gh-pages-4
 
   # Cache repo (private repo)
   - repository: puma_cache
