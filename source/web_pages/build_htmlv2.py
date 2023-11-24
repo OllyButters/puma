@@ -339,27 +339,32 @@ def draw_paper(this_paper):
         pass
 
     # Citation Counts and Sources
-    number_citations_counts = 1  # The number of different citation count sources
-    citations_counts_width = 100 / number_citations_counts
-    html += "<table class='citation_table'>"
-    html += '<tr><th colspan="' + str(number_citations_counts) + '">Citation Counts</th></tr>'
-    html += '<tr>'
+    #number_citations_counts = 1  # The number of different citation count sources
+    #citations_counts_width = 100 / number_citations_counts
+    #html += "<table class='citation_table'>"
+    #html += '<tr><th colspan="' + str(number_citations_counts) + '">Citation Counts</th></tr>'
+    #html += '<tr>'
+    html += '<br/>Citations: '
+
     try:
         # Try to display citation count with link to scopus page
         scopus_links = this_paper['raw']['scopus_data']['search-results']['entry'][0]['link']
         for this_link in scopus_links:
             if this_link['@ref'] == 'scopus-citedby':
-                html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: <a href="' + this_link['@href'] + '" target="_blank">' + str(this_paper['clean']['citations']['scopus']['count']) + '</a></td>'
+                if this_paper['clean']['citations']['scopus']['count'] !='0':
+                    html += '<a href="' + this_link['@href'] + '" target="_blank">' + str(this_paper['clean']['citations']['scopus']['count']) + '</a> (Scopus)'
+                else:
+                    html += '-'
 
         # html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + str(this_paper['IDs']['scopus']) + '&origin=inward&txGid=0">' + str(this_paper['clean']['citations']['scopus']['count']) + '</a></td>'
     except:
         try:
-            html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: ' + str(this_paper['clean']['citations']['scopus']['count']) + '</td>'
+            html += str(this_paper['clean']['citations']['scopus']['count']) + ' (Scopus)'
         except:
-            html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: -</td>'
+            html += '-'
 
-    html += '</tr>'
-    html += "</table>"
+    #html += '</tr>'
+    #html += "</table>"
     html += '</div>'
 
     return html
