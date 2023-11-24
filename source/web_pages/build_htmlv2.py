@@ -282,7 +282,7 @@ def build_home(papers):
 # This function is used in the different paper lists to
 # display a consistently formatted list.
 ############################################################
-def draw_paper(this_paper):
+def draw_paper(this_paper, nav_path="./"):
     html = '<div class="paper">'
 
     # altmetric data
@@ -339,11 +339,6 @@ def draw_paper(this_paper):
         pass
 
     # Citation Counts and Sources
-    #number_citations_counts = 1  # The number of different citation count sources
-    #citations_counts_width = 100 / number_citations_counts
-    #html += "<table class='citation_table'>"
-    #html += '<tr><th colspan="' + str(number_citations_counts) + '">Citation Counts</th></tr>'
-    #html += '<tr>'
     html += '<br/>Citations: '
 
     try:
@@ -363,8 +358,16 @@ def draw_paper(this_paper):
         except:
             html += '-'
 
-    #html += '</tr>'
-    #html += "</table>"
+    # Tags
+    # 
+    try:
+        if len(this_paper['clean']['zotero_tags']) > 0:
+            html += '<br/>Tags: '
+            for this_tag in this_paper['clean']['zotero_tags']:
+                html += '<a href="' + nav_path + 'tags/' + this_tag['tag'] + '/index.html">' + this_tag['tag'] + '</a>&nbsp;'
+    except:
+        pass
+
     html += '</div>'
 
     return html
@@ -394,7 +397,7 @@ def build_papers(papers):
     for this_paper in papers:
         try:
             # Call draw paper function
-            html = draw_paper(this_paper)
+            html = draw_paper(this_paper, "../../")
 
             # Append this paper to the list indexed by the year
             this_year = this_paper['clean']['clean_date']['year']
@@ -469,7 +472,7 @@ def build_papers(papers):
         try:
             this_paper['clean']['clean_date']['year']
         except:
-            html += draw_paper(this_paper)
+            html += draw_paper(this_paper, "../../")
             n += 1
 
     temp += '<h2>' + str(n) + ' Publications From Unknown Years</h2>'
@@ -732,7 +735,7 @@ def _make_keywords_pages(papers, keywords, url_part):
                         this_paper = paper_obj
 
                     # Call draw paper function
-                    html = draw_paper(this_paper)
+                    html = draw_paper(this_paper, "../../")
 
                     fo.write(html)
 
@@ -752,7 +755,6 @@ def build_zotero_tags(papers):
 
     print("\n###HTML - Zotero tags###")
 
-    # plotting routine
     shutil.copyfile(config.template_dir + '/keyword_history.js', config.html_dir + '/tags/keyword_history.js')
 
     zotero_tags = {}
@@ -903,7 +905,7 @@ def build_zotero_tags(papers):
                         this_paper = paper_obj
 
                     # Call draw paper function
-                    html = draw_paper(this_paper)
+                    html = draw_paper(this_paper, "../../")
 
                     fo.write(html)
 
