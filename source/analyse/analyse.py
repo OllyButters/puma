@@ -519,6 +519,8 @@ def output_csv(papers):
     print('\n###Outputting CSV file###')
     with open(config.data_dir + '/all.csv', 'w') as csvfile:
         all_file = csv.writer(csvfile)
+        all_file.writerow(['year', 'authors', 'title', 'first_author', 'journal', 'citations', 'tags'])
+
         for this_paper in papers:
             try:
                 title = this_paper['clean']['title']
@@ -554,6 +556,15 @@ def output_csv(papers):
                 year = '???'
 
             try:
-                all_file.writerow([year, author_string, title, first_author, journal, citations])
+                tags = []
+                tag_string = ''
+                for this_tag in this_paper['clean']['zotero_tags']:
+                    tags.append(this_tag['tag'])
+                tag_string = ', '.join(tags)
+            except:
+                tag_string = '???'
+
+            try:
+                all_file.writerow([year, author_string, title, first_author, journal, citations, tag_string])
             except:
                 pass
