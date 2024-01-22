@@ -1106,7 +1106,7 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     h_index = 0
     # cits_so_far = 0
 
-    for x in range(0, len(paper_citations) + 1):
+    for x in range(0, len(paper_citations)):
         if x > paper_citations[x]:
             break
         h_index = x
@@ -1116,7 +1116,7 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     g_index = 0
     cits_so_far = 0
 
-    for x in range(0, len(paper_citations) + 1):
+    for x in range(0, len(paper_citations)):
         cits_so_far += paper_citations[x]
         if cits_so_far < x * x:
             break
