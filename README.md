@@ -41,10 +41,14 @@ The wiki (<https://github.com/OllyButters/puma/wiki>) has the best instructions,
 - Or you can run it from within an IDE.
 - Once it has finished, have a look at the web pages in the html folder. Pay particular attention to the coverage_report.html file.
 
+### Azure pipelines
+
+The example instances of the output at [https://ollybutters.github.io/puma](https://ollybutters.github.io/puma) are automatically built and deployed with the `azure-pipelines.yml` file in the root of the web repo at <https://github.com/OllyButters/puma_web/>.
+
 ## PUMA project publications
 
-Butters et al., 2019. DOI: [10.12688/wellcomeopenres.14986.1](https://dx.doi.org/10.12688%2Fwellcomeopenres.14986.1)
-Butters et al., 2021. DOI: [10.12688/f1000research.25484.2](https://doi.org/10.12688/f1000research.25484.2)
+- Butters et al., 2019. DOI: [10.12688/wellcomeopenres.14986.1](https://dx.doi.org/10.12688%2Fwellcomeopenres.14986.1)
+- Butters et al., 2021. DOI: [10.12688/f1000research.25484.2](https://doi.org/10.12688/f1000research.25484.2)
 
 ## Project Leads
 

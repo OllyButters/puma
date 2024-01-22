@@ -16,7 +16,7 @@ import config.config as config
 # The colour scheme is automatic. The colours from the config are automatically put into the pages.
 # This .py file also handles the generation of some CSS files.
 
-site_second_title = " Data Set Publications"
+site_second_title = " Publications"
 
 
 ############################################################
@@ -192,11 +192,11 @@ def build_home(papers):
                 except:
                     pass
 
-    # Add in some zeros when there is no papers for this year
+    # Add in some zeros when there are no papers for this year
     years = list(summary.keys())
     first_year = min(years)
     last_year = max(years)
-    for this_year in range(int(first_year), int(last_year)):
+    for this_year in range(int(first_year), int(last_year) + 1):
         try:
             summary[str(this_year)]['num_papers']
         except:
@@ -669,7 +669,7 @@ def _make_keywords_pages(papers, keywords, url_part):
                 years = list(summary.keys())
                 first_year = min(years)
                 last_year = max(years)
-                for this_year in range(int(first_year), int(last_year)):
+                for this_year in range(int(first_year), int(last_year) + 1):
                     try:
                         summary[str(this_year)]['num_papers']
                     except:
@@ -758,9 +758,10 @@ def build_zotero_tags(papers):
     shutil.copyfile(config.template_dir + '/keyword_history.js', config.html_dir + '/tags/keyword_history.js')
 
     zotero_tags = {}
+    zotero_tags_counts = {}
     html_file = open(config.html_dir + '/tags/index.html', 'w')
 
-    # Build a dict of ALL zotero tags with a list of each hash (paper) that has this mesh term
+    # Build a dict of ALL zotero tags with a list of each hash (paper) that has this tag, also count the citations while we are here.
     for this_paper in papers:
         try:
             # Look at all the zotero tags for this paper
@@ -772,31 +773,13 @@ def build_zotero_tags(papers):
         except:
             pass
 
-    ######################################
-    # Make HTML index page for all tags
 
-    html = build_common_head("../", "")
-    html += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Tags</p>', "../")
-
-    html += '<h1 id="pagetitle">Tags</h1>'
-    html += '<p>' + str(len(zotero_tags)) + ' tags</p>'
-
-    html_file.write(html)
-
-    # Make a page with ALL the headings on it
-    html_file.write('<ul>')
-    for this_tag in sorted(zotero_tags):
-        html = '<li><a href="../tags/' + this_tag.replace(" ", "%20") + '/index.html">' + this_tag + '</a></li>'
-        html_file.write(html)
-    html_file.write('</ul>')
-
-    html = build_common_foot("../")
-    html_file.write(html)
-    ######################################
 
     ############################################
     # Make an HTML page for all tags
     for this_tag in zotero_tags:
+
+        zotero_tags_counts[this_tag] = dict()
 
         if not os.path.exists(config.html_dir + '/tags/' + this_tag):
             os.mkdir(config.html_dir + '/tags/' + this_tag)
@@ -824,7 +807,7 @@ def build_zotero_tags(papers):
                         if this_year not in summary:
                             summary[this_year] = {'num_papers': 0, 'citations': 0}
 
-                        # increment the number of citations by one
+                        # increment the number of papers by one
                         summary[this_year]['num_papers'] += 1
 
                         # add the citations for this paper to the year running total
@@ -840,11 +823,20 @@ def build_zotero_tags(papers):
             years = list(summary.keys())
             first_year = min(years)
             last_year = max(years)
-            for this_year in range(int(first_year), int(last_year)):
+            for this_year in range(int(first_year), int(last_year) + 1):
                 try:
                     summary[str(this_year)]['num_papers']
                 except:
                     summary[str(this_year)] = {'num_papers': 0, 'citations': 0}
+
+            # Save this data so we can use it for the summary tag page
+            total_papers = 0
+            total_citations = 0
+            for this_year in range(int(first_year), int(last_year) + 1):
+                total_papers = total_papers + int(summary[str(this_year)]['num_papers'])
+                total_citations = total_citations + int(summary[str(this_year)]['citations'])
+            zotero_tags_counts[this_tag]['total_papers'] = total_papers
+            zotero_tags_counts[this_tag]['total_citations'] = total_citations
 
             # Print data to file
             data_file = open(config.html_dir + '/tags/' + this_tag + '/stats.js', 'w')
@@ -859,7 +851,7 @@ def build_zotero_tags(papers):
                 data_file.write('[\''+this_year+'\','+str(summary[this_year]['citations'])+'],')
             data_file.write(']);')
 
-        # Output the HTML for this mesh term
+        # Output the HTML for this tag
         file_name = config.html_dir + '/tags/' + this_tag + '/index.html'
         with codecs.open(file_name, 'wb', "utf-8") as fo:
 
@@ -916,6 +908,34 @@ def build_zotero_tags(papers):
             fo.write(html)
 
         fo.close()
+
+    ######################################
+    # Make HTML index page for all tags
+
+    html = build_common_head("../", "")
+    html += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Tags</p>', "../")
+
+    html += '<h1 id="pagetitle">Tags</h1>'
+    html += '<p>' + str(len(zotero_tags)) + ' tags</p>'
+
+    html_file.write(html)
+
+    # Make a page with the tags on it with the number of papers and citations
+    html_file.write('<table>')
+    html_file.write('<tr><th style="text-align:left">Tag</th><th style="text-align:right">Number of papers</th><th style="text-align:right">Number of citations*</th></tr>')
+    for this_tag in sorted(zotero_tags):
+        html = '<tr><td style="text-align:left"><a href="../tags/' + this_tag.replace(" ", "%20") + '/index.html">' + this_tag + '</a></td>'
+        html += '<td style="text-align:right">' + str(zotero_tags_counts[this_tag]['total_papers']) + '</td>'
+        html += '<td style="text-align:right">' + str(zotero_tags_counts[this_tag]['total_citations']) + '</td></tr>'
+        html_file.write(html)
+    html_file.write('</table>')
+
+    html_file.write('<p>* Citation data from <a href="https://www.scopus.com">Scopus</a>.</p>')
+    html_file.write('<p>Note that some publications may have multiple tags, this means that the total number of papers and citations may appear larger than for the project as a whole.</p>')
+
+    html = build_common_foot("../")
+    html_file.write(html)
+    ######################################
 
 
 ###########################################################
@@ -1073,7 +1093,7 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
         except:
             pass
 
-    # We might not have any citattions - e.g. if quotas hit.
+    # We might not have any citations - e.g. if quotas hit.
     if total_citations > 0 and total_citations_data_from_count > 0:
         average_citations = float(total_citations)/float(total_citations_data_from_count)
     else:
@@ -1086,7 +1106,7 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     h_index = 0
     # cits_so_far = 0
 
-    for x in range(0, len(paper_citations)):
+    for x in range(0, len(paper_citations) + 1):
         if x > paper_citations[x]:
             break
         h_index = x
@@ -1096,7 +1116,7 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     g_index = 0
     cits_so_far = 0
 
-    for x in range(0, len(paper_citations)):
+    for x in range(0, len(paper_citations) + 1):
         cits_so_far += paper_citations[x]
         if cits_so_far < x * x:
             break
