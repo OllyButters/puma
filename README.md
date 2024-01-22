@@ -6,7 +6,7 @@ PUMA is a python pipeline which aggregates third party metadata about journal ar
 
 The technical documentation with screenshots is at: [https://github.com/OllyButters/puma/wiki](https://github.com/OllyButters/puma/wiki)
 
-A demo with some of the functionality is at: [https://ollybutters.github.io/puma](https://ollybutters.github.io/puma)
+A demo with some of the functionality is at: [https://ollybutters.github.io/puma_web](https://ollybutters.github.io/puma_web)
 
 ## Running the code
 
@@ -43,7 +43,7 @@ The wiki (<https://github.com/OllyButters/puma/wiki>) has the best instructions,
 
 ### Azure pipelines
 
-The example instances of the output at [https://ollybutters.github.io/puma](https://ollybutters.github.io/puma) are automatically built and deployed with the `azure-pipelines.yml` file in the root of the web repo at <https://github.com/OllyButters/puma_web/>.
+The example instances of the output at [https://ollybutters.github.io/puma_web](https://ollybutters.github.io/puma_web) are automatically built and deployed with the `azure-pipelines.yml` file in the root of the web repo at <https://github.com/OllyButters/puma_web/>.
 
 ## PUMA project publications
 
