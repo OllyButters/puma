@@ -7,6 +7,37 @@ import datetime
 import config.config as config
 
 
+# These should be generic functions
+
+################################################################################
+def clean_old_zotero_cache_file():
+    # Check the age of the exsiting files - zotero files get updated from time to time
+    if os.path.exists(config.cache_dir + '/raw/zotero'):
+        cached_zotero_files_list = os.listdir(config.cache_dir + '/raw/zotero/')
+        for this_file in cached_zotero_files_list:
+            if abs(datetime.datetime.now() - datetime.datetime.fromtimestamp(os.stat(config.cache_dir + '/raw/zotero/' + this_file).st_mtime)) > datetime.timedelta(days=config.zotero_data_max_age_days):
+                file_path = config.cache_dir + '/raw/zotero/' + this_file
+                print('Deleting: ' + file_path)
+                logging.info('Deleting: ' + file_path)
+                os.remove(file_path)
+################################################################################
+
+################################################################################
+def clean_old_pubmed_cache_file():
+    # Check the age of the exsiting files - pubmed files get updated from time to time
+    if os.path.exists(config.cache_dir + '/raw/pubmed'):
+        cached_pubmed_files_list = os.listdir(config.cache_dir + '/raw/pubmed/')
+        for this_file in cached_pubmed_files_list:
+            if os.path.isfile(config.cache_dir + '/raw/pubmed/' + this_file): 
+                if abs(datetime.datetime.now() - datetime.datetime.fromtimestamp(os.stat(config.cache_dir + '/raw/pubmed/' + this_file).st_mtime)) > datetime.timedelta(days=config.scopus_citation_max_age_days):
+                    file_path = config.cache_dir + '/raw/pubmed/' + this_file
+                    print('Deleting: ' + file_path)
+                    logging.info('Deleting: ' + file_path)
+                    os.remove(file_path)
+                    file_path = config.cache_dir + '/raw/pubmed/xml/' + this_file + '.xml'
+                    os.remove(file_path)
+################################################################################
+
 ################################################################################
 def clean_old_scopus_cache_file():
     # If the force update flag is set in the config then all the scopus data

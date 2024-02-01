@@ -49,6 +49,8 @@ config.build_config_variables(root_dir)
 
 # Delete any unneeded data hanging around in the cache
 setup.tidy_existing_file_tree()
+setup.clean_old_zotero_cache_file()
+setup.clean_old_pubmed_cache_file()
 setup.clean_old_scopus_cache_file()
 
 # Build the file tree relative to the root_dir

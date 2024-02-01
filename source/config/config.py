@@ -27,12 +27,14 @@ def build_config_variables(root_dir):
     global zotero_type
     global zotero_api_key
     global zotero_collection
+    global zotero_data_max_age_days
 
     # collation settings
     global zotero_get_all
     global use_doi_pubmed_cache
 
     global pubmed_email
+    global pubmed_data_max_age_days
 
     # Some data cannot be dispayed on a public facing website - e.g. all the data in merged json file.
     global web_page_public_facing
@@ -87,6 +89,8 @@ def build_config_variables(root_dir):
         zotero_type = config.get('zotero_api', 'zotero_type')
         zotero_api_key = config.get('zotero_api', 'zotero_api_key')
         zotero_collection = config.get('zotero_api', 'zotero_collection')
+        zotero_data_max_age_days = int(config.get('zotero_api', 'zotero_data_max_age_days'))
+
 
         # collate settings
         zotero_get_all = config.getboolean('collate', 'zotero_get_all')
@@ -94,6 +98,7 @@ def build_config_variables(root_dir):
 
         # Pubmed
         pubmed_email = config.get('pubmed_api', 'pubmed_email')
+        pubmed_data_max_age_days = int(config.get('pubmed_api', 'pubmed_data_max_age_days'))
 
         # logging
         logging_loglevel = config.get('logging', 'loglevel')

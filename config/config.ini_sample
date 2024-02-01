@@ -35,10 +35,11 @@ zotero_api_key:
 zotero_id:
 zotero_type: group
 zotero_collection:
-
+zotero_data_max_age_days: 30
 
 [pubmed_api]
 pubmed_email:
+pubmed_data_max_age_days: 30
 
 [scopus]
 # If displaying publicly then citations need to be updated at least weekly.
