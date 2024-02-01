@@ -11,9 +11,11 @@ import config.config as config
 
 ################################################################################
 def clean_old_zotero_cache_file():
-    # Check the age of the exsiting files - zotero files get updated from time to time
+    # Check the age of the existing files - zotero files get updated from time to time
     if os.path.exists(config.cache_dir + '/raw/zotero'):
+        logging.debug('Cleaning old zotero files')
         cached_zotero_files_list = os.listdir(config.cache_dir + '/raw/zotero/')
+        logging.debug('Found ' + str(len(cached_zotero_files_list)) + ' zotero files')
         for this_file in cached_zotero_files_list:
             if abs(datetime.datetime.now() - datetime.datetime.fromtimestamp(os.stat(config.cache_dir + '/raw/zotero/' + this_file).st_mtime)) > datetime.timedelta(days=config.zotero_data_max_age_days):
                 file_path = config.cache_dir + '/raw/zotero/' + this_file
@@ -24,12 +26,14 @@ def clean_old_zotero_cache_file():
 
 ################################################################################
 def clean_old_pubmed_cache_file():
-    # Check the age of the exsiting files - pubmed files get updated from time to time
+    # Check the age of the existing files - pubmed files get updated from time to time
     if os.path.exists(config.cache_dir + '/raw/pubmed'):
+        logging.debug('Cleaning old pubmed files')
         cached_pubmed_files_list = os.listdir(config.cache_dir + '/raw/pubmed/')
+        logging.debug('Found ' + str(len(cached_pubmed_files_list)) + ' pubmed files')
         for this_file in cached_pubmed_files_list:
             if os.path.isfile(config.cache_dir + '/raw/pubmed/' + this_file): 
-                if abs(datetime.datetime.now() - datetime.datetime.fromtimestamp(os.stat(config.cache_dir + '/raw/pubmed/' + this_file).st_mtime)) > datetime.timedelta(days=config.scopus_citation_max_age_days):
+                if abs(datetime.datetime.now() - datetime.datetime.fromtimestamp(os.stat(config.cache_dir + '/raw/pubmed/' + this_file).st_mtime)) > datetime.timedelta(days=config.pubmed_data_max_age_days):
                     file_path = config.cache_dir + '/raw/pubmed/' + this_file
                     print('Deleting: ' + file_path)
                     logging.info('Deleting: ' + file_path)
@@ -43,10 +47,12 @@ def clean_old_scopus_cache_file():
     # If the force update flag is set in the config then all the scopus data
     # will have been deleted already in the setup phase.
 
-    # Check the age of the exsiting files - scopus doesnt allow old citations
+    # Check the age of the existing files - scopus doesnt allow old citations
     # so dump the whole file if it is too old.
     if os.path.exists(config.cache_dir + '/raw/scopus'):
+        logging.debug('Cleaning old scopus files')
         cached_scopus_files_list = os.listdir(config.cache_dir + '/raw/scopus/')
+        logging.debug('Found ' + str(len(cached_scopus_files_list)) + ' scopus files')
         for this_file in cached_scopus_files_list:
             if abs(datetime.datetime.now() - datetime.datetime.fromtimestamp(os.stat(config.cache_dir + '/raw/scopus/' + this_file).st_mtime)) > datetime.timedelta(days=config.scopus_citation_max_age_days):
                 file_path = config.cache_dir + '/raw/scopus/' + this_file
