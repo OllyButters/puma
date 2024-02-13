@@ -19,10 +19,8 @@ side_image_url:
 side_image_link:
 side_image_filename:
 
-
 [collate]
 # Settings specifying which (if any) old data to re-download and/or re-merge
-
 # Get all zotero data regardless of cache contents. True = get all, False = only if not in cache
 zotero_get_all: False
 
@@ -56,12 +54,10 @@ metrics_study_start_year: 1989
 metrics_study_current_year: 2015
 
 [pages]
-web_page_public_facing: True
 web_page_is_in_iframe: False
 web_page_show_institute_country_map: True
 web_page_show_zotero_tags: False
 web_page_show_author_network: False
-
 
 [networks]
 # In development - not yet safe for general use.
