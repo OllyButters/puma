@@ -26,8 +26,12 @@ def clean(papers):
         # clean the title
         clean_title(this_paper)
 
-        # make a hash of the title
-        this_paper['IDs']['hash'] = hashlib.md5(this_paper['clean']['title'].encode('ascii', 'ignore')).hexdigest()
+        # THERE ARE PAPERS WITH THE SAME TITLE! This causes a collision in the hash which is used as the main ID
+        # later on. This is a problem. I think the best way to deal with this is to use the zotero key as the main ID
+        # for now, but perhaps we should think about a better way to do this. The zotero key probably is unique, but it is 
+        # external to what we control. Perhaps a combination of fields would be better?
+        #this_paper['IDs']['hash'] = hashlib.md5(this_paper['clean']['title'].encode('ascii', 'ignore')).hexdigest()
+        this_paper['IDs']['hash'] = hashlib.md5(this_paper['IDs']['zotero'].encode('ascii', 'ignore')).hexdigest()
 
         # clean up the authors and add to 'clean'
         clean_author_list(this_paper)

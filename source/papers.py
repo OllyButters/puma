@@ -31,8 +31,8 @@ import networks.author_network as author_network
 import analyse.coverage_report as coverage_report
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
-__date__ = 14/7/2020
-__version__ = '1.0.0'
+__date__ = 13/2/2024
+__version__ = '2.1'
 
 # Time Log
 start_time = time.time()
