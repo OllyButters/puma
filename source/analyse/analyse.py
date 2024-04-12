@@ -568,3 +568,115 @@ def output_csv(papers):
                 all_file.writerow([year, author_string, title, first_author, journal, citations, tag_string])
             except:
                 pass
+
+
+
+################################################################################
+# output a csv file with loads of dates in it
+################################################################################
+def dates(papers):
+
+    print('\n###Outputting CSV file###')
+    with open(config.data_dir + '/dates.csv', 'w') as csvfile:
+        dates_file = csv.writer(csvfile)
+        dates_file.writerow(['title', 
+                             'first_author', 
+                             'journal', 
+                             'DOI',
+                             'tags', 
+                             'PUMA_year', 
+                             'doi_published_online', 
+                             'doi_published_print', 
+                             'doi_issued', 
+                             'doi_journal_issue', 
+                             'doi_published',
+                             'pmid_article_date',
+                             'scopus_cover_date'])
+
+        for this_paper in papers:
+            try:
+                title = this_paper['clean']['title']
+            except:
+                title = '???'
+
+            try:
+                first_author = this_paper['clean']['full_author_list'][0]['family']
+            except:
+                first_author = '???'
+
+            try:
+                all_authors = this_paper['clean']['full_author_list']
+                author_string = ''
+                for this_author in all_authors:
+                    author_string = author_string + this_author['family'] + ', '
+            except:
+                author_string = '???'
+
+            try:
+                journal = this_paper['clean']['journal']['journal_name']
+            except:
+                journal = '???'
+
+
+            try:
+                year = this_paper['clean']['clean_date']['year']
+            except:
+                year = ''
+
+
+            try:
+                doi_published_online = "-".join(map(str, this_paper['raw']['doi_data']['published-online']['date-parts'][0]))
+            except:
+                doi_published_online = ''
+
+            try:
+                doi_published_print = "-".join(map(str, this_paper['raw']['doi_data']['published-print']['date-parts'][0]))
+            except:
+                doi_published_print = ''
+
+            try:
+                doi_issued = "-".join(map(str, this_paper['raw']['doi_data']['issued']['date-parts'][0]))
+            except:
+                doi_issued = ''
+
+            try:
+                doi_journal_issue = "-".join(map(str, this_paper['raw']['doi_data']['journal-issue']['published-print']['date-parts'][0]))
+            except:
+                doi_journal_issue = ''
+
+            try:
+                doi_published = "-".join(map(str, this_paper['raw']['doi_data']['published']['date-parts'][0]))
+            except:
+                doi_published = ''
+
+            try:
+                year = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['ArticleDate'][0]['Year']
+                month = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['ArticleDate'][0]['Month']
+                day = this_paper['raw']['pmid_data']['MedlineCitation']['Article']['ArticleDate'][0]['Day']
+                pmid_article_date = str(year) + '-' + str(month) + '-' + str(day)
+            except:
+                pmid_article_date = ''
+
+            try:
+                scopus_cover_date = this_paper['raw']['scopus_data']['search-results']['entry'][0]['prism:coverDate']
+            except:
+                scopus_cover_date = ''
+
+            try:
+                tags = []
+                tag_string = ''
+                for this_tag in this_paper['clean']['zotero_tags']:
+                    tags.append(this_tag['tag'])
+                tag_string = ', '.join(tags)
+            except:
+                tag_string = ''
+
+            try:
+                doi = this_paper['IDs']['DOI']
+            except:
+                doi = ''
+
+            try:
+                dates_file.writerow([title, first_author, journal, doi, tag_string, year, doi_published_online ,doi_published_print, doi_issued, doi_journal_issue, doi_published, pmid_article_date, scopus_cover_date])
+            except:
+                pass
