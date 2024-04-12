@@ -19,20 +19,20 @@ import time
 import sys
 
 # Internal packages
-import config.config as config
-import setup.setup as setup
-import clean.clean as clean
+from setup import setup
+from clean import clean
 import add.geocode
-import analyse.analyse as analyse
 import web_pages.build_htmlv2
 import bibliography.bibtex
 import get.simple_collate
-import networks.author_network as author_network
-import analyse.coverage_report as coverage_report
+from networks import author_network
+from analyse import analyse
+from analyse import coverage_report
+from config import config
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
-__date__ = 13/2/2024
-__version__ = '2.1'
+__date__ = 12/4/2024
+__version__ = '2.2-dev'
 
 # Time Log
 start_time = time.time()
@@ -58,17 +58,14 @@ setup.build_file_tree()
 
 # Set up the logging. Level is set in config and can be DEBUG, INFO, WARNING, ERROR, CRITICAL.
 log_file = root_dir + '/logs/'+config.project_details['short_name']+'.log'
-
-logging.basicConfig(handlers=[logging.FileHandler(log_file, 'w', 'utf-8')],
-                    level=config.logging_loglevel)
+logging.basicConfig(level=config.logging_loglevel, filename=log_file,filemode="w",force=True)
 
 print('Log file: ' + log_file)
 print('Run something like: tail -f ' + log_file)
 
 # Output some info to the log file to help with debugging
-logging.info('Running version: ' + __version__)
-logging.info('Started at: ' + str(datetime.datetime.now().strftime("%H:%M")))
-
+logging.info('Running version: %s', __version__)
+logging.info('Started at: %s', str(datetime.datetime.now().strftime("%H:%M")))
 
 ###########################################################
 # Get the metadata from external sources. This will store the raw metadata
@@ -88,7 +85,7 @@ print(str(len(merged_files_list))+' merged papers to load.')
 
 # Open each one and add to papers object
 for this_merged_file in merged_files_list:
-    with open(config.cache_dir + '/processed/merged/' + this_merged_file) as fo:
+    with open(config.cache_dir + '/processed/merged/' + this_merged_file, encoding='utf-8') as fo:
         # Will be a dictionary
         this_paper = json.load(fo)
         this_paper['filename'] = this_merged_file
@@ -110,14 +107,14 @@ add.geocode.geocode(papers)
 
 # Write papers to summary file
 file_name = root_dir + '/data/' + config.project_details['short_name'] + '/summary_added_to'
-fo = open(file_name, 'w')
+fo = open(file_name, 'w', encoding='utf-8')
 fo.write(json.dumps(papers, indent=4))
 fo.close()
 
 # Write a copy of each paper to a separate file
 for this_paper in papers:
     this_file_name = config.cache_dir + '/processed/cleaned/' + this_paper['IDs']['zotero'] + '.cleaned.json'
-    fo = open(this_file_name, 'w')
+    fo = open(this_file_name, 'w', encoding='utf-8')
     fo.write(json.dumps(this_paper, indent=4))
     fo.close()
 
@@ -142,6 +139,7 @@ analyse.first_authors(papers)
 analyse.inst(papers)
 # analyse.mesh(papers)
 analyse.output_csv(papers)
+analyse.dates(papers)
 
 ###########################################################
 # Make some web pages
@@ -173,5 +171,5 @@ elapsed_time = int(end_time - start_time)
 print('End Time: ' + str(datetime.datetime.now().strftime("%H:%M")))
 print('Elapsed Time (H:mm:ss) - ' + str(datetime.timedelta(seconds=elapsed_time)))
 
-logging.info('End Time: ' + str(datetime.datetime.now().strftime("%H:%M")))
-logging.info('Elapsed time (H:mm:ss) : ' + str(datetime.timedelta(seconds=elapsed_time)))
+logging.info('End Time: %s', str(datetime.datetime.now().strftime("%H:%M")))
+logging.info('Elapsed time (H:mm:ss) : %s', str(datetime.timedelta(seconds=elapsed_time)))
