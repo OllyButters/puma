@@ -32,7 +32,7 @@ from config import config
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
 __date__ = 12/4/2024
-__version__ = '2.2-dev'
+__version__ = '2.2'
 
 # Time Log
 start_time = time.time()
