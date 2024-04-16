@@ -4,8 +4,7 @@ import os.path
 import shutil
 import logging
 import datetime
-import config.config as config
-
+from config import config
 
 # These should be generic functions
 
@@ -15,12 +14,12 @@ def clean_old_zotero_cache_file():
     if os.path.exists(config.cache_dir + '/raw/zotero'):
         logging.debug('Cleaning old zotero files')
         cached_zotero_files_list = os.listdir(config.cache_dir + '/raw/zotero/')
-        logging.debug('Found ' + str(len(cached_zotero_files_list)) + ' zotero files')
+        logging.debug('Found %s  zotero files', str(len(cached_zotero_files_list)))
         for this_file in cached_zotero_files_list:
             if abs(datetime.datetime.now() - datetime.datetime.fromtimestamp(os.stat(config.cache_dir + '/raw/zotero/' + this_file).st_mtime)) > datetime.timedelta(days=config.zotero_data_max_age_days):
                 file_path = config.cache_dir + '/raw/zotero/' + this_file
                 print('Deleting: ' + file_path)
-                logging.info('Deleting: ' + file_path)
+                logging.info('Deleting: %s', file_path)
                 os.remove(file_path)
 ################################################################################
 
@@ -30,13 +29,13 @@ def clean_old_pubmed_cache_file():
     if os.path.exists(config.cache_dir + '/raw/pubmed'):
         logging.debug('Cleaning old pubmed files')
         cached_pubmed_files_list = os.listdir(config.cache_dir + '/raw/pubmed/')
-        logging.debug('Found ' + str(len(cached_pubmed_files_list)) + ' pubmed files')
+        logging.debug('Found %s pubmed files', str(len(cached_pubmed_files_list)))
         for this_file in cached_pubmed_files_list:
             if os.path.isfile(config.cache_dir + '/raw/pubmed/' + this_file): 
                 if abs(datetime.datetime.now() - datetime.datetime.fromtimestamp(os.stat(config.cache_dir + '/raw/pubmed/' + this_file).st_mtime)) > datetime.timedelta(days=config.pubmed_data_max_age_days):
                     file_path = config.cache_dir + '/raw/pubmed/' + this_file
                     print('Deleting: ' + file_path)
-                    logging.info('Deleting: ' + file_path)
+                    logging.info('Deleting: %s', file_path)
                     os.remove(file_path)
                     file_path = config.cache_dir + '/raw/pubmed/xml/' + this_file + '.xml'
                     os.remove(file_path)
@@ -52,12 +51,12 @@ def clean_old_scopus_cache_file():
     if os.path.exists(config.cache_dir + '/raw/scopus'):
         logging.debug('Cleaning old scopus files')
         cached_scopus_files_list = os.listdir(config.cache_dir + '/raw/scopus/')
-        logging.debug('Found ' + str(len(cached_scopus_files_list)) + ' scopus files')
+        logging.debug('Found %s scopus files', str(len(cached_scopus_files_list)))
         for this_file in cached_scopus_files_list:
             if abs(datetime.datetime.now() - datetime.datetime.fromtimestamp(os.stat(config.cache_dir + '/raw/scopus/' + this_file).st_mtime)) > datetime.timedelta(days=config.scopus_citation_max_age_days):
                 file_path = config.cache_dir + '/raw/scopus/' + this_file
                 print('Deleting: ' + file_path)
-                logging.info('Deleting: ' + file_path)
+                logging.info('Deleting: %s', file_path)
                 os.remove(file_path)
 ################################################################################
 

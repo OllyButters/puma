@@ -1,7 +1,7 @@
-from . import papersCache as pc
-from pyzotero import zotero
-import config.config as config
 import re
+from pyzotero import zotero
+from . import papersCache as pc
+from config import config
 
 
 # extends the pyzotero Zotero class
@@ -50,12 +50,12 @@ class zotPaper (zotero.Zotero):
             zot_keys = self.collection_items(format='keys', limit=999999)
         else:
             zot_keys = self.items(format='keys', limit=999999)
-        print(zot_keys)
-        print(type(zot_keys))
+        # print(zot_keys)
+        # print(type(zot_keys))
         # self.papers_keys = zot_keys.split('\n')
         self.papers_keys = zot_keys.decode('ascii').split('\n')
-        print(type(self.papers_keys))
-        print(self.papers_keys)
+        # print(type(self.papers_keys))
+        # print(self.papers_keys)
         return self.papers_keys
 
     # populate self.papers list with all papers in self.collection

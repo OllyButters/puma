@@ -1,13 +1,13 @@
+import hashlib
+import re
+import logging
+
+from config import config
 from . import papersZotero as pz
 from . import papersCache as pc
 from . import getDoi as pd
 from . import getPubmed as pm
 from . import getScopus as ps
-import hashlib
-import re
-import config.config as config
-import logging
-
 
 allowed_item_types = ['journalArticle']
 
@@ -56,7 +56,7 @@ def collate():
         if paper['data']['itemType'] in allowed_item_types:
             zotero_papers.append(paper['data'])
         else:
-            logging.warn('Skipping paper with itemType: ' + paper['data']['itemType'] + ' (zotero key: ' + paper['data']['key'] + ')')
+            logging.warning('Skipping paper with itemType: %s (zotero key: %s)', paper['data']['itemType'], paper['data']['key'])
 
     # zotero_papers will have ALL zotero data in it based on cache and newly downloaded data.
     # now check zotero_papers for doi, pubmed id, scopus data and retrieve if required.
@@ -83,7 +83,7 @@ def collate():
           'hash': '',
         }
 
-        logging.info('\nWorking on '+paper['title']+' (zotero key: '+paper['key']+')')
+        logging.info('\nWorking on %s (zotero key: %s)', paper['title'], paper['key'])
         logging.info('Getting doi/pubmed/scopus data.')
         print('Getting doi/pubmed/scopus data for paper: ' + paper['title'] + ' (zotero key: ' + paper['key'] + ')')
 
@@ -109,8 +109,8 @@ def collate():
             doi_filename = hashlib.md5((doi).encode("ascii", "ignore")).hexdigest()
             # doi_filename = hashlib.md5(paper['DOI']).hexdigest()
 
-            logging.info('DOI: ' + doi)
-            logging.info('DOI_filename:' + doi_filename)
+            logging.info('DOI: %s', doi)
+            logging.info('DOI_filename: %s', doi_filename)
 
             # add these ids to the IDs dict
             this_merged_paper['IDs']['DOI'] = doi
@@ -150,12 +150,12 @@ def collate():
                     print('PMID: Getting from cache.')
                     this_merged_paper['raw']['pmid_data'] = pc.getCacheData(filetype='/raw/pubmed', filenames=[paper['pmid']])[paper['pmid']]
             else:
-                logging.debug("No PMID found in: " + paper['extra'])
+                logging.debug("No PMID found in: %s", paper['extra'])
 
         # Do scopus data now
         if scopus_quota_reached:
             print("Skipping Scopus as API quota reached")
-            logging.warn("Skipping Scopus as API quota reached")
+            logging.warning("Skipping Scopus as API quota reached")
         else:
             if this_merged_paper['IDs']['PMID'] != '' or this_merged_paper['IDs']['DOI'] != '':
                 # check if paper data in scopus cache
@@ -190,5 +190,5 @@ def collate():
 
         # May as well just write out the whole merged file everytime.
         merged_filename = this_merged_paper['IDs']['zotero'] + '.merged'
-        logging.info('Merged filename: ' + merged_filename)
+        logging.info('Merged filename: %s', merged_filename)
         pc.dumpJson(merged_filename, this_merged_paper, 'processed/merged')

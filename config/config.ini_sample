@@ -57,11 +57,3 @@ metrics_study_current_year: 2015
 web_page_is_in_iframe: False
 web_page_show_institute_country_map: True
 web_page_show_zotero_tags: False
-web_page_show_author_network: False
-
-[networks]
-# In development - not yet safe for general use.
-# generate networks using scripts in networks (plus analyse/genLinks)
-# currently produces author network json file
-# plus html/js visualisation (caution - potentially slow, requires decent machine to run)
-create_networks: False

@@ -2,16 +2,15 @@
 
 import json
 import shutil
-import os.path
+import os
 import csv
 from html import escape
 import time
 import codecs
-import os
 import logging
 import sys
 
-import config.config as config
+from config import config
 
 # The colour scheme is automatic. The colours from the config are automatically put into the pages.
 # This .py file also handles the generation of some CSS files.
@@ -87,10 +86,6 @@ def build_common_body(breadcrumb, nav_path):
         html += '<li><a href="' + nav_path + 'country/index.html">Map by Country</a></li>'
 
     html += '<li><a href="' + nav_path + 'institute/index.html">Map by UK institute</a></li>'
-
-    if config.web_page_show_author_network:
-        html += '<li><a href="' + nav_path + 'authornetwork/index.html">Author Network</a></li>'
-
     html += '<li><a href="' + nav_path + 'metrics/index.html">Metrics</a></li>'
     html += '<li><a href="' + nav_path + 'keyword_wordcloud/index.html">Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
@@ -1465,116 +1460,6 @@ def get_author_string_from_hash(hash_string, network):
     for author in network['authors']:
         if author == hash_string:
             return network['authors'][author]['clean']
-
-
-###########################################################
-# Build Author Network
-###########################################################
-def build_author_network(papers, network):
-
-    print("\n###HTML - Author Network###")
-
-    # Create json file
-    net_file = open(config.html_dir + '/authornetwork/network.json', 'w')
-
-    net_json = '{'
-    net_json += '"nodes":['
-    n = 0
-    net_file.write(net_json)
-
-    for author in network['authors']:
-        net_json = ""
-        if n > 0:
-            net_json += ","
-        net_json += '{"id": "' + network['authors'][author]['clean'] + '", "group":1}'
-
-        net_file.write(net_json)
-        n += 1
-
-    net_json = '],"links": ['
-    net_file.write(net_json)
-
-    n = 0
-    for con in network['connections']:
-        try:
-            net_json = ""
-            if n > 0:
-                net_json += ","
-
-            author_0 = get_author_string_from_hash(network['connections'][con]['authors'][0]['author_hash'], network)
-            author_1 = get_author_string_from_hash(network['connections'][con]['authors'][1]['author_hash'], network)
-
-            n_con = network['connections'][con]['num_connections']/2
-
-            net_json += '{"source": "' + author_0 + '", "target": "' + author_1 + '", "value": ' + str(n_con) + '}'
-
-            net_file.write(net_json)
-            n += 1
-        except:
-            pass
-
-    net_json = ']'
-    net_json += '}'
-    net_file.write(net_json)
-
-    html_file = open(config.html_dir + '/authornetwork/index.html', 'w')
-
-    shutil.copyfile(config.template_dir + '/network.js', config.html_dir + '/authornetwork/network.js')
-
-    if config.page_show_author_network:
-        try:
-            shutil.copyfile(config.config_dir + '/' + config.project_details['short_name'] + '_author_network.png', config.html_dir + '/authornetwork/author_network.png')
-        except:
-            logging.warn("Not Author Network Image")
-
-    # Put html together for this page
-
-    extra_head = '<style>.links line {  stroke: #999;  stroke-opacity: 0.6;} .nodes circle {  stroke: #fff;  stroke-width: 1.5px;} </style>'
-    extra_head += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>'
-
-    temp = build_common_head("../", extra_head)
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Author Network</p>', "../")
-
-    temp += '<h1 id="pagetitle">Author Network</h1>'
-
-    # Print nodes to csv
-    nodes_csv = open(config.html_dir + '/authornetwork/nodes.csv', 'w')
-
-    nodes_csv.write('id,Label')
-    n = 0
-
-    for author in network['authors']:
-        nodes_csv.write(author + "," + network['authors'][author]['clean'])
-        n += 1
-
-    # Print connections to csv
-    connections_csv = open(config.html_dir + '/authornetwork/connections.csv', 'w')
-
-    connections_csv.write('Source,Target')
-
-    n = 0
-    for con in network['connections']:
-        try:
-
-            author_0 = network['connections'][con]['authors'][0]['author_hash']
-            author_1 = network['connections'][con]['authors'][1]['author_hash']
-
-            n_con = network['connections'][con]['num_connections']/2
-
-            connections_csv.write('"' + author_0 + '","' + author_1 + '"')
-
-        except:
-            pass
-        n += 1
-
-    temp += '<a id="network" href="author_network.png"><img src="author_network.png" alt="Author Network"></a>'
-    temp += '<p style="display:none;" id="no_network">No Author Network Image.</p>'
-    temp += "<script>var xmlhttp = new XMLHttpRequest();xmlhttp.onreadystatechange = function() {if (xmlhttp.readyState == 4 && xmlhttp.status == 404) {document.getElementById('network').style.display = 'none';document.getElementById('no_network').style.display = 'block';}};xmlhttp.open('GET', 'author_network.png', true);xmlhttp.send();</script>"
-
-    html_file.write(temp)
-
-    temp = build_common_foot("../")
-    html_file.write(temp)
 
 
 ###########################################################

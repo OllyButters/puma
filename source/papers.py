@@ -25,14 +25,13 @@ import add.geocode
 import web_pages.build_htmlv2
 import bibliography.bibtex
 import get.simple_collate
-from networks import author_network
 from analyse import analyse
 from analyse import coverage_report
 from config import config
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
-__date__ = 12/4/2024
-__version__ = '2.2'
+__date__ = 16/4/2024
+__version__ = '2.3'
 
 # Time Log
 start_time = time.time()
@@ -158,12 +157,6 @@ web_pages.build_htmlv2.build_search(papers)
 
 if config.web_page_show_zotero_tags:
     web_pages.build_htmlv2.build_zotero_tags(papers)
-
-# Generate and dump the html for author network.
-# Currently in development, not ready for general use.
-if config.network_create_networks:
-    web_pages.build_htmlv2.build_author_network(papers, network)
-    author_network.build_network()
 
 # Time Log
 end_time = time.time()

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import configparser
 import sys
 import argparse
@@ -37,13 +38,10 @@ def build_config_variables(root_dir):
     global pubmed_data_max_age_days
 
     # Some data cannot be dispayed on a public facing website - e.g. all the data in merged json file.
-    global web_page_public_facing
     global web_page_is_in_iframe
     global web_page_show_institute_country_map
     global web_page_show_author_network
     global web_page_show_zotero_tags
-
-    global network_create_networks
 
     # See if there is a config file specified from the command line, if not then
     # use the default config file name.
@@ -112,9 +110,6 @@ def build_config_variables(root_dir):
         web_page_show_institute_country_map = config.getboolean('pages', 'web_page_show_institute_country_map')
         web_page_show_zotero_tags = config.getboolean('pages', 'web_page_show_zotero_tags')
         web_page_is_in_iframe = config.getboolean('pages', 'web_page_is_in_iframe')
-
-        # Networks
-        network_create_networks = config.getboolean('networks', 'create_networks')
 
     except Exception as e:
         print('Problem with the settings file')
