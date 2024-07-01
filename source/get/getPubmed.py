@@ -22,14 +22,23 @@ def getPubmed(this_pmid):
         # override_pubmodel = False
         handle = Entrez.efetch(db="pubmed", id=this_pmid, retmode="xml")
         pmid_xml_data = handle.read()
+        handle.close()
 
+    except Exception as e:
+        logging.warn("PMID download problem %s", str(this_pmid))
+        logging.warn("Error: %s", e)
+        print("PMID download problem %s", str(this_pmid))
+        print("Error: %s", e)
+        return None
+
+    try:
         if not isinstance(pmid_xml_data, bytes):
             pmid_xml_data = pmid_xml_data.encode()
 
         xml_file_loc = pc.dumpFile(this_pmid+'.xml', pmid_xml_data, 'raw/pubmed/xml')
-    except:
-        logging.warn("PMID download timed out for %s", this_pmid)
-        print("PMID download timed out for %s", this_pmid)
+    except Exception as e:
+        logging.warn('Unable to save pmid %s', str(this_pmid))
+        print("Uncaught error" + str(e))
         return None
 
     try:
