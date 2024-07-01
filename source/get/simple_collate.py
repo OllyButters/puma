@@ -8,12 +8,16 @@ from . import papersCache as pc
 from . import getDoi as pd
 from . import getPubmed as pm
 from . import getScopus as ps
+from . import getZotero as gz
 
 allowed_item_types = ['journalArticle']
 
 # Needs a tidy up and more logging.
 
 def collate():
+
+    # gz.getZoteroAll()
+
     # first, check for new papers from zotero repo
     zot = pz.zotPaper()
 
