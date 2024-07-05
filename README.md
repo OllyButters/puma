@@ -24,6 +24,10 @@ The wiki (<https://github.com/OllyButters/puma/wiki>) has the best instructions,
   
     `./papers.py`
 
+or point to a specific config file with:
+
+    `./papers.py --config my_config.ini`
+
 - Or you can run it from within an IDE.
 - Once it has finished, have a look at the web pages in the html folder. Pay particular attention to the coverage_report.html file.
 
@@ -37,6 +41,10 @@ The wiki (<https://github.com/OllyButters/puma/wiki>) has the best instructions,
 - Run the pipeline with a command like:
 
     `python papers.py`
+
+or point to a specific config file with:
+
+    `python papers.py --config my_config.ini`
 
 - Or you can run it from within an IDE.
 - Once it has finished, have a look at the web pages in the html folder. Pay particular attention to the coverage_report.html file.

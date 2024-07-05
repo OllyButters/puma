@@ -1323,6 +1323,10 @@ def build_abstract_word_cloud(data_from_count):
             except:
                 pass
 
+    # May not be any abstract text recieved (this can be domain specific)
+    if len(abstract_words) == 0:
+        return
+
     # Sort the words
     # abstract_words = sorted(abstract_words.items(), key=lambda x: x[1], reverse=True)
     # Sort by word first, then the count. This gives a consistent result as if the cut off is in a band
