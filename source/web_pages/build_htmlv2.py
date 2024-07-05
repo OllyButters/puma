@@ -345,8 +345,6 @@ def draw_paper(this_paper, nav_path="./"):
                     html += '<a href="' + this_link['@href'] + '" target="_blank">' + str(this_paper['clean']['citations']['scopus']['count']) + '</a> (Scopus)'
                 else:
                     html += '-'
-
-        # html += '<td style="width:' + str(citations_counts_width) + '%;">Scopus: <a href="https://www.scopus.com/record/display.uri?eid=' + str(this_paper['IDs']['scopus']) + '&origin=inward&txGid=0">' + str(this_paper['clean']['citations']['scopus']['count']) + '</a></td>'
     except:
         try:
             html += str(this_paper['clean']['citations']['scopus']['count']) + ' (Scopus)'
@@ -1210,26 +1208,27 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     extra_head += '<script type="text/javascript" src="metrics.js"></script>'
 
     temp = build_common_head("../", extra_head)
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Study Metrics</p>', "../")
+    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Metrics</p>', "../")
 
-    temp += '<h1 id="pagetitle">Study Metrics</h1>'
+    temp += '<h1 id="pagetitle">Metrics</h1>'
 
     temp += '(All citation calculations based on <a href="https://www.scopus.com">Scopus</a> data.)'
 
     # Output Metrics
     temp += "<div class='metric_con'>"
+    
     temp += "<div class='metric'>"
-    temp += "<div class='metric_name'>h-index</div>"
-    temp += "<div class='metric_value'>" + str(h_index) + "</div>"
-    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
-    temp += "<div class='metric_description'>h-index is the largest number h such that h publications from a study have at least h citations.</div>"
+    temp += "<div class='metric_name'>Total Publications</div>"
+    temp += "<div class='metric_value'>" + intWithCommas(total_publications) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_publications) + " Publications</div>"
+    temp += "<div class='metric_description'>This is the number of all publications for the study.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
-    temp += "<div class='metric_name'>g-index</div>"
-    temp += "<div class='metric_value'>" + str(g_index) + "</div>"
+    temp += "<div class='metric_name'>Total Citations</div>"
+    temp += "<div class='metric_value'>" + intWithCommas(total_citations) + "</div>"
     temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
-    temp += "<div class='metric_description'>The largest number n of highly cited articles for which the average number of citations is at least n.</div>"
+    temp += "<div class='metric_description'>This is the number of citations to all publications for the study.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
@@ -1247,6 +1246,21 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     temp += "</div>"
 
     temp += "<div class='metric'>"
+    temp += "<div class='metric_name'>h-index</div>"
+    temp += "<div class='metric_value'>" + str(h_index) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
+    temp += "<div class='metric_description'>h-index is the largest number h such that h publications from a study have at least h citations.</div>"
+    temp += "</div>"
+
+    temp += "<div class='metric'>"
+    temp += "<div class='metric_name'>g-index</div>"
+    temp += "<div class='metric_value'>" + str(g_index) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
+    temp += "<div class='metric_description'>The largest number n of highly cited articles for which the average number of citations is at least n.</div>"
+    temp += "</div>"
+
+
+    temp += "<div class='metric'>"
     temp += "<div class='metric_name'>c" + str(c_index_bound) + "-index</div>"
     temp += "<div class='metric_value'>" + intWithCommas(c20_index) + "</div>"
     temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
@@ -1254,25 +1268,15 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     temp += "</div>"
 
     temp += "<div class='metric'>"
-    temp += "<div class='metric_name'>c" + str(c_index_bound) + "-index per Study Year</div>"
-    temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(i20_index_per_year, 2))) + "</div>"
-    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
-    temp += "<div class='metric_description'>The c" + str(c_index_bound) + "-index divided by the number of years the study has been running for.</div>"
     temp += "</div>"
 
-    temp += "<div class='metric'>"
-    temp += "<div class='metric_name'>Total Publications</div>"
-    temp += "<div class='metric_value'>" + intWithCommas(total_publications) + "</div>"
-    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_publications) + " Publications</div>"
-    temp += "<div class='metric_description'>This is the number of all publications for the study.</div>"
-    temp += "</div>"
+    #temp += "<div class='metric'>"
+    #temp += "<div class='metric_name'>c" + str(c_index_bound) + "-index per Study Year</div>"
+    #temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(i20_index_per_year, 2))) + "</div>"
+    #temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
+    #temp += "<div class='metric_description'>The c" + str(c_index_bound) + "-index divided by the number of years the study has been running for.</div>"
+    #temp += "</div>"
 
-    temp += "<div class='metric'>"
-    temp += "<div class='metric_name'>Total Citations</div>"
-    temp += "<div class='metric_value'>" + intWithCommas(total_citations) + "</div>"
-    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
-    temp += "<div class='metric_description'>This is the number of citations to all publications for the study.</div>"
-    temp += "</div>"
     temp += "</div>"
     temp += "<div class='clear'></div>"
 
