@@ -11,12 +11,9 @@
 # core packages
 import datetime
 import json
-import os.path
 from os import listdir
-import os
 import logging
 import time
-import sys
 
 # Internal packages
 from setup import setup
@@ -37,15 +34,6 @@ __version__ = '2.3'
 start_time = time.time()
 print('Start Time: ' + str(datetime.datetime.now().strftime("%H:%M")))
 
-# Lets figure out some paths that everything is relative to
-# global root_dir
-path_to_papers_py = os.path.abspath(sys.argv[0])
-root_dir = os.path.dirname(os.path.dirname(path_to_papers_py))
-print('Root directory = ' + root_dir)
-
-# Get all the config - these will be a global vars available like config.varname
-config.build_config_variables(root_dir)
-
 # Delete any unneeded data hanging around in the cache
 setup.tidy_existing_file_tree()
 setup.clean_old_zotero_cache_file()
@@ -56,7 +44,7 @@ setup.clean_old_scopus_cache_file()
 setup.build_file_tree()
 
 # Set up the logging. Level is set in config and can be DEBUG, INFO, WARNING, ERROR, CRITICAL.
-log_file = root_dir + '/logs/'+config.project_details['short_name']+'.log'
+log_file = config.root_dir + '/logs/'+config.project_details['short_name']+'.log'
 logging.basicConfig(level=config.logging_loglevel, filename=log_file,filemode="w",force=True)
 
 print('Log file: ' + log_file)
@@ -105,7 +93,7 @@ clean.clean_institution(papers)
 add.geocode.geocode(papers)
 
 # Write papers to summary file
-file_name = root_dir + '/data/' + config.project_details['short_name'] + '/summary_added_to'
+file_name = config.root_dir + '/data/' + config.project_details['short_name'] + '/summary_added_to'
 fo = open(file_name, 'w', encoding='utf-8')
 fo.write(json.dumps(papers, indent=4))
 fo.close()
