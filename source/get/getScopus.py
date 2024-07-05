@@ -1,10 +1,8 @@
-#!/usr/bin/env python3
-
 import urllib.request, urllib.error, urllib.parse
 import json
 import logging
 
-import config.config as config
+from config import config
 from . import papersCache as pc
 
 
@@ -23,17 +21,21 @@ def getScopus(zotero_ID, PMID, DOI):
             logging.info(request_string)
             try:
                 response = urllib.request.urlopen(request_string).read()
-            except Exception as e:
+            except urllib.error.HTTPError as e:  # Catch HTTPError specifically
                 if e.code == 429:
                     print("Too many Scopus requests")
                     print(str(e))
-                    logging.warn("Too many Scopus requests")
-                    logging.warn(str(e))
+                    logging.warning("Too many Scopus requests")
+                    logging.warning(str(e))
                     return "QUOTAEXCEEDED"
-                else:
-                    print("Uncaught error" + str(e))
-                    logging.warn("Uncaught error" + str(e))
-                    return
+                
+                print("Uncaught HTTP error" + str(e))
+                logging.warning("Uncaught HTTP error %s", str(e))
+                return
+            except Exception as e:  # Catch other exceptions
+                print("Error: " + str(e))
+                logging.warning("Error: %s", str(e))
+                return
 
             scopus_object = json.loads(response)
 
@@ -41,8 +43,8 @@ def getScopus(zotero_ID, PMID, DOI):
             try:
                 error = scopus_object['search-results']['entry'][0]['error']
                 if error == 'Result set was empty':
-                    logging.info('Result set empty for ' + str(PMID))
-                    logging.warn(scopus_object)
+                    logging.info('Result set empty for %s', str(PMID))
+                    logging.warning(scopus_object)
                     del(scopus_object)
             except:
                 pass
@@ -50,10 +52,13 @@ def getScopus(zotero_ID, PMID, DOI):
             if scopus_object:
                 logging.info('Scopus data got via PMID.')
             else:
-                raise
+                raise Exception('No scopus data returned.')
         else:
-            raise
+            raise Exception('No PMID')
     except:
+        print('Unexpected error with PMID.')
+        logging.warning('Unexpected error with PMID.')
+
         # querying with PMID failed, so try DOI.
         try:
             if DOI != "":
@@ -63,17 +68,21 @@ def getScopus(zotero_ID, PMID, DOI):
 
                     try:
                         response = urllib.request.urlopen(request_string).read()
-                    except Exception as e:
+                    except urllib.error.HTTPError as e:  # Catch HTTPError specifically
                         if e.code == 429:
                             print("Too many Scopus requests")
                             print(str(e))
-                            logging.warn("Too many Scopus requests")
-                            logging.warn(str(e))
+                            logging.warning("Too many Scopus requests")
+                            logging.warning(str(e))
                             return "QUOTAEXCEEDED"
                         else:
                             print("Uncaught error" + str(e))
-                            logging.warn("Uncaught error" + str(e))
+                            logging.warning("Uncaught error" + str(e))
                             return
+                    except Exception as e:  # Catch other exceptions
+                        print("Error: " + str(e))
+                        logging.warning("Error: " + str(e))
+                        return
 
                     scopus_object = json.loads(response)
 
@@ -82,7 +91,7 @@ def getScopus(zotero_ID, PMID, DOI):
                         error = scopus_object['search-results']['entry'][0]['error']
                         if error == 'Result set was empty':
                             logging.info('Result set empty for ' + str(DOI))
-                            logging.warn(scopus_object)
+                            logging.warning(scopus_object)
                             del(scopus_object)
                     except:
                         pass
