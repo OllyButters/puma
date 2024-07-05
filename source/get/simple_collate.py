@@ -3,7 +3,6 @@ import re
 import logging
 
 from config import config
-from . import papersZotero as pz
 from . import papersCache as pc
 from . import getDoi as pd
 from . import getPubmed as pm
@@ -16,10 +15,17 @@ allowed_item_types = ['journalArticle']
 
 def collate():
 
-    # gz.getZoteroAll()
 
-    # first, check for new papers from zotero repo
-    zot = pz.zotPaper()
+    # Rebuild zotero cache as required
+    if config.zotero_get_all is True:
+        gz.getZoteroAll()
+    #elif config.zotero_get_updated is True:
+        # get items which have been MODIFIED
+    #elif config.zotero_get_aged is True:
+        # replace old aged items on disk.
+    else:
+        # get items which are new
+        gz.getZoteroNew()
 
     # get lists from cache
     zot_cache = pc.getCacheList(filetype='/raw/zotero')
@@ -27,40 +33,13 @@ def collate():
     pm_cache = pc.getCacheList(filetype='/raw/pubmed')
     scopus_cache = pc.getCacheData(filetype='/raw/scopus')
 
-    zot.collection = config.zotero_collection
-
-    # get list of ALL keys in this zotero library instance
-    zot.getPapersKeys()
-
-    new_keys = []
     zotero_papers = []
-
-    # we may want to re-download the data from zotero
-    # if config has the 'zotero_get_all' flag set to True, make sure we get all papers not just new ones
-    if config.zotero_get_all is True:
-        new_keys = zot.papers_keys
-    else:
-        for num, paper_key in enumerate(zot.papers_keys):
-            if paper_key not in zot_cache:
-                new_keys.append(paper_key)
-            else:
-                # get the previously downloaded papers from the cache
-                cached_zotero_data = pc.getCacheData(filetype='/raw/zotero', filenames=[paper_key])[paper_key]
-                # check itemType - if it's 'note', or 'attachment' we can ignore
-                #if cached_zotero_data['data']['itemType'] not in ('attachment', 'note', 'book', 'bookSection'):
-                if cached_zotero_data['data']['itemType'] in allowed_item_types:
-                    zotero_papers.append(cached_zotero_data['data'])
-
-    # get all new papers. Note this will not write any to disk until it has got all of them.
-    zot.getPapersList(key_list=new_keys)
-
-    for num, paper in enumerate(zot.papers):
-        # add to new_papers for later doi/pubmed data retrieval
-        # check itemType - if it's 'note', or 'attachment' we can ignore
-        if paper['data']['itemType'] in allowed_item_types:
-            zotero_papers.append(paper['data'])
-        else:
-            logging.warning('Skipping paper with itemType: %s (zotero key: %s)', paper['data']['itemType'], paper['data']['key'])
+        
+    # Read the data in from the cache
+    for this_file in zot_cache:
+        cached_zotero_data = pc.getCacheData(filetype='/raw/zotero', filenames=[this_file])[this_file]
+        if cached_zotero_data['data']['itemType'] in allowed_item_types:
+            zotero_papers.append(cached_zotero_data['data'])
 
     # zotero_papers will have ALL zotero data in it based on cache and newly downloaded data.
     # now check zotero_papers for doi, pubmed id, scopus data and retrieve if required.
@@ -70,7 +49,7 @@ def collate():
 
     for paper in zotero_papers:
 
-        # Keep track of how far through we are if watching terminal# check itemType - if it's 'note', or 'attachment' we can ignore
+        # Keep track of how far through we are if watching terminal
         counter = counter + 1
         print('\nOn ' + str(counter) + '/' + total_number_zotero_papers)
 
@@ -111,7 +90,6 @@ def collate():
             # as dois use '/' chars, we do an md5 of the doi as the filename
             print('DOI:' + doi)
             doi_filename = hashlib.md5((doi).encode("ascii", "ignore")).hexdigest()
-            # doi_filename = hashlib.md5(paper['DOI']).hexdigest()
 
             logging.info('DOI: %s', doi)
             logging.info('DOI_filename: %s', doi_filename)

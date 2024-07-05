@@ -88,10 +88,9 @@ def build_config_variables(root_dir):
         zotero_api_key = config.get('zotero_api', 'zotero_api_key')
         zotero_collection = config.get('zotero_api', 'zotero_collection')
         zotero_data_max_age_days = int(config.get('zotero_api', 'zotero_data_max_age_days'))
-
+        zotero_get_all = config.getboolean('zotero_api', 'zotero_get_all')
 
         # collate settings
-        zotero_get_all = config.getboolean('collate', 'zotero_get_all')
         use_doi_pubmed_cache = config.getboolean('collate', 'use_doi_pubmed_cache')
 
         # Pubmed
