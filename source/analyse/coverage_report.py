@@ -166,7 +166,7 @@ def coverage_report(papers):
         try:
             title = this_paper['clean']['title']
             if title != '':
-                cov_html += '<td>OK</td>'
+                cov_html += '<td title="' + title + '">OK</td>'
                 status['title'] = status['title'] + 1
             else:
                 raise Exception()
@@ -222,7 +222,7 @@ def coverage_report(papers):
         try:
             first_author = this_paper['clean']['first_author']
             if first_author != '':
-                cov_html += '<td>OK</td>'
+                cov_html += '<td title = "' + first_author + '">OK</td>'
                 status['first_author'] = status['first_author'] + 1
             else:
                 raise Exception()
@@ -256,7 +256,7 @@ def coverage_report(papers):
         try:
             first_author_affiliation = this_paper['clean']['location']['candidate_institute']
             if first_author_affiliation != '':
-                cov_html += '<td>OK</td>'
+                cov_html += '<td title = "' + first_author_affiliation + '">OK</td>'
                 status['first_author_affiliation'] = status['first_author_affiliation'] + 1
             else:
                 raise Exception()
@@ -268,7 +268,7 @@ def coverage_report(papers):
         try:
             clean_institution = this_paper['clean']['location']['clean_institute']
             if clean_institution != '':
-                cov_html += '<td>OK</td>'
+                cov_html += '<td title = "' + clean_institution + '">OK</td>'
                 status['clean_institution'] = status['clean_institution'] + 1
             else:
                 raise Exception()
@@ -309,7 +309,7 @@ def coverage_report(papers):
         try:
             country = this_paper['clean']['location']['country']
             if country != '':
-                cov_html += '<td>OK</td>'
+                cov_html += '<td>' + country + '</td>'
                 status['country'] = status['country'] + 1
             else:
                 raise Exception()
