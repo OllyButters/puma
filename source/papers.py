@@ -143,7 +143,7 @@ web_pages.build_htmlv2.build_help()
 web_pages.build_htmlv2.build_search(papers)
 
 
-if config.web_page_show_zotero_tags:
+if config.WEB_PAGE_SHOW_ZOTERO_TAGS:
     web_pages.build_htmlv2.build_zotero_tags(papers)
 
 # Time Log

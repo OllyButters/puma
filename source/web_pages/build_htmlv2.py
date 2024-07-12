@@ -76,16 +76,18 @@ def build_common_body(breadcrumb, nav_path):
     html += '<li><a href="' + nav_path + 'help/index.html">About</a></li>'
     html += '<li><a href="' + nav_path + 'search/index.html">Search</a></li>'
 
-    if config.web_page_show_zotero_tags:
+    if config.WEB_PAGE_SHOW_ZOTERO_TAGS:
         html += '<li><a href="' + nav_path + 'tags/index.html">Tags</a></li>'
 
     html += '<li><a href="' + nav_path + 'keywords/index.html">All Keywords</a></li>'
     html += '<li><a href="' + nav_path + 'mesh/index.html">Major Keywords (MeSH)</a></li>'
 
-    if config.web_page_show_institute_country_map:
+    if config.WEB_PAGE_SHOW_INSTITUTE_COUNTRY_MAP:
         html += '<li><a href="' + nav_path + 'country/index.html">Map by Country</a></li>'
 
-    html += '<li><a href="' + nav_path + 'institute/index.html">Map by UK institute</a></li>'
+    if config.WEB_PAGE_SHOW_INSTITUTE_UK_MAP:
+        html += '<li><a href="' + nav_path + 'institute/index.html">Map by UK institute</a></li>'
+
     html += '<li><a href="' + nav_path + 'metrics/index.html">Metrics</a></li>'
     html += '<li><a href="' + nav_path + 'keyword_wordcloud/index.html">Keyword Cloud</a></li>'
     html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
@@ -95,13 +97,6 @@ def build_common_body(breadcrumb, nav_path):
     html += '<div class="after-navgroup">'
     html += '<!-- navigation object : navigation bottom -->'
     html += '<!-- start navigation : additional logo -->'
-
-    # Add the side logo to the actual project if it has been set
-    if os.path.isfile(config.config_dir + '/' + config.project_details['side_image_filename']):
-        shutil.copy(config.config_dir + '/' + config.project_details['side_image_filename'], config.html_dir + '/' + config.project_details['side_image_filename'])
-        html += '<div class="logo-additional">'
-        html += '<a href="' + config.project_details['side_image_link'] + '"><img style="max-height:200px" src="' + nav_path + config.project_details['side_image_filename'] + '" alt=""/></a>'
-        html += '</div>'
 
     html += '</div>'
     html += '</div>'
@@ -774,8 +769,14 @@ def build_zotero_tags(papers):
 
         zotero_tags_counts[this_tag] = dict()
 
-        if not os.path.exists(config.html_dir + '/tags/' + this_tag):
-            os.mkdir(config.html_dir + '/tags/' + this_tag)
+        # Some tags have a / in them, which messes with URL and file paths. Just swap it out for a - here.
+        if this_tag.find("/") > 0:
+            this_tag_safe = this_tag.replace("/", "-")
+        else:
+            this_tag_safe = this_tag
+
+        if not os.path.exists(config.html_dir + '/tags/' + this_tag_safe):
+            os.mkdir(config.html_dir + '/tags/' + this_tag_safe)
 
             ############################################
             # Calculate keyword usage and citations over time.
@@ -832,7 +833,7 @@ def build_zotero_tags(papers):
             zotero_tags_counts[this_tag]['total_citations'] = total_citations
 
             # Print data to file
-            data_file = open(config.html_dir + '/tags/' + this_tag + '/stats.js', 'w')
+            data_file = open(config.html_dir + '/tags/' + this_tag_safe + '/stats.js', 'w')
 
             data_file.write('var papers =([[\'Year\', \'Number of papers\'],')
             for this_year in sorted(summary, reverse=False):
@@ -845,7 +846,7 @@ def build_zotero_tags(papers):
             data_file.write(']);')
 
         # Output the HTML for this tag
-        file_name = config.html_dir + '/tags/' + this_tag + '/index.html'
+        file_name = config.html_dir + '/tags/' + this_tag_safe + '/index.html'
         with codecs.open(file_name, 'wb', "utf-8") as fo:
 
             # Put html together for this page
@@ -917,7 +918,16 @@ def build_zotero_tags(papers):
     html_file.write('<table>')
     html_file.write('<tr><th style="text-align:left">Tag</th><th style="text-align:right">Number of papers</th><th style="text-align:right">Number of citations*</th></tr>')
     for this_tag in sorted(zotero_tags):
-        html = '<tr><td style="text-align:left"><a href="../tags/' + this_tag.replace(" ", "%20") + '/index.html">' + this_tag + '</a></td>'
+
+        # Some tags have a / in them, which messes with URL and file paths. Just swap it out for a - here.
+        if this_tag.find("/") > 0:
+            this_tag_safe = this_tag.replace("/", "-")
+        else:
+            this_tag_safe = this_tag
+
+
+        #html = '<tr><td style="text-align:left"><a href="../tags/' + this_tag.replace(" ", "%20") + '/index.html">' + this_tag + '</a></td>'
+        html = '<tr><td style="text-align:left"><a href="../tags/' + this_tag_safe + '/index.html">' + this_tag + '</a></td>'
         html += '<td style="text-align:right">' + str(zotero_tags_counts[this_tag]['total_papers']) + '</td>'
         html += '<td style="text-align:right">' + str(zotero_tags_counts[this_tag]['total_citations']) + '</td></tr>'
         html_file.write(html)

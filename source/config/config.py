@@ -41,14 +41,11 @@ try:
                         'colour_hex_secondary': config.get('project_details', 'colour_hex_secondary'),
                         'header_institution_url': config.get('project_details', 'header_institution_url'),
                         'header_institution_name': config.get('project_details', 'header_institution_name'),
-                        'header_institution_logo_filename': config.get('project_details', 'header_institution_logo_filename'),
-                        'side_image_filename': config.get('project_details', 'side_image_filename'),
-                        'side_image_link': config.get('project_details', 'side_image_link')}
+                        'header_institution_logo_filename': config.get('project_details', 'header_institution_logo_filename')}
 
     # Scopus settings
     scopus_force_citation_update = config.getboolean('scopus', 'scopus_force_citation_update', fallback = True)
     scopus_citation_max_age_days = int(config.get('scopus', 'scopus_citation_max_age_days', fallback = 7))
-    #scopus_run_citation = config.get('scopus', 'scopus_run_citation')
     scopus_api_key = config.get('scopus', 'scopus_api_key')
 
     # Zotero settings
@@ -74,9 +71,9 @@ try:
     metrics_study_current_year = int(config.get('metrics', 'metrics_study_current_year'))
 
     # Pages
-    web_page_show_author_network = config.getboolean('pages', 'web_page_show_author_network', fallback = False)
-    web_page_show_institute_country_map = config.getboolean('pages', 'web_page_show_institute_country_map', fallback = True)
-    web_page_show_zotero_tags = config.getboolean('pages', 'web_page_show_zotero_tags', fallback = True)
+    WEB_PAGE_SHOW_INSTITUTE_UK_MAP = config.getboolean('pages', 'web_page_show_institute_UK_map', fallback = True)
+    WEB_PAGE_SHOW_INSTITUTE_COUNTRY_MAP = config.getboolean('pages', 'web_page_show_institute_country_map', fallback = True)
+    WEB_PAGE_SHOW_ZOTERO_TAGS = config.getboolean('pages', 'web_page_show_zotero_tags', fallback = True)
     web_page_is_in_iframe = config.getboolean('pages', 'web_page_is_in_iframe', fallback = False)
 
 except Exception as e:
