@@ -29,7 +29,7 @@ ex.ac.uk,University of Essex
 ehesp.fr,"EHESP"
 einstein.yu.edu,Albert Einstein College of Medicine
 emory.edu,Emory University
-erasmusmc.nl,Erasmus University Medical Center
+erasmusmc.nl,Erasmus MC
 eurac.edu,European Academy of Bozen
 ghc.org,Group Health Cooperative
 gla.ac.uk,University of Glasgow
@@ -363,6 +363,7 @@ Instituto de Salud Global de Barcelona,University of Barcelona
 Baylor College of Medicine,Baylor College of Medicine
 University of Belgrade,University of Belgrade
 University of Bologna,University of Bologna
+University Bonn,University of Bonn
 Boston University,Boston University
 Children's Hospital Boston,Boston Children's Hospital
 Brigham and Women's Hospital,Brigham and Women's Hospital
@@ -400,6 +401,7 @@ Dalhousie University,Dalhousie University
 Deakin University,Deakin University
 deCODE Genetics,deCODE Genetics
 Deodoro,Deodoro
+Dr. von Hauner Children's Hospital,Dr. von Hauner Children's Hospital
 UCD Dublin, University College Dublin
 University College Dublin,University College Dublin
 Duke University,Duke University
@@ -411,6 +413,7 @@ Erasmus Medical Center,Erasmus MC
 Erasmus University Medical Centre,Erasmus MC
 Erasmus University Medical Center,Erasmus MC
 Friedrich-Alexander University,University of Erlangen–Nuremberg
+Friedrich-Alexander-University,University of Erlangen–Nuremberg
 Eunice Kennedy Shriver National Institute of Child Health and Human Development,Eunice Kennedy Shriver National Institute of Child Health and Human Development
 #F,
 Feinstein Institute for Medical Research,Feinstein Institute for Medical Research
@@ -422,7 +425,9 @@ University of Freiburg,University of Freiburg
 #G,
 iGE3,University of Geneva
 Geisel School of Medicine at Dartmouth,Geisel School of Medicine at Dartmouth
+German Institute of Human Nutrition,German Institute of Human Nutrition
 Ghent University,Ghent University
+Justus-Liebig University Giessen,University of Giessen
 GlaxoSmithKline R&D,GlaxoSmithKline R&D
 Universidad de Granada,University of Granada
 University Medicine Greifswald,University Medicine Greifswald
@@ -488,11 +493,13 @@ Universität zu Lübeck,University of Lübeck
 KULeuven,University of Leuven
 #M,
 M.I.T.,Massachusetts Institute of Technology
+University Medical Center of the Johannes Gutenberg University Mainz,Universitätsmedizin Mainz
 Massachusetts Institute of Technology,Massachusetts Institute of Technology
 University of Massachusetts Lowell,University of Massachusetts Lowell
 Massachusetts General Hospital,Massachusetts General Hospital
 University of Manitoba,University of Manitoba
 Max-Delbrück-Center (MDC) for Molecular Medicine,Max Delbrück Center for Molecular Medicine
+Max Delbrück Center for Molecular Medicine,Max Delbrück Center for Molecular Medicine
 Mayo clinic,Mayo Medical School
 McGill University,McGill University
 University of Miami,University of Miami
@@ -502,6 +509,7 @@ University of Minnesota,University of Minnesota
 University of Missouri-Kansas City,University of Missouri-Kansas City
 University of Melbourne,University of Melbourne
 murdoch,Royal Children's Hospital
+Helmholtz Munich,Helmholtz Zentrum München
 Max Planck Institute for Psycholinguistics,Max Planck Institute for Psycholinguistics
 "Montefiore Medical Center/Albert Einstein College of Medicine","Montefiore Medical Center/Albert Einstein College of Medicine"
 Monash University,Monash University
@@ -651,6 +659,9 @@ Yongin University,Yong In University
 ,
 #Companoes,
 Perspectum,Perspectum
+Epigeny,Epigeny
+Novo Nordisk A/S,Novo Nordisk A/S
+"Veramed GmbH, Frankfurt am Main","Veramed GmbH, Frankfurt am Main"
 ,
 #Some special ALSPAC munging,
 Oakfield Grove,University of Bristol
@@ -660,6 +671,7 @@ BS8 1TQ,University of Bristol
 "Unit of Paediatric and Perinatal Epidemiology, Institute of Child Health, Bristol",University of Bristol
 "School of Social and Community Medicine, Bristol",University of Bristol
 School of Social and Community Medicine and.,University of Bristol
+MRC Integrative Epidemiology Unit,University of Bristol
 ,
 #Some NSHD munging,
 MRC National Survey of Health and Development,University College London
