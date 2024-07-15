@@ -17,6 +17,18 @@ SITE_SECOND_TITLE = " Publications"
 
 
 ############################################################
+# Sort an input list of papers by the sort parameter
+############################################################
+def sort_hashes_by(papers, hashes, sort_by):
+    temp_papers = {}
+    for this_paper in papers:
+        if this_paper['IDs']['hash'] in hashes:
+            if sort_by == 'year':
+                temp_papers[this_paper['IDs']['hash']] = (this_paper['clean']['clean_date']['year'])
+    sorted_hashes = [k for k, v in sorted(temp_papers.items(), key=lambda item: item[1], reverse=True)]
+    return sorted_hashes
+
+############################################################
 # Build common head for all pages
 ############################################################
 def build_common_head(nav_path, extra_head_content):
@@ -295,7 +307,11 @@ def draw_paper(this_paper, nav_path="./"):
     html += escape('; '.join(authors))
     html += '<br/>'
 
-    html += this_paper['clean']['journal']['journal_name']
+    try:
+        if this_paper['clean']['journal']['journal_name'] != "":
+            html += this_paper['clean']['journal']['journal_name']
+    except:
+        pass
 
     try:
         if this_paper['clean']['journal']['volume'] != "":
@@ -306,6 +322,12 @@ def draw_paper(this_paper, nav_path="./"):
     try:
         if this_paper['clean']['journal']['issue'] != "":
             html += ', Issue ' + this_paper['clean']['journal']['issue']
+    except:
+        pass
+
+    try:
+        if this_paper['clean']['clean_date']['year'] != "":
+            html += " (" + str(this_paper['clean']['clean_date']['year']) + ")"
     except:
         pass
     
@@ -348,8 +370,10 @@ def draw_paper(this_paper, nav_path="./"):
     try:
         if len(this_paper['clean']['zotero_tags']) > 0:
             html += '<br/>Tags: '
+            html_tags = []
             for this_tag in this_paper['clean']['zotero_tags']:
-                html += '<a href="' + nav_path + 'tags/' + this_tag['tag'] + '/index.html">' + this_tag['tag'] + '</a>&nbsp;'
+                html_tags.append('<a href="' + nav_path + 'tags/' + this_tag['tag'] + '/index.html">' + this_tag['tag'] + '</a>')
+            html += '&nbsp;|&nbsp;'.join(html_tags)
     except:
         pass
 
@@ -744,9 +768,9 @@ def build_zotero_tags(papers):
 
     zotero_tags = {}
     zotero_tags_counts = {}
-    html_file = open(config.html_dir + '/tags/index.html', 'w')
+    html_file = open(config.html_dir + '/tags/index.html', 'w', encoding='utf-8')
 
-    # Build a dict of ALL zotero tags with a list of each hash (paper) that has this tag, also count the citations while we are here.
+    # Build a dict of ALL zotero tags with a list of each hash (paper) that has this tag.
     for this_paper in papers:
         try:
             # Look at all the zotero tags for this paper
@@ -873,8 +897,10 @@ def build_zotero_tags(papers):
 
             fo.write(html)
 
+
             # Build the text needed for each paper
-            for this_paper in zotero_tags[this_tag]:
+            #for this_paper in zotero_tags[this_tag]:
+            for this_paper in sort_hashes_by(papers, zotero_tags[this_tag], 'year'):
 
                 try:
                     # Get paper object
