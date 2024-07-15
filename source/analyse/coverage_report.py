@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
-
 import config.config as config
-import os
 import shutil
+import math
 
 
 ################################################################################
@@ -479,29 +477,29 @@ def coverage_report(papers):
     # Percentages
     status_table += '<tr>'
     status_table += '<td>Percentage</td>'
-    status_table += '<td>' + str(int(round(100*status['hash']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['zotero']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['doi']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['pmid']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['scopus']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['title']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['keywords_mesh']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['keywords_other']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['abstract']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['first_author']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['first_author_affiliation']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['clean_institution']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['geocoded']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['country']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['clean_date']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['journal']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['volume']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['issue']/number_of_papers))) + '</td>'
-    status_table += '<td>' + str(int(round(100*status['scopus_citation']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['hash']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['zotero']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['doi']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['pmid']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['scopus']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['title']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['keywords_mesh']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['keywords_other']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['abstract']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['first_author']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['first_author_affiliation']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['clean_institution']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['geocoded']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['country']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['clean_date']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['journal']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['volume']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['issue']/number_of_papers))) + '</td>'
+    status_table += '<td>' + str(int(math.floor(100*status['scopus_citation']/number_of_papers))) + '</td>'
     status_table += '</tr></table>'
 
     # Title
-    title = '<h1>' + config.project_details['short_name'] + '</h1>'
+    title = '<h1>' + config.project_details['name'] + ' coverage report</h1>'
 
     # Key
     key = '<table><tr><td class="missing_good_to_have">&nbsp;</td><td>Missing</td></tr><tr><td class="missing_required">&nbsp;</td><td>Required</td></tr></table>'
