@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import json
 import shutil
 import os
@@ -15,7 +13,7 @@ from config import config
 # The colour scheme is automatic. The colours from the config are automatically put into the pages.
 # This .py file also handles the generation of some CSS files.
 
-site_second_title = " Publications"
+SITE_SECOND_TITLE = " Publications"
 
 
 ############################################################
@@ -32,7 +30,7 @@ def build_common_head(nav_path, extra_head_content):
     head = '<!DOCTYPE html><html lang="en-GB">'
 
     head += '<head>'
-    head += '<title>' + site_second_title + '</title>'
+    head += '<title>' + SITE_SECOND_TITLE + '</title>'
     head += '<meta charset="UTF-8">'
     head += '<link rel="stylesheet" href="' + nav_path + 'css/style_main.css">'
     head += '<link rel="stylesheet" href="' + nav_path + 'css/colour_scheme.css">'
@@ -50,7 +48,8 @@ def build_common_head(nav_path, extra_head_content):
 ############################################################
 def build_common_body(breadcrumb, nav_path):
     # This function builds the common header and nav bar for all pages.
-    # nav_path used for changes to relative pathing depending on the page (i.e. Home does not need anything but next level down needs leading ../)
+    # nav_path used for changes to relative pathing depending on the page 
+    # (i.e. Home does not need anything but next level down needs leading ../)
 
     html = '<body>'
 
@@ -62,7 +61,7 @@ def build_common_body(breadcrumb, nav_path):
         html += '<div id="main-logo"><a accesskey="1" title="' + config.project_details['header_institution_name'] + '" href="' + config.project_details['header_institution_url'] + '"><img src="' + nav_path + config.project_details['header_institution_logo_filename'] + '" alt="Institution logo"/></a></div>'
 
     html += "<div class='maintitle' id='maintitle1'>"
-    html += "<span id='title1'><a href='" + nav_path + "index.html'>" + config.project_details['name'] + " - " + site_second_title + "</a></span>"
+    html += "<span id='title1'><a href='" + nav_path + "index.html'>" + config.project_details['name'] + " - " + SITE_SECOND_TITLE + "</a></span>"
     html += "</div>"
     html += "</div>"
     html += "</div>"
@@ -123,11 +122,9 @@ def build_common_foot(nav_path):
     html += '<div class="foot">'
     # Put a link to the timestamp file, but update it to the content via JS. This means
     # there will be a mechanism to see this when running locally as COS stops JS calls.
-    # html += '<span id="update_timestamp"><a href="' + config.html_dir + '/timestamp.txt">Update time</a></span>'
     html += '<span id="update_timestamp"><a href="' + nav_path + '/timestamp.txt">Update time</a></span>'
     html += '<script type="text/javascript" src="' + nav_path + '/timestamp.js"></script>'
     html += '<script>update_timestamp("' + nav_path + '/timestamp.txt")</script>'
-    # html += ' Stats last updated on ' + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
     html += '</div>'
     html += '</body>'
     html += '</html>'
@@ -443,7 +440,7 @@ def build_papers(papers):
 
     # html head
     temp += '<head>'
-    temp += '<title>' + site_second_title + '</title>'
+    temp += '<title>' + SITE_SECOND_TITLE + '</title>'
     temp += '<link rel="stylesheet" href="../../css/style_main.css">'
     temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
     temp += '</head>'
@@ -997,7 +994,7 @@ def build_country_map(papers):
 ###########################################################
 # Publications by UK institute
 ###########################################################
-def build_institute_map(papers):
+def build_UK_institute_map(papers):
 
     print("\n###HTML - Institute Map###")
 
@@ -1005,7 +1002,15 @@ def build_institute_map(papers):
     number_of_points = 0
     for this_paper in papers:
         try:
-            if this_paper['clean']['location']['clean_institute'] != "" and this_paper['clean']['location']['latitude'] != "" and this_paper['clean']['location']['longitude'] != "":
+            if (
+                this_paper['clean']['location']['clean_institute'] != "" and
+                this_paper['clean']['location']['latitude'] != "" and 
+                this_paper['clean']['location']['longitude'] != "" and
+                    (
+                    this_paper['clean']['location']['country'] == "United Kingdom" or
+                    this_paper['clean']['location']['country'] == "Northern Ireland"
+                    )
+                ):
                 if this_paper['clean']['location']['clean_institute'] in institutes:
                     institutes[this_paper['clean']['location']['clean_institute']]['count'] += 1
                 else:
@@ -1023,7 +1028,7 @@ def build_institute_map(papers):
         # chars are removed. this is then decoded back into utf-8
         institute_string += ',[' + institutes[this_institute]['lat'] + ',' + institutes[this_institute]['lon'] + ',"' + str(this_institute.encode('ascii', 'ignore').decode('ascii')) + '",' + str(institutes[this_institute]['count']) + ']'
 
-    html_file = open(config.html_dir + '/institute/index.html', 'w')
+    html_file = open(config.html_dir + '/institute/index.html', 'w', encoding='utf-8')
 
     # # Put html together for this page
 
