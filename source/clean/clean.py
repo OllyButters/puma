@@ -1,11 +1,8 @@
-#!/usr/bin/env python3
-
 import re
 import logging
 import hashlib
-import config.config as config
 import csv
-
+from config import config
 
 ################################################################################
 # Copy and format all the relevant raw data into the clean part of the data object.
@@ -141,11 +138,20 @@ def clean_title(this_paper):
 # pmid_data   - usually present
 # doi_data    - never present
 # scopus_data - never present
+# zotero_data - sometimes present
 ################################################################################
 def clean_abstract(this_paper):
+    
     try:
         # Get abstract text
         this_paper['clean']['abstract'] = str(this_paper['raw']['pmid_data']['MedlineCitation']['Article']['Abstract']['AbstractText'])
+        return True
+    except:
+        pass
+
+    try:
+        # Get abstract text
+        this_paper['clean']['abstract'] = str(this_paper['raw']['zotero_data']['abstractNote'])
     except:
         logging.warn('No abstract for ' + this_paper['IDs']['hash'])
 ################################################################################
