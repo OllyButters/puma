@@ -2,146 +2,17 @@ import json
 import shutil
 import os
 import csv
-from html import escape
-import time
 import codecs
-import logging
 import sys
 
 from config import config
+from . import utils
+from . import common_html as ch
 
 # The colour scheme is automatic. The colours from the config are automatically put into the pages.
 # This .py file also handles the generation of some CSS files.
 
 SITE_SECOND_TITLE = " Publications"
-
-
-############################################################
-# Sort an input list of papers by the sort parameter
-############################################################
-def sort_hashes_by(papers, hashes, sort_by):
-    temp_papers = {}
-    for this_paper in papers:
-        if this_paper['IDs']['hash'] in hashes:
-            if sort_by == 'year':
-                temp_papers[this_paper['IDs']['hash']] = (this_paper['clean']['clean_date']['year'])
-    sorted_hashes = [k for k, v in sorted(temp_papers.items(), key=lambda item: item[1], reverse=True)]
-    return sorted_hashes
-
-############################################################
-# Build common head for all pages
-############################################################
-def build_common_head(nav_path, extra_head_content):
-
-    # Copy files across
-    shutil.copyfile(config.template_dir + '/style_main.css', config.html_dir + '/css/style_main.css')
-    shutil.copyfile(config.template_dir + '/timestamp.js', config.html_dir + '/timestamp.js')
-    shutil.copyfile(config.template_dir + '/iframe.js', config.html_dir + '/iframe.js')
-
-    # Put html together for this page
-    head = '<!DOCTYPE html><html lang="en-GB">'
-
-    head += '<head>'
-    head += '<title>' + SITE_SECOND_TITLE + '</title>'
-    head += '<meta charset="UTF-8">'
-    head += '<link rel="stylesheet" href="' + nav_path + 'css/style_main.css">'
-    head += '<link rel="stylesheet" href="' + nav_path + 'css/colour_scheme.css">'
-    head += '<script src="' + nav_path + 'timestamp.js"></script>'
-    head += '<script src="' + nav_path + 'iframe.js" defer></script>'
-
-    head += extra_head_content
-    head += '</head>'
-
-    return head
-
-
-############################################################
-# Build common body for all pages
-############################################################
-def build_common_body(breadcrumb, nav_path):
-    # This function builds the common header and nav bar for all pages.
-    # nav_path used for changes to relative pathing depending on the page 
-    # (i.e. Home does not need anything but next level down needs leading ../)
-
-    html = '<body>'
-
-    html += "<div id='header-container'>"
-    html += "<div class='header width-master' role='banner'>"
-
-    if os.path.isfile(config.config_dir + '/' + config.project_details['header_institution_logo_filename']):
-        shutil.copy(config.config_dir + '/' + config.project_details['header_institution_logo_filename'], config.html_dir + '/' + config.project_details['header_institution_logo_filename'])
-        html += '<div id="main-logo"><a accesskey="1" title="' + config.project_details['header_institution_name'] + '" href="' + config.project_details['header_institution_url'] + '"><img src="' + nav_path + config.project_details['header_institution_logo_filename'] + '" alt="Institution logo"/></a></div>'
-
-    html += "<div class='maintitle' id='maintitle1'>"
-    html += "<span id='title1'><a href='" + nav_path + "index.html'>" + config.project_details['name'] + " - " + SITE_SECOND_TITLE + "</a></span>"
-    html += "</div>"
-    html += "</div>"
-    html += "</div>"
-
-    html += '<div id="wrapper" class="width-master">'
-    html += '<div id="col1" role="navigation">'
-    html += '<!-- navigation object : navigation -->'
-
-    html += '<ul class="navgroup">'
-    html += '<li><a href="' + nav_path + 'index.html">Home</a></li>'
-    html += '<li><a href="' + nav_path + 'help/index.html">About</a></li>'
-    html += '<li><a href="' + nav_path + 'search/index.html">Search</a></li>'
-
-    if config.WEB_PAGE_SHOW_ZOTERO_TAGS:
-        html += '<li><a href="' + nav_path + 'tags/index.html">Tags</a></li>'
-
-    html += '<li><a href="' + nav_path + 'keywords/index.html">All Keywords</a></li>'
-    html += '<li><a href="' + nav_path + 'mesh/index.html">Major Keywords (MeSH)</a></li>'
-
-    if config.WEB_PAGE_SHOW_INSTITUTE_COUNTRY_MAP:
-        html += '<li><a href="' + nav_path + 'country/index.html">Map by Country</a></li>'
-
-    if config.WEB_PAGE_SHOW_INSTITUTE_UK_MAP:
-        html += '<li><a href="' + nav_path + 'institute/index.html">Map by UK institute</a></li>'
-
-    html += '<li><a href="' + nav_path + 'metrics/index.html">Metrics</a></li>'
-    html += '<li><a href="' + nav_path + 'keyword_wordcloud/index.html">Keyword Cloud</a></li>'
-    html += '<li><a href="' + nav_path + 'abstractwordcloud/index.html">Abstract Word Cloud</a></li>'
-
-    html += '</ul>'
-
-    html += '<div class="after-navgroup">'
-    html += '<!-- navigation object : navigation bottom -->'
-    html += '<!-- start navigation : additional logo -->'
-
-    html += '</div>'
-    html += '</div>'
-
-    html += breadcrumb
-
-    html += '<div id="content" role="main">'
-
-    return html
-
-
-###########################################################
-# Build a common footer for all the pages.
-###########################################################
-def build_common_foot(nav_path):
-
-    # Output the timestamp to file
-    timestamp_file = open(config.html_dir + '/timestamp.txt', 'w')
-    timestamp_file.write(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
-    timestamp_file.close()
-
-    html = '</div>'
-    html += '</div>'
-    html += '<div class="foot">'
-    # Put a link to the timestamp file, but update it to the content via JS. This means
-    # there will be a mechanism to see this when running locally as COS stops JS calls.
-    html += '<span id="update_timestamp"><a href="' + nav_path + '/timestamp.txt">Update time</a></span>'
-    html += '<script type="text/javascript" src="' + nav_path + '/timestamp.js"></script>'
-    html += '<script>update_timestamp("' + nav_path + '/timestamp.txt")</script>'
-    html += '</div>'
-    html += '</body>'
-    html += '</html>'
-
-    return html
 
 
 ############################################################
@@ -154,11 +25,11 @@ def build_home(papers):
     summary = {}
     missing_year = {'num_papers': 0, 'citations': 0}
 
-    html_file = open(config.html_dir + '/index.html', 'w')
-    data_file = open(config.html_dir + '/data.js', 'w')
+    html_file = open(config.html_dir + '/index.html', 'w', encoding='utf-8')
+    data_file = open(config.html_dir + '/data.js', 'w', encoding='utf-8')
 
-    temp = build_common_head("", "")
-    temp += build_common_body("", "")
+    temp = ch.build_common_head("", "")
+    temp += ch.build_common_body("", "")
     temp += '<h1 id="pagetitle">Summary by Year</h1>'
 
     html_file.write(temp)
@@ -248,138 +119,35 @@ def build_home(papers):
 
         # Build the table
         temp = '<tr><td><a href="papers/' + this_year + '/index.html">' + str(this_year) + '</a></td>'
-        temp += '<td>' + intWithCommas(summary[this_year]['num_papers']) + '</td>'
+        temp += '<td>' + utils.intWithCommas(summary[this_year]['num_papers']) + '</td>'
         temp += '<td>' + str(summary[this_year]['cumulative']) + '</td>'
-        temp += '<td>' + intWithCommas(summary[this_year]['citations']) + '</td>'
-        temp += '<td>' + intWithCommas(summary[this_year]['cumulative_citations']) + '</td></tr>'
+        temp += '<td>' + utils.intWithCommas(summary[this_year]['citations']) + '</td>'
+        temp += '<td>' + utils.intWithCommas(summary[this_year]['cumulative_citations']) + '</td></tr>'
         html_file.write(temp)
 
     # Unknown Row
     if missing_year['num_papers'] > 0:
         temp = '<tr>'
         temp += '<td style="font-size:12px;font-weight:bold;"><a href="papers/unknown/index.html">UNKNOWN</a></td>'
-        temp += '<td>' + intWithCommas(missing_year['num_papers']) + '</td>'
+        temp += '<td>' + utils.intWithCommas(missing_year['num_papers']) + '</td>'
         temp += '<td>-</td>'
-        temp += '<td>' + intWithCommas(missing_year['citations']) + '</td>'
+        temp += '<td>' + utils.intWithCommas(missing_year['citations']) + '</td>'
         temp += '<td>-</td>'
         temp += '</tr>'
         html_file.write(temp)
     html_file.write('</table>')
 
-    temp = "<p>Publication year known for " + intWithCommas(cr_data_from) + " of " + intWithCommas(len(papers)) + " publications. <span class='help_text'>(<a href='help/index.html#missing_data'>What does this mean?</a>)</span></p>"
+    temp = "<p>Publication year known for " + utils.intWithCommas(cr_data_from) + " of " + utils.intWithCommas(len(papers)) + " publications. <span class='help_text'>(<a href='help/index.html#missing_data'>What does this mean?</a>)</span></p>"
     temp += '<p>* Citation data from <a href="https://www.scopus.com">Scopus</a>.</p>'
 
-    temp += build_common_foot("./")
+    temp += ch.build_common_foot("./")
     html_file.write(temp)
 
     cr_sum = cr_sum / len(papers)
     return cr_sum, cr_data_from
 
 
-############################################################
-# Draw Paper Function
-# This function is used in the different paper lists to
-# display a consistently formatted list.
-############################################################
-def draw_paper(this_paper, nav_path="./"):
-    html = '<div class="paper">'
 
-    # altmetric data
-    try:
-        if this_paper['IDs']['DOI']:
-            html += '<div style="float:right; width:64px; height:64px;" data-badge-popover="left" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
-    except:
-        pass
-
-    # Paper title
-    html += '<span style="text-decoration: underline; font-weight:bold;">' + this_paper['clean']['title'] + '</span><br/>'
-
-    # Authors
-    authors = []
-    for this_author in this_paper['clean']['full_author_list']:
-        # Some author lists have a collective name. Ignore this.
-        # Some people don't actually have initials. eg wraight in pmid:18454148
-        try:
-            authors.append(this_author['family'] + ', ' + this_author['given'])
-        except:
-            logging.debug('This author dropped from author list on webpage for some reason: ' + str(this_author))
-
-    html += escape('; '.join(authors))
-    html += '<br/>'
-
-    try:
-        if this_paper['clean']['journal']['journal_name'] != "":
-            html += this_paper['clean']['journal']['journal_name']
-    except:
-        pass
-
-    try:
-        if this_paper['clean']['journal']['volume'] != "":
-            html += ', Volume ' + this_paper['clean']['journal']['volume']
-    except:
-        pass
-
-    try:
-        if this_paper['clean']['journal']['issue'] != "":
-            html += ', Issue ' + this_paper['clean']['journal']['issue']
-    except:
-        pass
-
-    try:
-        if this_paper['clean']['clean_date']['year'] != "":
-            html += " (" + str(this_paper['clean']['clean_date']['year']) + ")"
-    except:
-        pass
-    
-    html += '<br/>'
-
-    # PMID
-    try:
-        if this_paper['IDs']['PMID']:
-            html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'" target="_blank">' + str(this_paper['IDs']['PMID']) + '</a>&nbsp;'
-    except:
-        pass
-
-    # DOI
-    try:
-        if this_paper['IDs']['DOI']:
-            html += 'DOI: <a href="https://doi.org/' + this_paper['IDs']['DOI'] + '" target="_blank">' + this_paper['IDs']['DOI'] + '</a>&nbsp;'
-    except:
-        pass
-
-    # Citation Counts and Sources
-    html += '<br/>Citations: '
-
-    try:
-        # Try to display citation count with link to scopus page
-        scopus_links = this_paper['raw']['scopus_data']['search-results']['entry'][0]['link']
-        for this_link in scopus_links:
-            if this_link['@ref'] == 'scopus-citedby':
-                if this_paper['clean']['citations']['scopus']['count'] !='0':
-                    html += '<a href="' + this_link['@href'] + '" target="_blank">' + str(this_paper['clean']['citations']['scopus']['count']) + '</a> (Scopus)'
-                else:
-                    html += '-'
-    except:
-        try:
-            html += str(this_paper['clean']['citations']['scopus']['count']) + ' (Scopus)'
-        except:
-            html += '-'
-
-    # Tags
-    # 
-    try:
-        if len(this_paper['clean']['zotero_tags']) > 0:
-            html += '<br/>Tags: '
-            html_tags = []
-            for this_tag in this_paper['clean']['zotero_tags']:
-                html_tags.append('<a href="' + nav_path + 'tags/' + this_tag['tag'] + '/index.html">' + this_tag['tag'] + '</a>')
-            html += '&nbsp;|&nbsp;'.join(html_tags)
-    except:
-        pass
-
-    html += '</div>'
-
-    return html
 
 
 ############################################################
@@ -390,10 +158,10 @@ def build_papers(papers):
     print("\n###HTML papers list###")
 
     yearly_papers = {}
-    html_file = open(config.html_dir + '/papers/index.html', 'w')
+    html_file = open(config.html_dir + '/papers/index.html', 'w', encoding='utf-8')
 
-    temp = build_common_head("../", "")
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Papers List</p>', "../")
+    temp = ch.build_common_head("../", "")
+    temp += ch.build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Papers List</p>', "../")
 
     temp += '<h1 id="pagetitle">Papers List</h1>'
     # Altmetric include
@@ -406,7 +174,7 @@ def build_papers(papers):
     for this_paper in papers:
         try:
             # Call draw paper function
-            html = draw_paper(this_paper, "../../")
+            html = ch.draw_paper(this_paper, "../../")
 
             # Append this paper to the list indexed by the year
             this_year = this_paper['clean']['clean_date']['year']
@@ -433,10 +201,10 @@ def build_papers(papers):
 
         if not os.path.exists(config.html_dir + '/papers/' + this_year):
             os.mkdir(config.html_dir + '/papers/' + this_year)
-        year_file = open(config.html_dir + '/papers/' + this_year + '/index.html', 'w')
+        year_file = open(config.html_dir + '/papers/' + this_year + '/index.html', 'w', encoding='utf-8')
 
-        temp = build_common_head("../../", "")
-        temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; <a href="../index.html">Papers List</a> &gt; ' + this_year + '</p>', "../../")
+        temp = ch.build_common_head("../../", "")
+        temp += ch.build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; <a href="../index.html">Papers List</a> &gt; ' + this_year + '</p>', "../../")
 
         temp += '<h1 id="pagetitle">Papers List - ' + this_year + '</h1>'
         temp += "<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>"
@@ -448,16 +216,16 @@ def build_papers(papers):
             temp = list(this_item.values())
             year_file.write(temp[0])
 
-        temp = build_common_foot("../../")
+        temp = ch.build_common_foot("../../")
         year_file.write(temp)
 
-    main += "</p>" + build_common_foot("../../")
+    main += "</p>" + ch.build_common_foot("../../")
     html_file.write(main)
 
     # == Publications from unknown years ==
     if not os.path.exists(config.html_dir + '/papers/unknown'):
         os.mkdir(config.html_dir + '/papers/unknown')
-    unknown_file = open(config.html_dir + '/papers/unknown/index.html', 'w')
+    unknown_file = open(config.html_dir + '/papers/unknown/index.html', 'w', encoding='utf-8')
 
     # Put html together for this page
     temp = '<!DOCTYPE html><html lang="en-GB">'
@@ -469,7 +237,7 @@ def build_papers(papers):
     temp += '<link rel="stylesheet" href="../../css/colour_scheme.css">'
     temp += '</head>'
 
-    temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; <a href="../index.html">Papers List</a> &gt; Unknown Year</p>', "../../")
+    temp += ch.build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; <a href="../index.html">Papers List</a> &gt; Unknown Year</p>', "../../")
 
     temp += '<h1 id="pagetitle">Papers List - Unknown Year</h1>'
     # Altmetric include
@@ -481,14 +249,14 @@ def build_papers(papers):
         try:
             this_paper['clean']['clean_date']['year']
         except:
-            html += draw_paper(this_paper, "../../")
+            html += ch.draw_paper(this_paper, "../../")
             n += 1
 
     temp += '<h2>' + str(n) + ' Publications From Unknown Years</h2>'
     temp += '<h3>Some data may be missing from these publications.</h3>'
     temp += html
 
-    temp += build_common_foot("../")
+    temp += ch.build_common_foot("../")
 
     unknown_file.write(temp)
 
@@ -503,8 +271,8 @@ def build_mesh(papers):
     mesh_papers_all = {}
     mesh_papers_major = {}
     other_keywords = {}
-    html_file_all = open(config.html_dir + '/keywords/index.html', 'w')
-    html_file_major = open(config.html_dir + '/mesh/index.html', 'w')
+    html_file_all = open(config.html_dir + '/keywords/index.html', 'w', encoding='utf-8')
+    html_file_major = open(config.html_dir + '/mesh/index.html', 'w', encoding='utf-8')
 
     # Build a dict of ALL mesh headings with a list of each hash (paper) that has this mesh term
     for this_paper in papers:
@@ -573,8 +341,8 @@ def build_mesh(papers):
     ######################################
     # Make HTML index page for ALL keywords
 
-    html = build_common_head("../", "")
-    html += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; All Keywords</p>', "../")
+    html = ch.build_common_head("../", "")
+    html += ch.build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; All Keywords</p>', "../")
 
     html += '<h1 id="pagetitle">All Keywords</h1>'
     html += '<p>' + str(len(all_keywords)) + ' Keywords</p>'
@@ -588,15 +356,15 @@ def build_mesh(papers):
         html_file_all.write(html)
     html_file_all.write('</ul>')
 
-    html = build_common_foot("../")
+    html = ch.build_common_foot("../")
     html_file_all.write(html)
     ######################################
 
     ######################################
     # Make HTML index page for MAJOR MESH headings
 
-    html = build_common_head("../", "")
-    html += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keywords (MeSH)</p>', "../")
+    html = ch.build_common_head("../", "")
+    html += ch.build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Major Keywords (MeSH)</p>', "../")
 
     html += '<h1 id="pagetitle">Major Keywords (MeSH)</h1>'
     html += '<p>' + str(len(mesh_papers_major)) + ' Keywords</p>'
@@ -610,7 +378,7 @@ def build_mesh(papers):
         html_file_major.write(html)
     html_file_major.write('</ul>')
 
-    html = build_common_foot("../")
+    html = ch.build_common_foot("../")
     html_file_major.write(html)
     ######################################
 
@@ -685,7 +453,7 @@ def _make_keywords_pages(papers, keywords, url_part):
                         summary[str(this_year)] = {'num_papers': 0, 'citations': 0}
 
             # Print data to file
-            data_file = open(config.html_dir + '/' + url_part + '/' + this_keyword_safe + '/stats.js', 'w')
+            data_file = open(config.html_dir + '/' + url_part + '/' + this_keyword_safe + '/stats.js', 'w', encoding='utf-8')
             
             data_file.write('var papers =([[\'Year\', \'Number of papers\'],')
             for this_year in sorted(summary, reverse=False):
@@ -713,8 +481,8 @@ def _make_keywords_pages(papers, keywords, url_part):
             extra_head += "<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>"
 
 
-            temp = build_common_head("../../", extra_head)
-            temp += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; Keyword &gt; ' + this_keyword + '</p>', "../../")
+            temp = ch.build_common_head("../../", extra_head)
+            temp += ch.build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; Keyword &gt; ' + this_keyword + '</p>', "../../")
 
             temp += '<h1 id="pagetitle">Keyword - ' + this_keyword + '</h1>'
             temp += '<h2>Keyword History</h2>'
@@ -744,14 +512,14 @@ def _make_keywords_pages(papers, keywords, url_part):
                         this_paper = paper_obj
 
                     # Call draw paper function
-                    html = draw_paper(this_paper, "../../")
+                    html = ch.draw_paper(this_paper, "../../")
 
                     fo.write(html)
 
                 except:
                     pass
 
-            temp = build_common_foot("../../")
+            temp = ch.build_common_foot("../../")
             fo.write(temp)
 
         fo.close()
@@ -854,7 +622,7 @@ def build_zotero_tags(papers):
             zotero_tags_counts[this_tag]['total_citations'] = total_citations
 
             # Print data to file
-            data_file = open(config.html_dir + '/tags/' + this_tag_safe + '/stats.js', 'w')
+            data_file = open(config.html_dir + '/tags/' + this_tag_safe + '/stats.js', 'w', encoding='utf-8')
 
             data_file.write('var papers =([[\'Year\', \'Number of papers\'],')
             for this_year in sorted(summary, reverse=False):
@@ -881,8 +649,8 @@ def build_zotero_tags(papers):
             extra_head += '<script type="text/javascript" src="../keyword_history.js"></script>'
             extra_head += "<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>"
 
-            html = build_common_head("../../", extra_head)
-            html += build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; Tags &gt; ' + this_tag + '</p>', "../../")
+            html = ch.build_common_head("../../", extra_head)
+            html += ch.build_common_body('<p id="breadcrumbs"><a href="../../index.html">Home</a> &gt; Tags &gt; ' + this_tag + '</p>', "../../")
 
             html += '<h1 id="pagetitle">Tag - ' + this_tag + '</h1>'
             html += '<h2>Tag History</h2>'
@@ -900,7 +668,7 @@ def build_zotero_tags(papers):
 
             # Build the text needed for each paper
             #for this_paper in zotero_tags[this_tag]:
-            for this_paper in sort_hashes_by(papers, zotero_tags[this_tag], 'year'):
+            for this_paper in utils.sort_hashes_by(papers, zotero_tags[this_tag], 'year'):
 
                 try:
                     # Get paper object
@@ -914,14 +682,14 @@ def build_zotero_tags(papers):
                         this_paper = paper_obj
 
                     # Call draw paper function
-                    html = draw_paper(this_paper, "../../")
+                    html = ch.draw_paper(this_paper, "../../")
 
                     fo.write(html)
 
                 except:
                     pass
 
-            html = build_common_foot("../../")
+            html = ch.build_common_foot("../../")
             fo.write(html)
 
         fo.close()
@@ -929,8 +697,8 @@ def build_zotero_tags(papers):
     ######################################
     # Make HTML index page for all tags
 
-    html = build_common_head("../", "")
-    html += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Tags</p>', "../")
+    html = ch.build_common_head("../", "")
+    html += ch.build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Tags</p>', "../")
 
     html += '<h1 id="pagetitle">Tags</h1>'
     html += '<p>' + str(len(zotero_tags)) + ' tags</p>'
@@ -959,7 +727,7 @@ def build_zotero_tags(papers):
     html_file.write('<p>* Citation data from <a href="https://www.scopus.com">Scopus</a>.</p>')
     html_file.write('<p>Note that some publications may have multiple tags, this means that the total number of papers and citations may appear larger than for the project as a whole.</p>')
 
-    html = build_common_foot("../")
+    html = ch.build_common_foot("../")
     html_file.write(html)
     ######################################
 
@@ -992,7 +760,7 @@ def build_country_map(papers):
     country_string = country_string.replace("People's Republic of China", "China")
     country_string = country_string.replace("United States of America", "United States")
 
-    html_file = open(config.html_dir + '/country/index.html', 'w')
+    html_file = open(config.html_dir + '/country/index.html', 'w', encoding='utf-8')
 
     # Put html together for this page
 
@@ -1003,17 +771,17 @@ def build_country_map(papers):
     extra_head += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> <script type="text/javascript" src="https://www.google.com/jsapi"></script>'
     extra_head += '<script type="text/javascript">' + "google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawRegionsMap);function drawRegionsMap() {var data = google.visualization.arrayToDataTable([ ['Country', 'Publications']" + country_string + "]); var options = { colorAxis: {colors: ['#" + config.project_details['colour_hex_secondary'] + "', '#" + config.project_details['colour_hex_primary'] + "']} }; var chart = new google.visualization.GeoChart(document.getElementById('regions_div')); chart.draw(data, options); }</script>"
 
-    temp = build_common_head("../", extra_head)
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by Country</p>', "../")
+    temp = ch.build_common_head("../", extra_head)
+    temp += ch.build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by Country</p>', "../")
 
     temp += '<h1 id="pagetitle">Publications by Country</h1>'
 
     temp += '<div id="regions_div" style="width: 900px; height: 500px;"><img src="loading.gif" alt="Loading"></div>'
-    temp += "<p>Data from " + intWithCommas(number_of_points) + " publications. <span class='help_text'>(<a href='help/index.html#missing_data'>What does this mean?</a>)</span></p>"
+    temp += "<p>Data from " + utils.intWithCommas(number_of_points) + " publications. <span class='help_text'>(<a href='help/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     html_file.write(temp)
 
-    temp = build_common_foot("../")
+    temp = ch.build_common_foot("../")
     html_file.write(temp)
 
 
@@ -1065,32 +833,19 @@ def build_UK_institute_map(papers):
     extra_head += '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>'
     extra_head += "<script>google.charts.load('current', {'packages':['geochart']});google.charts.setOnLoadCallback(drawMarkersMap);function drawMarkersMap() {var data = google.visualization.arrayToDataTable([['lat', 'lon', 'Institute','Publication count']" + institute_string + " ]); var options = {magnifyingGlass: {zoomFactor: '15.0'}, region: 'GB', displayMode: 'markers', colorAxis: {colors: ['#" + config.project_details['colour_hex_secondary'] + "', '#" + config.project_details['colour_hex_primary'] + "']}}; var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));chart.draw(data, options); };</script>"
 
-    temp = build_common_head("../", extra_head)
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by UK City</p>', "../")
+    temp = ch.build_common_head("../", extra_head)
+    temp += ch.build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Publications by UK City</p>', "../")
 
     temp += '<h1 id="pagetitle">Publications by UK Institute</h1>'
 
     temp += '<div id="regions_div" style="width: 100%; min-width:500px; min-height: 500px;"><img src="loading.gif" alt="Loading"></div>'
-    temp += "<p>Data from " + intWithCommas(number_of_points) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
+    temp += "<p>Data from " + utils.intWithCommas(number_of_points) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
     html_file.write(temp)
 
-    temp = build_common_foot("../")
+    temp = ch.build_common_foot("../")
     html_file.write(temp)
 
 
-###########################################################
-# Util to stick in commas between 1000s in big integers
-###########################################################
-def intWithCommas(x):
-    if not isinstance(x, int):
-        raise TypeError("Parameter must be an integer.")
-    if x < 0:
-        return '-' + intWithCommas(-x)
-    result = ''
-    while x >= 1000:
-        x, r = divmod(x, 1000)
-        result = ",%03d%s" % (r, result)
-    return "%d%s" % (x, result)
 
 
 ###########################################################
@@ -1100,7 +855,7 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
 
     print("\n###HTML - Metrics###")
 
-    html_file = open(config.html_dir + '/metrics/index.html', 'w')
+    html_file = open(config.html_dir + '/metrics/index.html', 'w', encoding='utf-8')
 
     # Metric calculations
     total_publications = len(papers)
@@ -1248,8 +1003,8 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
 
     extra_head += '<script type="text/javascript" src="metrics.js"></script>'
 
-    temp = build_common_head("../", extra_head)
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Metrics</p>', "../")
+    temp = ch.build_common_head("../", extra_head)
+    temp += ch.build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Metrics</p>', "../")
 
     temp += '<h1 id="pagetitle">Metrics</h1>'
 
@@ -1260,51 +1015,51 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>Total Publications</div>"
-    temp += "<div class='metric_value'>" + intWithCommas(total_publications) + "</div>"
-    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_publications) + " Publications</div>"
+    temp += "<div class='metric_value'>" + utils.intWithCommas(total_publications) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + utils.intWithCommas(total_publications) + " Publications</div>"
     temp += "<div class='metric_description'>This is the number of all publications for the study.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>Total Citations</div>"
-    temp += "<div class='metric_value'>" + intWithCommas(total_citations) + "</div>"
-    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
+    temp += "<div class='metric_value'>" + utils.intWithCommas(total_citations) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + utils.intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>This is the number of citations to all publications for the study.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>Mean Citations Per Publication</div>"
     temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(average_citations, 2))) + "</div>"
-    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
+    temp += "<div class='metric_stats_data'>Data From " + utils.intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>The total number of citations divided by the total number of publications.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>Age-weighted Mean Citations Per Publication</div>"
     temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(age_weighted_citation, 3))) + "</div>"
-    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(age_weighted_citation_data) + " Publications</div>"
+    temp += "<div class='metric_stats_data'>Data From " + utils.intWithCommas(age_weighted_citation_data) + " Publications</div>"
     temp += "<div class='metric_description'>Age-weighted Mean Citations Per Publication.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>h-index</div>"
     temp += "<div class='metric_value'>" + str(h_index) + "</div>"
-    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
+    temp += "<div class='metric_stats_data'>Data From " + utils.intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>h-index is the largest number h such that h publications from a study have at least h citations.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>g-index</div>"
     temp += "<div class='metric_value'>" + str(g_index) + "</div>"
-    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
+    temp += "<div class='metric_stats_data'>Data From " + utils.intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>The largest number n of highly cited articles for which the average number of citations is at least n.</div>"
     temp += "</div>"
 
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>c" + str(c_index_bound) + "-index</div>"
-    temp += "<div class='metric_value'>" + intWithCommas(c20_index) + "</div>"
-    temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
+    temp += "<div class='metric_value'>" + utils.intWithCommas(c20_index) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + utils.intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>The number of publications that have at least " + str(c_index_bound) + " citations.</div>"
     temp += "</div>"
 
@@ -1322,23 +1077,23 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     temp += "<div class='clear'></div>"
 
     temp += '<div id="cumulative_div"></div>'
-    temp += "<p style='text-align:center;'>Data from " + intWithCommas(age_weighted_citation_data) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
+    temp += "<p style='text-align:center;'>Data from " + utils.intWithCommas(age_weighted_citation_data) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     temp += '<div id="papers_per_year_div"></div>'
-    temp += "<p style='text-align:center;'>Data from " + intWithCommas(age_weighted_citation_data) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
+    temp += "<p style='text-align:center;'>Data from " + utils.intWithCommas(age_weighted_citation_data) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
     
     temp += '<div id="papers_per_citation_count_div"></div>'
     temp += "<div style='margin-left:auto;margin-right:auto;'><div class='average_citations' style='height:15px; width:33px; float:left; background:#" + config.project_details['colour_hex_secondary'] + "'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Mean number of citations</div></div>"
     temp += "<div style='margin-left:auto;margin-right:auto;margin-top:5px;'><div class='average_citations' style='height:15px; width:33px; float:left; background:green'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Median number of citations</div></div>"
-    temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
+    temp += "<p style='text-align:center;'>Data from " + utils.intWithCommas(total_citations_data_from_count) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     if plot_high_citation_chart:
         temp += '<div id="papers_per_high_citation_count_div"></div>'
-        temp += "<p style='text-align:center;'>Data from " + intWithCommas(total_citations_data_from_count) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
+        temp += "<p style='text-align:center;'>Data from " + utils.intWithCommas(total_citations_data_from_count) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     html_file.write(temp)
 
-    temp = build_common_foot("../")
+    temp = ch.build_common_foot("../")
     html_file.write(temp)
 
 
@@ -1409,8 +1164,8 @@ def build_abstract_word_cloud(data_from_count):
     extra_head += '<script src="https://d3js.org/d3.v3.min.js"></script>'
     extra_head += '<script src="d3.layout.cloud.js"></script>'
 
-    temp = build_common_head("../", extra_head)
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Abstract Word Cloud</p>', "../")
+    temp = ch.build_common_head("../", extra_head)
+    temp += ch.build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Abstract Word Cloud</p>', "../")
 
     temp += '<h1 id="pagetitle">Abstract Word Cloud</h1>'
 
@@ -1418,11 +1173,11 @@ def build_abstract_word_cloud(data_from_count):
     temp += '</cloud>'
 
     temp += '<script src="d3wordcloud.js"></script>'
-    temp += "<p>Data from " + intWithCommas(data_from_count) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
+    temp += "<p>Data from " + utils.intWithCommas(data_from_count) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     html_file.write(temp)
 
-    temp = build_common_foot("../")
+    temp = ch.build_common_foot("../")
     html_file.write(temp)
 
 
@@ -1484,8 +1239,8 @@ def build_keyword_word_cloud(data_from_count):
     extra_head += '<script src="https://d3js.org/d3.v3.min.js"></script>'
     extra_head += '<script src="d3.layout.cloud.js"></script>'
 
-    temp = build_common_head("../", extra_head)
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Keyword Word Cloud</p>', "../")
+    temp = ch.build_common_head("../", extra_head)
+    temp += ch.build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Keyword Word Cloud</p>', "../")
 
     temp += '<h1 id="pagetitle">Keyword Word Cloud</h1>'
 
@@ -1493,11 +1248,11 @@ def build_keyword_word_cloud(data_from_count):
     temp += '</cloud>'
 
     temp += '<script src="d3wordcloud.js"></script>'
-    temp += "<p>Data from " + intWithCommas(data_from_count) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
+    temp += "<p>Data from " + utils.intWithCommas(data_from_count) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     html_file.write(temp)
 
-    temp = build_common_foot("../")
+    temp = ch.build_common_foot("../")
     html_file.write(temp)
 
 
@@ -1522,8 +1277,8 @@ def build_help():
 
     # # Put html together for this page
 
-    temp = build_common_head("../", "")
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Information</p>', "../")
+    temp = ch.build_common_head("../", "")
+    temp += ch.build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Information</p>', "../")
 
     temp += '<h1 id="pagetitle">Information</h1>'
 
@@ -1596,7 +1351,7 @@ def build_help():
 
     html_file.write(temp)
 
-    temp = build_common_foot("../")
+    temp = ch.build_common_foot("../")
     html_file.write(temp)
 
 
@@ -1616,8 +1371,8 @@ def build_search(papers):
     extra_head += '<script src="search.js"></script>'
     extra_head += '<style> button { height:2em; font-size:1em; margin-left:5px; } input#search { width:50%; }</style>'
 
-    temp = build_common_head("../", extra_head)
-    temp += build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Search</p>', "../")
+    temp = ch.build_common_head("../", extra_head)
+    temp += ch.build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Search</p>', "../")
 
     temp += '<h1 id="pagetitle">Search</h1>'
 
@@ -1677,7 +1432,7 @@ def build_search(papers):
 
     html_file.write(temp)
 
-    temp = build_common_foot("../")
+    temp = ch.build_common_foot("../")
     html_file.write(temp)
 
 
