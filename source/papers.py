@@ -130,21 +130,20 @@ analyse.dates(papers)
 
 ###########################################################
 # Make some web pages
-web_pages.build_htmlv2.build_css_colour_scheme()
-age_weighted_citations, age_weighted_citations_data = web_pages.build_htmlv2.build_home(papers)
-web_pages.build_htmlv2.build_papers(papers)
-web_pages.build_htmlv2.build_mesh(papers)
-web_pages.build_htmlv2.build_country_map(papers)
-web_pages.build_htmlv2.build_metrics(papers, age_weighted_citations, age_weighted_citations_data, config.metrics_study_start_year, config.metrics_study_current_year)
-web_pages.build_htmlv2.build_abstract_word_cloud(papers_with_abstract_text)
-web_pages.build_htmlv2.build_keyword_word_cloud(papers_with_keywords)
-web_pages.build_htmlv2.build_UK_institute_map(papers)
-web_pages.build_htmlv2.build_help()
-web_pages.build_htmlv2.build_search(papers)
+#web_pages.build_htmlv2.build_css_colour_scheme()
+#age_weighted_citations, age_weighted_citations_data = web_pages.page_home.build_home(papers)
+#web_pages.build_htmlv2.build_papers(papers)
+#web_pages.build_htmlv2.build_mesh(papers)
+#web_pages.build_htmlv2.build_metrics(papers, age_weighted_citations, age_weighted_citations_data, config.metrics_study_start_year, config.metrics_study_current_year)
+#web_pages.build_htmlv2.build_abstract_word_cloud(papers_with_abstract_text)
+#web_pages.build_htmlv2.build_keyword_word_cloud(papers_with_keywords)
+#web_pages.build_htmlv2.build_help()
+#web_pages.build_htmlv2.build_search(papers)
 
+web_pages.build_htmlv2.build_all(papers, papers_with_keywords, papers_with_abstract_text)
 
-if config.WEB_PAGE_SHOW_ZOTERO_TAGS:
-    web_pages.build_htmlv2.build_zotero_tags(papers)
+#if config.WEB_PAGE_SHOW_ZOTERO_TAGS:
+#    web_pages.build_htmlv2.build_zotero_tags(papers)
 
 # Time Log
 end_time = time.time()
