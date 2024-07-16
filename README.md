@@ -69,6 +69,7 @@ The example instances of the output at [https://ollybutters.github.io/puma_web](
 - Tom Burton, University of Bristol
 - Amran Ismail, University of Bristol
 - Sue Thompson, Newcastle University
+- Katie Ward, University of Liverpool
 
 ## Funding
 
