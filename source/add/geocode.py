@@ -1,11 +1,9 @@
-#!/usr/bin/env python3
 
 import csv
 import os.path
 import logging
 
 from SPARQLWrapper import SPARQLWrapper, JSON
-
 
 import config.config as config
 
@@ -28,17 +26,12 @@ def geocode(papers):
             institute_coordinates_backup[row[0]]['lat'] = row[1]
             institute_coordinates_backup[row[0]]['long'] = row[2]
             try:
-                institute_coordinates_backup[row[0]]['town'] = row[3]
-            except:
-                pass
-
-            try:
-                institute_coordinates_backup[row[0]]['country'] = row[4]
-            except:
+                institute_coordinates_backup[row[0]]['country'] = row[3]
+            except Exception:
                 pass
     csvfile.close()
 
-    # Loop through the papers and attempt to find the coordinates, city name and country name
+    # Loop through the papers and attempt to find the coordinates and country name
     locations_found = 0
 
     for this_paper in papers:
@@ -49,31 +42,29 @@ def geocode(papers):
         try:
             clean_institute = this_paper['clean']['location']['clean_institute']
             logging.info(clean_institute)
-        except:
-            logging.warn('No clean_institute for ' + this_paper['IDs']['hash'])
+        except Exception:
+            logging.warning('No clean_institute for %s', this_paper['IDs']['hash'])
             continue
 
         # Check if the location data is already cached.
         # Each cached location is held in a separate file
         try:
             clean_institute = this_paper['clean']['location']['clean_institute']
-            logging.info(str(this_paper['IDs']['hash']) + " geocode: " + clean_institute)
+            logging.info("%s geocode: %s", str(this_paper['IDs']['hash']), clean_institute)
             if os.path.isfile(config.cache_dir + "/geodata/" + clean_institute):
                 # The location has a cache file. load cached data.
-                cache_file = open(config.cache_dir + "/geodata/" + clean_institute, "r")
+                cache_file = open(config.cache_dir + "/geodata/" + clean_institute, "r", encoding='utf8')
                 data = cache_file.read()
                 split = data.split("#")
 
                 this_paper['clean']['location']['latitude'] = split[0]
                 this_paper['clean']['location']['longitude'] = split[1]
                 this_paper['clean']['location']['country'] = split[2]
-                this_paper['clean']['location']['postal_town'] = split[3]
 
                 locations_found += 1
                 logging.info("Added via cache file.")
                 continue
-
-        except:
+        except Exception:
             pass
 
         # Look up clean institute coordinates on wikidata
@@ -120,54 +111,51 @@ def geocode(papers):
                 # Country first
                 try:
                     this_paper['clean']['location']['country'] = data['results']['bindings'][0]['countryLabel']['value']
-                except:
+                except Exception:
                     pass
 
                 # Try the main location
                 try:
                     this_paper['clean']['location']['latitude'] = data['results']['bindings'][0]['mainLat']['value']
                     this_paper['clean']['location']['longitude'] = data['results']['bindings'][0]['mainLon']['value']
-                except:
+                except Exception:
                     # Fall back to the HQ location if there is one
                     try:
                         this_paper['clean']['location']['latitude'] = data['results']['bindings'][0]['hqLat']['value']
                         this_paper['clean']['location']['longitude'] = data['results']['bindings'][0]['hqLon']['value']
-                    except:
-                        logging.info("No suitable coordinates found from wikidata. (" + clean_institute + ")")
+                    except Exception:
+                        logging.info("No suitable coordinates found from wikidata. (%s)", clean_institute)
                         print("No suitable coordinates found from wikidata. (" + clean_institute + ")")
 
                 try:
-                    # print(this_paper['clean']['location']['country'])
                     logging.info(this_paper['clean']['location']['country'])
-                except:
+                except Exception:
                     pass
 
                 # If I can print them then they must exist
                 try:
-                    # print(this_paper['clean']['location']['latitude'])
                     logging.info(this_paper['clean']['location']['latitude'])
-                    # print(this_paper['clean']['location']['longitude'])
                     logging.info(this_paper['clean']['location']['longitude'])
                     found_coords = True
-                except:
+                except Exception:
                     pass
 
             except Exception as e:
                 # Problem with the wikidata query
-                logging.error("Wikidata query failed for " + this_paper['clean']['location']['clean_institute'] + str(e))
+                logging.error("Wikidata query failed for %s %s",  this_paper['clean']['location']['clean_institute'], str(e))
                 print("Error with wikidata query")
                 print(e)
-        except:
+        except Exception:
             pass
 
         # Cache the data that has just been collected
         try:
-            if 'latitude' in this_paper['clean']['location'] and 'longitude' in this_paper['clean']['location'] and 'country' in this_paper['clean']['location'] and 'postal_town' in this_paper['clean']['location']:
-                cache_file = open(config.cache_dir + "/geodata/" + clean_institute, "w")
-                cache_file.write(this_paper['clean']['location']['latitude'] + "#" + this_paper['clean']['location']['longitude'] + "#" + this_paper['clean']['location']['country'] + "#" + this_paper['clean']['location']['postal_town'])
+            if 'latitude' in this_paper['clean']['location'] and 'longitude' in this_paper['clean']['location'] and 'country' in this_paper['clean']['location']:
+                cache_file = open(config.cache_dir + "/geodata/" + clean_institute, "w", encoding='utf8')
+                cache_file.write(this_paper['clean']['location']['latitude'] + "#" + this_paper['clean']['location']['longitude'] + "#" + this_paper['clean']['location']['country'])
                 cache_file.close()
-        except:
-            logging.warn("Problem caching geocode data for: " + clean_institute)
+        except Exception:
+            logging.warning("Problem caching geocode data for: %s", clean_institute)
             print("Problem caching geocode data for: " + clean_institute)
 
         # Not On Wikidata Check Backup File
@@ -177,7 +165,6 @@ def geocode(papers):
                 backup_coords = institute_coordinates_backup[this_paper['clean']['location']['clean_institute']]
                 this_paper['clean']['location']['latitude'] = str(backup_coords['lat'])
                 this_paper['clean']['location']['longitude'] = str(backup_coords['long'])
-                this_paper['clean']['location']['postal_town'] = str(backup_coords['town'])
                 this_paper['clean']['location']['country'] = str(backup_coords['country'])
 
                 print("Coordinates added from backup file.")
@@ -185,8 +172,8 @@ def geocode(papers):
                 locations_found += 1
                 found_coords = True
 
-            except:
-                logging.warn("Not in backup file either.")
+            except Exception:
+                logging.warning("Not in backup file either.")
                 print("Not in backup file either.")
 
     print("locations found: " + str(locations_found) + "/" + str(len(papers)))
