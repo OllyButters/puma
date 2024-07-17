@@ -4,7 +4,7 @@ import codecs
 
 from config import config
 from . import common_html as ch
-
+from . import utils
 
 
 ############################################################
@@ -29,7 +29,7 @@ def build_mesh(papers):
                 if this_mesh['term'] not in mesh_papers_all:
                     mesh_papers_all[this_mesh['term']] = list()
                 mesh_papers_all[this_mesh['term']].append(this_paper['IDs']['hash'])
-        except:
+        except Exception:
             pass
 
     # Build a dict of ONLY MAJOR mesh headings with a list of each pmid in each
@@ -48,7 +48,7 @@ def build_mesh(papers):
                     mesh_papers_major[this_mesh['term']].append(this_paper['IDs']['hash'])
 
             data_from_count += got_major_mesh
-        except:
+        except Exception:
             pass
 
     # Build a dict of OTHER keywords with a list of each hash (paper) that has this keyword
@@ -60,7 +60,7 @@ def build_mesh(papers):
                 if this_keyword not in other_keywords:
                     other_keywords[this_keyword] = list()
                 other_keywords[this_keyword].append(this_paper['IDs']['hash'])
-        except:
+        except Exception:
             pass
 
     # Merge the MESH and other keywords together. Note that there are a load of
@@ -142,13 +142,11 @@ def _make_keywords_pages(papers, keywords, url_part):
     # Make an HTML page for ALL MESH terms
     for this_keyword in keywords:
 
-
-        # Some keywords have a / in them, which messes with URL and file paths. Just swap it out for a - here.        
+        # Some keywords have a / in them, which messes with URL and file paths. Just swap it out for a - here.
         if this_keyword.find("/") > 0:
             this_keyword_safe = this_keyword.replace("/", "-")
         else:
             this_keyword_safe = this_keyword
-
 
         if not os.path.exists(config.html_dir + '/' + url_part + '/' + this_keyword_safe):
             os.mkdir(config.html_dir + '/' + url_part + '/' + this_keyword_safe)
@@ -182,10 +180,10 @@ def _make_keywords_pages(papers, keywords, url_part):
                         # add the citations for this paper to the year running total
                         try:
                             summary[this_year]['citations'] += int(this_paper['clean']['citations']['scopus']['count'])
-                        except:
+                        except Exception:
                             pass
 
-                    except:
+                    except Exception:
                         pass
 
                 # Add in some zeros when there is no papers for this year
@@ -195,7 +193,7 @@ def _make_keywords_pages(papers, keywords, url_part):
                 for this_year in range(int(first_year), int(last_year) + 1):
                     try:
                         summary[str(this_year)]['num_papers']
-                    except:
+                    except Exception:
                         summary[str(this_year)] = {'num_papers': 0, 'citations': 0}
 
             # Print data to file
@@ -244,7 +242,8 @@ def _make_keywords_pages(papers, keywords, url_part):
             fo.write(temp)
 
             # Build the text needed for each paper
-            for this_paper in keywords[this_keyword]:
+            #for this_paper in keywords[this_keyword]:
+            for this_paper in utils.sort_hashes_by(papers, keywords[this_keyword], 'year'):
 
                 try:
                     # Get paper object
@@ -262,11 +261,10 @@ def _make_keywords_pages(papers, keywords, url_part):
 
                     fo.write(html)
 
-                except:
+                except Exception:
                     pass
 
             temp = ch.build_common_foot("../../")
             fo.write(temp)
 
         fo.close()
-

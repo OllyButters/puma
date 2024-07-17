@@ -28,7 +28,7 @@ def build_zotero_tags(papers):
                 if this_tag['tag'] not in zotero_tags:
                     zotero_tags[this_tag['tag']] = list()
                 zotero_tags[this_tag['tag']].append(this_paper['IDs']['hash'])
-        except:
+        except Exception:
             pass
 
 
@@ -77,10 +77,10 @@ def build_zotero_tags(papers):
                         # add the citations for this paper to the year running total
                         try:
                             summary[this_year]['citations'] += int(this_paper['clean']['citations']['scopus']['count'])
-                        except:
+                        except Exception:
                             pass
 
-                    except:
+                    except Exception:
                         pass
 
             # Add in some zeros when there is no papers for this year
@@ -90,7 +90,7 @@ def build_zotero_tags(papers):
             for this_year in range(int(first_year), int(last_year) + 1):
                 try:
                     summary[str(this_year)]['num_papers']
-                except:
+                except Exception:
                     summary[str(this_year)] = {'num_papers': 0, 'citations': 0}
 
             # Save this data so we can use it for the summary tag page
@@ -167,7 +167,7 @@ def build_zotero_tags(papers):
 
                     fo.write(html)
 
-                except:
+                except Exception:
                     pass
 
             html = ch.build_common_foot("../../")
