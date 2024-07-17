@@ -5,8 +5,9 @@ def sort_hashes_by(papers, hashes, sort_by):
     temp_papers = {}
     for this_paper in papers:
         if this_paper['IDs']['hash'] in hashes:
+            # sort by year, then first author
             if sort_by == 'year':
-                temp_papers[this_paper['IDs']['hash']] = (this_paper['clean']['clean_date']['year'])
+                temp_papers[this_paper['IDs']['hash']] = (str(this_paper['clean']['clean_date']['year'])+str(this_paper['clean']['first_author'])).lower()
     sorted_hashes = [k for k, v in sorted(temp_papers.items(), key=lambda item: item[1], reverse=True)]
     return sorted_hashes
 
