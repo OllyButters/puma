@@ -22,7 +22,7 @@ def build_all(papers, papers_with_keywords, papers_with_abstract_text):
     page_help.build_help()
     page_search.build_search(papers)
     page_css.build_css_colour_scheme()
-    page_metrics.build_metrics(papers, age_weighted_citations, age_weighted_citations_data, config.metrics_study_start_year, config.metrics_study_current_year)
+    page_metrics.build_metrics(papers, age_weighted_citations, age_weighted_citations_data)
 
     if config.WEB_PAGE_SHOW_ZOTERO_TAGS:
         page_tags.build_zotero_tags(papers)

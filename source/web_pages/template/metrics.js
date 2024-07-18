@@ -37,7 +37,8 @@ google.load("visualization", "1", {packages:["corechart"]});
         var options = {
           title: 'Number of Papers for High Citation Counts',
           colors: [primary_colour],
-	        hAxis: {title:"Number of Citations"}
+	        hAxis: {title:"Number of Citations"},
+          vAxis: {format: '0'}
         };
         var chart = new google.visualization.ColumnChart(document.getElementById('papers_per_high_citation_count_div'));
         chart.draw(data, options);

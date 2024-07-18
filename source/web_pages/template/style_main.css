@@ -153,7 +153,7 @@ table.citation_table th {
 
 /* --- Metrics --- */
 div#content div.metric {
-  width:calc( 100%/4 - 1px);
+  /*width:calc( 100%/4 - 1px);*/
   /*height:calc( 25vh - 1px);*/
   height: 200px;
   border-top: 1px solid #dedcd2;
@@ -166,15 +166,25 @@ div#content div.metric {
   transition: background 500ms;
 }
 
+div.metric:nth-child(-n + 4) {
+  width:calc( 100%/4 - 1px);
+}
+
+div.metric:nth-child(n + 5) {
+  width:calc( 100%/3 - 1px);
+}
+
+
+/*
 div#content div.metric:nth-child(8) {
   border-bottom: 1px solid #dedcd2;
   border-right: 1px solid #dedcd2;
-  width:calc( 100%/4 - 2px);
+  width:calc( 100%/3 - 2px);
 }
 
 div#content div.metric:nth-child(4) {
   border-right: 1px solid #dedcd2;
-  width:calc( 100%/4 - 2px);
+  width:calc( 100%/3 - 2px);
 }
 
 div#content div.metric:nth-child(5),
@@ -182,6 +192,7 @@ div#content div.metric:nth-child(6),
 div#content div.metric:nth-child(7) {
   border-bottom: 1px solid #dedcd2;
 }
+*/
 
 div#content div.metric:hover {
   background:#c9002f;
@@ -193,6 +204,7 @@ div#content div.metric div.metric_name {
   top:calc( 25vh/2 - 45px );*/
   width:100%;
   transition: color 500ms, top 500ms;
+  padding-top: 20px;
 }
 
 div#content div.metric:hover div.metric_name {
@@ -201,7 +213,7 @@ div#content div.metric:hover div.metric_name {
 }
 
 div#content div.metric div.metric_value {
-  font-size:40px;
+  font-size:50px;
   /*position: absolute;
   top:calc( 25vh/2 - 40px + 30px );*/
   width:100%;

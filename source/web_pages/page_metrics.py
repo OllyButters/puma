@@ -7,7 +7,7 @@ from . import common_html as ch
 ###########################################################
 # Build metrics page
 ###########################################################
-def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, study_start_year, study_current_year):
+def build_metrics(papers, age_weighted_citation, age_weighted_citation_data):
 
     print("\n###HTML - Metrics###")
 
@@ -19,9 +19,6 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     total_citations_data_from_count = 0
     paper_citations = []
     c20_index = 0
-
-    study_duration = study_current_year - study_start_year
-
     c_index_bound = 100
 
     for this_paper in papers:
@@ -35,7 +32,7 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
             # increment c20-index if more that 20 citations
             if cit >= c_index_bound:
                 c20_index += 1
-        except:
+        except Exception:
             pass
 
     # We might not have any citations - e.g. if quotas hit.
@@ -44,28 +41,14 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     else:
         average_citations = 0
 
-    i20_index_per_year = float(c20_index)/float(study_duration)
-
-    # cal h-index
+    # calculate h-index
     paper_citations.sort(reverse=True)
     h_index = 0
-    # cits_so_far = 0
 
     for x in range(0, len(paper_citations)):
         if x > paper_citations[x]:
             break
         h_index = x
-        # cits_so_far += paper_citations[x]
-
-    # cal g-index
-    g_index = 0
-    cits_so_far = 0
-
-    for x in range(0, len(paper_citations)):
-        cits_so_far += paper_citations[x]
-        if cits_so_far < x * x:
-            break
-        g_index = x
 
     # NUMBER OF PAPERS PER CITATION COUNT
     citation_number_limit = 100
@@ -81,7 +64,7 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
             n_cits = int(this_paper['clean']['citations']['scopus']['count'])
             if n_cits > max_citations:
                 max_citations = n_cits
-        except:
+        except Exception:
             pass
 
     # Create a array of zeros of length max_citations + 1
@@ -94,7 +77,7 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
             n_cits = int(this_paper['clean']['citations']['scopus']['count'])
             list_of_citation_counts.append(n_cits)
             num_papers_citations[n_cits] += 1
-        except:
+        except Exception:
             pass
 
     # Get the median number of citations
@@ -111,21 +94,21 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
 
         # colour used to mark average value
         colour = ""
-        if this_n_citations == round(average_citations, 0):
-            colour = "#" + config.project_details['colour_hex_secondary']
-        if this_n_citations == median_citations:
-            colour = "green"
+        #if this_n_citations == round(average_citations, 0):
+        #    colour = "#" + config.project_details['colour_hex_secondary']
+        #if this_n_citations == median_citations:
+        #    colour = "green"
 
         try:
             n_papers_with_x_citations += ",[" + str(this_n_citations) + "," + str(num_papers_citations[this_n_citations]) + ",'" + colour + "']"
-        except:
+        except Exception:
             n_papers_with_x_citations += ",[" + str(this_n_citations) + ",0,'" + colour + "']"
 
     n_papers_with_x_citations += "]);"
 
     # High Citations Range, but only if they are above the citation_number_limit
     plot_high_citation_chart = False
-    if(max_citations >= citation_number_limit):
+    if max_citations >= citation_number_limit:
         plot_high_citation_chart = True
         n_papers_with_x_citations += "var papers_per_high_citation_count = ([['Number of Citations (Scopus)','Number of Papers',{ role: 'style' }]"
         for this_bin in range(0, round((max_citations - citation_number_limit)/citation_bin_size) + 1):
@@ -140,7 +123,7 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
             for n in range(bin_start, bin_end):
                 try:
                     num_papers_in_bin += num_papers_citations[n]
-                except:
+                except Exception:
                     pass
 
             n_papers_with_x_citations += ",['" + str(bin_start) + "-" + str(bin_end) + "'," + str(num_papers_in_bin) + ",'" + colour + "']"
@@ -168,7 +151,7 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
 
     # Output Metrics
     temp += "<div class='metric_con'>"
-    
+
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>Total Publications</div>"
     temp += "<div class='metric_value'>" + utils.intWithCommas(total_publications) + "</div>"
@@ -180,21 +163,28 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     temp += "<div class='metric_name'>Total Citations</div>"
     temp += "<div class='metric_value'>" + utils.intWithCommas(total_citations) + "</div>"
     temp += "<div class='metric_stats_data'>Data From " + utils.intWithCommas(total_citations_data_from_count) + " Publications</div>"
-    temp += "<div class='metric_description'>This is the number of citations to all publications for the study.</div>"
+    temp += "<div class='metric_description'>This is the number of citations to all publications for the project.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>Mean Citations Per Publication</div>"
-    temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(average_citations, 2))) + "</div>"
+    temp += "<div class='metric_value'>" + str("{0:.1f}".format(round(average_citations, 2))) + "</div>"
     temp += "<div class='metric_stats_data'>Data From " + utils.intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>The total number of citations divided by the total number of publications.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
     temp += "<div class='metric_name'>Age-weighted Mean Citations Per Publication</div>"
-    temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(age_weighted_citation, 3))) + "</div>"
+    temp += "<div class='metric_value'>" + str("{0:.1f}".format(round(age_weighted_citation, 3))) + "</div>"
     temp += "<div class='metric_stats_data'>Data From " + utils.intWithCommas(age_weighted_citation_data) + " Publications</div>"
     temp += "<div class='metric_description'>Age-weighted Mean Citations Per Publication.</div>"
+    temp += "</div>"
+
+    temp += "<div class='metric'>"
+    temp += "<div class='metric_name'>Median Citations</div>"
+    temp += "<div class='metric_value'>" + str(median_citations) + "</div>"
+    temp += "<div class='metric_stats_data'>Data From " + utils.intWithCommas(total_citations_data_from_count) + " Publications</div>"
+    temp += "<div class='metric_description'>The median number of citations for the project.</div>"
     temp += "</div>"
 
     temp += "<div class='metric'>"
@@ -205,28 +195,13 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
     temp += "</div>"
 
     temp += "<div class='metric'>"
-    temp += "<div class='metric_name'>g-index</div>"
-    temp += "<div class='metric_value'>" + str(g_index) + "</div>"
-    temp += "<div class='metric_stats_data'>Data From " + utils.intWithCommas(total_citations_data_from_count) + " Publications</div>"
-    temp += "<div class='metric_description'>The largest number n of highly cited articles for which the average number of citations is at least n.</div>"
-    temp += "</div>"
-
-
-    temp += "<div class='metric'>"
     temp += "<div class='metric_name'>c" + str(c_index_bound) + "-index</div>"
     temp += "<div class='metric_value'>" + utils.intWithCommas(c20_index) + "</div>"
     temp += "<div class='metric_stats_data'>Data From " + utils.intWithCommas(total_citations_data_from_count) + " Publications</div>"
     temp += "<div class='metric_description'>The number of publications that have at least " + str(c_index_bound) + " citations.</div>"
     temp += "</div>"
 
-    temp += "<div class='metric'>"
-    temp += "</div>"
-
     #temp += "<div class='metric'>"
-    #temp += "<div class='metric_name'>c" + str(c_index_bound) + "-index per Study Year</div>"
-    #temp += "<div class='metric_value'>" + str("{0:.2f}".format(round(i20_index_per_year, 2))) + "</div>"
-    #temp += "<div class='metric_stats_data'>Data From " + intWithCommas(total_citations_data_from_count) + " Publications</div>"
-    #temp += "<div class='metric_description'>The c" + str(c_index_bound) + "-index divided by the number of years the study has been running for.</div>"
     #temp += "</div>"
 
     temp += "</div>"
@@ -237,10 +212,10 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
 
     temp += '<div id="papers_per_year_div"></div>'
     temp += "<p style='text-align:center;'>Data from " + utils.intWithCommas(age_weighted_citation_data) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
-    
+
     temp += '<div id="papers_per_citation_count_div"></div>'
-    temp += "<div style='margin-left:auto;margin-right:auto;'><div class='average_citations' style='height:15px; width:33px; float:left; background:#" + config.project_details['colour_hex_secondary'] + "'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Mean number of citations</div></div>"
-    temp += "<div style='margin-left:auto;margin-right:auto;margin-top:5px;'><div class='average_citations' style='height:15px; width:33px; float:left; background:green'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Median number of citations</div></div>"
+    #temp += "<div style='margin-left:auto;margin-right:auto;'><div class='average_citations' style='height:15px; width:33px; float:left; background:#" + config.project_details['colour_hex_secondary'] + "'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Mean number of citations</div></div>"
+    #temp += "<div style='margin-left:auto;margin-right:auto;margin-top:5px;'><div class='average_citations' style='height:15px; width:33px; float:left; background:green'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Median number of citations</div></div>"
     temp += "<p style='text-align:center;'>Data from " + utils.intWithCommas(total_citations_data_from_count) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     if plot_high_citation_chart:
@@ -251,4 +226,3 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data, stu
 
     temp = ch.build_common_foot("../")
     html_file.write(temp)
-

@@ -8,6 +8,7 @@ from config import config
 
 SITE_SECOND_TITLE = " Publications"
 
+
 ############################################################
 # Draw Paper Function
 # This function is used in the different paper lists to
