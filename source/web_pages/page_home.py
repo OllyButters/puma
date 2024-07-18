@@ -37,17 +37,17 @@ def build_home(papers):
             # add the citations for this paper to the year running total
             try:
                 summary[this_year]['citations'] += int(this_paper['clean']['citations']['scopus']['count'])
-            except:
+            except Exception:
                 pass
 
-        except:
+        except Exception:
             try:
                 this_paper['clean']['clean_date']['year']
-            except:
+            except Exception:
                 missing_year['num_papers'] += 1
                 try:
                     missing_year['citations'] += int(this_paper['clean']['citations']['scopus']['count'])
-                except:
+                except Exception:
                     pass
 
     # Add in some zeros when there are no papers for this year
@@ -57,7 +57,7 @@ def build_home(papers):
     for this_year in range(int(first_year), int(last_year) + 1):
         try:
             summary[str(this_year)]['num_papers']
-        except:
+        except Exception:
             summary[str(this_year)] = {'num_papers': 0, 'cumulative': 0, 'citations': 0, 'cumulative_citations': 0}
 
     # Calculate the cumulative number of papers published
@@ -65,7 +65,7 @@ def build_home(papers):
         try:
             summary[this_year]['cumulative'] = summary[this_year]['num_papers']+summary[str(int(this_year)-1)]['cumulative']
             summary[this_year]['cumulative_citations'] = summary[this_year]['citations']+summary[str(int(this_year)-1)]['cumulative_citations']
-        except:
+        except Exception:
             summary[this_year]['cumulative'] = summary[this_year]['num_papers']
             summary[this_year]['cumulative_citations'] = summary[this_year]['citations']
 
