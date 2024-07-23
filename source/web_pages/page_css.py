@@ -15,7 +15,8 @@ def build_css_colour_scheme():
 
     temp += "/* h1 */"
     temp += "#pagetitle {"
-    temp += "color:#" + config.project_details['colour_hex_primary'] + ";"
+    #temp += "color:#" + config.project_details['colour_hex_primary'] + ";"
+    temp += "color:#193E72;"
     temp += "}"
 
     temp += ".maintitle a {"
@@ -38,14 +39,16 @@ def build_css_colour_scheme():
 
     temp += "/* keywords list */"
     temp += "div#content ul a {"
-    temp += "color: #" + config.project_details['colour_hex_primary'] + ";"
+    #temp += "color: #" + config.project_details['colour_hex_primary'] + ";"
+    temp += "color: #193E72;"
     temp += "}"
 
     temp += "/* Metrics Page */"
 
     temp += "div#content div.metric {"
     temp += "background:#efede9;"
-    temp += "color:#" + config.project_details['colour_hex_primary'] + ";"
+    #temp += "color:#" + config.project_details['colour_hex_primary'] + ";"
+    temp += "color: #193E72;"
     temp += "}"
 
     # Hide the description text by default
@@ -63,11 +66,17 @@ def build_css_colour_scheme():
     temp += "color:#f2f2f2;"
     temp += "}"
 
+    temp += "div#content div.metric:hover div.metric_stats_data {"
+    temp += "color:#f2f2f2;"
+    temp += "}"
+
     temp += "div#content div.metric:hover div.metric_description {"
     temp += "color:#efede9; display: block;"
     temp += "}"
 
-    temp += "a:link {color:#" + config.project_details['colour_hex_primary'] + "}"
-    temp += "a:visited {color:#" + config.project_details['colour_hex_primary'] + "}"
+    #temp += "a:link {color:#" + config.project_details['colour_hex_primary'] + "}"
+    #temp += "a:visited {color:#" + config.project_details['colour_hex_primary'] + "}"
+    temp += "a:link {color:#193E72;}"
+    temp += "a:visited {color:#193E72;}"
 
     html_file.write(temp)
