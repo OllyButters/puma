@@ -1,5 +1,6 @@
 
 from config import config
+from datetime import datetime
 from . import utils
 from . import common_html as ch
 
@@ -40,15 +41,13 @@ def build_home(papers):
             except Exception:
                 pass
 
+        # If the year is not known, add it to the missing year list
         except Exception:
+            missing_year['num_papers'] += 1
             try:
-                this_paper['clean']['clean_date']['year']
+                missing_year['citations'] += int(this_paper['clean']['citations']['scopus']['count'])
             except Exception:
-                missing_year['num_papers'] += 1
-                try:
-                    missing_year['citations'] += int(this_paper['clean']['citations']['scopus']['count'])
-                except Exception:
-                    pass
+                pass
 
     # Add in some zeros when there are no papers for this year
     years = list(summary.keys())
@@ -63,8 +62,8 @@ def build_home(papers):
     # Calculate the cumulative number of papers published
     for this_year in sorted(summary, reverse=False):
         try:
-            summary[this_year]['cumulative'] = summary[this_year]['num_papers']+summary[str(int(this_year)-1)]['cumulative']
-            summary[this_year]['cumulative_citations'] = summary[this_year]['citations']+summary[str(int(this_year)-1)]['cumulative_citations']
+            summary[this_year]['cumulative'] = summary[this_year]['num_papers'] + summary[str(int(this_year) - 1)]['cumulative']
+            summary[this_year]['cumulative_citations'] = summary[this_year]['citations'] + summary[str(int(this_year) - 1)]['cumulative_citations']
         except Exception:
             summary[this_year]['cumulative'] = summary[this_year]['num_papers']
             summary[this_year]['cumulative_citations'] = summary[this_year]['citations']
@@ -85,11 +84,11 @@ def build_home(papers):
     data_file.write(']);')
 
     # Cohort age weighted citation calculation
-    cr_current_year = float(config.metrics_study_current_year)
+    #cr_current_year = float(config.metrics_study_current_year)
+    current_year = datetime.now().year
     cr_sum = 0.0
     cr_data_from = 0
 
-    # print summary
     # Make a page with the headings on it
     html_file.write('<table>')
     html_file.write('<tr><th>Year</th><th>Number published</th><th>Cumulative</th><th>Citations* for papers published in this year</th><th>Cumulative citations* for papers published in this year</th></tr>')
@@ -98,7 +97,7 @@ def build_home(papers):
         if summary[this_year]['num_papers'] == 0:
             continue
 
-        cr_year = float(cr_current_year - float(this_year))
+        cr_year = float(current_year - float(this_year))
         if cr_year < 1:
             cr_year = 1.0
 
