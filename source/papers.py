@@ -25,6 +25,7 @@ import get.simple_collate
 from analyse import analyse
 from analyse import coverage_report
 from config import config
+import web_pages.reports
 
 __author__ = "Olly Butters, Hugh Garner, Tom Burton, Becca Wilson"
 __date__ = 16/4/2024
@@ -125,7 +126,7 @@ network = analyse.authors(papers)
 analyse.first_authors(papers)
 analyse.inst(papers)
 # analyse.mesh(papers)
-analyse.output_csv(papers)
+analyse.output_summary(papers)
 analyse.dates(papers)
 
 ###########################################################
@@ -141,6 +142,7 @@ analyse.dates(papers)
 #web_pages.build_htmlv2.build_search(papers)
 
 web_pages.build_htmlv2.build_all(papers, papers_with_keywords, papers_with_abstract_text)
+web_pages.reports.copy_reports()
 
 #if config.WEB_PAGE_SHOW_ZOTERO_TAGS:
 #    web_pages.build_htmlv2.build_zotero_tags(papers)

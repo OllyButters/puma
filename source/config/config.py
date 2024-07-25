@@ -67,14 +67,15 @@ try:
     logging_loglevel = config.get('logging', 'loglevel', fallback = 'DEBUG')
 
     # Metrics
-    metrics_study_start_year = int(config.get('metrics', 'metrics_study_start_year'))
-    metrics_study_current_year = int(config.get('metrics', 'metrics_study_current_year'))
+    #metrics_study_start_year = int(config.get('metrics', 'metrics_study_start_year'))
+    #metrics_study_current_year = int(config.get('metrics', 'metrics_study_current_year'))
 
     # Pages
     WEB_PAGE_SHOW_INSTITUTE_UK_MAP = config.getboolean('pages', 'web_page_show_institute_UK_map', fallback = True)
     WEB_PAGE_SHOW_INSTITUTE_COUNTRY_MAP = config.getboolean('pages', 'web_page_show_institute_country_map', fallback = True)
     WEB_PAGE_SHOW_ZOTERO_TAGS = config.getboolean('pages', 'web_page_show_zotero_tags', fallback = True)
     web_page_is_in_iframe = config.getboolean('pages', 'web_page_is_in_iframe', fallback = False)
+    WEB_PAGE_REPORTS = config.get('pages', 'web_page_reports', fallback = None)
 
 except Exception as e:
     print('Problem with the settings file')

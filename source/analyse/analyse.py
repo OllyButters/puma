@@ -514,22 +514,22 @@ def mesh(papers):
 ################################################################################
 # output a csv file with some general info in
 ################################################################################
-def output_csv(papers):
+def output_summary(papers):
 
     print('\n###Outputting CSV file###')
-    with open(config.data_dir + '/all.csv', 'w') as csvfile:
+    with open(config.data_dir + '/summary.csv', 'w') as csvfile:
         all_file = csv.writer(csvfile)
         all_file.writerow(['year', 'authors', 'title', 'first_author', 'journal', 'citations', 'tags'])
 
         for this_paper in papers:
             try:
                 title = this_paper['clean']['title']
-            except:
+            except Exception:
                 title = '???'
 
             try:
                 first_author = this_paper['clean']['full_author_list'][0]['family']
-            except:
+            except Exception:
                 first_author = '???'
 
             try:
@@ -537,22 +537,22 @@ def output_csv(papers):
                 author_string = ''
                 for this_author in all_authors:
                     author_string = author_string + this_author['family'] + ', '
-            except:
+            except Exception:
                 author_string = '???'
 
             try:
                 journal = this_paper['clean']['journal']['journal_name']
-            except:
+            except Exception:
                 journal = '???'
 
             try:
                 citations = this_paper['clean']['citations']['scopus']['count']
-            except:
+            except Exception:
                 citations = '???'
 
             try:
                 year = this_paper['clean']['clean_date']['year']
-            except:
+            except Exception:
                 year = '???'
 
             try:
@@ -560,13 +560,13 @@ def output_csv(papers):
                 tag_string = ''
                 for this_tag in this_paper['clean']['zotero_tags']:
                     tags.append(this_tag['tag'])
-                tag_string = ', '.join(tags)
-            except:
+                tag_string = ' | '.join(tags)
+            except Exception:
                 tag_string = '???'
 
             try:
                 all_file.writerow([year, author_string, title, first_author, journal, citations, tag_string])
-            except:
+            except Exception:
                 pass
 
 
