@@ -21,7 +21,7 @@ def draw_paper(this_paper, nav_path="./"):
     try:
         if this_paper['IDs']['DOI']:
             html += '<div style="float:right; width:64px; height:64px;" data-badge-popover="left" data-badge-type="donut" data-doi="' + this_paper['IDs']['DOI'] + '" data-hide-no-mentions="true" class="altmetric-embed"></div>'
-    except:
+    except Exception:
         pass
 
     # Paper title
@@ -34,7 +34,7 @@ def draw_paper(this_paper, nav_path="./"):
         # Some people don't actually have initials. eg wraight in pmid:18454148
         try:
             authors.append(this_author['family'] + ', ' + this_author['given'])
-        except:
+        except Exception:
             pass
             #logging.debug('This author dropped from author list on webpage for some reason: ' + str(this_author))
 
@@ -44,25 +44,25 @@ def draw_paper(this_paper, nav_path="./"):
     try:
         if this_paper['clean']['journal']['journal_name'] != "":
             html += this_paper['clean']['journal']['journal_name']
-    except:
+    except Exception:
         pass
 
     try:
         if this_paper['clean']['journal']['volume'] != "":
             html += ', Volume ' + this_paper['clean']['journal']['volume']
-    except:
+    except Exception:
         pass
 
     try:
         if this_paper['clean']['journal']['issue'] != "":
             html += ', Issue ' + this_paper['clean']['journal']['issue']
-    except:
+    except Exception:
         pass
 
     try:
         if this_paper['clean']['clean_date']['year'] != "":
             html += " (" + str(this_paper['clean']['clean_date']['year']) + ")"
-    except:
+    except Exception:
         pass
     
     html += '<br/>'
@@ -71,14 +71,14 @@ def draw_paper(this_paper, nav_path="./"):
     try:
         if this_paper['IDs']['PMID']:
             html += 'PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/' + str(this_paper['IDs']['PMID'])+'" target="_blank">' + str(this_paper['IDs']['PMID']) + '</a>&nbsp;'
-    except:
+    except Exception:
         pass
 
     # DOI
     try:
         if this_paper['IDs']['DOI']:
             html += 'DOI: <a href="https://doi.org/' + this_paper['IDs']['DOI'] + '" target="_blank">' + this_paper['IDs']['DOI'] + '</a>&nbsp;'
-    except:
+    except Exception:
         pass
 
     # Citation Counts and Sources
@@ -93,14 +93,13 @@ def draw_paper(this_paper, nav_path="./"):
                     html += '<a href="' + this_link['@href'] + '" target="_blank">' + str(this_paper['clean']['citations']['scopus']['count']) + '</a> (Scopus)'
                 else:
                     html += '-'
-    except:
+    except Exception:
         try:
             html += str(this_paper['clean']['citations']['scopus']['count']) + ' (Scopus)'
-        except:
+        except Exception:
             html += '-'
 
     # Tags
-    # 
     try:
         if len(this_paper['clean']['zotero_tags']) > 0:
             html += '<br/>Tags: '
@@ -108,7 +107,7 @@ def draw_paper(this_paper, nav_path="./"):
             for this_tag in this_paper['clean']['zotero_tags']:
                 html_tags.append('<a href="' + nav_path + 'tags/' + this_tag['tag'] + '/index.html">' + this_tag['tag'] + '</a>')
             html += '&nbsp;|&nbsp;'.join(html_tags)
-    except:
+    except Exception:
         pass
 
     html += '</div>'
@@ -156,7 +155,7 @@ def build_common_body(breadcrumb, nav_path):
 
     if os.path.isfile(config.config_dir + '/' + config.project_details['header_institution_logo_filename']):
         shutil.copy(config.config_dir + '/' + config.project_details['header_institution_logo_filename'], config.html_dir + '/' + config.project_details['header_institution_logo_filename'])
-        html += '<div id="main-logo"><a accesskey="1" title="' + config.project_details['header_institution_name'] + '" href="' + config.project_details['header_institution_url'] + '"><img src="' + nav_path + config.project_details['header_institution_logo_filename'] + '" alt="Institution logo"/></a></div>'
+        html += '<div id="main-logo"><a accesskey="1" title="' + config.project_details['header_institution_name'] + '" href="' + config.project_details['header_institution_url'] + '"><img id="main-logo-img" src="' + nav_path + config.project_details['header_institution_logo_filename'] + '" alt="Institution logo"/></a></div>'
 
     html += "<div class='maintitle' id='maintitle1'>"
     html += "<span id='title1'><a href='" + nav_path + "index.html'>" + config.project_details['name'] + " - " + SITE_SECOND_TITLE + "</a></span>"
