@@ -4,18 +4,18 @@ from . import common_html as ch
 ###########################################################
 # Help Page
 ###########################################################
-def build_help():
+def build_about():
 
-    print("\n###HTML - Help/Information page###")
+    print("\n###HTML - about page###")
 
-    html_file = open(config.html_dir + '/help/index.html', 'w', encoding='utf-8')
+    html_file = open(config.html_dir + '/about/index.html', 'w', encoding='utf-8')
 
     # # Put html together for this page
 
     temp = ch.build_common_head("../", "")
-    temp += ch.build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; Information</p>', "../")
+    temp += ch.build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; About</p>', "../")
 
-    temp += '<h1 id="pagetitle">Information</h1>'
+    temp += '<h1 id="pagetitle">About</h1>'
 
     temp += '<ul>'
     temp += '<li><a href="#where_does_the_data_come_from">Where does the data come from?</a></li>'
