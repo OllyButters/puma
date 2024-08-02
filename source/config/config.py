@@ -9,7 +9,7 @@ print('Root directory = ' + root_dir)
 
 
 # Parse all the config in the settings.ini file and put them into a global variable
-# these will be accessible via config.scopus_api_key in all the other modules
+# these will be accessible via e.g. config.scopus_api_key in all the other modules
 # where they have import config.config as config
 
 # See if there is a config file specified from the command line, if not then
@@ -72,6 +72,7 @@ try:
     WEB_PAGE_SHOW_ZOTERO_TAGS = config.getboolean('pages', 'web_page_show_zotero_tags', fallback = True)
     web_page_is_in_iframe = config.getboolean('pages', 'web_page_is_in_iframe', fallback = False)
     WEB_PAGE_REPORTS = config.get('pages', 'web_page_reports', fallback = None)
+    WEB_PAGE_PROJECT_ABOUT_HTML_FILE = config.get('pages', 'web_page_project_about_html_file', fallback = None)
 
 except Exception as e:
     print('Problem with the settings file')

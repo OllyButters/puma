@@ -20,6 +20,7 @@ def build_all(papers, papers_with_keywords, papers_with_abstract_text):
     page_wordclouds.build_abstract_word_cloud(papers_with_abstract_text)
     page_keywords.build_mesh(papers)
     page_about.build_about()
+    page_about.build_about_study()
     page_search.build_search(papers)
     page_css.build_css_colour_scheme()
     page_metrics.build_metrics(papers, age_weighted_citations, age_weighted_citations_data)

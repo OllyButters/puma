@@ -170,6 +170,10 @@ def build_common_body(breadcrumb, nav_path):
     html += '<ul class="navgroup">'
     html += '<li><a href="' + nav_path + 'index.html">Home</a></li>'
     html += '<li><a href="' + nav_path + 'about/index.html">About</a></li>'
+    if config.WEB_PAGE_PROJECT_ABOUT_HTML_FILE is not None:
+        html += '<li><a href="' + nav_path + 'about/project.html">About project</a></li>'
+
+
     html += '<li><a href="' + nav_path + 'search/index.html">Search</a></li>'
 
     if config.WEB_PAGE_SHOW_ZOTERO_TAGS:

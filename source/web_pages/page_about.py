@@ -1,8 +1,10 @@
+import logging
+import os
 from config import config
 from . import common_html as ch
 
 ###########################################################
-# Help Page
+# About Page
 ###########################################################
 def build_about():
 
@@ -88,3 +90,35 @@ def build_about():
 
     temp = ch.build_common_foot("../")
     html_file.write(temp)
+
+###########################################################
+# About study Page
+###########################################################
+def build_about_study():
+
+    print("\n###HTML - about page###")
+
+    if config.WEB_PAGE_PROJECT_ABOUT_HTML_FILE is not None:
+
+        if not os.path.isfile(config.config_dir + '/' + config.WEB_PAGE_PROJECT_ABOUT_HTML_FILE):
+            logging.error("The file " + config.WEB_PAGE_PROJECT_ABOUT_HTML_FILE + " does not exist.")
+            return
+
+        with open(config.config_dir + '/' + config.WEB_PAGE_PROJECT_ABOUT_HTML_FILE, 'r', encoding='utf-8') as input_html_file:
+            input_html = input_html_file.read()
+
+        output_html_file = open(config.html_dir + '/about/project.html', 'w', encoding='utf-8')
+        
+        # # Put html together for this page
+
+        temp = ch.build_common_head("../", "")
+        temp += ch.build_common_body('<p id="breadcrumbs"><a href="../index.html">Home</a> &gt; About the project</p>', "../")
+
+        temp += '<h1 id="pagetitle">About the project</h1>'
+
+        temp += input_html
+
+        output_html_file.write(temp)
+
+        temp = ch.build_common_foot("../")
+        output_html_file.write(temp)
