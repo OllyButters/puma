@@ -96,19 +96,18 @@ def build_about():
 ###########################################################
 def build_about_study():
 
-    print("\n###HTML - about page###")
+    print("\n###HTML - about project page###")
 
     if config.WEB_PAGE_PROJECT_ABOUT_HTML_FILE is not None:
 
         if not os.path.isfile(config.config_dir + '/' + config.WEB_PAGE_PROJECT_ABOUT_HTML_FILE):
-            logging.error("The file " + config.WEB_PAGE_PROJECT_ABOUT_HTML_FILE + " does not exist.")
+            logging.error("The file %s does not exist.", config.WEB_PAGE_PROJECT_ABOUT_HTML_FILE)
             return
 
         with open(config.config_dir + '/' + config.WEB_PAGE_PROJECT_ABOUT_HTML_FILE, 'r', encoding='utf-8') as input_html_file:
             input_html = input_html_file.read()
 
         output_html_file = open(config.html_dir + '/about/project.html', 'w', encoding='utf-8')
-        
         # # Put html together for this page
 
         temp = ch.build_common_head("../", "")
