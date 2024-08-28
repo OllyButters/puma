@@ -100,15 +100,16 @@ def draw_paper(this_paper, nav_path="./"):
             html += '-'
 
     # Tags
-    try:
-        if len(this_paper['clean']['zotero_tags']) > 0:
-            html += '<br/>Tags: '
-            html_tags = []
-            for this_tag in this_paper['clean']['zotero_tags']:
-                html_tags.append('<a href="' + nav_path + 'tags/' + this_tag['tag'] + '/index.html">' + this_tag['tag'] + '</a>')
-            html += '&nbsp;|&nbsp;'.join(html_tags)
-    except Exception:
-        pass
+    if config.WEB_PAGE_SHOW_ZOTERO_TAGS:
+        try:
+            if len(this_paper['clean']['zotero_tags']) > 0:
+                html += '<br/>Tags: '
+                html_tags = []
+                for this_tag in this_paper['clean']['zotero_tags']:
+                    html_tags.append('<a href="' + nav_path + 'tags/' + this_tag['tag'] + '/index.html">' + this_tag['tag'] + '</a>')
+                html += '&nbsp;|&nbsp;'.join(html_tags)
+        except Exception:
+            pass
 
     html += '</div>'
 
