@@ -25,6 +25,7 @@ cmuh.org.tw,China Medical University Hospital
 durham.ac.uk,Durham University
 dartmouth.edu,Dartmouth College
 edgehill.ac.uk,Edge Hill University
+ecu.edu.au,Edith Cowan University
 ex.ac.uk,University of Essex
 ehesp.fr,"EHESP"
 einstein.yu.edu,Albert Einstein College of Medicine
@@ -54,6 +55,7 @@ lrz.tum.de,Technical University of Munich
 lse.ac.uk,London School of Economics and Political Science
 lshtm.ac.uk,London School of Hygiene & Tropical Medicine
 leedsmh.nhs.uk,Leeds Community Healthcare NHS Trust
+mcgill.ca,McGill University
 nccs.com.sg,"National Cancer Centre, Singapore"
 nida.nih.gov,National Institute on Drug Abuse
 niehs.nih.gov,National Institute of Environmental Health Sciences
@@ -91,12 +93,14 @@ uib.no,University of Bergen
 umcg.nl,University of Groningen
 umontreal.ca,Université de Montréal
 uni-bonn.de,University of Bonn
+uni-hamburg.de,University of Hamburg
 uni.wroc.pl,University of Wrocław
 uniklinik-saarland.de,Saarland University
 uq.edu.au,University of Queensland
 uwa.edu.au,University of Western Australia
 uwe.ac.uk,"University of the West of England, Bristol"
 uw.edu,University of Washington
+unito.it,University of Turin
 utu.fi,University of Turku
 utwente.nl,University of Twente
 uu.nl,Utrecht University
@@ -602,6 +606,7 @@ Sheri-Kashmir Institute of Medical Sciences,Sheri-Kashmir Institute of Medical S
 Genome Institute of Singapore,Genome Institute of Singapore
 National University of Singapore,National University of Singapore
 "Department of Ophthalmology, National University of Singapore and National University Health System","National University of Singapore"
+Sorbonne Université,Sorbonne University
 University of Split,University of Split
 Stanford University,Stanford University
 University of Stockholm,University of Stockholm
