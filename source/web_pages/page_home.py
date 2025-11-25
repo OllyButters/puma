@@ -124,7 +124,7 @@ def build_home(papers):
         html_file.write(temp)
     html_file.write('</table>')
 
-    temp = "<p>Publication year known for " + utils.intWithCommas(cr_data_from) + " of " + utils.intWithCommas(len(papers)) + " publications. <span class='help_text'>(<a href='help/index.html#missing_data'>What does this mean?</a>)</span></p>"
+    temp = "<p>Publication year known for " + utils.intWithCommas(cr_data_from) + " of " + utils.intWithCommas(len(papers)) + " publications. <span class='help_text'>(<a href='about/index.html#missing_data'>What does this mean?</a>)</span></p>"
     temp += '<p>* Citation data from <a href="https://www.scopus.com">Scopus</a>.</p>'
 
     temp += ch.build_common_foot("./")

@@ -3,6 +3,8 @@
 /html
 /logs
 
+/venv
+/source/venv
 source/tools.pyc
 *.pyc
 *.*~

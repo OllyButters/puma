@@ -208,19 +208,19 @@ def build_metrics(papers, age_weighted_citation, age_weighted_citation_data):
     temp += "<div class='clear'></div>"
 
     temp += '<div id="cumulative_div"></div>'
-    temp += "<p style='text-align:center;'>Data from " + utils.intWithCommas(age_weighted_citation_data) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
+    temp += "<p style='text-align:center;'>Data from " + utils.intWithCommas(age_weighted_citation_data) + " publications. <span class='help_text'>(<a href='../about/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     temp += '<div id="papers_per_year_div"></div>'
-    temp += "<p style='text-align:center;'>Data from " + utils.intWithCommas(age_weighted_citation_data) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
+    temp += "<p style='text-align:center;'>Data from " + utils.intWithCommas(age_weighted_citation_data) + " publications. <span class='help_text'>(<a href='../about/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     temp += '<div id="papers_per_citation_count_div"></div>'
     #temp += "<div style='margin-left:auto;margin-right:auto;'><div class='average_citations' style='height:15px; width:33px; float:left; background:#" + config.project_details['colour_hex_secondary'] + "'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Mean number of citations</div></div>"
     #temp += "<div style='margin-left:auto;margin-right:auto;margin-top:5px;'><div class='average_citations' style='height:15px; width:33px; float:left; background:green'></div><div style='height: 15px;line-height: 15px;padding-left: 40px;'> Median number of citations</div></div>"
-    temp += "<p style='text-align:center;'>Data from " + utils.intWithCommas(total_citations_data_from_count) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
+    temp += "<p style='text-align:center;'>Data from " + utils.intWithCommas(total_citations_data_from_count) + " publications. <span class='help_text'>(<a href='../about/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     if plot_high_citation_chart:
         temp += '<div id="papers_per_high_citation_count_div"></div>'
-        temp += "<p style='text-align:center;'>Data from " + utils.intWithCommas(total_citations_data_from_count) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
+        temp += "<p style='text-align:center;'>Data from " + utils.intWithCommas(total_citations_data_from_count) + " publications. <span class='help_text'>(<a href='../about/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     html_file.write(temp)
 

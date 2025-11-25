@@ -49,7 +49,7 @@ def build_country_map(papers):
     temp += '<h1 id="pagetitle">Publications by Country</h1>'
 
     temp += '<div id="regions_div" style="width: 900px; height: 500px;"><img src="loading.gif" alt="Loading"></div>'
-    temp += "<p>Data from " + utils.intWithCommas(number_of_points) + " publications. <span class='help_text'>(<a href='help/index.html#missing_data'>What does this mean?</a>)</span></p>"
+    temp += "<p>Data from " + utils.intWithCommas(number_of_points) + " publications. <span class='help_text'>(<a href='about/index.html#missing_data'>What does this mean?</a>)</span></p>"
 
     html_file.write(temp)
 
@@ -111,7 +111,7 @@ def build_UK_institute_map(papers):
     temp += '<h1 id="pagetitle">Publications by UK Institute</h1>'
 
     temp += '<div id="regions_div" style="width: 100%; min-width:500px; min-height: 500px;"><img src="loading.gif" alt="Loading"></div>'
-    temp += "<p>Data from " + utils.intWithCommas(number_of_points) + " publications. <span class='help_text'>(<a href='../help/index.html#missing_data'>What does this mean?</a>)</span></p>"
+    temp += "<p>Data from " + utils.intWithCommas(number_of_points) + " UK publications. <span class='help_text'>(<a href='../about/index.html#missing_data'>What does this mean?</a>)</span></p>"
     html_file.write(temp)
 
     temp = ch.build_common_foot("../")
